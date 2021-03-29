@@ -5,11 +5,9 @@ import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.util.concurrent.DefaultEventExecutor;
 import org.junit.Test;
-import reactor.core.Disposable;
 import reactor.netty.ConnectionObserver;
 import reactor.netty.DisposableServer;
 import reactor.netty.FutureMono;
-import reactor.netty.tcp.TcpClient;
 import reactor.netty.tcp.TcpServer;
 
 import java.time.Duration;
@@ -33,7 +31,9 @@ public class ServerTest {
                         .port(8111)
                         .option(ChannelOption.ALLOW_HALF_CLOSURE,true)
                         .doOnConnection(connection -> {
-                            connection.inbound().receive().asString().subscribe(System.out::println);
+                            connection.inbound().receive().asString().subscribe(s -> {
+                                System.out.println(Thread.currentThread().toString()+":"+s);
+                            });
                         })
                         .childObserve((connection, newState) -> {
                             System.out.println("********:"+newState);
@@ -58,7 +58,7 @@ public class ServerTest {
                         })
                         .wiretap(true)
                         .bindNow();
-
+        server.disposeSubscriber();
         Thread.sleep(300000);
 
 

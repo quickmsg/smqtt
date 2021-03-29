@@ -1,4 +1,4 @@
-package com.github.smqtt.protocol;
+package com.github.smqtt.common.protocol;
 
 import reactor.core.publisher.Mono;
 

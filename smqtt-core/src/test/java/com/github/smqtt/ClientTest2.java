@@ -23,7 +23,14 @@ public class ClientTest2 {
                 .remoteAddress(()->InetSocketAddress.createUnresolved("127.0.0.1",8111))
                 .wiretap(true)
                 .doOnConnected(connection -> {
-                    connection.outbound().send(Mono.just(Unpooled.wrappedBuffer("sdaasda".getBytes()))).then().subscribe();
+                    for(int i=0 ;i<100;i++){
+                        connection.outbound().send(Mono.just(Unpooled.wrappedBuffer("sdaasda".getBytes()))).then().subscribe();
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 })
                 .connect()
                 .block();

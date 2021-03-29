@@ -9,6 +9,7 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>smqtt-common</module>
+        <module>smqtt-core</module>
     </modules>
     <packaging>pom</packaging>
 

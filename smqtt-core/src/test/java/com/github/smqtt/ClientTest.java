@@ -1,12 +1,12 @@
 package com.github.smqtt;
 
-import io.netty.channel.local.LocalAddress;
+import io.netty.buffer.Unpooled;
 import org.junit.Test;
 import reactor.core.Disposable;
+import reactor.core.publisher.Mono;
 import reactor.netty.tcp.TcpClient;
 
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 
 /**
  * @author luxurong
@@ -22,8 +22,19 @@ public class ClientTest {
         Disposable disposable= TcpClient.create()
                 .remoteAddress(()->InetSocketAddress.createUnresolved("127.0.0.1",8111))
                 .wiretap(true)
+                .doOnConnected(connection -> {
+                    for(int i=0 ;i<100;i++){
+                        connection.outbound().send(Mono.just(Unpooled.wrappedBuffer("sdaasda".getBytes()))).then().subscribe();
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                })
                 .connect()
-                .block();
+
+                .subscribe();
         Thread.sleep(800000);
         disposable.dispose();
     }
