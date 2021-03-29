@@ -7,7 +7,7 @@ package com.github.smqtt.common.protocol;
  */
 public class ProtocolAdapter {
 
-    private String key
+    private String key;
 
 
 

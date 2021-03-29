@@ -9,6 +9,7 @@ import reactor.core.publisher.Mono;
 import reactor.netty.DisposableServer;
 import reactor.netty.tcp.TcpServer;
 import reactor.netty.tcp.TcpServerConfig;
+import reactor.netty.transport.ServerTransportConfig;
 import reactor.util.context.ContextView;
 
 import java.util.function.Consumer;
@@ -34,7 +35,7 @@ public class TcpReceiver implements Receiver {
 
     private TcpServer newTcpServer(ContextView context) {
         ReceiveContext receiveContext = context.get(ReceiveContext.class);
-        Consumer<? super TcpServerConfig> doOnBind = context.get(Consumer.class);
+        Consumer<? super ServerTransportConfig> doOnBind = context.get(Consumer.class);
         return TcpServer.create()
                 .doOnBind(doOnBind)
                 .childOption(ChannelOption.TCP_NODELAY, true)

@@ -29,7 +29,7 @@ public class ReceiveContext {
 
     public ReceiveContext buildContext() {
         this.loopResource1s = LoopResources.create("smqtt-cluster-io", configuration.bossThreadSize(), configuration.workThreadSize(), true);
-
+        return this;
     }
 
 
