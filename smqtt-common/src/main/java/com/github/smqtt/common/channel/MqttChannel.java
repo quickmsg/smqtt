@@ -1,5 +1,6 @@
 package com.github.smqtt.common.channel;
 
+import com.github.smqtt.common.enums.ChannelStatus;
 import io.netty.channel.Channel;
 import lombok.Data;
 
@@ -15,7 +16,7 @@ public class MqttChannel {
 
     private String deviceId;
 
-    private int status;
+    private ChannelStatus status;
 
     private long activeTime;
 

@@ -10,7 +10,7 @@ import lombok.Getter;
  * @description
  */
 @Getter
-public class TcpConfiguration implements Configuration {
+public class MqttConfiguration implements Configuration {
 
 
     private Class<ChannelRegistry> channelRegistry;

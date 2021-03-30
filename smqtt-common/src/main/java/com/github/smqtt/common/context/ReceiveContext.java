@@ -1,4 +1,4 @@
-package com.github.smqtt.common;
+package com.github.smqtt.common.context;
 
 import com.github.smqtt.common.config.Configuration;
 import com.github.smqtt.common.transport.Transport;

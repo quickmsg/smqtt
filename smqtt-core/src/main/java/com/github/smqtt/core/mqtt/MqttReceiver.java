@@ -1,6 +1,6 @@
 package com.github.smqtt.core.mqtt;
 
-import com.github.smqtt.common.ReceiveContext;
+import com.github.smqtt.common.context.ReceiveContext;
 import com.github.smqtt.common.Receiver;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.codec.mqtt.MqttDecoder;
@@ -18,7 +18,7 @@ import java.util.function.Consumer;
  * @date 2021/3/29 20:08
  * @description
  */
-public class TcpReceiver implements Receiver {
+public class MqttReceiver implements Receiver {
 
     @Override
     public Mono<DisposableServer> bind() {
@@ -33,9 +33,9 @@ public class TcpReceiver implements Receiver {
     }
 
     private TcpServer newTcpServer(ContextView context) {
-        TcpReceiveContext receiveContext = (TcpReceiveContext) context.get(ReceiveContext.class);
+        MqttReceiveContext receiveContext = (MqttReceiveContext) context.get(ReceiveContext.class);
         Consumer<? super ServerTransportConfig> doOnBind = context.get(Consumer.class);
-        TcpConfiguration configuration = receiveContext.getConfiguration();
+        MqttConfiguration configuration = receiveContext.getConfiguration();
         return TcpServer.create()
                 .port(configuration.getPort())
                 .doOnBind(doOnBind)

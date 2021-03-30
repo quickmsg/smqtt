@@ -9,10 +9,10 @@ import com.github.smqtt.core.DefaultTransport;
  * @date 2021/3/30 19:55
  * @description
  */
-public class TcpTransportFactory implements TransportFactory<TcpConfiguration> {
+public class MqttTransportFactory implements TransportFactory<MqttConfiguration> {
 
     @Override
-    public Transport<TcpConfiguration> createTransport(TcpConfiguration config) {
-        return new DefaultTransport(config ,new TcpReceiver());
+    public Transport<MqttConfiguration> createTransport(MqttConfiguration config) {
+        return new DefaultTransport(config ,new MqttReceiver());
     }
 }
