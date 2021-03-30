@@ -3,7 +3,7 @@ package com.github.smqtt.core;
 import com.github.smqtt.common.Receiver;
 import com.github.smqtt.common.channel.ChannelRegistry;
 import com.github.smqtt.common.transport.Transport;
-import com.github.smqtt.core.tcp.TcpConfiguration;
+import com.github.smqtt.core.mqtt.TcpConfiguration;
 import reactor.core.publisher.Mono;
 import reactor.netty.DisposableServer;
 

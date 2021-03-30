@@ -1,4 +1,4 @@
-package com.github.smqtt.core.tcp;
+package com.github.smqtt.core.mqtt;
 
 import com.github.smqtt.common.channel.ChannelRegistry;
 import com.github.smqtt.common.config.Configuration;
