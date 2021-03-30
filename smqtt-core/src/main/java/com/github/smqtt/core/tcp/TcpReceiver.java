@@ -1,14 +1,13 @@
 package com.github.smqtt.core.tcp;
 
+import com.github.smqtt.common.ReceiveContext;
 import com.github.smqtt.common.Receiver;
-import com.github.smqtt.core.ReceiveContext;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.codec.mqtt.MqttDecoder;
 import io.netty.handler.codec.mqtt.MqttEncoder;
 import reactor.core.publisher.Mono;
 import reactor.netty.DisposableServer;
 import reactor.netty.tcp.TcpServer;
-import reactor.netty.tcp.TcpServerConfig;
 import reactor.netty.transport.ServerTransportConfig;
 import reactor.util.context.ContextView;
 
@@ -34,9 +33,11 @@ public class TcpReceiver implements Receiver {
     }
 
     private TcpServer newTcpServer(ContextView context) {
-        ReceiveContext receiveContext = context.get(ReceiveContext.class);
+        TcpReceiveContext receiveContext = (TcpReceiveContext) context.get(ReceiveContext.class);
         Consumer<? super ServerTransportConfig> doOnBind = context.get(Consumer.class);
+        TcpConfiguration configuration = receiveContext.getConfiguration();
         return TcpServer.create()
+                .port(configuration.getPort())
                 .doOnBind(doOnBind)
                 .childOption(ChannelOption.TCP_NODELAY, true)
                 .childOption(ChannelOption.SO_KEEPALIVE, true)

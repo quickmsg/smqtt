@@ -22,6 +22,7 @@ public class ClientTest {
         Disposable disposable= TcpClient.create()
                 .remoteAddress(()->InetSocketAddress.createUnresolved("127.0.0.1",8111))
                 .wiretap(true)
+
                 .doOnConnected(connection -> {
                     for(int i=0 ;i<100;i++){
                         connection.outbound().send(Mono.just(Unpooled.wrappedBuffer("sdaasda".getBytes()))).then().subscribe();

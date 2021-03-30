@@ -1,7 +1,9 @@
 package com.github.smqtt;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.group.ChannelGroup;
+import io.netty.channel.group.ChannelMatcher;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.util.concurrent.DefaultEventExecutor;
 import org.junit.Test;
@@ -58,15 +60,18 @@ public class ServerTest {
                         })
                         .wiretap(true)
                         .bindNow();
-        server.disposeSubscriber();
-        Thread.sleep(300000);
-
-
-        FutureMono.from(group.close())
-                .block(Duration.ofSeconds(30));
-
-
-        server.disposeNow();
+        for(;;){
+            Thread.sleep(1000);
+            System.out.println(group);
+        }
+//        Thread.sleep(300000);
+//
+//
+//        FutureMono.from(group.close())
+//                .block(Duration.ofSeconds(30));
+//
+//
+//        server.disposeNow();
 
     }
 }

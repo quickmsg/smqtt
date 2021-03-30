@@ -8,10 +8,19 @@ package com.github.smqtt.common.config;
 public interface Configuration {
 
 
-    int bossThreadSize();
+    int getBossThreadSize();
 
 
-    int workThreadSize();
+    int getWorkThreadSize();
+
+
+    int getPort();
+
+
+
+
+
+
 
 
 
