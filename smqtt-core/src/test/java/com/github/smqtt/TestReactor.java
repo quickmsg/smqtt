@@ -16,9 +16,9 @@ public class TestReactor {
 
 
         Mono.deferContextual(contextView ->{
-            System.out.println(contextView.get("test").toString());
+            System.out.println("C1:"+contextView.get("test").toString());
             return Mono.deferContextual(contextView1 -> {
-                System.out.println(contextView1.get("test").toString());
+                System.out.println("C2:"+contextView1.get("test").toString());
                 return Mono.just("1");
             });
         }).contextWrite(context ->

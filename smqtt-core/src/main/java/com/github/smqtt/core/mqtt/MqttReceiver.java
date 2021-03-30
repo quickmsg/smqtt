@@ -43,6 +43,7 @@ public class MqttReceiver implements Receiver {
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
                 .childOption(ChannelOption.SO_REUSEADDR, true)
                 .runOn(receiveContext.getLoopResources())
+                .doOnConnection(receiveContext::apply)
                 .doOnChannelInit(
                         (connectionObserver, channel, remoteAddress) -> {
                             channel.pipeline().addLast(MqttEncoder.INSTANCE, new MqttDecoder());

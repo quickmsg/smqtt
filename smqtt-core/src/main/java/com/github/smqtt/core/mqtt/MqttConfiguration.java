@@ -7,13 +7,17 @@ import lombok.Getter;
 /**
  * @author luxurong
  * @date 2021/3/30 13:26
- * @description
+ * @Description MQTT协议配置类
  */
 @Getter
 public class MqttConfiguration implements Configuration {
 
 
     private Class<ChannelRegistry> channelRegistry;
+
+    private MqttReceiveContext mqttReceiveContext;
+
+
 
 
     @Override

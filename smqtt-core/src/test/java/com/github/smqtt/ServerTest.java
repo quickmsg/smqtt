@@ -27,7 +27,6 @@ public class ServerTest {
         CountDownLatch disconnected = new CountDownLatch(1);
 
         ChannelGroup group = new DefaultChannelGroup(new DefaultEventExecutor());
-
         DisposableServer server =
                 TcpServer.create()
                         .port(8111)
