@@ -1,17 +1,15 @@
 package com.github.smqtt.core.mqtt;
 
-import com.github.smqtt.common.context.ReceiveContext;
 import com.github.smqtt.common.Receiver;
+import com.github.smqtt.common.channel.MqttChannel;
+import com.github.smqtt.common.enums.ChannelStatus;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.codec.mqtt.MqttDecoder;
 import io.netty.handler.codec.mqtt.MqttEncoder;
 import reactor.core.publisher.Mono;
 import reactor.netty.DisposableServer;
 import reactor.netty.tcp.TcpServer;
-import reactor.netty.transport.ServerTransportConfig;
 import reactor.util.context.ContextView;
-
-import java.util.function.Consumer;
 
 /**
  * @author luxurong
@@ -33,17 +31,24 @@ public class MqttReceiver implements Receiver {
     }
 
     private TcpServer newTcpServer(ContextView context) {
-        MqttReceiveContext receiveContext = (MqttReceiveContext) context.get(ReceiveContext.class);
-        Consumer<? super ServerTransportConfig> doOnBind = context.get(Consumer.class);
-        MqttConfiguration configuration = receiveContext.getConfiguration();
+        MqttReceiveContext receiveContext = context.get(MqttReceiveContext.class);
+        MqttConfiguration mqttConfiguration = receiveContext.getConfiguration();
         return TcpServer.create()
-                .port(configuration.getPort())
-                .doOnBind(doOnBind)
+                .port(mqttConfiguration.getPort())
+                .doOnBind(mqttConfiguration::loadTcpServerConfig)
+                .wiretap(true)
                 .childOption(ChannelOption.TCP_NODELAY, true)
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
                 .childOption(ChannelOption.SO_REUSEADDR, true)
                 .runOn(receiveContext.getLoopResources())
-                .doOnConnection(receiveContext::apply)
+                .doOnConnection(connection ->
+                        receiveContext.apply(
+                                MqttChannel
+                                        .builder()
+                                        .activeTime(System.currentTimeMillis())
+                                        .connection(connection)
+                                        .status(ChannelStatus.INIT)
+                                        .build()))
                 .doOnChannelInit(
                         (connectionObserver, channel, remoteAddress) -> {
                             channel.pipeline().addLast(MqttEncoder.INSTANCE, new MqttDecoder());

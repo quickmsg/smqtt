@@ -1,6 +1,7 @@
 package com.github.smqtt.common.transport;
 
 import com.github.smqtt.common.config.Configuration;
+import com.github.smqtt.common.context.ReceiveContext;
 import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
 
@@ -21,8 +22,21 @@ public interface Transport<C extends Configuration> extends Disposable {
     Mono<Transport> start(C c);
 
 
+    /**
+     * 构建接受处理🥱
+     *
+     * @param c 启动参数
+     * @return ReceiveContext
+     */
+    ReceiveContext<C> buildReceiveContext(C c);
 
 
+    /**
+     * 链接注册中心
+     *
+     * @return ChannelRegistry
+     */
+    ReceiveContext<C> getReceiveContext();
 
 
 }

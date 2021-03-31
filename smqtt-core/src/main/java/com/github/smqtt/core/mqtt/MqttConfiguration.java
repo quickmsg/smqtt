@@ -3,6 +3,7 @@ package com.github.smqtt.core.mqtt;
 import com.github.smqtt.common.channel.ChannelRegistry;
 import com.github.smqtt.common.config.Configuration;
 import lombok.Getter;
+import reactor.netty.tcp.TcpServerConfig;
 
 /**
  * @author luxurong
@@ -15,8 +16,8 @@ public class MqttConfiguration implements Configuration {
 
     private Class<ChannelRegistry> channelRegistry;
 
-    private MqttReceiveContext mqttReceiveContext;
 
+    private MqttReceiveContext mqttReceiveContext;
 
 
 
@@ -33,5 +34,12 @@ public class MqttConfiguration implements Configuration {
     @Override
     public int getPort() {
         return 0;
+    }
+
+    @Override
+    public void loadTcpServerConfig(TcpServerConfig tcpServerConfig) {
+        //加载netty options配置
+
+
     }
 }

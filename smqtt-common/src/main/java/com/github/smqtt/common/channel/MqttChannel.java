@@ -1,8 +1,9 @@
 package com.github.smqtt.common.channel;
 
 import com.github.smqtt.common.enums.ChannelStatus;
-import io.netty.channel.Channel;
+import lombok.Builder;
 import lombok.Data;
+import reactor.netty.Connection;
 
 /**
  * @author luxurong
@@ -10,9 +11,10 @@ import lombok.Data;
  * @description
  */
 @Data
+@Builder
 public class MqttChannel {
 
-    private Channel channel;
+    private Connection connection;
 
     private String deviceId;
 

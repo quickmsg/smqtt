@@ -6,6 +6,12 @@ package com.github.smqtt.common.enums;
  * @description 状态类
  */
 public enum ChannelStatus {
+
+    /**
+     * 初始化
+     */
+    INIT,
+
     /**
      * 在线
      */
