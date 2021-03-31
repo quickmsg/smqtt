@@ -1,9 +1,11 @@
 package com.github.smqtt.core.protocol;
 
+import com.github.smqtt.common.channel.MqttChannel;
 import com.github.smqtt.common.protocol.Protocol;
-import io.netty.handler.codec.mqtt.MqttMessage;
 import io.netty.handler.codec.mqtt.MqttMessageType;
 import io.netty.handler.codec.mqtt.MqttUnsubAckMessage;
+import reactor.core.publisher.Mono;
+import reactor.util.context.ContextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,21 +17,20 @@ import java.util.List;
  */
 public class UnSubscribeAckProtocol implements Protocol<MqttUnsubAckMessage> {
 
-    private  static List<MqttMessageType> MESSAGE_TYPE_LIST = new ArrayList<>();
+    private static List<MqttMessageType> MESSAGE_TYPE_LIST = new ArrayList<>();
 
     static {
         MESSAGE_TYPE_LIST.add(MqttMessageType.UNSUBACK);
     }
 
     @Override
-    public List<MqttMessageType> getMqttMessageTypes() {
-        return MESSAGE_TYPE_LIST;
+    public Mono<Void> parseProtocol(MqttUnsubAckMessage message, MqttChannel mqttChannel, ContextView contextView) {
+        return null;
     }
 
-
     @Override
-    public Boolean isProtocol(MqttMessage message) {
-        return MESSAGE_TYPE_LIST.contains(message.fixedHeader().messageType());
+    public List<MqttMessageType> getMqttMessageTypes() {
+        return MESSAGE_TYPE_LIST;
     }
 
 

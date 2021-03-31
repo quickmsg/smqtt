@@ -1,9 +1,11 @@
 package com.github.smqtt.core.protocol;
 
+import com.github.smqtt.common.channel.MqttChannel;
 import com.github.smqtt.common.protocol.Protocol;
 import io.netty.handler.codec.mqtt.MqttConnAckMessage;
-import io.netty.handler.codec.mqtt.MqttMessage;
 import io.netty.handler.codec.mqtt.MqttMessageType;
+import reactor.core.publisher.Mono;
+import reactor.util.context.ContextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +26,8 @@ public class ConnectAckProtocol implements Protocol<MqttConnAckMessage> {
 
 
     @Override
-    public Boolean isProtocol(MqttMessage message) {
-        return MESSAGE_TYPE_LIST.contains(message.fixedHeader().messageType());
+    public Mono<Void> parseProtocol(MqttConnAckMessage message, MqttChannel mqttChannel, ContextView contextView) {
+        return null;
     }
 
     @Override

@@ -1,9 +1,11 @@
 package com.github.smqtt.core.protocol;
 
+import com.github.smqtt.common.channel.MqttChannel;
 import com.github.smqtt.common.protocol.Protocol;
-import io.netty.handler.codec.mqtt.MqttMessage;
 import io.netty.handler.codec.mqtt.MqttMessageType;
 import io.netty.handler.codec.mqtt.MqttSubscribeMessage;
+import reactor.core.publisher.Mono;
+import reactor.util.context.ContextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +18,12 @@ import java.util.List;
 public class SubscribeProtocol implements Protocol<MqttSubscribeMessage> {
 
 
-    private  static List<MqttMessageType> MESSAGE_TYPE_LIST = new ArrayList<>();
+    private static List<MqttMessageType> MESSAGE_TYPE_LIST = new ArrayList<>();
+
+    @Override
+    public Mono<Void> parseProtocol(MqttSubscribeMessage message, MqttChannel mqttChannel, ContextView contextView) {
+        return null;
+    }
 
     @Override
     public List<MqttMessageType> getMqttMessageTypes() {
@@ -26,12 +33,5 @@ public class SubscribeProtocol implements Protocol<MqttSubscribeMessage> {
     static {
         MESSAGE_TYPE_LIST.add(MqttMessageType.SUBSCRIBE);
     }
-
-
-    @Override
-    public Boolean isProtocol(MqttMessage message) {
-        return MESSAGE_TYPE_LIST.contains(message.fixedHeader().messageType());
-    }
-
 
 }
