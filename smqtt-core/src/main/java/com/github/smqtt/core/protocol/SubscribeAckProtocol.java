@@ -3,8 +3,10 @@ package com.github.smqtt.core.protocol;
 import com.github.smqtt.common.protocol.Protocol;
 import io.netty.handler.codec.mqtt.MqttMessage;
 import io.netty.handler.codec.mqtt.MqttMessageType;
-import io.netty.handler.codec.mqtt.MqttSubscribeMessage;
 import io.netty.handler.codec.mqtt.MqttUnsubscribeMessage;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author luxurong
@@ -13,8 +15,16 @@ import io.netty.handler.codec.mqtt.MqttUnsubscribeMessage;
  */
 public class SubscribeAckProtocol implements Protocol<MqttUnsubscribeMessage> {
 
+    private static List<MqttMessageType> MESSAGE_TYPE_LIST = new ArrayList<>();
+
+
     static {
         MESSAGE_TYPE_LIST.add(MqttMessageType.SUBACK);
+    }
+
+    @Override
+    public List<MqttMessageType> getMqttMessageTypes() {
+        return MESSAGE_TYPE_LIST;
     }
 
 

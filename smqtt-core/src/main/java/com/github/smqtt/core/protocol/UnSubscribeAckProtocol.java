@@ -5,6 +5,9 @@ import io.netty.handler.codec.mqtt.MqttMessage;
 import io.netty.handler.codec.mqtt.MqttMessageType;
 import io.netty.handler.codec.mqtt.MqttUnsubAckMessage;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author luxurong
  * @date 2021/3/29 14:05
@@ -12,8 +15,15 @@ import io.netty.handler.codec.mqtt.MqttUnsubAckMessage;
  */
 public class UnSubscribeAckProtocol implements Protocol<MqttUnsubAckMessage> {
 
+    private  static List<MqttMessageType> MESSAGE_TYPE_LIST = new ArrayList<>();
+
     static {
         MESSAGE_TYPE_LIST.add(MqttMessageType.UNSUBACK);
+    }
+
+    @Override
+    public List<MqttMessageType> getMqttMessageTypes() {
+        return MESSAGE_TYPE_LIST;
     }
 
 

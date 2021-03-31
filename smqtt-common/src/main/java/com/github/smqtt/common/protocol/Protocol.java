@@ -1,9 +1,11 @@
 package com.github.smqtt.common.protocol;
 
+import com.github.smqtt.common.channel.MqttChannel;
+import com.github.smqtt.common.config.Configuration;
+import com.github.smqtt.common.context.ReceiveContext;
 import io.netty.handler.codec.mqtt.MqttMessage;
 import io.netty.handler.codec.mqtt.MqttMessageType;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,9 +13,7 @@ import java.util.List;
  * @date 2021/3/26 13:55
  * @description 协议转换接口
  */
-public interface Protocol<T extends MqttMessage> {
-
-    List<MqttMessageType> MESSAGE_TYPE_LIST = new ArrayList<>();
+public interface Protocol<T extends MqttMessage,C extends Configuration> {
 
 
     /**
@@ -28,9 +28,11 @@ public interface Protocol<T extends MqttMessage> {
      * 解析协议
      *
      * @param message 消息类型
+     * @param mqttChannel
+     * @param receiveContext
      * @return T
      */
-    default T doParseProtocol(MqttMessage message) {
+    default T doParseProtocol(MqttMessage message, MqttChannel mqttChannel, ReceiveContext<C> receiveContext) {
         return (T) message;
     }
 
@@ -39,9 +41,6 @@ public interface Protocol<T extends MqttMessage> {
      *
      * @return List
      */
-    default List<MqttMessageType> getMqttMessageTypes() {
-        return MESSAGE_TYPE_LIST;
-    }
-
+    List<MqttMessageType> getMqttMessageTypes();
 
 }
