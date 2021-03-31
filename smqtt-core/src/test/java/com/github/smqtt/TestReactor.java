@@ -3,6 +3,7 @@ package com.github.smqtt;
 import org.junit.Test;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 /**
  * @author luxurong
@@ -15,15 +16,15 @@ public class TestReactor {
     @Test
     public void testContext() throws InterruptedException {
 
-        Mono<Integer> s= Mono.deferContextual(contextView ->{
-            System.out.println("C1:"+contextView.get("test").toString());
+         Mono.deferContextual(contextView ->{
+            System.out.println(Thread.currentThread().getName()+"C1:"+contextView.get("test").toString());
             return Mono.deferContextual(contextView1 -> {
-                System.out.println("C2:"+contextView1.get("test").toString());
+                System.out.println(Thread.currentThread().getName()+"C2:"+contextView1.get("test").toString());
                 return Mono.just(1);
             });
-        });
-        Flux<Integer> flux =Flux.range(1,100);
-//        flux.doOnNext().contextWrite(context -> context.put("test","haha")).subscribe();
+        }).contextWrite(context -> context.put("test","haha")).subscribeOn(Schedulers.single()).subscribe();
+//        Flux<Integer> flux =Flux.range(1,100);
+//        flux.doOnNext();
         Thread.sleep(100000l);
     }
 
