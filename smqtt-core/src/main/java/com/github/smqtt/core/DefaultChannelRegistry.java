@@ -1,6 +1,7 @@
 package com.github.smqtt.core;
 
 import com.github.smqtt.common.channel.ChannelRegistry;
+import com.github.smqtt.common.channel.MqttChannel;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.util.concurrent.DefaultEventExecutor;
@@ -15,4 +16,8 @@ public class DefaultChannelRegistry implements ChannelRegistry {
     private ChannelGroup group = new DefaultChannelGroup(new DefaultEventExecutor());
 
 
+    @Override
+    public void close(MqttChannel mqttChannel) {
+
+    }
 }

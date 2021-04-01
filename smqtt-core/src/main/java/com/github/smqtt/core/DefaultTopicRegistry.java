@@ -16,4 +16,9 @@ public class DefaultTopicRegistry implements TopicRegistry {
 
     }
 
+    @Override
+    public void clear(MqttChannel mqttChannel) {
+
+    }
+
 }

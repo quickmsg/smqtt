@@ -18,25 +18,31 @@ public class ClientTest {
     @Test
     public void test() throws InterruptedException {
 
+        System.out.println("5.78.0".compareTo("5.78.0.1")>0);
+        System.out.println("5.78.0".compareTo("5.28.0.1")>0);
+        System.out.println("5.78.0".compareTo("5.98")>0);
 
-        Disposable disposable= TcpClient.create()
-                .remoteAddress(()->InetSocketAddress.createUnresolved("127.0.0.1",8111))
-                .wiretap(true)
 
-                .doOnConnected(connection -> {
-                    for(int i=0 ;i<100;i++){
-                        connection.outbound().send(Mono.just(Unpooled.wrappedBuffer("sdaasda".getBytes()))).then().subscribe();
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                })
-                .connect()
 
-                .subscribe();
-        Thread.sleep(800000);
-        disposable.dispose();
+
+//        Disposable disposable= TcpClient.create()
+//                .remoteAddress(()->InetSocketAddress.createUnresolved("127.0.0.1",8111))
+//                .wiretap(true)
+//
+//                .doOnConnected(connection -> {
+//                    for(int i=0 ;i<100;i++){
+//                        connection.outbound().send(Mono.just(Unpooled.wrappedBuffer("sdaasda".getBytes()))).then().subscribe();
+//                        try {
+//                            Thread.sleep(1000);
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                })
+//                .connect()
+//
+//                .subscribe();
+//        Thread.sleep(800000);
+//        disposable.dispose();
     }
 }
