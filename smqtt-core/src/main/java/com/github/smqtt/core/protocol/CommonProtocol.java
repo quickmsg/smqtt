@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * @author luxurong
  * @date 2021/4/1 20:08
- * @description
+ * @description client && server 处理
  */
 public class CommonProtocol implements Protocol<MqttConnAckMessage> {
 

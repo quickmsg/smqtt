@@ -33,44 +33,47 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
 
     @Override
     public Mono<Void> parseProtocol(MqttConnectMessage message, MqttChannel mqttChannel, ContextView contextView) {
-        return Mono.create(monoSink -> {
-            MqttConnAckMessage mqttConnAckMessage = MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_ACCEPTED);
-            log.info("mqttChannel connect {} channel {}", message, mqttChannel.getConnection());
-            MqttReceiveContext mqttReceiveContext = contextView.get(MqttReceiveContext.class);
-            MqttConnectVariableHeader mqttConnectVariableHeader = message.variableHeader();
-            MqttConnectPayload mqttConnectPayload = message.payload();
-            if (MqttVersion.MQTT_3_1_1.protocolLevel() != (byte) mqttConnectVariableHeader.version()) {
-                mqttConnAckMessage = MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_UNACCEPTABLE_PROTOCOL_VERSION);
+        MqttConnAckMessage mqttConnAckMessage = MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_ACCEPTED);
+        log.info("mqttChannel connect {} channel {}", message, mqttChannel.getConnection());
+        MqttReceiveContext mqttReceiveContext = contextView.get(MqttReceiveContext.class);
+        MqttConnectVariableHeader mqttConnectVariableHeader = message.variableHeader();
+        MqttConnectPayload mqttConnectPayload = message.payload();
+        if (MqttVersion.MQTT_3_1_1.protocolLevel() != (byte) mqttConnectVariableHeader.version()) {
+            mqttConnAckMessage = MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_UNACCEPTABLE_PROTOCOL_VERSION);
+        }
+        if (basicAuthentication.auth(mqttConnectPayload.userName(), mqttConnectPayload.passwordInBytes())) {
+            /*cancel  defer close not authenticate channel */
+            mqttReceiveContext.getDeferCloseDisposable().dispose();
+            mqttChannel.setClientIdentifier(mqttConnectPayload.clientIdentifier());
+            if (mqttConnectVariableHeader.isWillFlag()) {
+                mqttChannel.setWill(MqttChannel.Will.builder()
+                        .isRetain(mqttConnectVariableHeader.isWillRetain())
+                        .willTopic(mqttConnectPayload.willTopic())
+                        .willMessage(mqttConnectPayload.willMessageInBytes())
+                        .mqttQoS(MqttQoS.valueOf(mqttConnectVariableHeader.willQos()))
+                        .build());
             }
-            if (basicAuthentication.auth(mqttConnectPayload.userName(), mqttConnectPayload.passwordInBytes())) {
-                /*cancel  defer close not authenticate channel */
-                mqttReceiveContext.getDeferCloseDisposable().dispose();
-                mqttChannel.setClientIdentifier(mqttConnectPayload.clientIdentifier());
-                if (mqttConnectVariableHeader.isWillFlag()) {
-                    mqttChannel.setWill(MqttChannel.Will.builder()
-                            .isRetain(mqttConnectVariableHeader.isWillRetain())
-                            .willTopic(mqttConnectPayload.willTopic())
-                            .willMessage(mqttConnectPayload.willMessageInBytes())
-                            .mqttQoS(MqttQoS.valueOf(mqttConnectVariableHeader.willQos()))
-                            .build());
-                }
-                mqttChannel.setAuthTime(System.currentTimeMillis());
-                mqttChannel.setKeepalive(mqttConnectVariableHeader.keepAliveTimeSeconds());
-                mqttChannel.setSessionPersistent(mqttConnectVariableHeader.isCleanSession());
-                mqttChannel.setStatus(ChannelStatus.ONLINE);
-                mqttChannel.getConnection()
-                        .onReadIdle(mqttConnectVariableHeader.keepAliveTimeSeconds() << 1,
-                                () -> {
-                                    mqttReceiveContext.getChannelRegistry().close(mqttChannel);
-                                    mqttReceiveContext.getTopicRegistry().clear(mqttChannel);
-                                });
+            mqttChannel.setAuthTime(System.currentTimeMillis());
+            mqttChannel.setKeepalive(mqttConnectVariableHeader.keepAliveTimeSeconds());
+            mqttChannel.setSessionPersistent(mqttConnectVariableHeader.isCleanSession());
+            mqttChannel.setStatus(ChannelStatus.ONLINE);
+            /*registry unread event close channel */
+            mqttChannel.getConnection()
+                    .onReadIdle(mqttConnectVariableHeader.keepAliveTimeSeconds() << 1,
+                            () -> {
+                                mqttReceiveContext.getChannelRegistry().close(mqttChannel);
+                                mqttReceiveContext.getTopicRegistry().clear(mqttChannel);
+                            });
+            /*registry will message send */
+            //todo 添加遗嘱发送
+            mqttChannel.getConnection().onDispose(()->{
 
-            } else {
-                mqttConnAckMessage = MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_BAD_USER_NAME_OR_PASSWORD);
-            }
-            mqttChannel.write(mqttConnAckMessage);
-            monoSink.success();
-        });
+            });
+
+        } else {
+            mqttConnAckMessage = MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_BAD_USER_NAME_OR_PASSWORD);
+        }
+        return mqttChannel.write(mqttConnAckMessage);
     }
 
     @Override
