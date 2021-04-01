@@ -6,4 +6,13 @@ package com.github.smqtt.common.auth;
  * @description 认证类
  */
 public interface BasicAuthentication {
+
+    /**
+     * 认证接口
+     *
+     * @param userName        用户名称
+     * @param passwordInBytes 密钥
+     * @return
+     */
+    boolean auth(String userName, byte[] passwordInBytes);
 }

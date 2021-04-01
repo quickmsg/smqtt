@@ -1,11 +1,11 @@
 package com.github.smqtt.core;
 
 import com.github.smqtt.common.channel.MqttChannel;
+import com.github.smqtt.common.config.Configuration;
 import com.github.smqtt.common.context.ReceiveContext;
 import com.github.smqtt.common.protocol.Protocol;
 import com.github.smqtt.common.protocol.ProtocolAdaptor;
 import com.github.smqtt.common.spi.DynamicLoader;
-import com.github.smqtt.core.mqtt.MqttConfiguration;
 import io.netty.handler.codec.mqtt.MqttMessage;
 import io.netty.handler.codec.mqtt.MqttMessageType;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +20,7 @@ import java.util.Optional;
  * @description
  */
 @Slf4j
-public class DefaultProtocolAdaptor implements ProtocolAdaptor<MqttConfiguration> {
+public class DefaultProtocolAdaptor implements ProtocolAdaptor {
 
     private Map<MqttMessageType, Protocol<MqttMessage>> types = new HashMap<>();
 
@@ -34,9 +34,8 @@ public class DefaultProtocolAdaptor implements ProtocolAdaptor<MqttConfiguration
 
     }
 
-
     @Override
-    public void chooseProtocol(MqttChannel mqttChannel, MqttMessage mqttMessage, ReceiveContext<MqttConfiguration> receiveContext) {
+    public <C extends Configuration> void chooseProtocol(MqttChannel mqttChannel, MqttMessage mqttMessage, ReceiveContext<C> receiveContext) {
         Optional.ofNullable(types.get(mqttMessage.fixedHeader().messageType()))
                 .ifPresent(protocol -> protocol.doParseProtocol(mqttMessage, mqttChannel)
                         .contextWrite(context -> context.putNonNull(ReceiveContext.class, receiveContext))

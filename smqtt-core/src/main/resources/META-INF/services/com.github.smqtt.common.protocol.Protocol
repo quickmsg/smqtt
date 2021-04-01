@@ -6,3 +6,4 @@ com.github.smqtt.core.protocol.SubscribeAckProtocol
 com.github.smqtt.core.protocol.SubscribeProtocol
 com.github.smqtt.core.protocol.UnSubscribeAckProtocol
 com.github.smqtt.core.protocol.UnSubscribeProtocol
+com.github.smqtt.core.protocol.CommonProtocol

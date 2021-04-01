@@ -1,6 +1,8 @@
 package com.github.smqtt.common.config;
 
 import com.github.smqtt.common.channel.ChannelRegistry;
+import com.github.smqtt.common.protocol.ProtocolAdaptor;
+import com.github.smqtt.common.topic.TopicRegistry;
 import reactor.netty.tcp.TcpServerConfig;
 
 /**
@@ -24,5 +26,12 @@ public interface Configuration {
 
 
     Class<ChannelRegistry> getChannelRegistry();
+
+
+    Class<TopicRegistry> getTopicRegistry();
+
+
+    Class<ProtocolAdaptor> getProtocolAdaptor();
+
 
 }

@@ -1,4 +1,4 @@
-package com.github.smqtt.core.channel;
+package com.github.smqtt.core;
 
 import com.github.smqtt.common.channel.ChannelRegistry;
 import io.netty.channel.group.ChannelGroup;

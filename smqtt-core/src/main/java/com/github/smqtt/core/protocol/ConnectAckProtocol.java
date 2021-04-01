@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * @author luxurong
  * @date 2021/3/29 14:05
- * @description
+ * @description client 处理
  */
 public class ConnectAckProtocol implements Protocol<MqttConnAckMessage> {
 

@@ -6,10 +6,14 @@ import com.github.smqtt.common.enums.ChannelStatus;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.codec.mqtt.MqttDecoder;
 import io.netty.handler.codec.mqtt.MqttEncoder;
+import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
+import reactor.netty.Connection;
 import reactor.netty.DisposableServer;
 import reactor.netty.tcp.TcpServer;
 import reactor.util.context.ContextView;
+
+import java.time.Duration;
 
 /**
  * @author luxurong
@@ -48,10 +52,18 @@ public class MqttReceiver implements Receiver {
                                         .activeTime(System.currentTimeMillis())
                                         .connection(connection)
                                         .status(ChannelStatus.INIT)
-                                        .build()))
+                                        .build(),deferCloseChannel(connection)))
                 .doOnChannelInit(
                         (connectionObserver, channel, remoteAddress) -> {
                             channel.pipeline().addLast(MqttEncoder.INSTANCE, new MqttDecoder());
                         });
+    }
+
+    private Disposable deferCloseChannel(Connection connection) {
+        return Mono.fromRunnable(() -> {
+            if (!connection.isDisposed()) {
+                connection.disposeNow();
+            }
+        }).delaySubscription(Duration.ofSeconds(2)).subscribe();
     }
 }

@@ -1,17 +1,12 @@
 package com.github.smqtt.core.mqtt;
 
-import com.github.smqtt.common.channel.ChannelRegistry;
 import com.github.smqtt.common.channel.MqttChannel;
-import com.github.smqtt.common.context.ReceiveContext;
 import com.github.smqtt.common.protocol.ProtocolAdaptor;
-import com.github.smqtt.common.spi.DynamicLoader;
 import com.github.smqtt.common.transport.Transport;
 import com.github.smqtt.core.DefaultProtocolAdaptor;
-import com.github.smqtt.core.channel.DefaultChannelRegistry;
 import io.netty.handler.codec.mqtt.MqttMessage;
 import lombok.Getter;
-
-import java.util.Optional;
+import reactor.core.Disposable;
 
 /**
  * @author luxurong
@@ -19,7 +14,10 @@ import java.util.Optional;
  * @Description 服务端操作连接channel类
  */
 @Getter
-public class MqttReceiveContext extends ReceiveContext<MqttConfiguration> {
+public class MqttReceiveContext extends AbstractReceiveContext<MqttConfiguration> {
+
+
+    private Disposable deferCloseDisposable;
 
 
     public MqttReceiveContext(MqttConfiguration configuration, Transport<MqttConfiguration> transport) {
@@ -27,20 +25,9 @@ public class MqttReceiveContext extends ReceiveContext<MqttConfiguration> {
 
     }
 
-    @Override
-    public ChannelRegistry channelRegistry(MqttConfiguration configuration) {
-        return Optional.ofNullable(DynamicLoader
-                .findFirst(configuration.getChannelRegistry())
-                .orElse(ChannelRegistry.INSTANCE)).orElse(new DefaultChannelRegistry());
-    }
 
-    @Override
-    public ProtocolAdaptor<MqttConfiguration> protocolAdaptor(MqttConfiguration configuration) {
-        return new DefaultProtocolAdaptor();
-    }
-
-
-    public void apply(MqttChannel mqttChannel) {
+    public void apply(MqttChannel mqttChannel, Disposable disposable) {
+        this.deferCloseDisposable = disposable;
         mqttChannel
                 .getConnection()
                 .inbound()
@@ -52,7 +39,8 @@ public class MqttReceiveContext extends ReceiveContext<MqttConfiguration> {
 
     @Override
     public void accept(MqttChannel mqttChannel, MqttMessage mqttMessage) {
-        this.getProtocolAdaptor()
-                .chooseProtocol(mqttChannel, mqttMessage, this);
+        this.getProtocolAdaptor().chooseProtocol(mqttChannel, mqttMessage, this);
     }
+
+
 }

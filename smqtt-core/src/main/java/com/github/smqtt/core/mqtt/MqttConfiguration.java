@@ -2,6 +2,8 @@ package com.github.smqtt.core.mqtt;
 
 import com.github.smqtt.common.channel.ChannelRegistry;
 import com.github.smqtt.common.config.Configuration;
+import com.github.smqtt.common.protocol.ProtocolAdaptor;
+import com.github.smqtt.common.topic.TopicRegistry;
 import lombok.Getter;
 import reactor.netty.tcp.TcpServerConfig;
 
@@ -17,8 +19,12 @@ public class MqttConfiguration implements Configuration {
     private Class<ChannelRegistry> channelRegistry;
 
 
-    private MqttReceiveContext mqttReceiveContext;
+    private Class<TopicRegistry> topicRegistry;
 
+    private Class<ProtocolAdaptor> ProtocolAdaptor;
+
+
+    private MqttReceiveContext mqttReceiveContext;
 
 
     @Override
@@ -42,4 +48,5 @@ public class MqttConfiguration implements Configuration {
 
 
     }
+
 }

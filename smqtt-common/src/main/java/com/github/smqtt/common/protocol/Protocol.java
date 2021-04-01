@@ -36,4 +36,5 @@ public interface Protocol<T> {
      */
     List<MqttMessageType> getMqttMessageTypes();
 
+
 }

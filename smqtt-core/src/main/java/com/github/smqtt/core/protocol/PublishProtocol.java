@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * @author luxurong
  * @date 2021/3/29 14:05
- * @description
+ * @description  client && server 处理
  */
 public class PublishProtocol implements Protocol<MqttPublishMessage> {
 

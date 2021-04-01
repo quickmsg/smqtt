@@ -1,7 +1,7 @@
 package com.github.smqtt.common.channel;
 
 import com.github.smqtt.common.enums.ChannelStatus;
-import io.netty.buffer.ByteBuf;
+import io.netty.handler.codec.mqtt.MqttMessage;
 import io.netty.handler.codec.mqtt.MqttQoS;
 import lombok.Builder;
 import lombok.Data;
@@ -19,11 +19,13 @@ public class MqttChannel {
 
     private Connection connection;
 
-    private String deviceId;
+    private String clientIdentifier;
 
     private ChannelStatus status;
 
     private long activeTime;
+
+    private long authTime;
 
     private boolean sessionPersistent;
 
@@ -32,6 +34,7 @@ public class MqttChannel {
     private long keepalive;
 
     @Data
+    @Builder
     public static class Will {
 
         private boolean isRetain;
@@ -40,12 +43,18 @@ public class MqttChannel {
 
         private MqttQoS mqttQoS;
 
-        private String willMessage;
+        private byte[] willMessage;
 
     }
 
-    public void write(ByteBuf byteBuf) {
-        connection.outbound().send(Mono.just(byteBuf)).then().subscribe();
+    /**
+     * 写入消息
+     *
+     * @param mqttMessage 消息体
+     * @return boolean状态
+     */
+    public Mono<Void> write(MqttMessage mqttMessage) {
+        return connection.outbound().sendObject(mqttMessage).then();
     }
 
 
