@@ -1,9 +1,15 @@
 package com.github.smqtt;
 
+import com.github.smqtt.common.message.MqttMessageBuilder;
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.netty.handler.codec.mqtt.MqttPublishMessage;
+import io.netty.handler.codec.mqtt.MqttQoS;
 import org.junit.Test;
 import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
+import reactor.core.scheduler.Schedulers;
 import reactor.netty.tcp.TcpClient;
 
 import java.net.InetSocketAddress;
@@ -23,15 +29,12 @@ public class ClientTest2 {
                 .remoteAddress(()->InetSocketAddress.createUnresolved("127.0.0.1",8111))
                 .wiretap(true)
                 .doOnConnected(connection -> {
-                    connection.outbound().send(Mono.just(Unpooled.wrappedBuffer("sdaasda".getBytes()))).then().subscribe();
-//
-//                    for(int i=0 ;i<100;i++){
-//                        try {
-//                            Thread.sleep(1000);
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
+                    ByteBuf byteBuf=Unpooled.wrappedBuffer("ds".getBytes());
+                    ByteBuf byteBuf2=byteBuf.duplicate().retain();
+                    connection.outbound().send(Mono.just(byteBuf)).then().subscribeOn(Schedulers.single()).subscribe();
+                    connection.outbound().send(Mono.just(byteBuf2)).then().subscribeOn(Schedulers.single()).subscribe();
+                    connection.outbound().send(Mono.just(byteBuf2)).then().subscribeOn(Schedulers.single()).subscribe();
+
                 })
                 .connect()
                 .block();

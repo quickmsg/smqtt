@@ -33,37 +33,6 @@ public class ServerTest {
                 TcpServer.create()
                         .port(8111)
                         .option(ChannelOption.ALLOW_HALF_CLOSURE,true)
-                        .metrics(true,()->new ChannelMetricsRecorder() {
-                            @Override
-                            public void recordDataReceived(SocketAddress remoteAddress, long bytes) {
-                                System.out.println(bytes);
-                            }
-
-                            @Override
-                            public void recordDataSent(SocketAddress remoteAddress, long bytes) {
-                                System.out.println(bytes);
-                            }
-
-                            @Override
-                            public void incrementErrorsCount(SocketAddress remoteAddress) {
-
-                            }
-
-                            @Override
-                            public void recordTlsHandshakeTime(SocketAddress remoteAddress, Duration time, String status) {
-
-                            }
-
-                            @Override
-                            public void recordConnectTime(SocketAddress remoteAddress, Duration time, String status) {
-
-                            }
-
-                            @Override
-                            public void recordResolveAddressTime(SocketAddress remoteAddress, Duration time, String status) {
-
-                            }
-                        })
                         .doOnConnection(connection -> {
                             connection.inbound().receive().asString().subscribe(s -> {
                                 System.out.println(Thread.currentThread().toString()+":"+s);

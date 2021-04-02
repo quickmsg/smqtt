@@ -28,7 +28,7 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
     private T configuration;
 
     private LoopResources loopResources;
-。
+
     private Transport<T> transport;
 
     private final ProtocolAdaptor protocolAdaptor;
