@@ -1,13 +1,11 @@
 package com.github.smqtt.common.channel;
 
 import com.github.smqtt.common.enums.ChannelStatus;
-import com.github.smqtt.common.message.MessageSink;
 import io.netty.handler.codec.mqtt.MqttMessage;
 import io.netty.handler.codec.mqtt.MqttQoS;
 import lombok.Builder;
 import lombok.Data;
 import reactor.core.publisher.Mono;
-import reactor.core.publisher.Sinks;
 import reactor.netty.Connection;
 
 /**

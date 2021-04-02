@@ -1,6 +1,7 @@
 package com.github.smqtt;
 
 import org.junit.Test;
+import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
@@ -57,12 +58,12 @@ public class TestReactor {
 
     @Test
     public void testRetry() throws InterruptedException {
-        for(int i=0;i<100;i++){
-            Mono.fromRunnable(() -> System.out.println(Thread.currentThread().getName() + "asdasd"))
-                    .delaySubscription(Duration.ofSeconds(10)).repeat().subscribe();
-        }
 
+         Disposable disposable= Mono.fromRunnable(() -> System.out.println(Thread.currentThread().getName() + "asdasd"))
+                    .delaySubscription(Duration.ofSeconds(1)).doOnCancel(()->System.out.println("qu xiao le")).repeat().subscribe();
+        Thread.sleep(10000);
 
+        disposable.dispose();
         Thread.sleep(100000l);
 
     }
