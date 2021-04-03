@@ -5,7 +5,6 @@ import com.github.smqtt.common.channel.MqttChannel;
 import com.github.smqtt.common.enums.ChannelStatus;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.codec.mqtt.MqttDecoder;
-import io.netty.handler.codec.mqtt.MqttEncoder;
 import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
 import reactor.netty.Connection;
@@ -52,10 +51,10 @@ public class MqttReceiver implements Receiver {
                                         .activeTime(System.currentTimeMillis())
                                         .connection(connection)
                                         .status(ChannelStatus.INIT)
-                                        .build(),deferCloseChannel(connection)))
+                                        .build(), deferCloseChannel(connection)))
                 .doOnChannelInit(
                         (connectionObserver, channel, remoteAddress) -> {
-                            channel.pipeline().addLast(MqttEncoder.INSTANCE, new MqttDecoder());
+                            channel.pipeline().addLast(new MqttDecoder());
                         });
     }
 

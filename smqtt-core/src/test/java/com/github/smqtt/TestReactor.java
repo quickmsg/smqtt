@@ -59,12 +59,21 @@ public class TestReactor {
     @Test
     public void testRetry() throws InterruptedException {
 
+
+
          Disposable disposable= Mono.fromRunnable(() -> System.out.println(Thread.currentThread().getName() + "asdasd"))
                     .delaySubscription(Duration.ofSeconds(1)).doOnCancel(()->System.out.println("qu xiao le")).repeat().subscribe();
         Thread.sleep(10000);
 
         disposable.dispose();
         Thread.sleep(100000l);
+
+    }
+
+    @Test
+    public  void njj(){
+        Mono.fromRunnable(()->System.out.println("asdds")).then(Mono.empty())
+                .subscribe();
 
     }
 

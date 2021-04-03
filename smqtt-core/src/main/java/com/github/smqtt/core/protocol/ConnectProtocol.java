@@ -73,7 +73,7 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
         } else {
             mqttConnAckMessage = MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_BAD_USER_NAME_OR_PASSWORD);
         }
-        return mqttChannel.write(mqttConnAckMessage);
+        return mqttChannel.write(mqttConnAckMessage,false);
     }
 
     @Override

@@ -1,9 +1,7 @@
 package com.github.smqtt.core.mqtt;
 
 import com.github.smqtt.common.channel.MqttChannel;
-import com.github.smqtt.common.protocol.ProtocolAdaptor;
 import com.github.smqtt.common.transport.Transport;
-import com.github.smqtt.core.DefaultProtocolAdaptor;
 import io.netty.handler.codec.mqtt.MqttMessage;
 import lombok.Getter;
 import reactor.core.Disposable;

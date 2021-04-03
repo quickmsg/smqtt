@@ -31,9 +31,6 @@ public class PublishProtocol implements Protocol<MqttPublishMessage> {
 
     static {
         MESSAGE_TYPE_LIST.add(MqttMessageType.PUBLISH);
-        MESSAGE_TYPE_LIST.add(MqttMessageType.PUBCOMP);
-        MESSAGE_TYPE_LIST.add(MqttMessageType.PUBREC);
-        MESSAGE_TYPE_LIST.add(MqttMessageType.PUBREL);
     }
 
 

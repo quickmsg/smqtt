@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * @author luxurong
  * @date 2021/3/29 14:05
- * @description  server 处理
+ * @description server 处理
  */
 public class PublishAckProtocol implements Protocol<MqttPubAckMessage> {
 
@@ -22,6 +22,9 @@ public class PublishAckProtocol implements Protocol<MqttPubAckMessage> {
 
     static {
         MESSAGE_TYPE_LIST.add(MqttMessageType.PUBACK);
+        MESSAGE_TYPE_LIST.add(MqttMessageType.PUBCOMP);
+        MESSAGE_TYPE_LIST.add(MqttMessageType.PUBREC);
+        MESSAGE_TYPE_LIST.add(MqttMessageType.PUBREL);
     }
 
 
@@ -34,7 +37,6 @@ public class PublishAckProtocol implements Protocol<MqttPubAckMessage> {
     public List<MqttMessageType> getMqttMessageTypes() {
         return MESSAGE_TYPE_LIST;
     }
-
 
 
 }

@@ -32,7 +32,7 @@ public class CommonProtocol implements Protocol<MqttConnAckMessage> {
     public Mono<Void> parseProtocol(MqttConnAckMessage message, MqttChannel mqttChannel, ContextView contextView) {
         switch (message.fixedHeader().messageType()) {
             case PINGREQ:
-                return mqttChannel.write(MqttMessageBuilder.buildPongMessage());
+                return mqttChannel.write(MqttMessageBuilder.buildPongMessage(),false);
             case DISCONNECT:
                 mqttChannel.setWill(null);
                 mqttChannel.getConnection().disposeNow();
