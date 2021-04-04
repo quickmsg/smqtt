@@ -3,11 +3,13 @@ package com.github.smqtt.core.mqtt;
 import com.github.smqtt.common.channel.ChannelRegistry;
 import com.github.smqtt.common.config.Configuration;
 import com.github.smqtt.common.context.ReceiveContext;
+import com.github.smqtt.common.message.MessageRegistry;
 import com.github.smqtt.common.protocol.ProtocolAdaptor;
 import com.github.smqtt.common.spi.DynamicLoader;
 import com.github.smqtt.common.topic.TopicRegistry;
 import com.github.smqtt.common.transport.Transport;
 import com.github.smqtt.core.DefaultChannelRegistry;
+import com.github.smqtt.core.DefaultMessageRegistry;
 import com.github.smqtt.core.DefaultProtocolAdaptor;
 import com.github.smqtt.core.DefaultTopicRegistry;
 import lombok.Getter;
@@ -37,6 +39,8 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
 
     private final TopicRegistry topicRegistry;
 
+    private final MessageRegistry messageRegistry;
+
     public AbstractReceiveContext(T configuration, Transport<T> transport) {
         this.configuration = configuration;
         this.transport = transport;
@@ -44,25 +48,30 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
         this.channelRegistry = channelRegistry(configuration);
         this.topicRegistry = topicRegistry(configuration);
         this.loopResources = LoopResources.create("smqtt-cluster-io", configuration.getBossThreadSize(), configuration.getWorkThreadSize(), true);
+        this.messageRegistry = messageRegistry(configuration);
     }
 
-    @Override
-    public ChannelRegistry channelRegistry(T configuration) {
+    private MessageRegistry messageRegistry(T configuration) {
+        return Optional.ofNullable(DynamicLoader
+                .findFirst(configuration.getMessageRegistry())
+                .orElse(MessageRegistry.INSTANCE)).orElse(new DefaultMessageRegistry());
+    }
+
+    ;
+
+    private ChannelRegistry channelRegistry(T configuration) {
         return Optional.ofNullable(DynamicLoader
                 .findFirst(configuration.getChannelRegistry())
                 .orElse(ChannelRegistry.INSTANCE)).orElse(new DefaultChannelRegistry());
     }
 
-
-    @Override
-    public TopicRegistry topicRegistry(T configuration) {
+    private TopicRegistry topicRegistry(T configuration) {
         return Optional.ofNullable(DynamicLoader
                 .findFirst(configuration.getTopicRegistry())
                 .orElse(TopicRegistry.INSTANCE)).orElse(new DefaultTopicRegistry());
     }
 
-    @Override
-    public ProtocolAdaptor protocolAdaptor(T configuration) {
+    private ProtocolAdaptor protocolAdaptor(T configuration) {
         return Optional.ofNullable(DynamicLoader
                 .findFirst(configuration.getProtocolAdaptor())
                 .orElse(ProtocolAdaptor.INSTANCE)).orElse(new DefaultProtocolAdaptor());

@@ -5,6 +5,7 @@ import com.github.smqtt.common.message.MqttEncoder;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.handler.codec.mqtt.MqttMessage;
+import io.netty.handler.codec.mqtt.MqttPublishMessage;
 import io.netty.handler.codec.mqtt.MqttQoS;
 import lombok.Builder;
 import lombok.Data;
@@ -24,8 +25,8 @@ import java.util.function.Function;
  * @date 2021/3/30 13:43
  * @description
  */
-@Data
 @Builder
+@Data
 public class MqttChannel {
 
     private Connection connection;
@@ -47,6 +48,17 @@ public class MqttChannel {
     private AtomicInteger atomicInteger = new AtomicInteger(0);
 
     private MqttMessageSink mqttMessageSink = new MqttMessageSink();
+
+    private Map<Integer, MqttPublishMessage> qos2MsgCache = new ConcurrentHashMap<>();
+
+
+    public Mono<Void> cacheQos2Msg(int messageId, MqttPublishMessage publishMessage) {
+        return Mono.fromRunnable(() -> qos2MsgCache.put(messageId, publishMessage));
+    }
+
+    public Optional<MqttPublishMessage> removeQos2Msg(int messageId) {
+        return Optional.ofNullable(qos2MsgCache.remove(messageId));
+    }
 
     public int generateMessageId() {
         int value = atomicInteger.incrementAndGet();
@@ -94,8 +106,8 @@ public class MqttChannel {
      * @param messageId 消息Id
      * @return boolean状态
      */
-    public void cancelRetry(Integer messageId) {
-        MqttMessageSink.MQTT_SINK.removeReply(messageId);
+    public Mono<Void> cancelRetry(Integer messageId) {
+        return Mono.fromRunnable(() -> MqttMessageSink.MQTT_SINK.removeReply(messageId));
     }
 
 
@@ -126,7 +138,19 @@ public class MqttChannel {
 
         public Mono<Void> sendMessage(MqttMessage mqttMessage, MqttChannel mqttChannel, boolean retry) {
             ByteBuf byteBuf = messageTransfer.apply(mqttMessage);
-            return (retry ? offerReply(byteBuf, mqttChannel) : Mono.empty()).then(mqttChannel.write(Mono.just(byteBuf)));
+            if (retry) {
+                ByteBuf retryByteBuf = byteBuf.duplicate().retain();
+                return mqttChannel.write(Mono.just(byteBuf)).then(offerReply(setIsDup(retryByteBuf), mqttChannel));
+            } else {
+                return mqttChannel.write(Mono.just(byteBuf));
+            }
+        }
+
+
+        private ByteBuf setIsDup(ByteBuf byteBuf) {
+            byte readByte = byteBuf.getByte(0);
+            byteBuf.setByte(0, readByte | 0x08);
+            return byteBuf;
         }
 
 
@@ -137,6 +161,7 @@ public class MqttChannel {
                             mqttChannel.write(Mono.just(byteBuf.duplicate().retain()))
                                     .delaySubscription(Duration.ofSeconds(10))
                                     .repeat()
+                                    .doOnError(error -> byteBuf.release())
                                     .doOnCancel(byteBuf::release)
                                     .subscribe()));
 

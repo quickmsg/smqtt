@@ -22,28 +22,26 @@ public class MqttMessageBuilder {
     }
 
 
-    public static MqttPubAckMessage buildPuback(boolean isDup, MqttQoS qoS, boolean isRetain, int messageId) {
-        MqttFixedHeader mqttFixedHeader = new MqttFixedHeader(MqttMessageType.PUBACK, isDup, qoS, isRetain, 2);
-        MqttMessageIdVariableHeader mqttMessageIdVariableHeader = MqttMessageIdVariableHeader.from(messageId);
-        MqttPubAckMessage mqttPubAckMessage = new MqttPubAckMessage(mqttFixedHeader, mqttMessageIdVariableHeader);
-        return mqttPubAckMessage;
+    public static MqttPubAckMessage buildPublishAck(int messageId) {
+        return ackMessage(MqttMessageType.PUBACK, messageId, false);
     }
 
-    public static MqttPubAckMessage buildPubRec(int messageId) {
-        MqttFixedHeader mqttFixedHeader = new MqttFixedHeader(MqttMessageType.PUBREC, false, MqttQoS.AT_LEAST_ONCE, false, 0x02);
-        MqttMessageIdVariableHeader from = MqttMessageIdVariableHeader.from(messageId);
-        return new MqttPubAckMessage(mqttFixedHeader, from);
+    public static MqttPubAckMessage buildPublishRec(int messageId) {
+        return ackMessage(MqttMessageType.PUBREC, messageId, false);
     }
 
-    public static MqttPubAckMessage buildPubRel(int messageId) {
-        MqttFixedHeader mqttFixedHeader = new MqttFixedHeader(MqttMessageType.PUBREL, false, MqttQoS.AT_LEAST_ONCE, false, 0x02);
-        MqttMessageIdVariableHeader from = MqttMessageIdVariableHeader.from(messageId);
-        return new MqttPubAckMessage(mqttFixedHeader, from);
+    public static MqttPubAckMessage buildPublishRel(int messageId) {
+        return ackMessage(MqttMessageType.PUBREL, messageId, true);
     }
 
 
-    public static MqttPubAckMessage buildPubComp(int messageId) {
-        MqttFixedHeader mqttFixedHeader = new MqttFixedHeader(MqttMessageType.PUBCOMP, false, MqttQoS.AT_MOST_ONCE, false, 0x02);
+    public static MqttPubAckMessage buildPublishComp(int messageId) {
+        return ackMessage(MqttMessageType.PUBCOMP, messageId, false);
+
+    }
+
+    private static MqttPubAckMessage ackMessage(MqttMessageType mqttMessageType, int messageId, boolean isRetain) {
+        MqttFixedHeader mqttFixedHeader = new MqttFixedHeader(mqttMessageType, false, MqttQoS.AT_MOST_ONCE, isRetain, 0x02);
         MqttMessageIdVariableHeader from = MqttMessageIdVariableHeader.from(messageId);
         return new MqttPubAckMessage(mqttFixedHeader, from);
     }

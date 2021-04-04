@@ -7,6 +7,8 @@ import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -61,8 +63,8 @@ public class TestReactor {
 
 
 
-         Disposable disposable= Mono.fromRunnable(() -> System.out.println(Thread.currentThread().getName() + "asdasd"))
-                    .delaySubscription(Duration.ofSeconds(1)).doOnCancel(()->System.out.println("qu xiao le")).repeat().subscribe();
+         Disposable disposable= Mono.fromRunnable(() -> {throw new RuntimeException("123");})
+                    .delaySubscription(Duration.ofSeconds(1)).doOnError(throwable ->System.out.println("cuowu qu xiao le") ).doOnCancel(()->System.out.println("qu xiao le")).repeat().subscribe();
         Thread.sleep(10000);
 
         disposable.dispose();
@@ -103,6 +105,24 @@ public class TestReactor {
 //                        System.out.println(atomicInteger.get() + ":" + t);
 //                    }) ;
                 });
+
+    }
+
+
+    @Test
+    public void testAllMono() throws InterruptedException {
+
+        List<Mono<Integer>> list = new ArrayList<>();
+        AtomicInteger atomicInteger = new AtomicInteger(1);
+        for(int i=0;i<10;i++){
+            list.add( Mono.fromRunnable(()->{
+                System.out.println("haha:"+atomicInteger.incrementAndGet());
+            }));
+        }
+        Mono.when(list).subscribe(System.out::println);
+//        Mono.firstWithSignal(list).subscribe(System.out::println);
+
+        Thread.sleep(100000l);
 
     }
 

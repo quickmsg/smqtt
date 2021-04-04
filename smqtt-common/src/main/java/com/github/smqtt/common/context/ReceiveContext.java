@@ -3,6 +3,7 @@ package com.github.smqtt.common.context;
 import com.github.smqtt.common.channel.ChannelRegistry;
 import com.github.smqtt.common.channel.MqttChannel;
 import com.github.smqtt.common.config.Configuration;
+import com.github.smqtt.common.message.MessageRegistry;
 import com.github.smqtt.common.protocol.ProtocolAdaptor;
 import com.github.smqtt.common.topic.TopicRegistry;
 import io.netty.handler.codec.mqtt.MqttMessage;
@@ -21,27 +22,32 @@ public interface ReceiveContext<T extends Configuration> extends BiConsumer<Mqtt
     /**
      * topic注册中心
      *
-     * @param configuration 配置
      * @return TopicRegistry
      */
-    TopicRegistry topicRegistry(T configuration);
+    TopicRegistry getTopicRegistry();
 
     /**
      * channel管理中心
      *
-     * @param configuration 配置
      * @return ChannelRegistry
      */
-    ChannelRegistry channelRegistry(T configuration);
+    ChannelRegistry getChannelRegistry();
 
 
     /**
      * 协议转换器
      *
-     * @param configuration 配置
      * @return ProtocolAdaptor
      */
-    ProtocolAdaptor protocolAdaptor(T configuration);
+    ProtocolAdaptor getProtocolAdaptor();
+
+
+    /**
+     * 持久化消息处理
+     *
+     * @return ProtocolAdaptor
+     */
+    MessageRegistry getMessageRegistry();
 
 
     /**

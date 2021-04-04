@@ -6,6 +6,7 @@ import com.github.smqtt.common.enums.ChannelStatus;
 import com.github.smqtt.common.message.MqttMessageBuilder;
 import com.github.smqtt.common.protocol.Protocol;
 import com.github.smqtt.core.mqtt.MqttReceiveContext;
+import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.mqtt.*;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
@@ -13,6 +14,7 @@ import reactor.util.context.ContextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author luxurong
@@ -65,15 +67,27 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
                                 mqttReceiveContext.getTopicRegistry().clear(mqttChannel);
                             });
             /*registry will message send */
-            //todo 添加遗嘱发送
-            mqttChannel.getConnection().onDispose(()->{
-
-            });
+            mqttChannel
+                    .getConnection()
+                    .onDispose(() ->
+                            Optional.ofNullable(mqttChannel.getWill())
+                                    .ifPresent(will -> {
+                                        mqttChannel.write(
+                                                MqttMessageBuilder
+                                                        .buildPub(false,
+                                                                will.getMqttQoS(),
+                                                                will.isRetain(),
+                                                                1,
+                                                                will.getWillTopic(),
+                                                                Unpooled.wrappedBuffer(will.getWillMessage())
+                                                        ), will.getMqttQoS().value() > 0
+                                        ).subscribe();
+                                    }));
 
         } else {
             mqttConnAckMessage = MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_BAD_USER_NAME_OR_PASSWORD);
         }
-        return mqttChannel.write(mqttConnAckMessage,false);
+        return mqttChannel.write(mqttConnAckMessage, false);
     }
 
     @Override

@@ -3,6 +3,9 @@ package com.github.smqtt.common.topic;
 import com.github.smqtt.common.channel.MqttChannel;
 import com.github.smqtt.common.spi.DynamicLoader;
 
+import java.util.List;
+import java.util.Optional;
+
 /**
  * @author luxurong
  * @date 2021/3/30 13:56
@@ -30,4 +33,14 @@ public interface TopicRegistry {
      * @return Void
      */
     void clear(MqttChannel mqttChannel);
+
+    /**
+     * 获取topic的channels
+     *
+     * @param topicName topic name
+     * @return list
+     */
+    Optional<List<MqttChannel>> getChannelListByTopic(String topicName);
+
+
 }

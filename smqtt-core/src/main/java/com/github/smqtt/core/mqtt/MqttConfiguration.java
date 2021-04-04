@@ -2,6 +2,7 @@ package com.github.smqtt.core.mqtt;
 
 import com.github.smqtt.common.channel.ChannelRegistry;
 import com.github.smqtt.common.config.Configuration;
+import com.github.smqtt.common.message.MessageRegistry;
 import com.github.smqtt.common.protocol.ProtocolAdaptor;
 import com.github.smqtt.common.topic.TopicRegistry;
 import lombok.Getter;
@@ -49,6 +50,10 @@ public class MqttConfiguration implements Configuration {
 
     }
 
+    @Override
+    public Class<MessageRegistry> getMessageRegistry() {
+        return null;
+    }
 
 
 }
