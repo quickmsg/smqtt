@@ -83,19 +83,22 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
                     .onDispose(() ->
                             Optional.ofNullable(mqttChannel.getWill())
                                     .ifPresent(will -> {
-                                        mqttChannel.write(
-                                                MqttMessageBuilder
-                                                        .buildPub(false,
-                                                                will.getMqttQoS(),
-                                                                will.isRetain(),
-                                                                1,
-                                                                will.getWillTopic(),
-                                                                Unpooled.wrappedBuffer(will.getWillMessage())
-                                                        ), will.getMqttQoS().value() > 0
-                                        ).subscribe();
+                                        topicRegistry.getChannelListByTopic(will.getWillTopic())
+                                                .ifPresent(mqttChannels -> mqttChannels.forEach(mqttChannel1 -> {
+                                                    mqttChannel1.write(
+                                                            MqttMessageBuilder
+                                                                    .buildPub(false,
+                                                                            will.getMqttQoS(),
+                                                                            will.isRetain(),
+                                                                            will.getMqttQoS() == MqttQoS.AT_MOST_ONCE
+                                                                                    ? 0 : mqttChannel1.generateMessageId(),
+                                                                            will.getWillTopic(),
+                                                                            Unpooled.wrappedBuffer(will.getWillMessage())
+                                                                    ), will.getMqttQoS().value() > 0
+                                                    ).subscribe();
+                                                }));
                                     }));
             return mqttChannel.write(MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_ACCEPTED), false);
-
 
         } else {
             return mqttChannel.write(

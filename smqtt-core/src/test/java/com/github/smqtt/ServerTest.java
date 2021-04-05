@@ -7,6 +7,8 @@ import io.netty.channel.group.ChannelMatcher;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.util.concurrent.DefaultEventExecutor;
 import org.junit.Test;
+import reactor.core.publisher.Mono;
+import reactor.netty.Connection;
 import reactor.netty.ConnectionObserver;
 import reactor.netty.DisposableServer;
 import reactor.netty.FutureMono;
@@ -15,6 +17,8 @@ import reactor.netty.tcp.TcpServer;
 
 import java.net.SocketAddress;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -29,18 +33,24 @@ public class ServerTest {
         CountDownLatch disconnected = new CountDownLatch(1);
 
         ChannelGroup group = new DefaultChannelGroup(new DefaultEventExecutor());
+        List<Connection> connections = new ArrayList<>();
         DisposableServer server =
                 TcpServer.create()
                         .port(8111)
                         .option(ChannelOption.ALLOW_HALF_CLOSURE,true)
                         .doOnConnection(connection -> {
-                            connection.inbound().receive().asString().subscribe(s -> {
-                                System.out.println(Thread.currentThread().toString()+":"+s);
+                            connections.add(connection);
+                            connection.inbound().receive().subscribe(bytebuf -> {
+                                bytebuf.retain(1000);
+                                connections.forEach(connection1 -> {
+                                    for(int i=0;i<10;i++){
+                                        connection1.outbound().send(Mono.just(bytebuf)).then().subscribe();
+                                    }
+                                });
                             });
                         })
                         .childObserve((connection, newState) -> {
                             System.out.println("********:"+newState);
-
                             connection.markPersistent(false);
                             if (newState == ConnectionObserver.State.CONNECTED) {
                                 group.add(connection.channel());

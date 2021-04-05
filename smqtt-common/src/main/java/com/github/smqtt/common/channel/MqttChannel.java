@@ -176,8 +176,8 @@ public class MqttChannel {
                 Increase the reference count of bytebuf, and the reference count of retrybytebuf is 2
                 mqttChannel.write() method releases a reference count.
                  */
-                ByteBuf retryByteBuf = byteBuf.duplicate().retain();
-                return mqttChannel.write(Mono.just(byteBuf)).then(offerReply(setIsDup(retryByteBuf), mqttChannel, getMessageId(mqttMessage)));
+                byteBuf.retain(Integer.MAX_VALUE >> 1);
+                return mqttChannel.write(Mono.just(byteBuf)).then(offerReply(setIsDup(byteBuf), mqttChannel, getMessageId(mqttMessage)));
             } else {
                 return mqttChannel.write(Mono.just(byteBuf));
             }
@@ -190,11 +190,17 @@ public class MqttChannel {
             } else if (object instanceof MqttMessageIdVariableHeader) {
                 return ((MqttMessageIdVariableHeader) object).messageId();
             } else {
-                return -1;
+                return -1; // client send connect key
             }
         }
 
 
+        /**
+         * Set resend flag
+         *
+         * @param byteBuf mqttMessage
+         * @return ByteBuf
+         */
         private ByteBuf setIsDup(ByteBuf byteBuf) {
             byte readByte = byteBuf.getByte(0);
             byteBuf.setByte(0, readByte | 0x08);
@@ -202,18 +208,37 @@ public class MqttChannel {
         }
 
 
+        /**
+         * Set resend action
+         *
+         * @param byteBuf     mqttMessage
+         * @param mqttChannel connection
+         * @param messageId   messageId
+         * @return Mono
+         */
         public Mono<Void> offerReply(ByteBuf byteBuf, final MqttChannel mqttChannel, final int messageId) {
             return Mono.fromRunnable(() ->
                     replyMqttMessageMap.put(messageId,
-                            mqttChannel.write(Mono.just(byteBuf.duplicate().retain()))
-                                    .delaySubscription(Duration.ofSeconds(10))
+                            mqttChannel.write(Mono.just(byteBuf))
+                                    .delaySubscription(Duration.ofSeconds(5))
                                     .repeat()
-                                    .doOnError(error -> ReactorNetty.safeRelease(byteBuf))
-                                    .doOnCancel(() -> ReactorNetty.safeRelease(byteBuf))
+                                    .doOnError(error -> releaseByteBufCount(byteBuf))
+                                    .doOnCancel(() -> releaseByteBufCount(byteBuf))
                                     .subscribe()));
 
         }
 
+        private void releaseByteBufCount(ByteBuf byteBuf) {
+            byteBuf.release(byteBuf.refCnt());
+        }
+
+
+        /**
+         * remove resend action
+         *
+         * @param messageId messageId
+         * @return void
+         */
         public void removeReply(Integer messageId) {
             Optional.ofNullable(replyMqttMessageMap.get(messageId))
                     .ifPresent(Disposable::dispose);

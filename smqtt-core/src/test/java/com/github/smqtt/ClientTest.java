@@ -1,15 +1,7 @@
 package com.github.smqtt;
 
-import com.github.smqtt.common.message.MqttMessageBuilder;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import io.netty.handler.codec.mqtt.MqttConnectReturnCode;
-import io.netty.handler.codec.mqtt.MqttMessage;
-import io.netty.handler.codec.mqtt.MqttPublishMessage;
-import io.netty.handler.codec.mqtt.MqttQoS;
 import org.junit.Test;
 import reactor.core.Disposable;
-import reactor.core.publisher.Mono;
 import reactor.netty.tcp.TcpClient;
 
 import java.net.InetSocketAddress;
@@ -24,28 +16,21 @@ public class ClientTest {
     @Test
     public void test() throws InterruptedException {
 
-        System.out.println("5.78.0".compareTo("5.78.0.1")>0);
-        System.out.println("5.78.0".compareTo("5.28.0.1")>0);
-        System.out.println("5.78.0".compareTo("5.98")>0);
+//        System.out.println("5.78.0".compareTo("5.78.0.1")>0);
+//        System.out.println("5.78.0".compareTo("5.28.0.1")>0);
+//        System.out.println("5.78.0".compareTo("5.98")>0);
 
-//        Disposable disposable= TcpClient.create()
-//                .remoteAddress(()->InetSocketAddress.createUnresolved("127.0.0.1",8111))
-//                .wiretap(true)
-//
-//                .doOnConnected(connection -> {
-//                    for(int i=0 ;i<100;i++){
-//                        connection.outbound().send(Mono.just(Unpooled.wrappedBuffer("sdaasda".getBytes()))).then().subscribe();
-//                        try {
-//                            Thread.sleep(1000);
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                })
-//                .connect()
-//
-//                .subscribe();
-//        Thread.sleep(800000);
-//        disposable.dispose();
+        Disposable disposable = TcpClient.create()
+                .remoteAddress(() -> InetSocketAddress.createUnresolved("127.0.0.1", 8111))
+                .wiretap(true)
+
+                .doOnConnected(connection -> {
+                    connection.inbound().receive().asString().subscribe(System.out::println);
+                })
+                .connect()
+
+                .subscribe();
+        Thread.sleep(800000);
+        disposable.dispose();
     }
 }
