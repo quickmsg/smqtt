@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * @author luxurong
  * @date 2021/3/29 14:05
- * @description  client 处理
+ * @description  client handler
  */
 public class UnSubscribeAckProtocol implements Protocol<MqttUnsubAckMessage> {
 
@@ -25,7 +25,7 @@ public class UnSubscribeAckProtocol implements Protocol<MqttUnsubAckMessage> {
 
     @Override
     public Mono<Void> parseProtocol(MqttUnsubAckMessage message, MqttChannel mqttChannel, ContextView contextView) {
-        return null;
+        return mqttChannel.cancelRetry(message.variableHeader().messageId());
     }
 
     @Override

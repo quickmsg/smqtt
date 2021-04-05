@@ -20,4 +20,14 @@ public class DefaultChannelRegistry implements ChannelRegistry {
     public void close(MqttChannel mqttChannel) {
 
     }
+
+    @Override
+    public void registry(String clientIdentifier, MqttChannel mqttChannel) {
+
+    }
+
+    @Override
+    public boolean exists(String clientIdentifier) {
+        return false;
+    }
 }

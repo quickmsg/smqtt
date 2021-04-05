@@ -12,8 +12,15 @@ public interface ChannelRegistry {
 
     ChannelRegistry INSTANCE = DynamicLoader.findFirst(ChannelRegistry.class).orElse(null);
 
-
     void close(MqttChannel mqttChannel);
+
+    void registry(String clientIdentifier,MqttChannel mqttChannel);
+
+    boolean exists(String clientIdentifier);
+
+
+
+
 
 
 }

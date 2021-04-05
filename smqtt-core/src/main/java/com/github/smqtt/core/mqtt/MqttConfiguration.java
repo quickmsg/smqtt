@@ -1,11 +1,12 @@
 package com.github.smqtt.core.mqtt;
 
+import com.github.smqtt.common.auth.BasicAuthentication;
 import com.github.smqtt.common.channel.ChannelRegistry;
 import com.github.smqtt.common.config.Configuration;
 import com.github.smqtt.common.message.MessageRegistry;
 import com.github.smqtt.common.protocol.ProtocolAdaptor;
 import com.github.smqtt.common.topic.TopicRegistry;
-import lombok.Getter;
+import lombok.Data;
 import reactor.netty.tcp.TcpServerConfig;
 
 /**
@@ -13,16 +14,23 @@ import reactor.netty.tcp.TcpServerConfig;
  * @date 2021/3/30 13:26
  * @Description MQTT协议配置类
  */
-@Getter
+@Data
 public class MqttConfiguration implements Configuration {
 
+    private int port;
 
-    private Class<ChannelRegistry> channelRegistry;
+    private BasicAuthentication basicAuthentication;
 
 
-    private Class<TopicRegistry> topicRegistry;
+    private Class<ChannelRegistry> channelRegistry = ChannelRegistry.class;
 
-    private Class<ProtocolAdaptor> ProtocolAdaptor;
+
+    private Class<TopicRegistry> topicRegistry = TopicRegistry.class;
+
+    private Class<ProtocolAdaptor> protocolAdaptor = ProtocolAdaptor.class;
+
+    private Class<MessageRegistry> messageRegistry = MessageRegistry.class;
+
 
 
     private MqttReceiveContext mqttReceiveContext;
@@ -30,18 +38,14 @@ public class MqttConfiguration implements Configuration {
 
     @Override
     public int getBossThreadSize() {
-        return 0;
+        return 1;
     }
 
     @Override
     public int getWorkThreadSize() {
-        return 0;
+        return 4;
     }
 
-    @Override
-    public int getPort() {
-        return 0;
-    }
 
     @Override
     public void loadTcpServerConfig(TcpServerConfig tcpServerConfig) {
@@ -49,11 +53,5 @@ public class MqttConfiguration implements Configuration {
 
 
     }
-
-    @Override
-    public Class<MessageRegistry> getMessageRegistry() {
-        return null;
-    }
-
 
 }

@@ -1,7 +1,10 @@
 package com.github.smqtt.core.protocol;
 
 import com.github.smqtt.common.channel.MqttChannel;
+import com.github.smqtt.common.context.ReceiveContext;
+import com.github.smqtt.common.message.MqttMessageBuilder;
 import com.github.smqtt.common.protocol.Protocol;
+import com.github.smqtt.common.topic.TopicRegistry;
 import io.netty.handler.codec.mqtt.MqttMessageType;
 import io.netty.handler.codec.mqtt.MqttUnsubscribeMessage;
 import reactor.core.publisher.Mono;
@@ -26,7 +29,11 @@ public class UnSubscribeProtocol implements Protocol<MqttUnsubscribeMessage> {
 
     @Override
     public Mono<Void> parseProtocol(MqttUnsubscribeMessage message, MqttChannel mqttChannel, ContextView contextView) {
-        return null;
+        return Mono.fromRunnable(() -> {
+            ReceiveContext<?> receiveContext = contextView.get(ReceiveContext.class);
+            TopicRegistry topicRegistry = receiveContext.getTopicRegistry();
+            topicRegistry.clear(message.payload().topics(), mqttChannel);
+        }).then(mqttChannel.write(MqttMessageBuilder.buildUnsubAck(message.variableHeader().messageId()), false));
     }
 
     @Override

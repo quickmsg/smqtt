@@ -24,13 +24,7 @@ public class MqttReceiver implements Receiver {
     @Override
     public Mono<DisposableServer> bind() {
         return Mono.deferContextual(contextView -> Mono.just(this.newTcpServer(contextView)))
-                .flatMap(view ->
-                        view.handle((in, out) -> in.receive()
-                                .retain()
-                                .then())
-                                .bind()
-                                .cast(DisposableServer.class)
-                );
+                .flatMap(view -> view.bind().cast(DisposableServer.class));
     }
 
     private TcpServer newTcpServer(ContextView context) {
@@ -44,24 +38,22 @@ public class MqttReceiver implements Receiver {
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
                 .childOption(ChannelOption.SO_REUSEADDR, true)
                 .runOn(receiveContext.getLoopResources())
-                .doOnConnection(connection ->
-                        receiveContext.apply(
-                                MqttChannel
-                                        .builder()
-                                        .activeTime(System.currentTimeMillis())
-                                        .connection(connection)
-                                        .status(ChannelStatus.INIT)
-                                        .build(), deferCloseChannel(connection)))
-                .doOnChannelInit(
-                        (connectionObserver, channel, remoteAddress) -> {
-                            channel.pipeline().addLast(new MqttDecoder());
-                        });
+                .doOnConnection(connection -> {
+                    connection.addHandler(new MqttDecoder());
+                    receiveContext.apply(
+                            MqttChannel
+                                    .builder()
+                                    .activeTime(System.currentTimeMillis())
+                                    .connection(connection)
+                                    .status(ChannelStatus.INIT)
+                                    .build().initChannel(), deferCloseChannel(connection));
+                });
     }
 
     private Disposable deferCloseChannel(Connection connection) {
         return Mono.fromRunnable(() -> {
             if (!connection.isDisposed()) {
-                connection.disposeNow();
+                connection.dispose();
             }
         }).delaySubscription(Duration.ofSeconds(2)).subscribe();
     }

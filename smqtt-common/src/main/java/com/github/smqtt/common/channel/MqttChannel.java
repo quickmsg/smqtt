@@ -4,16 +4,17 @@ import com.github.smqtt.common.enums.ChannelStatus;
 import com.github.smqtt.common.message.MqttEncoder;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
-import io.netty.handler.codec.mqtt.MqttMessage;
-import io.netty.handler.codec.mqtt.MqttPublishMessage;
-import io.netty.handler.codec.mqtt.MqttQoS;
+import io.netty.handler.codec.mqtt.*;
 import lombok.Builder;
 import lombok.Data;
 import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
 import reactor.netty.Connection;
+import reactor.netty.ReactorNetty;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -45,29 +46,59 @@ public class MqttChannel {
 
     private long keepalive;
 
-    private AtomicInteger atomicInteger = new AtomicInteger(0);
+    private List<String> topics;
 
-    private MqttMessageSink mqttMessageSink = new MqttMessageSink();
 
-    private Map<Integer, MqttPublishMessage> qos2MsgCache = new ConcurrentHashMap<>();
+    private AtomicInteger atomicInteger;
+
+    private MqttMessageSink mqttMessageSink;
+
+    private Map<Integer, MqttPublishMessage> qos2MsgCache;
+
+
+    public MqttChannel initChannel() {
+        this.atomicInteger = new AtomicInteger(0);
+        this.mqttMessageSink = new MqttMessageSink();
+        this.qos2MsgCache = new ConcurrentHashMap<>();
+        this.topics = new ArrayList<>();
+        return this;
+    }
 
 
     public Mono<Void> cacheQos2Msg(int messageId, MqttPublishMessage publishMessage) {
         return Mono.fromRunnable(() -> qos2MsgCache.put(messageId, publishMessage));
     }
 
+    public Boolean existQos2Msg(int messageId) {
+        return qos2MsgCache.containsKey(messageId);
+    }
+
     public Optional<MqttPublishMessage> removeQos2Msg(int messageId) {
         return Optional.ofNullable(qos2MsgCache.remove(messageId));
     }
 
+    public Mono<Void> close() {
+        return Mono.fromRunnable(() -> this.connection.disposeNow());
+    }
+
+
+    public MqttChannel onClose(Disposable disposable) {
+        this.connection.onDispose(disposable);
+        return this;
+    }
+
     public int generateMessageId() {
-        int value = atomicInteger.incrementAndGet();
-        if (value >= Integer.MAX_VALUE) {
-            synchronized (this) {
-                if (atomicInteger.intValue() >= Integer.MAX_VALUE) {
-                    atomicInteger.set(0);
+        int value;
+        while (qos2MsgCache.containsKey(value = atomicInteger.incrementAndGet())) {
+            if (value >= Integer.MAX_VALUE) {
+                synchronized (this) {
+                    value = atomicInteger.incrementAndGet();
+                    if (value >= Integer.MAX_VALUE) {
+                        atomicInteger.set(0);
+                    } else {
+                        break;
+                    }
                 }
-                value = atomicInteger.incrementAndGet();
             }
         }
         return value;
@@ -138,11 +169,28 @@ public class MqttChannel {
 
         public Mono<Void> sendMessage(MqttMessage mqttMessage, MqttChannel mqttChannel, boolean retry) {
             ByteBuf byteBuf = messageTransfer.apply(mqttMessage);
+            // safe release byteBuf
+            ReactorNetty.safeRelease(mqttMessage.payload());
             if (retry) {
+                /*
+                Increase the reference count of bytebuf, and the reference count of retrybytebuf is 2
+                mqttChannel.write() method releases a reference count.
+                 */
                 ByteBuf retryByteBuf = byteBuf.duplicate().retain();
-                return mqttChannel.write(Mono.just(byteBuf)).then(offerReply(setIsDup(retryByteBuf), mqttChannel));
+                return mqttChannel.write(Mono.just(byteBuf)).then(offerReply(setIsDup(retryByteBuf), mqttChannel, getMessageId(mqttMessage)));
             } else {
                 return mqttChannel.write(Mono.just(byteBuf));
+            }
+        }
+
+        private int getMessageId(MqttMessage mqttMessage) {
+            Object object = mqttMessage.variableHeader();
+            if (object instanceof MqttPublishVariableHeader) {
+                return ((MqttPublishVariableHeader) object).packetId();
+            } else if (object instanceof MqttMessageIdVariableHeader) {
+                return ((MqttMessageIdVariableHeader) object).messageId();
+            } else {
+                return -1;
             }
         }
 
@@ -154,15 +202,14 @@ public class MqttChannel {
         }
 
 
-        public Mono<Void> offerReply(ByteBuf byteBuf, MqttChannel mqttChannel) {
+        public Mono<Void> offerReply(ByteBuf byteBuf, final MqttChannel mqttChannel, final int messageId) {
             return Mono.fromRunnable(() ->
-                    replyMqttMessageMap.put(
-                            mqttChannel.generateMessageId(),
+                    replyMqttMessageMap.put(messageId,
                             mqttChannel.write(Mono.just(byteBuf.duplicate().retain()))
                                     .delaySubscription(Duration.ofSeconds(10))
                                     .repeat()
-                                    .doOnError(error -> byteBuf.release())
-                                    .doOnCancel(byteBuf::release)
+                                    .doOnError(error -> ReactorNetty.safeRelease(byteBuf))
+                                    .doOnCancel(() -> ReactorNetty.safeRelease(byteBuf))
                                     .subscribe()));
 
         }

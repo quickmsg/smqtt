@@ -1,6 +1,7 @@
 package com.github.smqtt.common.topic;
 
 import com.github.smqtt.common.channel.MqttChannel;
+import com.github.smqtt.common.message.SubscribeChannelContext;
 import com.github.smqtt.common.spi.DynamicLoader;
 
 import java.util.List;
@@ -34,6 +35,16 @@ public interface TopicRegistry {
      */
     void clear(MqttChannel mqttChannel);
 
+
+    /**
+     * 清除订阅消息
+     *
+     * @param topics topics
+     * @param mqttChannel 通道信息
+     * @return Void
+     */
+    void clear(List<String> topics, MqttChannel mqttChannel);
+
     /**
      * 获取topic的channels
      *
@@ -43,4 +54,11 @@ public interface TopicRegistry {
     Optional<List<MqttChannel>> getChannelListByTopic(String topicName);
 
 
+    /**
+     * 绑定主题跟channel关系
+     *
+     * @param mqttTopicSubscriptions 通道信息/订阅主题
+     * @return 空
+     */
+    void registryTopicConnection(List<SubscribeChannelContext> mqttTopicSubscriptions);
 }

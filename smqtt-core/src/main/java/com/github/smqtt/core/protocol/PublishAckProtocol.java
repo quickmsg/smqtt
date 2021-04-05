@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 /**
  * @author luxurong
  * @date 2021/3/29 14:05
- * @description server 处理
+ * @description server handler
  */
 public class PublishAckProtocol implements Protocol<MqttPubAckMessage> {
 
@@ -43,7 +43,7 @@ public class PublishAckProtocol implements Protocol<MqttPubAckMessage> {
         switch (mqttFixedHeader.messageType()) {
             case PUBREC:
                 return mqttChannel.cancelRetry(messageId)
-                        .then(mqttChannel.write(MqttMessageBuilder.buildPublishRel(messageId), false));
+                        .then(mqttChannel.write(MqttMessageBuilder.buildPublishRel(messageId), true));
 
             case PUBREL:
                 return mqttChannel.removeQos2Msg(messageId)

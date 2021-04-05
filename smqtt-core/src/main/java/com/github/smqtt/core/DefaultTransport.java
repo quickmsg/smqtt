@@ -10,6 +10,7 @@ import reactor.core.publisher.Mono;
 import reactor.netty.DisposableChannel;
 import reactor.netty.DisposableServer;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,7 +26,7 @@ public class DefaultTransport implements Transport<MqttConfiguration> {
 
     private MqttConfiguration configuration;
 
-    private List<DisposableServer> disposableServers;
+    private List<DisposableServer> disposableServers = new ArrayList<>();
 
 
     @Getter
@@ -38,9 +39,7 @@ public class DefaultTransport implements Transport<MqttConfiguration> {
     }
 
     @Override
-    public Mono<Transport> start(MqttConfiguration mqttConfiguration) {
-        this.configuration = mqttConfiguration;
-
+    public Mono<Transport> start() {
         return Mono.deferContextual(contextView ->
                 receiver.bind())
                 .doOnNext(this::bindSever)

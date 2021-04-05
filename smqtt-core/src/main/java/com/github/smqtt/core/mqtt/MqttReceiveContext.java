@@ -1,10 +1,15 @@
 package com.github.smqtt.core.mqtt;
 
 import com.github.smqtt.common.channel.MqttChannel;
+import com.github.smqtt.common.enums.ChannelStatus;
 import com.github.smqtt.common.transport.Transport;
 import io.netty.handler.codec.mqtt.MqttMessage;
 import lombok.Getter;
 import reactor.core.Disposable;
+import reactor.core.publisher.Mono;
+import reactor.netty.Connection;
+
+import java.time.Duration;
 
 /**
  * @author luxurong
@@ -23,10 +28,11 @@ public class MqttReceiveContext extends AbstractReceiveContext<MqttConfiguration
 
     }
 
-
-    public void apply(MqttChannel mqttChannel, Disposable disposable) {
-        this.deferCloseDisposable = disposable;
+    // todo 消息持久化之后处理
+    public void apply(MqttChannel mqttChannel) {
+        deferCloseChannel(mqttChannel.getConnection());
         mqttChannel
+                .onClose(onDisposable(mqttChannel))
                 .getConnection()
                 .inbound()
                 .receiveObject()
@@ -38,6 +44,27 @@ public class MqttReceiveContext extends AbstractReceiveContext<MqttConfiguration
     @Override
     public void accept(MqttChannel mqttChannel, MqttMessage mqttMessage) {
         this.getProtocolAdaptor().chooseProtocol(mqttChannel, mqttMessage, this);
+    }
+
+    private MqttReceiveContext deferCloseChannel(Connection connection) {
+        this.deferCloseDisposable = Mono.fromRunnable(() -> {
+            if (!connection.isDisposed()) {
+                connection.disposeNow();
+            }
+        }).delaySubscription(Duration.ofSeconds(2)).subscribe();
+        return this;
+    }
+
+    private Disposable onDisposable(MqttChannel mqttChannel) {
+        return () -> {
+            if (mqttChannel.isSessionPersistent()) {
+                mqttChannel.setStatus(ChannelStatus.OFFLINE);
+            } else {
+                getTopicRegistry().clear(mqttChannel);
+                getChannelRegistry().close(mqttChannel);
+            }
+        };
+
     }
 
 

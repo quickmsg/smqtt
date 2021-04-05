@@ -1,6 +1,7 @@
 package com.github.smqtt.core;
 
 import com.github.smqtt.common.channel.MqttChannel;
+import com.github.smqtt.common.message.SubscribeChannelContext;
 import com.github.smqtt.common.topic.TopicRegistry;
 
 import java.util.List;
@@ -25,8 +26,18 @@ public class DefaultTopicRegistry implements TopicRegistry {
     }
 
     @Override
+    public void clear(List<String> topics, MqttChannel mqttChannel) {
+
+    }
+
+    @Override
     public Optional<List<MqttChannel>> getChannelListByTopic(String topicName) {
         return Optional.empty();
+    }
+
+    @Override
+    public void registryTopicConnection(List<SubscribeChannelContext> mqttTopicSubscriptions) {
+
     }
 
 }

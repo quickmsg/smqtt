@@ -5,6 +5,7 @@ import com.github.smqtt.common.context.ReceiveContext;
 import com.github.smqtt.common.message.MqttMessageBuilder;
 import com.github.smqtt.common.protocol.Protocol;
 import com.github.smqtt.common.topic.TopicRegistry;
+import io.netty.handler.codec.mqtt.MqttFixedHeader;
 import io.netty.handler.codec.mqtt.MqttMessageType;
 import io.netty.handler.codec.mqtt.MqttPublishMessage;
 import io.netty.handler.codec.mqtt.MqttPublishVariableHeader;
@@ -19,7 +20,7 @@ import java.util.stream.Collectors;
 /**
  * @author luxurong
  * @date 2021/3/29 14:05
- * @description client && server 处理
+ * @description client && server handler
  */
 public class PublishProtocol implements Protocol<MqttPublishMessage> {
 
@@ -36,26 +37,35 @@ public class PublishProtocol implements Protocol<MqttPublishMessage> {
                 return channelsOptional.map(channels -> Mono.when(
                         channels.stream()
                                 .map(channel -> {
-                                    return channel.write(message.retain(), false);
+                                    return channel.write(generateMqttPublishMessage(message, channel.generateMessageId()), false);
                                 })
                                 .collect(Collectors.toList())
                 )).orElse(Mono.empty());
             case AT_LEAST_ONCE:
                 return channelsOptional.map(channels -> Mono.when(
                         channels.stream()
-                                .map(channel -> {
-                                    return channel.write(message.retain(), true);
-                                })
+                                .map(channel -> channel
+                                        .write(generateMqttPublishMessage(message, channel.generateMessageId()), true))
                                 .collect(Collectors.toList())
                 )).orElse(Mono.empty()).then(mqttChannel.write(MqttMessageBuilder.buildPublishAck(variableHeader.packetId()
                 ), false));
             case EXACTLY_ONCE:
-                return mqttChannel.cacheQos2Msg(variableHeader.packetId(), message.retain())
-                        .then(mqttChannel.write(MqttMessageBuilder.buildPublishRec(variableHeader.packetId()
-                        ), true));
+                if (!mqttChannel.existQos2Msg(variableHeader.packetId())) {
+                    return mqttChannel
+                            .cacheQos2Msg(variableHeader.packetId(), generateMqttPublishMessage(message, mqttChannel.generateMessageId()))
+                            .then(mqttChannel.write(MqttMessageBuilder.buildPublishRec(variableHeader.packetId()), true));
+                }
             default:
                 return Mono.empty();
         }
+    }
+
+    private MqttPublishMessage generateMqttPublishMessage(MqttPublishMessage message, int messageId) {
+        MqttPublishVariableHeader mqttPublishVariableHeader = message.variableHeader();
+        MqttFixedHeader mqttFixedHeader = message.fixedHeader();
+        MqttPublishVariableHeader newHeader = new MqttPublishVariableHeader(mqttPublishVariableHeader.topicName(), messageId);
+        return new MqttPublishMessage(mqttFixedHeader, newHeader, message.payload().duplicate().retain());
+
     }
 
 

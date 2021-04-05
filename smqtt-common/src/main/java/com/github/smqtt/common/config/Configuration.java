@@ -1,5 +1,6 @@
 package com.github.smqtt.common.config;
 
+import com.github.smqtt.common.auth.BasicAuthentication;
 import com.github.smqtt.common.channel.ChannelRegistry;
 import com.github.smqtt.common.message.MessageRegistry;
 import com.github.smqtt.common.protocol.ProtocolAdaptor;
@@ -36,5 +37,7 @@ public interface Configuration {
 
     Class<ProtocolAdaptor> getProtocolAdaptor();
 
+
+    BasicAuthentication getBasicAuthentication();
 
 }

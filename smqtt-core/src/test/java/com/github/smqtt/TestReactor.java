@@ -1,6 +1,7 @@
 package com.github.smqtt;
 
 import org.junit.Test;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -63,7 +64,9 @@ public class TestReactor {
 
 
 
-         Disposable disposable= Mono.fromRunnable(() -> {throw new RuntimeException("123");})
+         Disposable disposable= Mono.fromRunnable(() -> {
+             System.out.println("hahah");
+         })
                     .delaySubscription(Duration.ofSeconds(1)).doOnError(throwable ->System.out.println("cuowu qu xiao le") ).doOnCancel(()->System.out.println("qu xiao le")).repeat().subscribe();
         Thread.sleep(10000);
 

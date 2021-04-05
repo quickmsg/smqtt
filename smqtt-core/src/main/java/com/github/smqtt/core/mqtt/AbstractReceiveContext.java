@@ -1,5 +1,6 @@
 package com.github.smqtt.core.mqtt;
 
+import com.github.smqtt.common.auth.BasicAuthentication;
 import com.github.smqtt.common.channel.ChannelRegistry;
 import com.github.smqtt.common.config.Configuration;
 import com.github.smqtt.common.context.ReceiveContext;
@@ -41,6 +42,8 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
 
     private final MessageRegistry messageRegistry;
 
+    private final BasicAuthentication basicAuthentication;
+
     public AbstractReceiveContext(T configuration, Transport<T> transport) {
         this.configuration = configuration;
         this.transport = transport;
@@ -49,12 +52,19 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
         this.topicRegistry = topicRegistry(configuration);
         this.loopResources = LoopResources.create("smqtt-cluster-io", configuration.getBossThreadSize(), configuration.getWorkThreadSize(), true);
         this.messageRegistry = messageRegistry(configuration);
+        this.basicAuthentication = basicAuthentication();
     }
 
     private MessageRegistry messageRegistry(T configuration) {
         return Optional.ofNullable(DynamicLoader
                 .findFirst(configuration.getMessageRegistry())
                 .orElse(MessageRegistry.INSTANCE)).orElse(new DefaultMessageRegistry());
+    }
+
+    private BasicAuthentication basicAuthentication() {
+        return Optional.ofNullable(configuration.getBasicAuthentication())
+                .orElse((u, p) -> true);
+
     }
 
     ;

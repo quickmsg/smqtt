@@ -15,6 +15,9 @@ import reactor.core.scheduler.Schedulers;
 import reactor.netty.tcp.TcpClient;
 
 import java.net.InetSocketAddress;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
 /**
@@ -33,25 +36,54 @@ public class ClientTest2 {
         MqttPublishMessage mqttPublishMessage =
                 MqttMessageBuilder.buildPub(false, MqttQoS.AT_MOST_ONCE, false, 1, "topic", Unpooled.wrappedBuffer("adsad".getBytes()));
         ByteBuf byteBuf = messageTransfer.apply(mqttPublishMessage).retain();
+        List<Disposable> disposables = new ArrayList<>();
         Disposable disposable = TcpClient.create()
                 .remoteAddress(() -> InetSocketAddress.createUnresolved("127.0.0.1", 8111))
                 .wiretap(true)
                 .doOnConnected(connection -> {
-                    ByteBuf byteBuf1 =byteBuf.duplicate().retain(2);
+                    int s = byteBuf.refCnt();
                     connection.outbound().send(Mono.just(byteBuf)).then().subscribe();
-                    Byte readByte =byteBuf1.getByte(0);
-                    System.out.println(readByte);
-                    byteBuf1.setByte(0, readByte | 0x08);//更新索引为0的字节
-                    System.out.println(byteBuf.getByte(0));
-                    System.out.println(byteBuf1.getByte(0));
-                    connection.outbound().send(Mono.just(byteBuf1 )).then().subscribe();
+                    int s2 = byteBuf.refCnt();
+                    byteBuf.retain(Integer.MAX_VALUE >> 2);
+                    connection
+                            .outbound()
+                            .send(Mono.just(byteBuf))
+                            .then()
+                            .doOnCancel(() -> byteBuf.release(byteBuf.refCnt()))
+                            .subscribeOn(Schedulers.single())
+                            .repeat()
+                            .doOnError(throwable -> {
+                                System.out.println(throwable.fillInStackTrace());
+                            })
+                            .subscribe();
+                    Disposable a =
+                            connection
+                                    .outbound()
+                                    .send(Mono.just(byteBuf))
+                                    .then()
+                                    .delaySubscription(Duration.ofSeconds(1))
+                                    .doOnCancel(() -> {
+                                        byteBuf.release(byteBuf.refCnt());
+                                        System.out.println("quxiaole");
+                                    })
+                                    .repeat()
+                                    .subscribeOn(Schedulers.single())
+                                    .subscribe();
 
-
+                    disposables.add(a);
                 })
                 .connect()
+                .doOnError(throwable -> {
+                    System.out.println(throwable.fillInStackTrace());
+                })
                 .block();
+        Thread.sleep(10000);
+        disposables.get(0).dispose();
+
         Thread.sleep(80000);
 
-        disposable.dispose();
+
+
+
     }
 }

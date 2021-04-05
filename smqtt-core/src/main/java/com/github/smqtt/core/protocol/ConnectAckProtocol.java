@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * @author luxurong
  * @date 2021/3/29 14:05
- * @description client 处理
+ * @description client handler
  */
 public class ConnectAckProtocol implements Protocol<MqttConnAckMessage> {
 
@@ -27,7 +27,7 @@ public class ConnectAckProtocol implements Protocol<MqttConnAckMessage> {
 
     @Override
     public Mono<Void> parseProtocol(MqttConnAckMessage message, MqttChannel mqttChannel, ContextView contextView) {
-        return null;
+        return mqttChannel.cancelRetry(-1);
     }
 
     @Override
