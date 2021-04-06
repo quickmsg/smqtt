@@ -3,6 +3,7 @@ package com.github.smqtt.core.mqtt;
 import com.github.smqtt.common.channel.MqttChannel;
 import com.github.smqtt.common.enums.ChannelStatus;
 import com.github.smqtt.common.transport.Transport;
+import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.mqtt.MqttMessage;
 import lombok.Getter;
 import reactor.core.Disposable;
@@ -10,6 +11,7 @@ import reactor.core.publisher.Mono;
 import reactor.netty.Connection;
 
 import java.time.Duration;
+import java.util.function.Function;
 
 /**
  * @author luxurong
@@ -37,9 +39,20 @@ public class MqttReceiveContext extends AbstractReceiveContext<MqttConfiguration
                 .inbound()
                 .receiveObject()
                 .cast(MqttMessage.class)
+                .map(this.retainMessage())
                 .subscribe(mqttMessage -> this.accept(mqttChannel, mqttMessage));
 
     }
+
+    private Function<MqttMessage, MqttMessage> retainMessage() {
+        return mqttMessage -> {
+            if (mqttMessage.payload() instanceof ByteBuf) {
+                ((ByteBuf) mqttMessage.payload()).retain();
+            }
+            return mqttMessage;
+        };
+    }
+
 
     @Override
     public void accept(MqttChannel mqttChannel, MqttMessage mqttMessage) {
@@ -49,7 +62,7 @@ public class MqttReceiveContext extends AbstractReceiveContext<MqttConfiguration
     private MqttReceiveContext deferCloseChannel(Connection connection) {
         this.deferCloseDisposable = Mono.fromRunnable(() -> {
             if (!connection.isDisposed()) {
-                connection.disposeNow();
+                connection.dispose();
             }
         }).delaySubscription(Duration.ofSeconds(2)).subscribe();
         return this;

@@ -4,12 +4,10 @@ import com.github.smqtt.common.channel.MqttChannel;
 import com.github.smqtt.common.message.SubscribeChannelContext;
 import com.github.smqtt.common.topic.TopicRegistry;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.stream.Collectors;
 
 /**
  * @author luxurong
@@ -23,8 +21,19 @@ public class DefaultTopicRegistry implements TopicRegistry {
 
     @Override
     public void registryTopicConnection(String topic, MqttChannel mqttChannel) {
-        CopyOnWriteArraySet<MqttChannel> channels = topicChannels.computeIfAbsent(topic, t -> new CopyOnWriteArraySet<>());
+        CopyOnWriteArraySet<MqttChannel> channels = topicChannels.computeIfAbsent(regex(topic), t -> new CopyOnWriteArraySet<>());
         channels.add(mqttChannel);
+        mqttChannel.getTopics().add(topic);
+    }
+
+    private static String regex(String topic) {
+        if (topic.startsWith("$")) {
+            topic = "\\" + topic;
+        }
+        return topic
+                .replaceAll("/", "\\\\/")
+                .replaceAll("\\+", "[^/]+")
+                .replaceAll("#", "(.+)") + "$";
     }
 
     @Override
@@ -42,7 +51,19 @@ public class DefaultTopicRegistry implements TopicRegistry {
 
     @Override
     public Optional<Set<MqttChannel>> getChannelListByTopic(String topicName) {
-        return Optional.ofNullable(topicChannels.get(topicName));
+        Set<String> matchKey = new HashSet<>();
+        for (String topic : topicChannels.keySet()) {
+            if (topicName.equals(topic) || topicName.matches(topic)) {
+                matchKey.add(topic);
+            }
+        }
+        if (matchKey.size() > 0) {
+            return Optional.of(matchKey.stream().flatMap(key -> topicChannels.get(key).stream()).collect(Collectors.toSet()));
+        } else {
+            return Optional.empty();
+        }
+
+
     }
 
     @Override
@@ -53,5 +74,6 @@ public class DefaultTopicRegistry implements TopicRegistry {
         }
 
     }
+
 
 }

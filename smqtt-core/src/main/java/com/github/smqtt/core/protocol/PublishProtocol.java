@@ -65,7 +65,7 @@ public class PublishProtocol implements Protocol<MqttPublishMessage> {
         MqttPublishVariableHeader mqttPublishVariableHeader = message.variableHeader();
         MqttFixedHeader mqttFixedHeader = message.fixedHeader();
         MqttPublishVariableHeader newHeader = new MqttPublishVariableHeader(mqttPublishVariableHeader.topicName(), messageId);
-        return new MqttPublishMessage(mqttFixedHeader, newHeader, message.payload().duplicate().retain());
+        return new MqttPublishMessage(mqttFixedHeader, newHeader, message.payload().retain());
 
     }
 

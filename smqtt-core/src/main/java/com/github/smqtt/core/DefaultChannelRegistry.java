@@ -2,9 +2,9 @@ package com.github.smqtt.core;
 
 import com.github.smqtt.common.channel.ChannelRegistry;
 import com.github.smqtt.common.channel.MqttChannel;
-import io.netty.channel.group.ChannelGroup;
-import io.netty.channel.group.DefaultChannelGroup;
-import io.netty.util.concurrent.DefaultEventExecutor;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author luxurong
@@ -14,22 +14,20 @@ import io.netty.util.concurrent.DefaultEventExecutor;
 public class DefaultChannelRegistry implements ChannelRegistry {
 
 
-
-    private ChannelGroup group = new DefaultChannelGroup(new DefaultEventExecutor());
-
+    private Map<String, MqttChannel> channelMap = new ConcurrentHashMap<>();
 
     @Override
     public void close(MqttChannel mqttChannel) {
-
+        channelMap.remove(mqttChannel.getClientIdentifier());
     }
 
     @Override
     public void registry(String clientIdentifier, MqttChannel mqttChannel) {
-
+        channelMap.put(clientIdentifier, mqttChannel);
     }
 
     @Override
     public boolean exists(String clientIdentifier) {
-        return false;
+        return channelMap.containsKey(clientIdentifier);
     }
 }

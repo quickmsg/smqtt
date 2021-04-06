@@ -9,6 +9,7 @@ import com.github.smqtt.common.spi.DynamicLoader;
 import io.netty.handler.codec.mqtt.MqttMessage;
 import io.netty.handler.codec.mqtt.MqttMessageType;
 import lombok.extern.slf4j.Slf4j;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +25,7 @@ public class DefaultProtocolAdaptor implements ProtocolAdaptor {
 
     private Map<MqttMessageType, Protocol<MqttMessage>> types = new HashMap<>();
 
+    @SuppressWarnings("unchecked")
     public DefaultProtocolAdaptor() {
         DynamicLoader.findAll(Protocol.class)
                 .forEach(protocol ->
@@ -39,8 +41,10 @@ public class DefaultProtocolAdaptor implements ProtocolAdaptor {
         Optional.ofNullable(types.get(mqttMessage.fixedHeader().messageType()))
                 .ifPresent(protocol -> protocol.doParseProtocol(mqttMessage, mqttChannel)
                         .contextWrite(context -> context.putNonNull(ReceiveContext.class, receiveContext))
+                        .subscribeOn(Schedulers.parallel())
                         .subscribe());
     }
+
 
 
 }

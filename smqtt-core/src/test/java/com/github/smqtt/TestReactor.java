@@ -77,7 +77,7 @@ public class TestReactor {
 
     @Test
     public  void njj(){
-        Mono.fromRunnable(()->System.out.println("asdds")).then(Mono.empty())
+        Mono.fromRunnable(()->System.out.println("asdds")).then(Mono.fromRunnable(()->System.out.println("jjjjjj")))
                 .subscribe();
 
     }

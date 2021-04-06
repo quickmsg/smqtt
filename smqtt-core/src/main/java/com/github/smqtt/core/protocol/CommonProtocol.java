@@ -5,6 +5,7 @@ import com.github.smqtt.common.message.MqttMessageBuilder;
 import com.github.smqtt.common.protocol.Protocol;
 import io.netty.handler.codec.mqtt.MqttMessage;
 import io.netty.handler.codec.mqtt.MqttMessageType;
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 import reactor.util.context.ContextView;
 
@@ -16,6 +17,7 @@ import java.util.List;
  * @date 2021/4/1 20:08
  * @description client && server handler
  */
+@Slf4j
 public class CommonProtocol implements Protocol<MqttMessage> {
 
 
@@ -30,6 +32,7 @@ public class CommonProtocol implements Protocol<MqttMessage> {
 
     @Override
     public Mono<Void> parseProtocol(MqttMessage message, MqttChannel mqttChannel, ContextView contextView) {
+        log.info("channel {} message {}", mqttChannel, message);
         switch (message.fixedHeader().messageType()) {
             case PINGREQ:
                 return mqttChannel.write(MqttMessageBuilder.buildPongMessage(), false);

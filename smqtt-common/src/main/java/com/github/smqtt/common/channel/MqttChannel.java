@@ -7,17 +7,18 @@ import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.handler.codec.mqtt.*;
 import lombok.Builder;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
 import reactor.netty.Connection;
 import reactor.netty.ReactorNetty;
 
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
@@ -28,6 +29,7 @@ import java.util.function.Function;
  */
 @Builder
 @Data
+@Slf4j
 public class MqttChannel {
 
     private Connection connection;
@@ -60,7 +62,7 @@ public class MqttChannel {
         this.atomicInteger = new AtomicInteger(0);
         this.mqttMessageSink = new MqttMessageSink();
         this.qos2MsgCache = new ConcurrentHashMap<>();
-        this.topics = new ArrayList<>();
+        this.topics = new CopyOnWriteArrayList<>();
         return this;
     }
 
@@ -176,8 +178,7 @@ public class MqttChannel {
                 Increase the reference count of bytebuf, and the reference count of retrybytebuf is 2
                 mqttChannel.write() method releases a reference count.
                  */
-                byteBuf.retain(Integer.MAX_VALUE >> 1);
-                return mqttChannel.write(Mono.just(byteBuf)).then(offerReply(setIsDup(byteBuf), mqttChannel, getMessageId(mqttMessage)));
+                return mqttChannel.write(Mono.just(byteBuf)).then(offerReply(setIsDup(byteBuf.copy().retain(Integer.MAX_VALUE >> 2)), mqttChannel, getMessageId(mqttMessage)));
             } else {
                 return mqttChannel.write(Mono.just(byteBuf));
             }
@@ -229,6 +230,7 @@ public class MqttChannel {
         }
 
         private void releaseByteBufCount(ByteBuf byteBuf) {
+            log.info("byteBuf release {}", byteBuf.refCnt());
             byteBuf.release(byteBuf.refCnt());
         }
 
