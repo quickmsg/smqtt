@@ -53,7 +53,7 @@ public class DefaultTopicRegistry implements TopicRegistry {
     public Optional<Set<MqttChannel>> getChannelListByTopic(String topicName) {
         Set<String> matchKey = new HashSet<>();
         for (String topic : topicChannels.keySet()) {
-            if (topicName.equals(topic) || topicName.matches(topic)) {
+            if (topicName.matches(topic)) {
                 matchKey.add(topic);
             }
         }
