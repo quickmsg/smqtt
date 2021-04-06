@@ -15,6 +15,7 @@ import reactor.util.context.ContextView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -31,7 +32,7 @@ public class PublishProtocol implements Protocol<MqttPublishMessage> {
         ReceiveContext<?> receiveContext = contextView.get(ReceiveContext.class);
         TopicRegistry topicRegistry = receiveContext.getTopicRegistry();
         MqttPublishVariableHeader variableHeader = message.variableHeader();
-        Optional<List<MqttChannel>> channelsOptional = topicRegistry.getChannelListByTopic(variableHeader.topicName());
+        Optional<Set<MqttChannel>> channelsOptional = topicRegistry.getChannelListByTopic(variableHeader.topicName());
         switch (message.fixedHeader().qosLevel()) {
             case AT_MOST_ONCE:
                 return channelsOptional.map(channels -> Mono.when(

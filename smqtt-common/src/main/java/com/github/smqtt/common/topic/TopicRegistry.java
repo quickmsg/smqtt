@@ -6,6 +6,7 @@ import com.github.smqtt.common.spi.DynamicLoader;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * @author luxurong
@@ -51,7 +52,7 @@ public interface TopicRegistry {
      * @param topicName topic name
      * @return list
      */
-    Optional<List<MqttChannel>> getChannelListByTopic(String topicName);
+    Optional<Set<MqttChannel>> getChannelListByTopic(String topicName);
 
 
     /**

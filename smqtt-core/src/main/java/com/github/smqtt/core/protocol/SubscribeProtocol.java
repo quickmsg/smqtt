@@ -28,6 +28,7 @@ public class SubscribeProtocol implements Protocol<MqttSubscribeMessage> {
     @Override
     public Mono<Void> parseProtocol(MqttSubscribeMessage message, MqttChannel mqttChannel, ContextView contextView) {
         return Mono.fromRunnable(() -> {
+            System.out.println("&&&&&&&&&&&&&&&&订阅了");
             ReceiveContext<?> receiveContext = contextView.get(ReceiveContext.class);
             TopicRegistry topicRegistry = receiveContext.getTopicRegistry();
             List<SubscribeChannelContext> mqttTopicSubscriptions =

@@ -15,6 +15,7 @@ import reactor.util.context.ContextView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -50,7 +51,7 @@ public class PublishAckProtocol implements Protocol<MqttPubAckMessage> {
                         .map(msg -> {
                             ReceiveContext<?> receiveContext = contextView.get(ReceiveContext.class);
                             TopicRegistry topicRegistry = receiveContext.getTopicRegistry();
-                            Optional<List<MqttChannel>> channelsOptional = topicRegistry.getChannelListByTopic(msg.variableHeader().topicName());
+                            Optional<Set<MqttChannel>> channelsOptional = topicRegistry.getChannelListByTopic(msg.variableHeader().topicName());
                             return channelsOptional.map(channels -> Mono.when(
                                     channels.stream()
                                             .map(channel -> {
