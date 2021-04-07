@@ -21,4 +21,6 @@ public enum ChannelStatus {
      * 离线
      */
     OFFLINE,
+
+
 }

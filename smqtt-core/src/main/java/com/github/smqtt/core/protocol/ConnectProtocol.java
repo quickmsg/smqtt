@@ -5,6 +5,7 @@ import com.github.smqtt.common.channel.ChannelRegistry;
 import com.github.smqtt.common.channel.MqttChannel;
 import com.github.smqtt.common.context.ReceiveContext;
 import com.github.smqtt.common.enums.ChannelStatus;
+import com.github.smqtt.common.message.MessageRegistry;
 import com.github.smqtt.common.message.MqttMessageBuilder;
 import com.github.smqtt.common.protocol.Protocol;
 import com.github.smqtt.common.topic.TopicRegistry;
@@ -13,6 +14,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.mqtt.*;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 import reactor.util.context.ContextView;
 
 import java.util.ArrayList;
@@ -71,6 +73,7 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
             mqttChannel.setSessionPersistent(mqttConnectVariableHeader.isCleanSession());
             mqttChannel.setStatus(ChannelStatus.ONLINE);
             /*registry unread event close channel */
+
             mqttChannel.getConnection()
                     .onReadIdle(mqttConnectVariableHeader.keepAliveTimeSeconds() << 1,
                             () -> {
@@ -89,7 +92,6 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
                                                             MqttMessageBuilder
                                                                     .buildPub(false,
                                                                             will.getMqttQoS(),
-                                                                            will.isRetain(),
                                                                             will.getMqttQoS() == MqttQoS.AT_MOST_ONCE
                                                                                     ? 0 : mqttChannel1.generateMessageId(),
                                                                             will.getWillTopic(),
@@ -98,6 +100,10 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
                                                     ).subscribe();
                                                 }));
                                     }));
+            Optional.ofNullable(channelRegistry.get(clientIdentifier))
+                    .ifPresent(sessionChannel -> {
+                        doSession(sessionChannel, mqttChannel, channelRegistry, topicRegistry, mqttReceiveContext.getMessageRegistry());
+                    });
             return mqttChannel.write(MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_ACCEPTED), false);
 
         } else {
@@ -107,10 +113,34 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
         }
     }
 
+    private void doSession(MqttChannel sessionChannel,
+                           MqttChannel mqttChannel,
+                           ChannelRegistry channelRegistry,
+                           TopicRegistry topicRegistry,
+                           MessageRegistry messageRegistry) {
+        List<String> topics = sessionChannel.getTopics();
+        mqttChannel.setTopics(topics);
+        topicRegistry.clear(sessionChannel);
+        topics.forEach(topic -> topicRegistry.registryTopicConnection(topic, mqttChannel));
+        channelRegistry.close(sessionChannel);
+        messageRegistry.getSessionMessages(mqttChannel.getClientIdentifier())
+                .ifPresent(mqttPublishMessages ->
+                        mqttPublishMessages.forEach(publishMessage -> {
+                            mqttChannel
+                                    .write(publishMessage,
+                                            publishMessage.fixedHeader().qosLevel().value() > 0)
+                                    .subscribeOn(Schedulers.single())
+                                    .subscribe();
+                        }));
+    }
+
+
     @Override
     public List<MqttMessageType> getMqttMessageTypes() {
         return MESSAGE_TYPE_LIST;
     }
+
+
 
 
 }

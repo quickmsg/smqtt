@@ -2,6 +2,7 @@ package com.github.smqtt.core.protocol;
 
 import com.github.smqtt.common.channel.MqttChannel;
 import com.github.smqtt.common.context.ReceiveContext;
+import com.github.smqtt.common.message.MessageRegistry;
 import com.github.smqtt.common.message.MqttMessageBuilder;
 import com.github.smqtt.common.message.SubscribeChannelContext;
 import com.github.smqtt.common.protocol.Protocol;
@@ -28,12 +29,13 @@ public class SubscribeProtocol implements Protocol<MqttSubscribeMessage> {
     @Override
     public Mono<Void> parseProtocol(MqttSubscribeMessage message, MqttChannel mqttChannel, ContextView contextView) {
         return Mono.fromRunnable(() -> {
-            System.out.println("&&&&&&&&&&&&&&&&订阅了");
             ReceiveContext<?> receiveContext = contextView.get(ReceiveContext.class);
             TopicRegistry topicRegistry = receiveContext.getTopicRegistry();
+            MessageRegistry messageRegistry = receiveContext.getMessageRegistry();
             List<SubscribeChannelContext> mqttTopicSubscriptions =
                     message.payload().topicSubscriptions()
                             .stream()
+                            .peek(mqttTopicSubscription -> this.loadRetainMessage(messageRegistry, mqttChannel, mqttTopicSubscription.topicName()))
                             .map(mqttTopicSubscription ->
                                     SubscribeChannelContext.builder()
                                             .mqttChannel(mqttChannel)
@@ -52,6 +54,17 @@ public class SubscribeProtocol implements Protocol<MqttSubscribeMessage> {
                                                 .value())
                                 .collect(Collectors.toList())),
                 false));
+    }
+
+    private void loadRetainMessage(MessageRegistry messageRegistry, MqttChannel mqttChannel, String topicName) {
+        messageRegistry.getRetainMessage(topicName, mqttChannel)
+                .ifPresent(messages ->
+                        Mono.when(messages.stream()
+                                .map(message ->
+                                        mqttChannel.write(message, message.fixedHeader().qosLevel().value() > 0))
+                                .collect(Collectors.toList())
+                        ).subscribe()
+                );
     }
 
     @Override

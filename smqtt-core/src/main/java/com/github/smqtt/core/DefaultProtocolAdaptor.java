@@ -6,6 +6,7 @@ import com.github.smqtt.common.context.ReceiveContext;
 import com.github.smqtt.common.protocol.Protocol;
 import com.github.smqtt.common.protocol.ProtocolAdaptor;
 import com.github.smqtt.common.spi.DynamicLoader;
+import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.mqtt.MqttMessage;
 import io.netty.handler.codec.mqtt.MqttMessageType;
 import lombok.extern.slf4j.Slf4j;
@@ -42,9 +43,22 @@ public class DefaultProtocolAdaptor implements ProtocolAdaptor {
                 .ifPresent(protocol -> protocol.doParseProtocol(mqttMessage, mqttChannel)
                         .contextWrite(context -> context.putNonNull(ReceiveContext.class, receiveContext))
                         .subscribeOn(Schedulers.parallel())
+                        .doOnError(error -> releaseMessage(mqttMessage))
+                        .doOnSuccess(success -> releaseMessage(mqttMessage))
                         .subscribe());
     }
 
+    private void releaseMessage(MqttMessage mqttMessage) {
+        if (mqttMessage.payload() instanceof ByteBuf) {
+            // safe release byteBuf
+            ByteBuf byteBuf = ((ByteBuf) mqttMessage.payload());
+            int count = byteBuf.refCnt();
+            if (count > 0) {
+                byteBuf.release(count);
+                log.info("netty success release byteBuf {} count {} ", byteBuf, count);
+            }
+        }
+    }
 
 
 }

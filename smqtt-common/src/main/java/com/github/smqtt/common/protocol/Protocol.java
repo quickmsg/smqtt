@@ -16,7 +16,7 @@ public interface Protocol<T> {
 
 
     /**
-     * 解析协议
+     * 解析协议添加上下文
      *
      * @param message     消息类型
      * @param mqttChannel
@@ -27,7 +27,16 @@ public interface Protocol<T> {
     }
 
 
+    /**
+     * 处理协议
+     *
+     * @param message     消息
+     * @param mqttChannel 通道
+     * @param contextView 上下文视图
+     * @return Mono
+     */
     Mono<Void> parseProtocol(T message, MqttChannel mqttChannel, ContextView contextView);
+
 
     /**
      * 获取此协议支持的消息类型

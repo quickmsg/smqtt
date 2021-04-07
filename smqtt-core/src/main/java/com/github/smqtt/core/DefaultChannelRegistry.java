@@ -2,6 +2,7 @@ package com.github.smqtt.core;
 
 import com.github.smqtt.common.channel.ChannelRegistry;
 import com.github.smqtt.common.channel.MqttChannel;
+import com.github.smqtt.common.enums.ChannelStatus;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,8 +18,10 @@ public class DefaultChannelRegistry implements ChannelRegistry {
     private Map<String, MqttChannel> channelMap = new ConcurrentHashMap<>();
 
     @Override
-    public void close(MqttChannel mqttChannel) {
+    public void
+    close(MqttChannel mqttChannel) {
         channelMap.remove(mqttChannel.getClientIdentifier());
+        mqttChannel.close().subscribe();
     }
 
     @Override
@@ -28,6 +31,11 @@ public class DefaultChannelRegistry implements ChannelRegistry {
 
     @Override
     public boolean exists(String clientIdentifier) {
-        return channelMap.containsKey(clientIdentifier);
+        return channelMap.containsKey(clientIdentifier)  && channelMap.get(clientIdentifier).getStatus() == ChannelStatus.ONLINE;
+    }
+
+    @Override
+    public MqttChannel get(String clientIdentifier) {
+        return channelMap.get(clientIdentifier);
     }
 }

@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
 import reactor.netty.Connection;
-import reactor.netty.ReactorNetty;
 
 import java.time.Duration;
 import java.util.List;
@@ -57,12 +56,15 @@ public class MqttChannel {
 
     private Map<Integer, MqttPublishMessage> qos2MsgCache;
 
+    private Map<Integer, Disposable> replyMqttMessageMap;
+
 
     public MqttChannel initChannel() {
         this.atomicInteger = new AtomicInteger(0);
         this.mqttMessageSink = new MqttMessageSink();
         this.qos2MsgCache = new ConcurrentHashMap<>();
         this.topics = new CopyOnWriteArrayList<>();
+        this.replyMqttMessageMap = new ConcurrentHashMap<>();
         return this;
     }
 
@@ -80,13 +82,23 @@ public class MqttChannel {
     }
 
     public Mono<Void> close() {
-        return Mono.fromRunnable(() -> this.connection.disposeNow());
+        return Mono.fromRunnable(() -> {
+            this.clear();
+            this.qos2MsgCache.clear();
+            this.topics = null;
+            this.connection.dispose();
+        });
     }
 
 
     public MqttChannel onClose(Disposable disposable) {
         this.connection.onDispose(disposable);
         return this;
+    }
+
+
+    public boolean active() {
+        return status == ChannelStatus.ONLINE;
     }
 
     public int generateMessageId() {
@@ -129,7 +141,7 @@ public class MqttChannel {
      * @return boolean状态
      */
     public Mono<Void> write(MqttMessage mqttMessage, boolean retry) {
-        return MqttMessageSink.MQTT_SINK.sendMessage(mqttMessage, this, retry);
+        return MqttMessageSink.MQTT_SINK.sendMessage(mqttMessage, this, retry, replyMqttMessageMap);
     }
 
 
@@ -140,7 +152,19 @@ public class MqttChannel {
      * @return boolean状态
      */
     public Mono<Void> cancelRetry(Integer messageId) {
-        return Mono.fromRunnable(() -> MqttMessageSink.MQTT_SINK.removeReply(messageId));
+        return Mono.fromRunnable(() -> this.removeReply(messageId));
+    }
+
+    /**
+     * remove resend action
+     *
+     * @param messageId messageId
+     * @return void
+     */
+    private void removeReply(Integer messageId) {
+        Optional.ofNullable(replyMqttMessageMap.get(messageId))
+                .ifPresent(Disposable::dispose);
+        replyMqttMessageMap.remove(messageId);
     }
 
 
@@ -152,6 +176,12 @@ public class MqttChannel {
      */
     private Mono<Void> write(Mono<ByteBuf> buf) {
         return connection.outbound().send(buf).then();
+    }
+
+
+    private void clear() {
+        replyMqttMessageMap.values().forEach(Disposable::dispose);
+        replyMqttMessageMap.clear();
     }
 
     /**
@@ -166,19 +196,15 @@ public class MqttChannel {
 
         private Function<MqttMessage, ByteBuf> messageTransfer = msg -> MqttEncoder.doEncode(PooledByteBufAllocator.DEFAULT, msg);
 
-        private Map<Integer, Disposable> replyMqttMessageMap = new ConcurrentHashMap<>();
 
-
-        public Mono<Void> sendMessage(MqttMessage mqttMessage, MqttChannel mqttChannel, boolean retry) {
+        public Mono<Void> sendMessage(MqttMessage mqttMessage, MqttChannel mqttChannel, boolean retry, Map<Integer, Disposable> replyMqttMessageMap) {
             ByteBuf byteBuf = messageTransfer.apply(mqttMessage);
-            // safe release byteBuf
-            ReactorNetty.safeRelease(mqttMessage.payload());
             if (retry) {
                 /*
                 Increase the reference count of bytebuf, and the reference count of retrybytebuf is 2
                 mqttChannel.write() method releases a reference count.
                  */
-                return mqttChannel.write(Mono.just(byteBuf)).then(offerReply(setIsDup(byteBuf.copy().retain(Integer.MAX_VALUE >> 2)), mqttChannel, getMessageId(mqttMessage)));
+                return mqttChannel.write(Mono.just(byteBuf)).then(offerReply(setIsDup(byteBuf.copy().retain(Integer.MAX_VALUE >> 2)), mqttChannel, getMessageId(mqttMessage), replyMqttMessageMap));
             } else {
                 return mqttChannel.write(Mono.just(byteBuf));
             }
@@ -212,12 +238,13 @@ public class MqttChannel {
         /**
          * Set resend action
          *
-         * @param byteBuf     mqttMessage
-         * @param mqttChannel connection
-         * @param messageId   messageId
+         * @param byteBuf             mqttMessage
+         * @param mqttChannel         connection
+         * @param messageId           messageId
+         * @param replyMqttMessageMap
          * @return Mono
          */
-        public Mono<Void> offerReply(ByteBuf byteBuf, final MqttChannel mqttChannel, final int messageId) {
+        public Mono<Void> offerReply(ByteBuf byteBuf, final MqttChannel mqttChannel, final int messageId, Map<Integer, Disposable> replyMqttMessageMap) {
             return Mono.fromRunnable(() ->
                     replyMqttMessageMap.put(messageId,
                             mqttChannel.write(Mono.just(byteBuf))
@@ -226,26 +253,17 @@ public class MqttChannel {
                                     .doOnError(error -> releaseByteBufCount(byteBuf))
                                     .doOnCancel(() -> releaseByteBufCount(byteBuf))
                                     .subscribe()));
-
         }
 
         private void releaseByteBufCount(ByteBuf byteBuf) {
-            log.info("byteBuf release {}", byteBuf.refCnt());
-            byteBuf.release(byteBuf.refCnt());
+            if (byteBuf.refCnt() > 0) {
+                int count = byteBuf.refCnt();
+                byteBuf.release(count);
+                log.info("netty success release reply byteBuf {} count {} ", byteBuf, count);
+            }
         }
 
 
-        /**
-         * remove resend action
-         *
-         * @param messageId messageId
-         * @return void
-         */
-        public void removeReply(Integer messageId) {
-            Optional.ofNullable(replyMqttMessageMap.get(messageId))
-                    .ifPresent(Disposable::dispose);
-            replyMqttMessageMap.remove(messageId);
-        }
     }
 
 

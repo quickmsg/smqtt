@@ -3,6 +3,7 @@ package com.github.smqtt.core;
 import com.github.smqtt.common.channel.MqttChannel;
 import com.github.smqtt.common.message.SubscribeChannelContext;
 import com.github.smqtt.common.topic.TopicRegistry;
+import com.github.smqtt.common.utils.TopicRegexUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,20 +22,11 @@ public class DefaultTopicRegistry implements TopicRegistry {
 
     @Override
     public void registryTopicConnection(String topic, MqttChannel mqttChannel) {
-        CopyOnWriteArraySet<MqttChannel> channels = topicChannels.computeIfAbsent(regex(topic), t -> new CopyOnWriteArraySet<>());
+        CopyOnWriteArraySet<MqttChannel> channels = topicChannels.computeIfAbsent(TopicRegexUtils.regexTopic(topic), t -> new CopyOnWriteArraySet<>());
         channels.add(mqttChannel);
         mqttChannel.getTopics().add(topic);
     }
 
-    private static String regex(String topic) {
-        if (topic.startsWith("$")) {
-            topic = "\\" + topic;
-        }
-        return topic
-                .replaceAll("/", "\\\\/")
-                .replaceAll("\\+", "[^/]+")
-                .replaceAll("#", "(.+)") + "$";
-    }
 
     @Override
     public void clear(MqttChannel mqttChannel) {
@@ -45,7 +37,7 @@ public class DefaultTopicRegistry implements TopicRegistry {
     @Override
     public void clear(List<String> topics, MqttChannel mqttChannel) {
         for (String topic : topics) {
-            topicChannels.get(topic).remove(mqttChannel);
+            topicChannels.get(TopicRegexUtils.regexTopic(topic)).remove(mqttChannel);
         }
     }
 

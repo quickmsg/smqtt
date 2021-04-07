@@ -19,6 +19,9 @@ public interface ChannelRegistry {
     boolean exists(String clientIdentifier);
 
 
+    MqttChannel get(String clientIdentifier);
+
+
 
 
 

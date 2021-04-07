@@ -32,7 +32,7 @@ public class ClientTest2 {
 
 
         MqttPublishMessage mqttPublishMessage =
-                MqttMessageBuilder.buildPub(false, MqttQoS.AT_MOST_ONCE, false, 1, "topic", Unpooled.wrappedBuffer("adsad".getBytes()));
+                MqttMessageBuilder.buildPub(false, MqttQoS.AT_MOST_ONCE, 1, "topic", Unpooled.wrappedBuffer("adsad".getBytes()));
         ByteBuf byteBuf = messageTransfer.apply(mqttPublishMessage);
         List<Disposable> disposables = new ArrayList<>();
         Disposable disposable = TcpClient.create()

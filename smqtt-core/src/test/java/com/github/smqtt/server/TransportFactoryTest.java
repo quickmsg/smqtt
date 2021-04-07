@@ -1,5 +1,6 @@
 package com.github.smqtt.server;
 
+import com.github.smqtt.core.minitor.DirectUsedMonitor;
 import com.github.smqtt.core.mqtt.MqttConfiguration;
 import com.github.smqtt.core.mqtt.MqttTransportFactory;
 import org.junit.Test;
@@ -16,15 +17,16 @@ public class TransportFactoryTest {
 
     @Test
     public void testTransport() throws InterruptedException {
+        DirectUsedMonitor directUsedMonitor = new DirectUsedMonitor();
         CountDownLatch countDownLatch = new CountDownLatch(1);
-        MqttConfiguration mqttConfiguration =new MqttConfiguration();
+        MqttConfiguration mqttConfiguration = new MqttConfiguration();
         mqttConfiguration.setPort(8999);
         MqttTransportFactory mqttTransportFactory = new MqttTransportFactory();
         mqttTransportFactory.createTransport(mqttConfiguration)
                 .start()
                 .doOnError(Throwable::printStackTrace)
                 .block();
-        countDownLatch.await();
+        directUsedMonitor.startMonitor();
     }
 
 }
