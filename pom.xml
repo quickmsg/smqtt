@@ -10,6 +10,7 @@
     <modules>
         <module>smqtt-common</module>
         <module>smqtt-core</module>
+        <module>smqtt-cluster</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -61,14 +62,14 @@
                 <version>1.7.25</version>
             </dependency>
             <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-core</artifactId>
-                <version>1.1.11</version>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-slf4j-impl</artifactId>
+                <version>2.13.2</version>
             </dependency>
             <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-classic</artifactId>
-                <version>1.1.11</version>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-core</artifactId>
+                <version>2.13.2</version>
             </dependency>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>

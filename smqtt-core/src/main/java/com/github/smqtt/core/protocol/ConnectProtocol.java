@@ -31,6 +31,8 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
 
     private static List<MqttMessageType> MESSAGE_TYPE_LIST = new ArrayList<>();
 
+    private static final int MILLI_SECOND_PERIOD = 1_000;
+
 
     static {
         MESSAGE_TYPE_LIST.add(MqttMessageType.CONNECT);
@@ -70,12 +72,12 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
             }
             mqttChannel.setAuthTime(System.currentTimeMillis());
             mqttChannel.setKeepalive(mqttConnectVariableHeader.keepAliveTimeSeconds());
-            mqttChannel.setSessionPersistent(mqttConnectVariableHeader.isCleanSession());
+            mqttChannel.setSessionPersistent(!mqttConnectVariableHeader.isCleanSession());
             mqttChannel.setStatus(ChannelStatus.ONLINE);
             /*registry unread event close channel */
 
             mqttChannel.getConnection()
-                    .onReadIdle(mqttConnectVariableHeader.keepAliveTimeSeconds() << 1,
+                    .onReadIdle(mqttConnectVariableHeader.keepAliveTimeSeconds() * MILLI_SECOND_PERIOD << 1,
                             () -> {
                                 channelRegistry.close(mqttChannel);
                                 topicRegistry.clear(mqttChannel);
@@ -139,8 +141,6 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
     public List<MqttMessageType> getMqttMessageTypes() {
         return MESSAGE_TYPE_LIST;
     }
-
-
 
 
 }

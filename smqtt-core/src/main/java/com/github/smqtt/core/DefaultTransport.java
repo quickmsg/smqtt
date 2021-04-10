@@ -49,14 +49,16 @@ public class DefaultTransport implements Transport<MqttConfiguration> {
     }
 
 
-
     @Override
     public ReceiveContext<MqttConfiguration> buildReceiveContext(MqttConfiguration mqttConfiguration) {
         return Optional.ofNullable(receiveContext)
                 .orElse((this.receiveContext = new MqttReceiveContext(mqttConfiguration, this)));
     }
 
-
+    @Override
+    public Transport<MqttConfiguration> copy() {
+        return null;
+    }
 
 
     private void bindSever(DisposableServer disposableServer) {

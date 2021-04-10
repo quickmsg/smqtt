@@ -11,6 +11,7 @@ import io.netty.handler.codec.mqtt.MqttMessage;
 import io.netty.handler.codec.mqtt.MqttMessageType;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.scheduler.Schedulers;
+import reactor.netty.ReactorNetty;
 
 import java.util.HashMap;
 import java.util.Map;

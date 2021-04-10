@@ -1,10 +1,15 @@
 package com.github.smqtt.common.protocol;
 
+import com.github.smqtt.common.Interceptor.MessageInterceptor;
 import com.github.smqtt.common.channel.MqttChannel;
 import com.github.smqtt.common.config.Configuration;
 import com.github.smqtt.common.context.ReceiveContext;
 import com.github.smqtt.common.spi.DynamicLoader;
 import io.netty.handler.codec.mqtt.MqttMessage;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 /**
  * @author luxurong
@@ -25,6 +30,35 @@ public interface ProtocolAdaptor {
      * @return void
      */
     <C extends Configuration> void chooseProtocol(MqttChannel mqttChannel, MqttMessage mqttMessage, ReceiveContext<C> receiveContext);
+
+
+    /**
+     * 代理类  用来注入 filter monitor
+     *
+     * @return ProtocolAdaptor
+     */
+    default ProtocolAdaptor proxy() {
+        return (ProtocolAdaptor) Proxy.newProxyInstance(ProtocolAdaptor.class.getClassLoader(),
+                new Class[]{ProtocolAdaptor.class},
+                (proxy, method, args) -> intercept(method, args));
+    }
+
+
+    /**
+     * 拦截
+     *
+     * @param method 方法
+     * @param args   参数
+     * @return Object
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     */
+    default Object intercept(Method method, Object[] args) throws InvocationTargetException, IllegalAccessException {
+        for (MessageInterceptor interceptor : MessageInterceptor.FILTER_LIST) {
+            args = interceptor.doInterceptor(args);
+        }
+        return method.invoke(this, args);
+    }
 
 
 }

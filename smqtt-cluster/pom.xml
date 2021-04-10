@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>smqtt</artifactId>
+        <groupId>com.github.smqtt</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>smqtt-cluster</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <name>smqtt-cluster</name>
+
+    <properties>
+        <scalecube-cluster.version>2.6.7</scalecube-cluster.version>
+        <log4j.version>2.13.2</log4j.version>
+        <slf4j.version>1.7.30</slf4j.version>
+    </properties>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>io.scalecube</groupId>
+            <artifactId>scalecube-cluster</artifactId>
+            <version>${scalecube-cluster.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.smqtt</groupId>
+            <artifactId>smqtt-core</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+<!--        &lt;!&ndash; Slf4j &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.slf4j</groupId>-->
+<!--            <artifactId>slf4j-api</artifactId>-->
+<!--            <version>${slf4j.version}</version>-->
+<!--        </dependency>-->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+
+    </dependencies>
+
+
+</project>

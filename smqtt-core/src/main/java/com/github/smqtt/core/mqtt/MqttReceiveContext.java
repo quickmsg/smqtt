@@ -72,6 +72,7 @@ public class MqttReceiveContext extends AbstractReceiveContext<MqttConfiguration
         return () -> {
             if (mqttChannel.isSessionPersistent()) {
                 mqttChannel.setStatus(ChannelStatus.OFFLINE);
+                mqttChannel.close().subscribe();
             } else {
                 getTopicRegistry().clear(mqttChannel);
                 getChannelRegistry().close(mqttChannel);
