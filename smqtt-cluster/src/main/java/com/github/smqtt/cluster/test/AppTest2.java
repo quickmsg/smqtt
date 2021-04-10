@@ -21,7 +21,7 @@ public class AppTest2
         CountDownLatch countDownLatch = new CountDownLatch(1);
         Cluster bob =
                 new ClusterImpl()
-                        .membership(opts -> opts.seedMembers(Address.from("192.168.124.10:8777")))
+                        .membership(opts -> opts.seedMembers(Address.from("172.18.54.65:8777")))
                         .config(opts -> opts.memberAlias("Dan111"))
                         .handler(
                                 cluster -> {

@@ -30,7 +30,7 @@ public interface ClusterRegistry<C extends ClusterConfig> {
      *
      * @return Flux
      */
-    Flux<String> subscribe();
+    Flux<ClusterMessage> subscribe();
 
 
     /**
@@ -38,6 +38,6 @@ public interface ClusterRegistry<C extends ClusterConfig> {
      *
      * @return Flux
      */
-    Flux<String> clusterEvent();
+    Flux<ClusterEvent> clusterEvent();
 
 }

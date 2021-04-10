@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
+import reactor.core.publisher.Sinks;
 import reactor.netty.Connection;
 
 import java.time.Duration;
@@ -58,6 +59,8 @@ public class MqttChannel {
 
     private Map<Integer, Disposable> replyMqttMessageMap;
 
+    private Sinks.Many<MqttMessage> deferMessage = Sinks.many().multicast().directBestEffort();
+
 
     public MqttChannel initChannel() {
         this.atomicInteger = new AtomicInteger(0);
@@ -86,7 +89,9 @@ public class MqttChannel {
             this.clear();
             this.qos2MsgCache.clear();
             this.topics = null;
-            this.connection.dispose();
+            if (!this.connection.isDisposed()) {
+                this.connection.dispose();
+            }
         });
     }
 
@@ -175,7 +180,11 @@ public class MqttChannel {
      * @return boolean状态
      */
     private Mono<Void> write(Mono<ByteBuf> buf) {
-        return connection.outbound().send(buf).then();
+        if (this.connection.channel().isActive() && this.connection.channel().isWritable()) {
+            return connection.outbound().send(buf).then();
+        } else {
+            return Mono.empty();
+        }
     }
 
 
@@ -250,7 +259,10 @@ public class MqttChannel {
                             mqttChannel.write(Mono.just(byteBuf))
                                     .delaySubscription(Duration.ofSeconds(5))
                                     .repeat()
-                                    .doOnError(error -> releaseByteBufCount(byteBuf))
+                                    .doOnError(error -> {
+                                        releaseByteBufCount(byteBuf);
+                                        log.error("offerReply", error);
+                                    })
                                     .doOnCancel(() -> releaseByteBufCount(byteBuf))
                                     .subscribe()));
         }

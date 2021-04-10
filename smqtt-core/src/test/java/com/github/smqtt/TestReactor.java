@@ -11,6 +11,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
 
 /**
  * @author luxurong
@@ -36,24 +37,43 @@ public class TestReactor {
         Thread.sleep(100000l);
     }
 
+   volatile Predicate<String> flag= str-> Boolean.TRUE;
 
     @Test
     public void testSink() {
 
-        Sinks.Many<String> replaySink = Sinks.many().replay().all();
-        replaySink.asFlux().subscribe(System.out::println);
+        Mono.fromRunnable(()->{throw new RuntimeException();})
+                .subscribe(System.out::println,err->err.printStackTrace(),()->System.out.println("ASD"));
+
+
+        Sinks.Many<String> replaySink = Sinks.many().multicast().directAllOrNothing();
+
+        replaySink.asFlux()
+                .bufferUntil(flag)
+                .subscribe(System.out::println);
         replaySink.tryEmitNext("sd1");
         replaySink.tryEmitNext("sd2");
         replaySink.tryEmitNext("sd3");
-        replaySink.asFlux().subscribe(System.out::println);
+
+        flag =str->false;
+        replaySink.tryEmitNext("sd2");
+        replaySink.tryEmitNext("sd3");
+        System.out.println("hahhaa");
+        flag =str->true;
 
 
-        Sinks.Many<String> stringMany = Sinks.many().multicast().onBackpressureBuffer(3);
+//        replaySink.tryEmitNext("sd4");
+//        replaySink.tryEmitNext("sd5");
+//        replaySink.asFlux().subscribe(System.out::println);
+//        replaySink.tryEmitNext("sd6");
+//        replaySink.tryEmitNext("sd6");
 
-        stringMany.tryEmitNext("test1");
-        stringMany.tryEmitNext("test2");
-        stringMany.tryEmitNext("test3");
-        stringMany.asFlux().subscribe(System.out::println);
+//        Sinks.Many<String> stringMany = Sinks.many().multicast().onBackpressureBuffer(3);
+//
+//        stringMany.tryEmitNext("test1");
+//        stringMany.tryEmitNext("test2");
+//        stringMany.tryEmitNext("test3");
+//        stringMany.asFlux().subscribe(System.out::println);
 
 
     }

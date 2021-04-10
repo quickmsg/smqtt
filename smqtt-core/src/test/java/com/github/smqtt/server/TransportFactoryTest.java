@@ -20,7 +20,7 @@ public class TransportFactoryTest {
         DirectUsedMonitor directUsedMonitor = new DirectUsedMonitor();
         CountDownLatch countDownLatch = new CountDownLatch(1);
         MqttConfiguration mqttConfiguration = new MqttConfiguration();
-        mqttConfiguration.setPort(8999);
+        mqttConfiguration.setPort(8997);
         MqttTransportFactory mqttTransportFactory = new MqttTransportFactory();
         mqttTransportFactory.createTransport(mqttConfiguration)
                 .start()

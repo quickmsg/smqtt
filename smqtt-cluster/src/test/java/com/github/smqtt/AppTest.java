@@ -22,8 +22,7 @@ public class AppTest
         CountDownLatch countDownLatch = new CountDownLatch(1);
         Cluster alice =
                 new ClusterImpl()
-                        .config(opts -> opts.memberAlias("Dan1"))
-
+                        .config(opts -> opts.memberAlias("Dan1").externalPort(9777))
                         .transport(transportConfig -> transportConfig.port(8777))
                         .handler(
                                 cluster -> {
@@ -47,6 +46,7 @@ public class AppTest
                                 })
                         .startAwait();
         System.out.println(alice.address().toString());
+        alice.members().forEach(System.out::println);
         countDownLatch.await();
     }
 }

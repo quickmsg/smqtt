@@ -11,7 +11,6 @@ import io.netty.handler.codec.mqtt.MqttMessage;
 import io.netty.handler.codec.mqtt.MqttMessageType;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.scheduler.Schedulers;
-import reactor.netty.ReactorNetty;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,9 +43,11 @@ public class DefaultProtocolAdaptor implements ProtocolAdaptor {
                 .ifPresent(protocol -> protocol.doParseProtocol(mqttMessage, mqttChannel)
                         .contextWrite(context -> context.putNonNull(ReceiveContext.class, receiveContext))
                         .subscribeOn(Schedulers.parallel())
-                        .doOnError(error -> releaseMessage(mqttMessage))
-                        .doOnSuccess(success -> releaseMessage(mqttMessage))
-                        .subscribe());
+                        .subscribe(aVoid -> {
+                        }, error -> {
+                            log.error("channel {} chooseProtocol:", mqttChannel, error);
+                            releaseMessage(mqttMessage);
+                        }, () -> releaseMessage(mqttMessage)));
     }
 
     private void releaseMessage(MqttMessage mqttMessage) {

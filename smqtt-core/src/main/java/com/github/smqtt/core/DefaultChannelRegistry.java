@@ -3,7 +3,9 @@ package com.github.smqtt.core;
 import com.github.smqtt.common.channel.ChannelRegistry;
 import com.github.smqtt.common.channel.MqttChannel;
 import com.github.smqtt.common.enums.ChannelStatus;
+import reactor.core.publisher.Flux;
 
+import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -16,6 +18,14 @@ public class DefaultChannelRegistry implements ChannelRegistry {
 
 
     private Map<String, MqttChannel> channelMap = new ConcurrentHashMap<>();
+
+
+    public DefaultChannelRegistry() {
+        Flux.interval(Duration.ofSeconds(1))
+                .subscribe(index -> {
+                    System.out.println("客户端数："+channelMap.size());
+                });
+    }
 
     @Override
     public void
@@ -31,7 +41,7 @@ public class DefaultChannelRegistry implements ChannelRegistry {
 
     @Override
     public boolean exists(String clientIdentifier) {
-        return channelMap.containsKey(clientIdentifier)  && channelMap.get(clientIdentifier).getStatus() == ChannelStatus.ONLINE;
+        return channelMap.containsKey(clientIdentifier) && channelMap.get(clientIdentifier).getStatus() == ChannelStatus.ONLINE;
     }
 
     @Override

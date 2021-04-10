@@ -38,7 +38,7 @@ public class CommonProtocol implements Protocol<MqttMessage> {
                 return mqttChannel.write(MqttMessageBuilder.buildPongMessage(), false);
             case DISCONNECT:
                 mqttChannel.setWill(null);
-                mqttChannel.getConnection().disposeNow();
+                mqttChannel.getConnection().dispose();
                 return Mono.empty();
             case PINGRESP:
             default:

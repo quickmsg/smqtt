@@ -6,6 +6,7 @@ import com.github.smqtt.common.transport.Transport;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.mqtt.MqttMessage;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
 import reactor.netty.Connection;
@@ -19,6 +20,7 @@ import java.util.function.Function;
  * @Description 服务端操作连接channel类
  */
 @Getter
+@Slf4j
 public class MqttReceiveContext extends AbstractReceiveContext<MqttConfiguration> {
 
 

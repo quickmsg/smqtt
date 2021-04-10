@@ -48,7 +48,8 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
         ChannelRegistry channelRegistry = mqttReceiveContext.getChannelRegistry();
         TopicRegistry topicRegistry = mqttReceiveContext.getTopicRegistry();
         BasicAuthentication basicAuthentication = mqttReceiveContext.getBasicAuthentication();
-        if (channelRegistry.exists(clientIdentifier)) {
+        if (channelRegistry.exists(clientIdentifier)
+                && channelRegistry.get(clientIdentifier).getStatus() == ChannelStatus.OFFLINE) {
             return mqttChannel.write(
                     MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_IDENTIFIER_REJECTED),
                     false).then(mqttChannel.close());
@@ -61,6 +62,7 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
         if (basicAuthentication.auth(mqttConnectPayload.userName(), mqttConnectPayload.passwordInBytes())) {
             /*cancel  defer close not authenticate channel */
             mqttReceiveContext.getDeferCloseDisposable().dispose();
+            MqttChannel channel = channelRegistry.get(clientIdentifier);
             mqttChannel.setClientIdentifier(mqttConnectPayload.clientIdentifier());
             if (mqttConnectVariableHeader.isWillFlag()) {
                 mqttChannel.setWill(MqttChannel.Will.builder()
@@ -102,10 +104,12 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
                                                     ).subscribe();
                                                 }));
                                     }));
+
             Optional.ofNullable(channelRegistry.get(clientIdentifier))
                     .ifPresent(sessionChannel -> {
                         doSession(sessionChannel, mqttChannel, channelRegistry, topicRegistry, mqttReceiveContext.getMessageRegistry());
                     });
+            channelRegistry.registry(clientIdentifier, mqttChannel);
             return mqttChannel.write(MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_ACCEPTED), false);
 
         } else {
@@ -115,6 +119,16 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
         }
     }
 
+    /**
+     * 处理session消息
+     *
+     * @param sessionChannel  session channel
+     * @param mqttChannel     new channel
+     * @param channelRegistry channel注册
+     * @param topicRegistry   主题注册
+     * @param messageRegistry 消息注册
+     * @return Void
+     */
     private void doSession(MqttChannel sessionChannel,
                            MqttChannel mqttChannel,
                            ChannelRegistry channelRegistry,
