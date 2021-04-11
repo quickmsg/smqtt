@@ -27,6 +27,7 @@ public class TransportFactoryTest {
                 .doOnError(Throwable::printStackTrace)
                 .block();
         directUsedMonitor.startMonitor();
+        countDownLatch.await();
     }
 
 }

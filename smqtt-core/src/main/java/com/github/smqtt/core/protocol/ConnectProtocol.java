@@ -40,7 +40,6 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
 
     @Override
     public Mono<Void> parseProtocol(MqttConnectMessage message, MqttChannel mqttChannel, ContextView contextView) {
-        log.info("mqttChannel connect {} channel {}", message, mqttChannel.getConnection());
         MqttReceiveContext mqttReceiveContext = (MqttReceiveContext) contextView.get(ReceiveContext.class);
         MqttConnectVariableHeader mqttConnectVariableHeader = message.variableHeader();
         MqttConnectPayload mqttConnectPayload = message.payload();

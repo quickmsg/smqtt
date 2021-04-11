@@ -32,7 +32,6 @@ public class CommonProtocol implements Protocol<MqttMessage> {
 
     @Override
     public Mono<Void> parseProtocol(MqttMessage message, MqttChannel mqttChannel, ContextView contextView) {
-        log.info("channel {} message {}", mqttChannel, message);
         switch (message.fixedHeader().messageType()) {
             case PINGREQ:
                 return mqttChannel.write(MqttMessageBuilder.buildPongMessage(), false);

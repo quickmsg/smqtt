@@ -5,6 +5,7 @@ import com.github.smqtt.common.channel.MqttChannel;
 import com.github.smqtt.common.enums.ChannelStatus;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.WriteBufferWaterMark;
+import io.netty.channel.epoll.EpollChannelOption;
 import io.netty.handler.codec.mqtt.MqttDecoder;
 import reactor.core.publisher.Mono;
 import reactor.netty.DisposableServer;
@@ -30,7 +31,7 @@ public class MqttReceiver implements Receiver {
         return TcpServer.create()
                 .port(mqttConfiguration.getPort())
                 .doOnBind(mqttConfiguration::loadTcpServerConfig)
-                .wiretap(false)
+                .wiretap(true)
                 .childOption(ChannelOption.WRITE_BUFFER_WATER_MARK,new WriteBufferWaterMark(8 * 1024,32 * 1024))
                 .childOption(ChannelOption.TCP_NODELAY, true)
                 .childOption(ChannelOption.SO_KEEPALIVE, true)

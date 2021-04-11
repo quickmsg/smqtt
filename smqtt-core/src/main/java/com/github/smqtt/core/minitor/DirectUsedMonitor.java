@@ -1,8 +1,11 @@
 package com.github.smqtt.core.minitor;
 
 import com.github.smqtt.common.monitor.Monitor;
+import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Flux;
 
 import java.lang.reflect.Field;
+import java.time.Duration;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -10,20 +13,20 @@ import java.util.concurrent.atomic.AtomicLong;
  * @date 2021/4/7 10:35
  * @description
  */
+@Slf4j
 public class DirectUsedMonitor implements Monitor {
 
     public void startMonitor() {
+        Flux.interval(Duration.ofSeconds(1))
+                .subscribe(index -> {
+                    try {
+                        Thread.sleep(1000);
+                        log.info("java 直接内存使用："+javaUsedDirectMemory());
+                        log.info("netty 直接内存使用："+nettyUsedDirectMemory());
 
-        for (; ; ) {
-            try {
-                Thread.sleep(1000);
-                System.out.println("java 直接内存使用："+javaUsedDirectMemory());
-                System.out.println("netty 直接内存使用："+nettyUsedDirectMemory());
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }                });
 
     }
 

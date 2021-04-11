@@ -28,7 +28,6 @@ public class ScubeClusterRegistry implements ClusterRegistry<ScubeClusterConfig>
 
     @Override
     public Mono<Void> registry(ScubeClusterConfig scubeClusterConfig) {
-
         return Mono.fromRunnable(() -> {
             new ClusterImpl()
                     .config(opts -> opts.memberAlias(scubeClusterConfig.getNodeName()))
@@ -37,7 +36,7 @@ public class ScubeClusterRegistry implements ClusterRegistry<ScubeClusterConfig>
                             .stream()
                             .map(Address::from)
                             .collect(Collectors.toList())))
-                    .handler(_cluster -> new ClusterHandler())
+                    .handler(cluster -> new ClusterHandler())
                     .startAwait();
         });
     }
