@@ -1,7 +1,9 @@
-package com.github.smqtt.common.Interceptor;
+package com.github.smqtt.common.interceptor;
 
 import com.github.smqtt.common.spi.DynamicLoader;
+import io.netty.handler.codec.mqtt.MqttMessageType;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,6 +15,7 @@ import java.util.stream.Collectors;
 public interface MessageInterceptor {
 
     List<MessageInterceptor> FILTER_LIST = DynamicLoader.findAll(MessageInterceptor.class)
+            .sorted(Comparator.comparing(MessageInterceptor::order))
             .collect(Collectors.toList());
 
     /**
@@ -22,5 +25,22 @@ public interface MessageInterceptor {
      * @return Object[]
      */
     Object[] doInterceptor(Object[] args);
+
+
+    /**
+     * 排序
+     *
+     * @return int
+     */
+    int order();
+
+
+    /**
+     * 拦截消息类型
+     *
+     * @return MqttMessageType
+     */
+    MqttMessageType interceptorType();
+
 
 }

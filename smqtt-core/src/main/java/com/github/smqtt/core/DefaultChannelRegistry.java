@@ -24,9 +24,7 @@ public class DefaultChannelRegistry implements ChannelRegistry {
 
     public DefaultChannelRegistry() {
         Flux.interval(Duration.ofSeconds(1))
-                .subscribe(index -> {
-                    log.info("客户端数："+channelMap.size());
-                });
+                .subscribe(index -> log.info("客户端数："+channelMap.size()));
     }
 
     @Override

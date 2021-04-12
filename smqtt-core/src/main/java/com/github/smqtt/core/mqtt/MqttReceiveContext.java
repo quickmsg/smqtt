@@ -32,7 +32,6 @@ public class MqttReceiveContext extends AbstractReceiveContext<MqttConfiguration
 
     }
 
-    // todo 消息持久化之后处理
     public void apply(MqttChannel mqttChannel) {
         deferCloseChannel(mqttChannel.getConnection());
         mqttChannel

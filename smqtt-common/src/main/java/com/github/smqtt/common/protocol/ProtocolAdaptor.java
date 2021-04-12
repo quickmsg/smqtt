@@ -1,15 +1,16 @@
 package com.github.smqtt.common.protocol;
 
-import com.github.smqtt.common.Interceptor.MessageInterceptor;
 import com.github.smqtt.common.channel.MqttChannel;
 import com.github.smqtt.common.config.Configuration;
 import com.github.smqtt.common.context.ReceiveContext;
+import com.github.smqtt.common.interceptor.MessageInterceptor;
 import com.github.smqtt.common.spi.DynamicLoader;
 import io.netty.handler.codec.mqtt.MqttMessage;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.stream.Collectors;
 
 /**
  * @author luxurong
@@ -54,7 +55,13 @@ public interface ProtocolAdaptor {
      * @throws IllegalAccessException
      */
     default Object intercept(Method method, Object[] args) throws InvocationTargetException, IllegalAccessException {
-        for (MessageInterceptor interceptor : MessageInterceptor.FILTER_LIST) {
+        MqttMessage mqttMessage = (MqttMessage) args[1];
+        for (MessageInterceptor interceptor :
+                MessageInterceptor.FILTER_LIST
+                        .stream()
+                        .filter(messageInterceptor ->
+                                messageInterceptor.interceptorType() == mqttMessage.fixedHeader().messageType())
+                        .collect(Collectors.toList())) {
             args = interceptor.doInterceptor(args);
         }
         return method.invoke(this, args);

@@ -88,7 +88,7 @@ public class MqttChannel {
         return Mono.fromRunnable(() -> {
             this.clear();
             this.qos2MsgCache.clear();
-            this.topics = null;
+            topics.clear();
             if (!this.connection.isDisposed()) {
                 this.connection.dispose();
             }

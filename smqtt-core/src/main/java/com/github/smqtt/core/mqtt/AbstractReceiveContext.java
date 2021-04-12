@@ -84,6 +84,7 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
     private ProtocolAdaptor protocolAdaptor(T configuration) {
         return Optional.ofNullable(DynamicLoader
                 .findFirst(configuration.getProtocolAdaptor())
+                .map(ProtocolAdaptor::proxy)
                 .orElse(ProtocolAdaptor.INSTANCE)).orElse(new DefaultProtocolAdaptor().proxy());
 
     }

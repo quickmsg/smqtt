@@ -39,7 +39,9 @@ public class DefaultProtocolAdaptor implements ProtocolAdaptor {
 
     @Override
     public <C extends Configuration> void chooseProtocol(MqttChannel mqttChannel, MqttMessage mqttMessage, ReceiveContext<C> receiveContext) {
-//       log.info("channel {} message {}",mqttChannel,mqttMessage);
+        if (log.isDebugEnabled()) {
+            log.info("channel {} message {}", mqttChannel, mqttMessage);
+        }
         Optional.ofNullable(types.get(mqttMessage.fixedHeader().messageType()))
                 .ifPresent(protocol -> protocol.doParseProtocol(mqttMessage, mqttChannel)
                         .contextWrite(context -> context.putNonNull(ReceiveContext.class, receiveContext))
@@ -58,7 +60,9 @@ public class DefaultProtocolAdaptor implements ProtocolAdaptor {
             int count = byteBuf.refCnt();
             if (count > 0) {
                 byteBuf.release(count);
-                log.info("netty success release byteBuf {} count {} ", byteBuf, count);
+                if (log.isDebugEnabled()) {
+                    log.info("netty success release byteBuf {} count {} ", byteBuf, count);
+                }
             }
         }
     }
