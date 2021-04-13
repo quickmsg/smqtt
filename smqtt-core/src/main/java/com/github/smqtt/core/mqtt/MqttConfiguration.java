@@ -7,7 +7,6 @@ import com.github.smqtt.common.message.MessageRegistry;
 import com.github.smqtt.common.protocol.ProtocolAdaptor;
 import com.github.smqtt.common.topic.TopicRegistry;
 import io.netty.channel.ChannelOption;
-import lombok.Builder;
 import lombok.Data;
 import reactor.netty.tcp.TcpServerConfig;
 
@@ -23,16 +22,14 @@ import java.util.function.Consumer;
 @Data
 public class MqttConfiguration implements Configuration {
 
-    @Builder.Default
     private Integer port = 0;
 
-    private Integer webSocketPort;
+    private Integer webSocketPort = 0;
 
-    private Integer lowWaterMark;
+    private Integer lowWaterMark ;
 
     private Integer highWaterMark;
 
-    @Builder.Default
     private Boolean wiretap = false;
 
     private PasswordAuthentication reactivePasswordAuth = (u, p) -> true;

@@ -5,6 +5,7 @@ import com.github.smqtt.common.context.ReceiveContext;
 import com.github.smqtt.common.transport.Transport;
 import com.github.smqtt.core.mqtt.MqttConfiguration;
 import com.github.smqtt.core.mqtt.MqttReceiveContext;
+import lombok.Getter;
 import reactor.core.publisher.Mono;
 import reactor.netty.DisposableChannel;
 import reactor.netty.DisposableServer;
@@ -23,6 +24,7 @@ public class DefaultTransport implements Transport<MqttConfiguration> {
     private Receiver receiver;
 
     private MqttConfiguration configuration;
+
 
     private static List<DisposableServer> disposableServers = new ArrayList<>();
 
@@ -57,11 +59,6 @@ public class DefaultTransport implements Transport<MqttConfiguration> {
         }
     }
 
-    @Override
-    public Transport<MqttConfiguration> copy() {
-        return null;
-    }
-
 
     private void bindSever(DisposableServer disposableServer) {
         DefaultTransport.disposableServers.add(disposableServer);
@@ -77,4 +74,6 @@ public class DefaultTransport implements Transport<MqttConfiguration> {
     public boolean isDisposed() {
         return DefaultTransport.disposableServers.stream().map(DisposableChannel::isDisposed).findAny().orElse(false);
     }
+
+
 }

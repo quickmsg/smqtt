@@ -14,6 +14,7 @@ import io.netty.channel.WriteBufferWaterMark;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
 
@@ -29,6 +30,7 @@ import java.util.function.Consumer;
 @Builder
 @Getter
 @ToString
+@Slf4j
 public class Bootstrap {
 
     private static final Sinks.One<Void> START_ONLY_MQTT = Sinks.one();
@@ -53,7 +55,8 @@ public class Bootstrap {
     @Builder.Default
     private Boolean isWebsocket = false;
 
-    private Integer websocketPort;
+    @Builder.Default
+    private Integer websocketPort = 0;
 
     private PasswordAuthentication reactivePasswordAuth;
 
@@ -64,19 +67,6 @@ public class Bootstrap {
     private Class<? extends ProtocolAdaptor> protocolAdaptor;
 
     private Class<? extends MessageRegistry> messageRegistry;
-
-
-    public Bootstrap websocket(int port) {
-        this.websocketPort = port;
-        this.isWebsocket = true;
-        return this;
-    }
-
-    public Bootstrap websocket() {
-        this.websocketPort = DEFAULT_WEBSOCKET_MQTT_PORT;
-        this.isWebsocket = true;
-        return this;
-    }
 
 
     private Consumer<Map<ChannelOption<?>, ?>> options;
@@ -116,12 +106,27 @@ public class Bootstrap {
     }
 
 
+    /**
+     * 阻塞启动 生产环境慎用
+     *
+     * @return void
+     */
     public void startAwait() {
-        this.start();
+        this.start()
+                .doOnError(err -> {
+                    log.info("bootstrap server start error", err);
+                    START_ONLY_MQTT.tryEmitEmpty();
+                })
+                .subscribe();
         START_ONLY_MQTT.asMono().block();
     }
 
 
+    /**
+     * 启动服务
+     *
+     * @return Mono
+     */
     public Mono<Transport> start() {
         MqttConfiguration mqttConfiguration = initMqttConfiguration();
         if (isWebsocket) {
@@ -134,7 +139,6 @@ public class Bootstrap {
         MqttTransportFactory mqttTransportFactory = new MqttTransportFactory();
         return mqttTransportFactory.createTransport(mqttConfiguration)
                 .start()
-                .doOnSuccess(transport -> START_ONLY_MQTT.tryEmitEmpty())
                 .doOnError(Throwable::printStackTrace);
     }
 
