@@ -1,11 +1,15 @@
 package com.github.smqtt.common.auth;
 
+import com.github.smqtt.common.spi.DynamicLoader;
+
 /**
  * @author luxurong
  * @date 2021/3/30 13:35
  * @description 认证类
  */
-public interface BasicAuthentication {
+public interface PasswordAuthentication {
+
+    PasswordAuthentication INSTANCE = DynamicLoader.findFirst(PasswordAuthentication.class).orElse(null);
 
 
     /**

@@ -1,8 +1,8 @@
 package com.github.smqtt.cluster.scalescube;
 
-import com.github.smqtt.cluster.ClusterEvent;
-import com.github.smqtt.cluster.ClusterMessage;
-import com.github.smqtt.cluster.ClusterRegistry;
+import com.github.smqtt.cluster.base.ClusterEvent;
+import com.github.smqtt.cluster.base.ClusterMessage;
+import com.github.smqtt.cluster.base.ClusterRegistry;
 import io.scalecube.cluster.ClusterImpl;
 import io.scalecube.cluster.ClusterMessageHandler;
 import io.scalecube.cluster.membership.MembershipEvent;
@@ -23,7 +23,7 @@ public class ScubeClusterRegistry implements ClusterRegistry<ScubeClusterConfig>
 
     private Sinks.Many<ClusterMessage> messageMany = Sinks.many().multicast().onBackpressureBuffer();
 
-    private Sinks.Many<ClusterEvent> eventMany = Sinks.many().multicast().onBackpressureBuffer();
+    private Sinks.Many<ClusterEvent<MembershipEvent, ScubeClusterNode>> eventMany = Sinks.many().multicast().onBackpressureBuffer();
 
 
     @Override
@@ -42,12 +42,12 @@ public class ScubeClusterRegistry implements ClusterRegistry<ScubeClusterConfig>
     }
 
     @Override
-    public Flux<ClusterMessage> subscribe() {
+    public Flux<ClusterMessage> clusterMessage() {
         return messageMany.asFlux();
     }
 
     @Override
-    public Flux<ClusterEvent> clusterEvent() {
+    public Flux<ClusterEvent<MembershipEvent, ScubeClusterNode>> clusterEvent() {
         return eventMany.asFlux();
     }
 
@@ -56,18 +56,18 @@ public class ScubeClusterRegistry implements ClusterRegistry<ScubeClusterConfig>
 
         @Override
         public void onMessage(Message message) {
-            messageMany.tryEmitNext(null);
+            messageMany.tryEmitNext(new ClusterMessage());
         }
 
         @Override
         public void onGossip(Message gossip) {
-            messageMany.tryEmitNext(null);
+            messageMany.tryEmitNext(new ClusterMessage());
 
         }
 
         @Override
         public void onMembershipEvent(MembershipEvent event) {
-            eventMany.tryEmitNext(null);
+            eventMany.tryEmitNext(new ClusterEvent(event, new ScubeClusterNode(event.member())));
         }
     }
 }

@@ -1,6 +1,6 @@
 package com.github.smqtt.core.mqtt;
 
-import com.github.smqtt.common.auth.BasicAuthentication;
+import com.github.smqtt.common.auth.PasswordAuthentication;
 import com.github.smqtt.common.channel.ChannelRegistry;
 import com.github.smqtt.common.config.Configuration;
 import com.github.smqtt.common.context.ReceiveContext;
@@ -42,7 +42,7 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
 
     private final MessageRegistry messageRegistry;
 
-    private final BasicAuthentication basicAuthentication;
+    private final PasswordAuthentication passwordAuthentication;
 
     public AbstractReceiveContext(T configuration, Transport<T> transport) {
         this.configuration = configuration;
@@ -52,19 +52,21 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
         this.topicRegistry = topicRegistry(configuration);
         this.loopResources = LoopResources.create("smqtt-cluster-io", configuration.getBossThreadSize(), configuration.getWorkThreadSize(), true);
         this.messageRegistry = messageRegistry(configuration);
-        this.basicAuthentication = basicAuthentication();
+        this.passwordAuthentication = basicAuthentication();
     }
 
     private MessageRegistry messageRegistry(T configuration) {
         return Optional.ofNullable(DynamicLoader
                 .findFirst(configuration.getMessageRegistry())
+                .map(messageRegistry -> (MessageRegistry) messageRegistry)
                 .orElse(MessageRegistry.INSTANCE)).orElse(new DefaultMessageRegistry());
     }
 
-    private BasicAuthentication basicAuthentication() {
-        return Optional.ofNullable(configuration.getBasicAuthentication())
-                .orElse((u, p) -> true);
-
+    private PasswordAuthentication basicAuthentication() {
+        return Optional.ofNullable(DynamicLoader
+                .findFirst(configuration.getPasswordAuthentication())
+                .map(passwordAuthentication -> (PasswordAuthentication) passwordAuthentication)
+                .orElse(PasswordAuthentication.INSTANCE)).orElse(configuration.getReactivePasswordAuth());
     }
 
     ;
@@ -72,12 +74,14 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
     private ChannelRegistry channelRegistry(T configuration) {
         return Optional.ofNullable(DynamicLoader
                 .findFirst(configuration.getChannelRegistry())
+                .map(channelRegistry -> (ChannelRegistry) channelRegistry)
                 .orElse(ChannelRegistry.INSTANCE)).orElse(new DefaultChannelRegistry());
     }
 
     private TopicRegistry topicRegistry(T configuration) {
         return Optional.ofNullable(DynamicLoader
                 .findFirst(configuration.getTopicRegistry())
+                .map(topicRegistry -> (TopicRegistry) topicRegistry)
                 .orElse(TopicRegistry.INSTANCE)).orElse(new DefaultTopicRegistry());
     }
 

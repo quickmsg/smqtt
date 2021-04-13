@@ -1,13 +1,19 @@
 package com.github.smqtt.core.mqtt;
 
-import com.github.smqtt.common.auth.BasicAuthentication;
+import com.github.smqtt.common.auth.PasswordAuthentication;
 import com.github.smqtt.common.channel.ChannelRegistry;
 import com.github.smqtt.common.config.Configuration;
 import com.github.smqtt.common.message.MessageRegistry;
 import com.github.smqtt.common.protocol.ProtocolAdaptor;
 import com.github.smqtt.common.topic.TopicRegistry;
+import io.netty.channel.ChannelOption;
+import lombok.Builder;
 import lombok.Data;
 import reactor.netty.tcp.TcpServerConfig;
+
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 /**
  * @author luxurong
@@ -17,41 +23,45 @@ import reactor.netty.tcp.TcpServerConfig;
 @Data
 public class MqttConfiguration implements Configuration {
 
-    private int port;
+    @Builder.Default
+    private Integer port = 0;
 
-    private BasicAuthentication basicAuthentication;
+    private Integer webSocketPort;
 
+    private Integer lowWaterMark;
 
-    private Class<ChannelRegistry> channelRegistry = ChannelRegistry.class;
+    private Integer highWaterMark;
 
+    @Builder.Default
+    private Boolean wiretap = false;
 
-    private Class<TopicRegistry> topicRegistry = TopicRegistry.class;
+    private PasswordAuthentication reactivePasswordAuth = (u, p) -> true;
 
-    private Class<ProtocolAdaptor> protocolAdaptor = ProtocolAdaptor.class;
+    private Integer bossThreadSize = Runtime.getRuntime().availableProcessors();
 
-    private Class<MessageRegistry> messageRegistry = MessageRegistry.class;
+    private Integer workThreadSize = Runtime.getRuntime().availableProcessors();
 
+    private Consumer<Map<ChannelOption<?>, ?>> options;
 
+    private Consumer<Map<ChannelOption<?>, ?>> childOptions;
 
-    private MqttReceiveContext mqttReceiveContext;
+    private Class<? extends ChannelRegistry> channelRegistry = ChannelRegistry.class;
+
+    private Class<? extends TopicRegistry> topicRegistry = TopicRegistry.class;
+
+    private Class<? extends ProtocolAdaptor> protocolAdaptor = ProtocolAdaptor.class;
+
+    private Class<? extends MessageRegistry> messageRegistry = MessageRegistry.class;
+
+    private Class<? extends PasswordAuthentication> passwordAuthentication = PasswordAuthentication.class;
 
 
     @Override
-    public int getBossThreadSize() {
-        return 1;
-    }
-
-    @Override
-    public int getWorkThreadSize() {
-        return 4;
-    }
-
-
-    @Override
-    public void loadTcpServerConfig(TcpServerConfig tcpServerConfig) {
-        //加载netty options配置
-
-
+    public Consumer<? super TcpServerConfig> getTcpServerConfig() {
+        return tcpServerConfig -> {
+            Optional.ofNullable(options).ifPresent(options -> options.accept(tcpServerConfig.options()));
+            Optional.ofNullable(childOptions).ifPresent(options -> options.accept(tcpServerConfig.childOptions()));
+        };
     }
 
 }

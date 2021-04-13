@@ -5,14 +5,12 @@ import com.github.smqtt.common.context.ReceiveContext;
 import com.github.smqtt.common.transport.Transport;
 import com.github.smqtt.core.mqtt.MqttConfiguration;
 import com.github.smqtt.core.mqtt.MqttReceiveContext;
-import lombok.Getter;
 import reactor.core.publisher.Mono;
 import reactor.netty.DisposableChannel;
 import reactor.netty.DisposableServer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author luxurong
@@ -26,17 +24,17 @@ public class DefaultTransport implements Transport<MqttConfiguration> {
 
     private MqttConfiguration configuration;
 
-    private List<DisposableServer> disposableServers = new ArrayList<>();
+    private static List<DisposableServer> disposableServers = new ArrayList<>();
 
 
-    @Getter
-    private ReceiveContext<MqttConfiguration> receiveContext;
+    public volatile static ReceiveContext<MqttConfiguration> receiveContext;
 
     public DefaultTransport(MqttConfiguration configuration, Receiver receiver) {
         this.configuration = configuration;
         this.receiver = receiver;
         Runtime.getRuntime().addShutdownHook(new Thread(() -> disposableServers.forEach(DisposableServer::disposeNow)));
     }
+
 
     @Override
     public Mono<Transport> start() {
@@ -51,8 +49,12 @@ public class DefaultTransport implements Transport<MqttConfiguration> {
 
     @Override
     public ReceiveContext<MqttConfiguration> buildReceiveContext(MqttConfiguration mqttConfiguration) {
-        return Optional.ofNullable(receiveContext)
-                .orElse((this.receiveContext = new MqttReceiveContext(mqttConfiguration, this)));
+        synchronized (this) {
+            if (DefaultTransport.receiveContext == null) {
+                DefaultTransport.receiveContext = new MqttReceiveContext(mqttConfiguration, this);
+            }
+            return DefaultTransport.receiveContext;
+        }
     }
 
     @Override
@@ -62,17 +64,17 @@ public class DefaultTransport implements Transport<MqttConfiguration> {
 
 
     private void bindSever(DisposableServer disposableServer) {
-        this.disposableServers.add(disposableServer);
+        DefaultTransport.disposableServers.add(disposableServer);
     }
 
 
     @Override
     public void dispose() {
-        disposableServers.forEach(DisposableServer::disposeNow);
+        DefaultTransport.disposableServers.forEach(DisposableServer::disposeNow);
     }
 
     @Override
     public boolean isDisposed() {
-        return disposableServers.stream().map(DisposableChannel::isDisposed).findAny().orElse(false);
+        return DefaultTransport.disposableServers.stream().map(DisposableChannel::isDisposed).findAny().orElse(false);
     }
 }

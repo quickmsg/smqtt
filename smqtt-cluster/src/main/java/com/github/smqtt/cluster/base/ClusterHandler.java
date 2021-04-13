@@ -1,4 +1,4 @@
-package com.github.smqtt.cluster;
+package com.github.smqtt.cluster.base;
 
 import reactor.core.publisher.Mono;
 

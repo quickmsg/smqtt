@@ -1,4 +1,4 @@
-package com.github.smqtt.cluster;
+package com.github.smqtt.cluster.base;
 
 import com.github.smqtt.common.spi.DynamicLoader;
 import reactor.core.publisher.Flux;
@@ -10,7 +10,6 @@ import reactor.core.publisher.Mono;
  * @description
  */
 public interface ClusterRegistry<C extends ClusterConfig> {
-
 
 
     ClusterRegistry INSTANCE = DynamicLoader.findFirst(ClusterRegistry.class).orElse(null);
@@ -30,7 +29,7 @@ public interface ClusterRegistry<C extends ClusterConfig> {
      *
      * @return Flux
      */
-    Flux<ClusterMessage> subscribe();
+    Flux<ClusterMessage> clusterMessage();
 
 
     /**
@@ -38,6 +37,7 @@ public interface ClusterRegistry<C extends ClusterConfig> {
      *
      * @return Flux
      */
-    Flux<ClusterEvent> clusterEvent();
+    <E, N extends ClusterNode> Flux<ClusterEvent<E, N>> clusterEvent();
+
 
 }

@@ -135,6 +135,18 @@ public class TestReactor {
     @Test
     public void testAllMono() throws InterruptedException {
 
+
+         Sinks.One<Void> start = Sinks.one();
+        start.tryEmitEmpty();
+
+
+        start.asMono().block();
+
+
+
+
+
+
         List<Mono<Integer>> list = new ArrayList<>();
         AtomicInteger atomicInteger = new AtomicInteger(1);
         for(int i=0;i<10;i++){

@@ -6,10 +6,15 @@ import com.github.smqtt.common.context.ReceiveContext;
 import com.github.smqtt.common.interceptor.MessageInterceptor;
 import com.github.smqtt.common.spi.DynamicLoader;
 import io.netty.handler.codec.mqtt.MqttMessage;
+import io.netty.handler.codec.mqtt.MqttMessageType;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -20,6 +25,9 @@ import java.util.stream.Collectors;
 public interface ProtocolAdaptor {
 
     ProtocolAdaptor INSTANCE = DynamicLoader.findFirst(ProtocolAdaptor.class).orElse(null);
+
+
+    Map<MqttMessageType, List<MessageInterceptor>> INTERCEPTORS = new ConcurrentHashMap<>();
 
 
     /**
@@ -56,12 +64,12 @@ public interface ProtocolAdaptor {
      */
     default Object intercept(Method method, Object[] args) throws InvocationTargetException, IllegalAccessException {
         MqttMessage mqttMessage = (MqttMessage) args[1];
-        for (MessageInterceptor interceptor :
-                MessageInterceptor.FILTER_LIST
-                        .stream()
-                        .filter(messageInterceptor ->
-                                messageInterceptor.interceptorType() == mqttMessage.fixedHeader().messageType())
-                        .collect(Collectors.toList())) {
+        List<MessageInterceptor> interceptors =
+                INTERCEPTORS.computeIfAbsent(mqttMessage.fixedHeader().messageType(), mqttMessageType ->
+                        MessageInterceptor.FILTER_LIST.stream()
+                                .filter(messageInterceptor -> messageInterceptor.interceptorType() == mqttMessage.fixedHeader().messageType())
+                                .collect(Collectors.toList()));
+        for (MessageInterceptor interceptor : interceptors) {
             args = interceptor.doInterceptor(args);
         }
         return method.invoke(this, args);

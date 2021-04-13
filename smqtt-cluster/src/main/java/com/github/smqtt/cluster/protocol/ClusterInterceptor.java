@@ -1,10 +1,12 @@
 package com.github.smqtt.cluster.protocol;
 
-import com.github.smqtt.common.channel.MqttChannel;
-import com.github.smqtt.common.context.ReceiveContext;
+import com.github.smqtt.cluster.base.ClusterRegistry;
+import com.github.smqtt.cluster.scalescube.ScubeClusterRegistry;
 import com.github.smqtt.common.interceptor.MessageInterceptor;
-import io.netty.handler.codec.mqtt.MqttMessage;
 import io.netty.handler.codec.mqtt.MqttMessageType;
+import io.netty.handler.codec.mqtt.MqttPublishMessage;
+
+import java.util.Optional;
 
 /**
  * @author luxurong
@@ -14,16 +16,20 @@ import io.netty.handler.codec.mqtt.MqttMessageType;
 public class ClusterInterceptor implements MessageInterceptor {
 
 
+    public ClusterInterceptor() {
+//        this.clusterRegistry = Optional.ofNullable(ClusterRegistry.INSTANCE).orElse(new ScubeClusterRegistry());
+    }
+
+
     @Override
     public Object[] doInterceptor(Object[] args) {
-        MqttChannel mqttChannel = (MqttChannel) args[0];
-        MqttMessage mqttMessage = (MqttMessage) args[1];
-        ReceiveContext<?> receiveContext = (ReceiveContext<?>) args[2];
+        MqttPublishMessage mqttMessage = (MqttPublishMessage) args[1];
         return new Object[0];
     }
 
     @Override
     public int order() {
+
         return 0;
     }
 

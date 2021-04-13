@@ -1,11 +1,14 @@
 package com.github.smqtt.common.config;
 
-import com.github.smqtt.common.auth.BasicAuthentication;
+import com.github.smqtt.common.auth.PasswordAuthentication;
 import com.github.smqtt.common.channel.ChannelRegistry;
 import com.github.smqtt.common.message.MessageRegistry;
 import com.github.smqtt.common.protocol.ProtocolAdaptor;
 import com.github.smqtt.common.topic.TopicRegistry;
 import reactor.netty.tcp.TcpServerConfig;
+
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 /**
  * @author luxurong
@@ -15,29 +18,43 @@ import reactor.netty.tcp.TcpServerConfig;
 public interface Configuration {
 
 
-    int getBossThreadSize();
+    Integer getBossThreadSize();
 
 
-    int getWorkThreadSize();
+    Integer getWorkThreadSize();
 
 
-    int getPort();
+    Integer getPort();
+
+    Integer getWebSocketPort();
 
 
-    void loadTcpServerConfig(TcpServerConfig tcpServerConfig);
+    Class<? extends ChannelRegistry> getChannelRegistry();
 
 
-    Class<ChannelRegistry> getChannelRegistry();
-
-    Class<MessageRegistry> getMessageRegistry();
+    Class<? extends MessageRegistry> getMessageRegistry();
 
 
-    Class<TopicRegistry> getTopicRegistry();
+    Class<? extends TopicRegistry> getTopicRegistry();
 
 
-    Class<ProtocolAdaptor> getProtocolAdaptor();
+    Class<? extends ProtocolAdaptor> getProtocolAdaptor();
 
 
-    BasicAuthentication getBasicAuthentication();
+    Consumer<? super TcpServerConfig> getTcpServerConfig();
+
+
+    Class<? extends PasswordAuthentication> getPasswordAuthentication();
+
+
+    Integer getLowWaterMark();
+
+    Integer getHighWaterMark();
+
+    Boolean getWiretap();
+
+
+    PasswordAuthentication getReactivePasswordAuth();
+
 
 }

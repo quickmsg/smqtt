@@ -1,4 +1,4 @@
-package com.github.smqtt.cluster;
+package com.github.smqtt.cluster.base;
 
 import java.util.List;
 import java.util.Map;

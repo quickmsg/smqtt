@@ -1,11 +1,16 @@
-package com.github.smqtt.core.mqtt;
+package com.github.smqtt.core.websocket;
 
 import com.github.smqtt.common.Receiver;
 import com.github.smqtt.common.channel.MqttChannel;
 import com.github.smqtt.common.enums.ChannelStatus;
+import com.github.smqtt.core.mqtt.MqttConfiguration;
+import com.github.smqtt.core.mqtt.MqttReceiveContext;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.WriteBufferWaterMark;
+import io.netty.handler.codec.http.HttpObjectAggregator;
+import io.netty.handler.codec.http.HttpServerCodec;
+import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.codec.mqtt.MqttDecoder;
 import reactor.core.publisher.Mono;
 import reactor.netty.DisposableServer;
@@ -17,7 +22,7 @@ import reactor.util.context.ContextView;
  * @date 2021/3/29 20:08
  * @description
  */
-public class MqttReceiver implements Receiver {
+public class WebSocketMqttReceiver implements Receiver {
 
     @Override
     public Mono<DisposableServer> bind() {
@@ -29,7 +34,7 @@ public class MqttReceiver implements Receiver {
         MqttReceiveContext receiveContext = context.get(MqttReceiveContext.class);
         MqttConfiguration mqttConfiguration = receiveContext.getConfiguration();
         return TcpServer.create()
-                .port(mqttConfiguration.getPort())
+                .port(mqttConfiguration.getWebSocketPort())
                 .doOnBind(mqttConfiguration.getTcpServerConfig())
                 .wiretap(true)
                 .childOption(ChannelOption.WRITE_BUFFER_WATER_MARK, new WriteBufferWaterMark(mqttConfiguration.getLowWaterMark(), mqttConfiguration.getHighWaterMark()))
@@ -39,7 +44,12 @@ public class MqttReceiver implements Receiver {
                 .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
                 .runOn(receiveContext.getLoopResources())
                 .doOnConnection(connection -> {
-                    connection.addHandler(new MqttDecoder());
+                    connection.addHandler(new HttpServerCodec())
+                            .addHandler(new HttpObjectAggregator(65536))
+                            .addHandler(new WebSocketServerProtocolHandler("/", "mqtt, mqttv3.1, mqttv3.1.1"))
+                            .addHandler(new WebSocketFrameToByteBufDecoder())
+                            .addHandler(new ByteBufToWebSocketFrameEncoder())
+                            .addHandler(new MqttDecoder());
                     receiveContext.apply(
                             MqttChannel
                                     .builder()

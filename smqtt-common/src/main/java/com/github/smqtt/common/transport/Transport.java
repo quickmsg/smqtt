@@ -31,15 +31,6 @@ public interface Transport<C extends Configuration> extends Disposable {
 
 
     /**
-     * 链接注册中心
-     *
-     * @return ChannelRegistry
-     */
-    ReceiveContext<C> getReceiveContext();
-
-
-
-    /**
      * 复制Transport 用于共享通道
      *
      * @return ChannelRegistry

@@ -1,6 +1,6 @@
 package com.github.smqtt.cluster.scalescube;
 
-import com.github.smqtt.cluster.ClusterConfig;
+import com.github.smqtt.cluster.base.ClusterConfig;
 
 import java.util.List;
 import java.util.Map;

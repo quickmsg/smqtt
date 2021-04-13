@@ -1,6 +1,6 @@
 package com.github.smqtt.core.protocol;
 
-import com.github.smqtt.common.auth.BasicAuthentication;
+import com.github.smqtt.common.auth.PasswordAuthentication;
 import com.github.smqtt.common.channel.ChannelRegistry;
 import com.github.smqtt.common.channel.MqttChannel;
 import com.github.smqtt.common.context.ReceiveContext;
@@ -46,7 +46,7 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
         String clientIdentifier = mqttConnectPayload.clientIdentifier();
         ChannelRegistry channelRegistry = mqttReceiveContext.getChannelRegistry();
         TopicRegistry topicRegistry = mqttReceiveContext.getTopicRegistry();
-        BasicAuthentication basicAuthentication = mqttReceiveContext.getBasicAuthentication();
+        PasswordAuthentication passwordAuthentication = mqttReceiveContext.getPasswordAuthentication();
         if (channelRegistry.exists(clientIdentifier)
                 && channelRegistry.get(clientIdentifier).getStatus() == ChannelStatus.OFFLINE) {
             return mqttChannel.write(
@@ -58,7 +58,7 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
                     MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_UNACCEPTABLE_PROTOCOL_VERSION),
                     false).then(mqttChannel.close());
         }
-        if (basicAuthentication.auth(mqttConnectPayload.userName(), mqttConnectPayload.passwordInBytes())) {
+        if (passwordAuthentication.auth(mqttConnectPayload.userName(), mqttConnectPayload.passwordInBytes())) {
             /*cancel  defer close not authenticate channel */
             mqttReceiveContext.getDeferCloseDisposable().dispose();
             MqttChannel channel = channelRegistry.get(clientIdentifier);
