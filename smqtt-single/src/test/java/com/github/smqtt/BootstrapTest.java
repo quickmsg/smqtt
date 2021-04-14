@@ -1,6 +1,5 @@
 package com.github.smqtt;
 
-import com.github.smqtt.bootstrap.Bootstrap;
 import org.junit.Test;
 
 /**
@@ -15,6 +14,7 @@ public class BootstrapTest {
         Bootstrap.builder()
                 .port(8555)
                 .websocketPort(8999)
+//                .options(channelOptionMap -> channelOptionMap.put())
                 .isWebsocket(true)
                 .wiretap(true)
                 .build()

@@ -4,21 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.github.smqtt</groupId>
+    <parent>
+        <artifactId>smqtt</artifactId>
+        <groupId>com.github.smqtt</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
     <artifactId>smqtt-single</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>8</source>
-                    <target>8</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
     <name>smqtt-single</name>
     <!-- FIXME change it to the project's website -->
@@ -26,8 +18,6 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.target>1.7</maven.compiler.target>
     </properties>
 
     <dependencies>
@@ -45,5 +35,81 @@
         </dependency>
 
     </dependencies>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <from>
+<!--                        <image>openjdk:8u282-jre-buster</image>-->
+                        <image>openjdk:8-jre-alpine</image>
+
+                    </from>
+                    <to>
+                        <image>1ssqq1lxr /smqtt</image>
+                        <tags>
+                            <tag>latest</tag>
+                            <tag>${version}</tag>
+                        </tags>
+                        <auth>
+<!--                            <username>${REGISTRY_USERNAME}</username>-->
+<!--                            <password>${REGISTRY_PASSWORD}</password>-->
+                        </auth>
+                    </to>
+                    <container>
+                        <jvmFlags>
+                            <jvmFlag>-Dmy.property=example.value</jvmFlag>
+                            <jvmFlag>-Xms512m</jvmFlag>
+                            <jvmFlag>-Xdebug</jvmFlag>
+                        </jvmFlags>
+                        <mainClass>com.github.smqtt.Bootstrap</mainClass>
+                        <args>
+                            <arg>some</arg>
+                            <arg>args</arg>
+                        </args>
+                        <ports>
+                            <port>1000</port>
+                            <port>2000-2003/udp</port>
+                        </ports>
+                        <labels>
+                            <key1>value1</key1>
+                            <key2>value2</key2>
+                        </labels>
+                        <format>OCI</format>
+                    </container>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <appendAssemblyId>false</appendAssemblyId>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <!-- 此处指定main方法入口的class -->
+                            <mainClass>com.github.smqtt.Bootstrap</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>assembly</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
 
 </project>

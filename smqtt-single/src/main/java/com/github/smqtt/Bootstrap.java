@@ -1,4 +1,4 @@
-package com.github.smqtt.bootstrap;
+package com.github.smqtt;
 
 import com.github.smqtt.common.auth.PasswordAuthentication;
 import com.github.smqtt.common.channel.ChannelRegistry;
@@ -25,7 +25,7 @@ import java.util.function.Consumer;
 /**
  * @author luxurong
  * @date 2021/4/13 11:46
- * @description
+ * @description broker 启动类
  */
 @Builder
 @Getter
@@ -100,8 +100,6 @@ public class Bootstrap {
         MqttConfiguration mqttConfiguration = new MqttConfiguration();
         mqttConfiguration.setLowWaterMark(WriteBufferWaterMark.DEFAULT.low());
         mqttConfiguration.setHighWaterMark(WriteBufferWaterMark.DEFAULT.high());
-        mqttConfiguration.setPort(0);
-        mqttConfiguration.setWiretap(false);
         return mqttConfiguration;
     }
 
@@ -141,6 +139,7 @@ public class Bootstrap {
                 .start()
                 .doOnError(Throwable::printStackTrace);
     }
+
 
 
 }

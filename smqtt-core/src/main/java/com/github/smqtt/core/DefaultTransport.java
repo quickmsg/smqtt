@@ -5,13 +5,12 @@ import com.github.smqtt.common.context.ReceiveContext;
 import com.github.smqtt.common.transport.Transport;
 import com.github.smqtt.core.mqtt.MqttConfiguration;
 import com.github.smqtt.core.mqtt.MqttReceiveContext;
-import lombok.Getter;
 import reactor.core.publisher.Mono;
 import reactor.netty.DisposableChannel;
 import reactor.netty.DisposableServer;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @author luxurong
@@ -26,7 +25,7 @@ public class DefaultTransport implements Transport<MqttConfiguration> {
     private MqttConfiguration configuration;
 
 
-    private static List<DisposableServer> disposableServers = new ArrayList<>();
+    private static List<DisposableServer> disposableServers = new CopyOnWriteArrayList<>();
 
 
     public volatile static ReceiveContext<MqttConfiguration> receiveContext;
