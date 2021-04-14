@@ -11,6 +11,7 @@ import io.netty.handler.codec.mqtt.MqttFixedHeader;
 import io.netty.handler.codec.mqtt.MqttMessageType;
 import io.netty.handler.codec.mqtt.MqttPublishMessage;
 import io.netty.handler.codec.mqtt.MqttPublishVariableHeader;
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 import reactor.util.context.ContextView;
 
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
  * @date 2021/3/29 14:05
  * @description client && server handler
  */
+@Slf4j
 public class PublishProtocol implements Protocol<MqttPublishMessage> {
 
     private static List<MqttMessageType> MESSAGE_TYPE_LIST = new ArrayList<>();
@@ -41,27 +43,34 @@ public class PublishProtocol implements Protocol<MqttPublishMessage> {
 
     @Override
     public Mono<Void> parseProtocol(MqttPublishMessage message, MqttChannel mqttChannel, ContextView contextView) {
-        ReceiveContext<?> receiveContext = contextView.get(ReceiveContext.class);
-        TopicRegistry topicRegistry = receiveContext.getTopicRegistry();
-        MqttPublishVariableHeader variableHeader = message.variableHeader();
-        MessageRegistry messageRegistry = receiveContext.getMessageRegistry();
-        Optional<Set<MqttChannel>> channelsOptional = topicRegistry.getChannelListByTopic(variableHeader.topicName());
-        switch (message.fixedHeader().qosLevel()) {
-            case AT_MOST_ONCE:
-                return send(channelsOptional, message, messageRegistry, filterRetainMessage(message, messageRegistry));
-            case AT_LEAST_ONCE:
-                return send(channelsOptional, message, messageRegistry,
-                        mqttChannel.write(MqttMessageBuilder.buildPublishAck(variableHeader.packetId()), false)
-                                .then(filterRetainMessage(message, messageRegistry)));
-            case EXACTLY_ONCE:
-                if (!mqttChannel.existQos2Msg(variableHeader.packetId())) {
-                    return mqttChannel
-                            .cacheQos2Msg(variableHeader.packetId(), generateMqttPublishMessage(message, mqttChannel.generateMessageId()))
-                            .then(mqttChannel.write(MqttMessageBuilder.buildPublishRec(variableHeader.packetId()), true));
-                }
-            default:
-                return Mono.empty();
+        try {
+            ReceiveContext<?> receiveContext = contextView.get(ReceiveContext.class);
+            TopicRegistry topicRegistry = receiveContext.getTopicRegistry();
+            MqttPublishVariableHeader variableHeader = message.variableHeader();
+            MessageRegistry messageRegistry = receiveContext.getMessageRegistry();
+            Optional<Set<MqttChannel>> channelsOptional = topicRegistry.getChannelListByTopic(variableHeader.topicName());
+            switch (message.fixedHeader().qosLevel()) {
+                case AT_MOST_ONCE:
+                    return send(channelsOptional, message, messageRegistry, filterRetainMessage(message, messageRegistry));
+                case AT_LEAST_ONCE:
+                    return send(channelsOptional, message, messageRegistry,
+                            mqttChannel.write(MqttMessageBuilder.buildPublishAck(variableHeader.packetId()), false)
+                                    .then(filterRetainMessage(message, messageRegistry)));
+                case EXACTLY_ONCE:
+                    if (!mqttChannel.existQos2Msg(variableHeader.packetId())) {
+                        return mqttChannel
+                                .cacheQos2Msg(variableHeader.packetId(), generateMqttPublishMessage(message, mqttChannel.generateMessageId()))
+                                .then(mqttChannel.write(MqttMessageBuilder.buildPublishRec(variableHeader.packetId()), true));
+                    }
+                default:
+                    return Mono.empty();
+            }
         }
+        catch (Exception e){
+            log.error("error ",e);
+        }
+        return Mono.empty();
+
     }
 
 

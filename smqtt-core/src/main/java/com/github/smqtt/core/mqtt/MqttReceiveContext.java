@@ -61,6 +61,9 @@ public class MqttReceiveContext extends AbstractReceiveContext<MqttConfiguration
 
     @Override
     public void accept(MqttChannel mqttChannel, MqttMessage mqttMessage) {
+        if(log.isDebugEnabled()){
+            log.debug("[channel] {} send {}",mqttChannel,mqttMessage);
+        }
         this.getProtocolAdaptor().chooseProtocol(mqttChannel, mqttMessage, this);
     }
 
@@ -69,7 +72,7 @@ public class MqttReceiveContext extends AbstractReceiveContext<MqttConfiguration
             if (!connection.isDisposed()) {
                 connection.dispose();
             }
-        }).delaySubscription(Duration.ofSeconds(2)).subscribe();
+        }).delaySubscription(Duration.ofSeconds(10)).subscribe();
         return this;
     }
 

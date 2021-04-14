@@ -9,6 +9,7 @@ import reactor.core.publisher.Flux;
 
 import java.time.Duration;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -30,7 +31,10 @@ public class DefaultChannelRegistry implements ChannelRegistry {
     @Override
     public void
     close(MqttChannel mqttChannel) {
-        channelMap.remove(mqttChannel.getClientIdentifier());
+        Optional.ofNullable(mqttChannel.getClientIdentifier())
+                .ifPresent(cliId->{
+                    channelMap.remove(cliId);
+                });
         mqttChannel.close().subscribe();
     }
 
