@@ -1,5 +1,5 @@
 # smqtt
-![image](icon/smqtt.png)
+![image](icon/smqtt.jpg)
 
 ## Smart-Mqtt(简称smqtt)是一款开源的MQTT消息代理Broker，
 
