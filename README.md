@@ -10,11 +10,11 @@
 4.  遗嘱消息
 5.  客户端认证
 6.  tls加密
-8.  websocket协议支持
-9.  http协议交互
-7.  SPI接口支持
-8.  集群支持
-9。 docker支持
+7.  websocket协议支持
+8.  http协议交互
+9.  SPI接口扩展支持
+10.  集群支持
+11. docker支持
 
 
 ### docker启动
