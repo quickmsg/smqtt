@@ -45,12 +45,10 @@
                 <version>3.0.0</version>
                 <configuration>
                     <from>
-<!--                        <image>openjdk:8u282-jre-buster</image>-->
                         <image>openjdk:8-jre-alpine</image>
-
                     </from>
                     <to>
-                        <image>1ssqq1lxr /smqtt</image>
+                        <image>1ssqq1lxr/smqtt</image>
                         <tags>
                             <tag>latest</tag>
                             <tag>${version}</tag>
@@ -94,7 +92,7 @@
                     <archive>
                         <manifest>
                             <!-- 此处指定main方法入口的class -->
-                            <mainClass>com.github.smqtt.Bootstrap</mainClass>
+                            <mainClass>com.github.smqtt.jar.JarBootstrap</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
