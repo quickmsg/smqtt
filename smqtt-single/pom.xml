@@ -51,35 +51,28 @@
                         <image>1ssqq1lxr/smqtt</image>
                         <tags>
                             <tag>latest</tag>
-                            <tag>${version}</tag>
+                            <tag>${project.version}</tag>
                         </tags>
-                        <auth>
-<!--                            <username>${REGISTRY_USERNAME}</username>-->
-<!--                            <password>${REGISTRY_PASSWORD}</password>-->
-                        </auth>
                     </to>
                     <container>
-                        <jvmFlags>
-                            <jvmFlag>-Dmy.property=example.value</jvmFlag>
-                            <jvmFlag>-Xms512m</jvmFlag>
-                            <jvmFlag>-Xdebug</jvmFlag>
-                        </jvmFlags>
-                        <mainClass>com.github.smqtt.Bootstrap</mainClass>
-                        <args>
-                            <arg>some</arg>
-                            <arg>args</arg>
-                        </args>
-                        <ports>
-                            <port>1000</port>
-                            <port>2000-2003/udp</port>
-                        </ports>
-                        <labels>
-                            <key1>value1</key1>
-                            <key2>value2</key2>
-                        </labels>
-                        <format>OCI</format>
+                        <mainClass>com.github.smqtt.container.DockerBootstrap</mainClass>
                     </container>
                 </configuration>
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <phase>package</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>build</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+
+<!--                    <execution>-->
+<!--                        <phase>deploy</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>push</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
             </plugin>
 
             <plugin>
