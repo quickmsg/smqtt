@@ -13,7 +13,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -64,15 +63,19 @@ public interface ProtocolAdaptor {
      */
     default Object intercept(Method method, Object[] args) throws InvocationTargetException, IllegalAccessException {
         MqttMessage mqttMessage = (MqttMessage) args[1];
-        List<MessageInterceptor> interceptors =
-                INTERCEPTORS.computeIfAbsent(mqttMessage.fixedHeader().messageType(), mqttMessageType ->
-                        MessageInterceptor.FILTER_LIST.stream()
-                                .filter(messageInterceptor -> messageInterceptor.interceptorType() == mqttMessage.fixedHeader().messageType())
-                                .collect(Collectors.toList()));
-        for (MessageInterceptor interceptor : interceptors) {
-            args = interceptor.doInterceptor(args);
+        if (mqttMessage.fixedHeader() != null) {
+            List<MessageInterceptor> interceptors =
+                    INTERCEPTORS.computeIfAbsent(mqttMessage.fixedHeader().messageType(), mqttMessageType ->
+                            MessageInterceptor.FILTER_LIST.stream()
+                                    .filter(messageInterceptor -> messageInterceptor.interceptorType() == mqttMessage.fixedHeader().messageType())
+                                    .collect(Collectors.toList()));
+            for (MessageInterceptor interceptor : interceptors) {
+                args = interceptor.doInterceptor(args);
+            }
+            return method.invoke(this, args);
+        } else {
+            return null;
         }
-        return method.invoke(this, args);
     }
 
 
