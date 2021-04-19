@@ -18,7 +18,7 @@ public class HttpReceiver implements Receiver {
         return HttpServer
                 .create()
                 .port(6500)
-                .route(HttpRouterAcceptor::new)
+                .route(new HttpRouterAcceptor())
                 .accessLog(true)
                 .wiretap(true)
                 .bind()

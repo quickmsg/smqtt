@@ -2,11 +2,18 @@ package com.github.smqtt.common.http.annotation;
 
 import com.github.smqtt.common.http.enums.HttpType;
 
+import java.lang.annotation.*;
+
 /**
  * @author luxurong
  * @date 2021/4/18 15:19
  * @description
  */
+
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Inherited
 public @interface Router {
 
     String value();

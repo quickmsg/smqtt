@@ -2,8 +2,8 @@ package com.github.smqtt.core.http;
 
 import com.github.smqtt.common.http.HttpActor;
 import com.github.smqtt.common.http.annotation.Router;
-import com.github.smqtt.common.message.HttpPublishMessage;
-import com.github.smqtt.core.DefaultTransport;
+import org.reactivestreams.Publisher;
+import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
 
@@ -15,19 +15,9 @@ import reactor.netty.http.server.HttpServerResponse;
 @Router("/smqtt/publish")
 public class PublishActor implements HttpActor {
 
-
     @Override
-    public void doRequest(HttpServerRequest request, HttpServerResponse response) {
-        request.receiveContent()
-                .cast(HttpPublishMessage.class)
-                .subscribe(httpPublishMessage -> {
-//                        this.transportHttpMessage(httpPublishMessage)
-                });
-    }
-
-    private void transportHttpMessage(HttpPublishMessage httpPublishMessage) {
-//        DefaultTransport.receiveContext.getProtocolAdaptor()
-//                .chooseProtocol();
+    public Publisher<Void> doRequest(HttpServerRequest request, HttpServerResponse response) {
+        return Mono.empty();
     }
 
 

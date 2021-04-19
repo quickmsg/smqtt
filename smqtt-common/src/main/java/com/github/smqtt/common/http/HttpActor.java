@@ -1,6 +1,7 @@
 package com.github.smqtt.common.http;
 
 import com.github.smqtt.common.spi.DynamicLoader;
+import org.reactivestreams.Publisher;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
 
@@ -24,9 +25,9 @@ public interface HttpActor {
      *
      * @param request  请求
      * @param response 响应
-     * @return url
+     * @return Object
      */
-    void doRequest(HttpServerRequest request, HttpServerResponse response);
+    Publisher<Void> doRequest(HttpServerRequest request, HttpServerResponse response);
 
 
 }
