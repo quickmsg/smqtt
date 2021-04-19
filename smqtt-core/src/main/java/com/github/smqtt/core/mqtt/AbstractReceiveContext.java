@@ -2,6 +2,7 @@ package com.github.smqtt.core.mqtt;
 
 import com.github.smqtt.common.auth.PasswordAuthentication;
 import com.github.smqtt.common.channel.ChannelRegistry;
+import com.github.smqtt.common.config.AbstractConfiguration;
 import com.github.smqtt.common.config.Configuration;
 import com.github.smqtt.common.context.ReceiveContext;
 import com.github.smqtt.common.message.MessageRegistry;
@@ -56,41 +57,50 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
     }
 
     private MessageRegistry messageRegistry(T configuration) {
+        AbstractConfiguration abstractConfiguration = castConfiguration(configuration);
         return Optional.ofNullable(DynamicLoader
-                .findFirst(configuration.getMessageRegistry())
+                .findFirst(abstractConfiguration.getMessageRegistry())
                 .map(messageRegistry -> (MessageRegistry) messageRegistry)
                 .orElse(MessageRegistry.INSTANCE)).orElse(new DefaultMessageRegistry());
     }
 
     private PasswordAuthentication basicAuthentication() {
+        AbstractConfiguration abstractConfiguration = castConfiguration(configuration);
         return Optional.ofNullable(DynamicLoader
-                .findFirst(configuration.getPasswordAuthentication())
+                .findFirst(abstractConfiguration.getPasswordAuthentication())
                 .map(passwordAuthentication -> (PasswordAuthentication) passwordAuthentication)
-                .orElse(PasswordAuthentication.INSTANCE)).orElse(configuration.getReactivePasswordAuth());
+                .orElse(PasswordAuthentication.INSTANCE)).orElse(abstractConfiguration.getReactivePasswordAuth());
     }
 
     ;
 
     private ChannelRegistry channelRegistry(T configuration) {
+        AbstractConfiguration abstractConfiguration = castConfiguration(configuration);
         return Optional.ofNullable(DynamicLoader
-                .findFirst(configuration.getChannelRegistry())
+                .findFirst(abstractConfiguration.getChannelRegistry())
                 .map(channelRegistry -> (ChannelRegistry) channelRegistry)
                 .orElse(ChannelRegistry.INSTANCE)).orElse(new DefaultChannelRegistry());
     }
 
     private TopicRegistry topicRegistry(T configuration) {
+        AbstractConfiguration abstractConfiguration = castConfiguration(configuration);
         return Optional.ofNullable(DynamicLoader
-                .findFirst(configuration.getTopicRegistry())
+                .findFirst(abstractConfiguration.getTopicRegistry())
                 .map(topicRegistry -> (TopicRegistry) topicRegistry)
                 .orElse(TopicRegistry.INSTANCE)).orElse(new DefaultTopicRegistry());
     }
 
     private ProtocolAdaptor protocolAdaptor(T configuration) {
+        AbstractConfiguration abstractConfiguration = castConfiguration(configuration);
         return Optional.ofNullable(DynamicLoader
-                .findFirst(configuration.getProtocolAdaptor())
+                .findFirst(abstractConfiguration.getProtocolAdaptor())
                 .map(ProtocolAdaptor::proxy)
                 .orElse(ProtocolAdaptor.INSTANCE)).orElse(new DefaultProtocolAdaptor().proxy());
 
+    }
+
+    private AbstractConfiguration castConfiguration(T configuration) {
+        return (AbstractConfiguration) configuration;
     }
 
 

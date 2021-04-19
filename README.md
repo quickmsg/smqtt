@@ -1,6 +1,6 @@
 ![image](icon/smqtt.jpg)
 
-## Smart-Mqtt(简称smqtt)是一款开源的MQTT消息代理Broker，
+## SMQTT是一款开源的MQTT消息代理Broker，
 
 ### smqtt拥有的功能如下
 
@@ -13,7 +13,7 @@
 7.  websocket协议支持
 8.  http协议交互
 9.  SPI接口扩展支持
-10.  集群支持
+10. 集群支持
 11. docker支持
 
 

@@ -2,7 +2,7 @@ package com.github.smqtt.core.mqtt;
 
 import com.github.smqtt.common.auth.PasswordAuthentication;
 import com.github.smqtt.common.channel.ChannelRegistry;
-import com.github.smqtt.common.config.Configuration;
+import com.github.smqtt.common.config.AbstractConfiguration;
 import com.github.smqtt.common.message.MessageRegistry;
 import com.github.smqtt.common.protocol.ProtocolAdaptor;
 import com.github.smqtt.common.topic.TopicRegistry;
@@ -20,13 +20,13 @@ import java.util.function.Consumer;
  * @Description MQTT协议配置类
  */
 @Data
-public class MqttConfiguration implements Configuration {
+public class MqttConfiguration implements AbstractConfiguration {
 
     private Integer port = 0;
 
     private Integer webSocketPort = 0;
 
-    private Integer lowWaterMark ;
+    private Integer lowWaterMark;
 
     private Integer highWaterMark;
 

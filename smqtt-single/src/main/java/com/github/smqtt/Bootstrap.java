@@ -6,6 +6,8 @@ import com.github.smqtt.common.message.MessageRegistry;
 import com.github.smqtt.common.protocol.ProtocolAdaptor;
 import com.github.smqtt.common.topic.TopicRegistry;
 import com.github.smqtt.common.transport.Transport;
+import com.github.smqtt.core.http.HttpConfiguration;
+import com.github.smqtt.core.http.HttpTransportFactory;
 import com.github.smqtt.core.mqtt.MqttConfiguration;
 import com.github.smqtt.core.mqtt.MqttTransportFactory;
 import com.github.smqtt.core.websocket.WebSocketMqttTransportFactory;
@@ -18,6 +20,8 @@ import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -38,6 +42,16 @@ public class Bootstrap {
     private static final Integer DEFAULT_WEBSOCKET_MQTT_PORT = 9997;
 
 
+    @Builder.Default
+    private Boolean isWebsocket = false;
+
+    @Builder.Default
+    private Integer websocketPort = 0;
+
+
+    @Builder.Default
+    private List<Transport<?>> transports = new ArrayList<>();
+
     private Integer port;
 
     private Integer lowWaterMark;
@@ -53,10 +67,12 @@ public class Bootstrap {
     private Integer workThreadSize;
 
     @Builder.Default
-    private Boolean isWebsocket = false;
+    private Boolean isHttp = false;
 
     @Builder.Default
-    private Integer websocketPort = 0;
+    private Integer httpPort = 0;
+
+    private String host;
 
     private PasswordAuthentication reactivePasswordAuth;
 
@@ -125,21 +141,33 @@ public class Bootstrap {
      *
      * @return Mono
      */
-    public Mono<Transport> start() {
+    public Mono<Bootstrap> start() {
         MqttConfiguration mqttConfiguration = initMqttConfiguration();
-        if (isWebsocket) {
-            WebSocketMqttTransportFactory webSocketMqttTransportFactory = new WebSocketMqttTransportFactory();
-            webSocketMqttTransportFactory.createTransport(mqttConfiguration)
-                    .start()
-                    .doOnError(Throwable::printStackTrace)
-                    .block();
-        }
         MqttTransportFactory mqttTransportFactory = new MqttTransportFactory();
         return mqttTransportFactory.createTransport(mqttConfiguration)
                 .start()
-                .doOnError(Throwable::printStackTrace);
+                .doOnError(Throwable::printStackTrace)
+                .doOnSuccess(transports::add)
+                .then(startWs(mqttConfiguration))
+                .thenReturn(this);
     }
 
 
+    private Mono<Void> startWs(MqttConfiguration mqttConfiguration) {
+        return this.isWebsocket ? new WebSocketMqttTransportFactory().createTransport(mqttConfiguration)
+                .start()
+                .doOnSuccess(transports::add).then() : Mono.empty();
+    }
+
+
+    private Mono<Void> startHttp(HttpConfiguration httpConfiguration) {
+        return this.isHttp ? new HttpTransportFactory().createTransport(httpConfiguration)
+                .start()
+                .doOnSuccess(transports::add).then() : Mono.empty();
+    }
+
+    public void shutdown() {
+        transports.forEach(Transport::dispose);
+    }
 
 }

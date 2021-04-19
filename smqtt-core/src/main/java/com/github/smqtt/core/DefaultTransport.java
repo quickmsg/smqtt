@@ -5,18 +5,18 @@ import com.github.smqtt.common.context.ReceiveContext;
 import com.github.smqtt.common.transport.Transport;
 import com.github.smqtt.core.mqtt.MqttConfiguration;
 import com.github.smqtt.core.mqtt.MqttReceiveContext;
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
-import reactor.netty.DisposableChannel;
 import reactor.netty.DisposableServer;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Optional;
 
 /**
  * @author luxurong
  * @date 2021/3/30 13:53
  * @description
  */
+@Slf4j
 public class DefaultTransport implements Transport<MqttConfiguration> {
 
 
@@ -25,7 +25,7 @@ public class DefaultTransport implements Transport<MqttConfiguration> {
     private MqttConfiguration configuration;
 
 
-    private static List<DisposableServer> disposableServers = new CopyOnWriteArrayList<>();
+    private DisposableServer disposableServer;
 
 
     public volatile static ReceiveContext<MqttConfiguration> receiveContext;
@@ -33,7 +33,7 @@ public class DefaultTransport implements Transport<MqttConfiguration> {
     public DefaultTransport(MqttConfiguration configuration, Receiver receiver) {
         this.configuration = configuration;
         this.receiver = receiver;
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> disposableServers.forEach(DisposableServer::disposeNow)));
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> Optional.ofNullable(disposableServer).ifPresent(DisposableServer::dispose)));
     }
 
 
@@ -43,6 +43,7 @@ public class DefaultTransport implements Transport<MqttConfiguration> {
                 receiver.bind())
                 .doOnNext(this::bindSever)
                 .thenReturn(this)
+                .doOnSuccess(defaultTransport -> log.info("server start success host {} port {}", disposableServer.host(), disposableServer.port()))
                 .cast(Transport.class)
                 .contextWrite(context -> context.put(MqttReceiveContext.class, this.buildReceiveContext(configuration)));
     }
@@ -60,18 +61,18 @@ public class DefaultTransport implements Transport<MqttConfiguration> {
 
 
     private void bindSever(DisposableServer disposableServer) {
-        DefaultTransport.disposableServers.add(disposableServer);
+        this.disposableServer = disposableServer;
     }
 
 
     @Override
     public void dispose() {
-        DefaultTransport.disposableServers.forEach(DisposableServer::disposeNow);
+        this.disposableServer.dispose();
     }
 
     @Override
     public boolean isDisposed() {
-        return DefaultTransport.disposableServers.stream().map(DisposableChannel::isDisposed).findAny().orElse(false);
+        return this.disposableServer.isDisposed();
     }
 
 
