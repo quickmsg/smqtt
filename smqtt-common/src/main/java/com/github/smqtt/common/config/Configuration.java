@@ -24,4 +24,9 @@ public interface Configuration {
     Boolean getWiretap();
 
 
+    Boolean getSsl();
+
+    SslContext getSslContext();
+
+
 }

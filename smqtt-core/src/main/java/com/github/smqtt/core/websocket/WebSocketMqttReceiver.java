@@ -5,6 +5,7 @@ import com.github.smqtt.common.channel.MqttChannel;
 import com.github.smqtt.common.enums.ChannelStatus;
 import com.github.smqtt.core.mqtt.MqttConfiguration;
 import com.github.smqtt.core.mqtt.MqttReceiveContext;
+import com.github.smqtt.core.ssl.AbstractSslHandler;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.WriteBufferWaterMark;
@@ -12,6 +13,7 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.codec.mqtt.MqttDecoder;
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 import reactor.netty.DisposableServer;
 import reactor.netty.tcp.TcpServer;
@@ -22,7 +24,8 @@ import reactor.util.context.ContextView;
  * @date 2021/3/29 20:08
  * @description
  */
-public class WebSocketMqttReceiver implements Receiver {
+@Slf4j
+public class WebSocketMqttReceiver extends AbstractSslHandler implements Receiver {
 
     @Override
     public Mono<DisposableServer> bind() {
@@ -37,6 +40,7 @@ public class WebSocketMqttReceiver implements Receiver {
                 .port(mqttConfiguration.getWebSocketPort())
                 .doOnBind(mqttConfiguration.getTcpServerConfig())
                 .wiretap(true)
+                .secure(sslContextSpec -> this.secure(sslContextSpec, mqttConfiguration))
                 .childOption(ChannelOption.WRITE_BUFFER_WATER_MARK, new WriteBufferWaterMark(mqttConfiguration.getLowWaterMark(), mqttConfiguration.getHighWaterMark()))
                 .childOption(ChannelOption.TCP_NODELAY, true)
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
@@ -59,4 +63,6 @@ public class WebSocketMqttReceiver implements Receiver {
                                     .build().initChannel());
                 });
     }
+
+
 }

@@ -29,11 +29,13 @@ public abstract class AbstractBootstrap {
         Boolean wiretap = Optional.ofNullable(function.apply(BootstrapKey.BOOTSTRAP_WIRETAP))
                 .map(Boolean::parseBoolean).orElse(false);
         Integer bossThreadSize = Optional.ofNullable(function.apply(BootstrapKey.BOOTSTRAP_BOSS_THREAD_SIZE))
-                .map(Integer::parseInt).orElse(Runtime.getRuntime().availableProcessors());
+                .map(Integer::parseInt).orElse(Runtime.getRuntime().availableProcessors() >> 1);
         Integer workThreadSize = Optional.ofNullable(function.apply(BootstrapKey.BOOTSTRAP_WORK_THREAD_SIZE))
                 .map(Integer::parseInt).orElse(Runtime.getRuntime().availableProcessors());
 
         Boolean isWebsocket = Optional.ofNullable(function.apply(BootstrapKey.BOOTSTRAP_WEB_SOCKET_ENABLE))
+                .map(Boolean::parseBoolean).orElse(false);
+        Boolean ssl = Optional.ofNullable(function.apply(BootstrapKey.BOOTSTRAP_SSL))
                 .map(Boolean::parseBoolean).orElse(false);
         Integer websocketPort = 0;
         if (isWebsocket) {
@@ -49,6 +51,7 @@ public abstract class AbstractBootstrap {
                 .reactivePasswordAuth(((userName, passwordInBytes) -> userName.equals(username) && password.equals(new String(passwordInBytes))))
                 .bossThreadSize(bossThreadSize)
                 .wiretap(wiretap)
+                .ssl(ssl)
                 .workThreadSize(workThreadSize)
                 .lowWaterMark(lowWaterMark)
                 .highWaterMark(highWaterMark);

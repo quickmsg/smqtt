@@ -105,6 +105,7 @@ public class Bootstrap {
         Optional.ofNullable(bossThreadSize).ifPresent(mqttConfiguration::setBossThreadSize);
         Optional.ofNullable(workThreadSize).ifPresent(mqttConfiguration::setWorkThreadSize);
         Optional.ofNullable(messageRegistry).ifPresent(mqttConfiguration::setMessageRegistry);
+        Optional.ofNullable(ssl).ifPresent(mqttConfiguration::setSsl);
         if (isWebsocket) {
             mqttConfiguration.setWebSocketPort(websocketPort);
         }

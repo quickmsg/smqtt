@@ -15,6 +15,7 @@ public class BootstrapTest {
                 .port(8555)
                 .websocketPort(8999)
 //                .options(channelOptionMap -> channelOptionMap.put())
+                .ssl(true)
                 .isWebsocket(true)
                 .wiretap(true)
                 .build()

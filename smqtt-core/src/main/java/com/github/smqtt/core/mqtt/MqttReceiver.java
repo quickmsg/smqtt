@@ -3,6 +3,7 @@ package com.github.smqtt.core.mqtt;
 import com.github.smqtt.common.Receiver;
 import com.github.smqtt.common.channel.MqttChannel;
 import com.github.smqtt.common.enums.ChannelStatus;
+import com.github.smqtt.core.ssl.AbstractSslHandler;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.WriteBufferWaterMark;
@@ -17,7 +18,7 @@ import reactor.util.context.ContextView;
  * @date 2021/3/29 20:08
  * @description
  */
-public class MqttReceiver implements Receiver {
+public class MqttReceiver extends AbstractSslHandler implements Receiver {
 
     @Override
     public Mono<DisposableServer> bind() {
@@ -36,6 +37,7 @@ public class MqttReceiver implements Receiver {
                 .childOption(ChannelOption.TCP_NODELAY, true)
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
                 .childOption(ChannelOption.SO_REUSEADDR, true)
+                .secure(sslContextSpec -> this.secure(sslContextSpec, mqttConfiguration))
                 .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
                 .runOn(receiveContext.getLoopResources())
                 .doOnConnection(connection -> {

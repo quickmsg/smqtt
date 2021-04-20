@@ -3,9 +3,11 @@ package com.github.smqtt.core.mqtt;
 import com.github.smqtt.common.auth.PasswordAuthentication;
 import com.github.smqtt.common.channel.ChannelRegistry;
 import com.github.smqtt.common.config.AbstractConfiguration;
+import com.github.smqtt.common.config.SslContext;
 import com.github.smqtt.common.message.MessageRegistry;
 import com.github.smqtt.common.protocol.ProtocolAdaptor;
 import com.github.smqtt.common.topic.TopicRegistry;
+import com.github.smqtt.core.ssl.AbstractSslHandler;
 import io.netty.channel.ChannelOption;
 import lombok.Data;
 import reactor.netty.tcp.TcpServerConfig;
@@ -20,7 +22,7 @@ import java.util.function.Consumer;
  * @Description MQTT协议配置类
  */
 @Data
-public class MqttConfiguration implements AbstractConfiguration {
+public class MqttConfiguration extends AbstractSslHandler implements AbstractConfiguration {
 
     private Integer port = 0;
 
@@ -31,6 +33,10 @@ public class MqttConfiguration implements AbstractConfiguration {
     private Integer highWaterMark;
 
     private Boolean wiretap = false;
+
+    private Boolean ssl = false;
+
+    private SslContext sslContext;
 
     private PasswordAuthentication reactivePasswordAuth = (u, p) -> true;
 
@@ -60,5 +66,6 @@ public class MqttConfiguration implements AbstractConfiguration {
             Optional.ofNullable(childOptions).ifPresent(options -> options.accept(tcpServerConfig.childOptions()));
         };
     }
+
 
 }
