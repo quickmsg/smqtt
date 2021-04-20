@@ -2,6 +2,7 @@ package com.github.smqtt;
 
 import com.github.smqtt.common.auth.PasswordAuthentication;
 import com.github.smqtt.common.channel.ChannelRegistry;
+import com.github.smqtt.common.config.SslContext;
 import com.github.smqtt.common.message.MessageRegistry;
 import com.github.smqtt.common.protocol.ProtocolAdaptor;
 import com.github.smqtt.common.topic.TopicRegistry;
@@ -60,17 +61,16 @@ public class Bootstrap {
 
     private Boolean ssl;
 
+    private SslContext sslContext;
+
     private Boolean wiretap;
 
     private Integer bossThreadSize;
 
     private Integer workThreadSize;
 
-    @Builder.Default
-    private Boolean isHttp = false;
+    private HttpOptions httpOptions;
 
-    @Builder.Default
-    private Integer httpPort = 0;
 
     private String host;
 
@@ -106,6 +106,7 @@ public class Bootstrap {
         Optional.ofNullable(workThreadSize).ifPresent(mqttConfiguration::setWorkThreadSize);
         Optional.ofNullable(messageRegistry).ifPresent(mqttConfiguration::setMessageRegistry);
         Optional.ofNullable(ssl).ifPresent(mqttConfiguration::setSsl);
+        Optional.ofNullable(sslContext).ifPresent(mqttConfiguration::setSslContext);
         if (isWebsocket) {
             mqttConfiguration.setWebSocketPort(websocketPort);
         }
@@ -150,6 +151,7 @@ public class Bootstrap {
                 .doOnError(Throwable::printStackTrace)
                 .doOnSuccess(transports::add)
                 .then(startWs(mqttConfiguration))
+                .then(startHttp())
                 .thenReturn(this);
     }
 
@@ -161,14 +163,42 @@ public class Bootstrap {
     }
 
 
-    private Mono<Void> startHttp(HttpConfiguration httpConfiguration) {
-        return this.isHttp ? new HttpTransportFactory().createTransport(httpConfiguration)
+    private Mono<Void> startHttp() {
+        return httpOptions != null ? new HttpTransportFactory().createTransport(this.buildHttpConfiguration())
                 .start()
                 .doOnSuccess(transports::add).then() : Mono.empty();
+    }
+
+
+    private HttpConfiguration buildHttpConfiguration() {
+        HttpConfiguration httpConfiguration = new HttpConfiguration();
+        Optional.ofNullable(this.httpOptions.wiretap).ifPresent(httpConfiguration::setWiretap);
+        Optional.ofNullable(this.httpOptions.accessLog).ifPresent(httpConfiguration::setAccessLog);
+        Optional.ofNullable(this.httpOptions.sslContext).ifPresent(httpConfiguration::setSslContext);
+        Optional.ofNullable(this.httpOptions.httpPort).ifPresent(httpConfiguration::setPort);
+        return httpConfiguration;
     }
 
     public void shutdown() {
         transports.forEach(Transport::dispose);
     }
+
+    @Getter
+    @Builder
+    public static class HttpOptions {
+
+        @Builder.Default
+        private Integer httpPort = 0;
+
+        @Builder.Default
+        private Boolean wiretap = false;
+
+        private SslContext sslContext;
+
+        @Builder.Default
+        private Boolean accessLog = false;
+
+    }
+
 
 }

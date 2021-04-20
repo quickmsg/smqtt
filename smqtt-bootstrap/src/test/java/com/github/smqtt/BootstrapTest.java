@@ -18,6 +18,7 @@ public class BootstrapTest {
                 .ssl(false)
                 .isWebsocket(true)
                 .wiretap(false)
+                .httpOptions(Bootstrap.HttpOptions.builder().accessLog(true).wiretap(true).build())
                 .build()
                 .startAwait();
 

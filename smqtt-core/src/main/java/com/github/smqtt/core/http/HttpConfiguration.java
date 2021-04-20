@@ -15,10 +15,6 @@ public class HttpConfiguration implements Configuration {
 
     private Integer port = 0;
 
-    private Integer lowWaterMark;
-
-    private Integer highWaterMark;
-
     private Boolean wiretap = false;
 
     private Boolean ssl = false;
@@ -32,4 +28,13 @@ public class HttpConfiguration implements Configuration {
     private Boolean accessLog;
 
 
+    @Override
+    public Integer getLowWaterMark() {
+        return 0;
+    }
+
+    @Override
+    public Integer getHighWaterMark() {
+        return 0;
+    }
 }
