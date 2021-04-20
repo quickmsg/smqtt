@@ -24,8 +24,8 @@ public interface HttpActor {
 
     /**
      * 处理
-     *  如何要处理GET请求query param reactor-netty是不支持的，需要自己去处理
-     *  QueryStringDecoder queryStringDecoder  = new QueryStringDecoder(request.uri());
+     * 如何要处理GET请求query param reactor-netty是不支持的，需要自己去处理
+     * QueryStringDecoder queryStringDecoder  = new QueryStringDecoder(request.uri());
      *
      * @param request  请求
      * @param response 响应

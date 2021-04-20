@@ -9,10 +9,10 @@
         <groupId>com.github.smqtt</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>smqtt-single</artifactId>
+    <artifactId>smqtt-bootstrap</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <name>smqtt-single</name>
+    <name>smqtt-bootstrap</name>
     <!-- FIXME change it to the project's website -->
     <url>http://www.example.com</url>
 

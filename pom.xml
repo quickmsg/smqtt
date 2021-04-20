@@ -11,6 +11,7 @@
         <module>smqtt-common</module>
         <module>smqtt-core</module>
         <module>smqtt-cluster</module>
+        <module>smqtt-bootstrap</module>
     </modules>
     <packaging>pom</packaging>
 
