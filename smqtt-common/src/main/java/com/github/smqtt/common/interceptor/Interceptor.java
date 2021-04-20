@@ -12,10 +12,10 @@ import java.util.stream.Collectors;
  * @date 2021/4/9 10:55
  * @description 针对push消息过滤
  */
-public interface MessageInterceptor {
+public interface Interceptor {
 
-    List<MessageInterceptor> FILTER_LIST = DynamicLoader.findAll(MessageInterceptor.class)
-            .sorted(Comparator.comparing(MessageInterceptor::order))
+    List<Interceptor> FILTER_LIST = DynamicLoader.findAll(Interceptor.class)
+            .sorted(Comparator.comparing(Interceptor::order))
             .collect(Collectors.toList());
 
     /**

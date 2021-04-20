@@ -29,15 +29,17 @@ public class MqttReceiver extends AbstractSslHandler implements Receiver {
     private TcpServer newTcpServer(ContextView context) {
         MqttReceiveContext receiveContext = context.get(MqttReceiveContext.class);
         MqttConfiguration mqttConfiguration = receiveContext.getConfiguration();
-        return TcpServer.create()
-                .port(mqttConfiguration.getPort())
+        TcpServer server = TcpServer.create();
+        if (mqttConfiguration.getSsl()) {
+            server.secure(sslContextSpec -> this.secure(sslContextSpec, mqttConfiguration));
+        }
+        return server.port(mqttConfiguration.getPort())
                 .doOnBind(mqttConfiguration.getTcpServerConfig())
                 .wiretap(true)
                 .childOption(ChannelOption.WRITE_BUFFER_WATER_MARK, new WriteBufferWaterMark(mqttConfiguration.getLowWaterMark(), mqttConfiguration.getHighWaterMark()))
                 .childOption(ChannelOption.TCP_NODELAY, true)
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
                 .childOption(ChannelOption.SO_REUSEADDR, true)
-                .secure(sslContextSpec -> this.secure(sslContextSpec, mqttConfiguration))
                 .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
                 .runOn(receiveContext.getLoopResources())
                 .doOnConnection(connection -> {

@@ -3,11 +3,8 @@ package com.github.smqtt.core;
 import com.github.smqtt.common.channel.ChannelRegistry;
 import com.github.smqtt.common.channel.MqttChannel;
 import com.github.smqtt.common.enums.ChannelStatus;
-import io.netty.channel.epoll.EpollServerSocketChannelConfig;
 import lombok.extern.slf4j.Slf4j;
-import reactor.core.publisher.Flux;
 
-import java.time.Duration;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,15 +21,13 @@ public class DefaultChannelRegistry implements ChannelRegistry {
     private Map<String, MqttChannel> channelMap = new ConcurrentHashMap<>();
 
     public DefaultChannelRegistry() {
-        Flux.interval(Duration.ofSeconds(1))
-                .subscribe(index -> log.info("客户端数："+channelMap.size()));
     }
 
     @Override
     public void
     close(MqttChannel mqttChannel) {
         Optional.ofNullable(mqttChannel.getClientIdentifier())
-                .ifPresent(cliId->{
+                .ifPresent(cliId -> {
                     channelMap.remove(cliId);
                 });
         mqttChannel.close().subscribe();
@@ -51,5 +46,10 @@ public class DefaultChannelRegistry implements ChannelRegistry {
     @Override
     public MqttChannel get(String clientIdentifier) {
         return channelMap.get(clientIdentifier);
+    }
+
+    @Override
+    public Integer counts() {
+        return channelMap.size();
     }
 }

@@ -3,7 +3,7 @@ package com.github.smqtt.common.protocol;
 import com.github.smqtt.common.channel.MqttChannel;
 import com.github.smqtt.common.config.Configuration;
 import com.github.smqtt.common.context.ReceiveContext;
-import com.github.smqtt.common.interceptor.MessageInterceptor;
+import com.github.smqtt.common.interceptor.Interceptor;
 import com.github.smqtt.common.spi.DynamicLoader;
 import io.netty.handler.codec.mqtt.MqttMessage;
 import io.netty.handler.codec.mqtt.MqttMessageType;
@@ -26,7 +26,7 @@ public interface ProtocolAdaptor {
     ProtocolAdaptor INSTANCE = DynamicLoader.findFirst(ProtocolAdaptor.class).orElse(null);
 
 
-    Map<MqttMessageType, List<MessageInterceptor>> INTERCEPTORS = new ConcurrentHashMap<>();
+    Map<MqttMessageType, List<Interceptor>> INTERCEPTORS = new ConcurrentHashMap<>();
 
 
     /**
@@ -64,12 +64,12 @@ public interface ProtocolAdaptor {
     default Object intercept(Method method, Object[] args) throws InvocationTargetException, IllegalAccessException {
         MqttMessage mqttMessage = (MqttMessage) args[1];
         if (mqttMessage.fixedHeader() != null) {
-            List<MessageInterceptor> interceptors =
+            List<Interceptor> interceptors =
                     INTERCEPTORS.computeIfAbsent(mqttMessage.fixedHeader().messageType(), mqttMessageType ->
-                            MessageInterceptor.FILTER_LIST.stream()
+                            Interceptor.FILTER_LIST.stream()
                                     .filter(messageInterceptor -> messageInterceptor.interceptorType() == mqttMessage.fixedHeader().messageType())
                                     .collect(Collectors.toList()));
-            for (MessageInterceptor interceptor : interceptors) {
+            for (Interceptor interceptor : interceptors) {
                 args = interceptor.doInterceptor(args);
             }
             return method.invoke(this, args);

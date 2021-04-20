@@ -1,6 +1,6 @@
 package com.github.smqtt.core;
 
-import com.github.smqtt.common.interceptor.MessageInterceptor;
+import com.github.smqtt.common.interceptor.Interceptor;
 import io.netty.handler.codec.mqtt.MqttMessageType;
 
 /**
@@ -8,7 +8,7 @@ import io.netty.handler.codec.mqtt.MqttMessageType;
  * @date 2021/4/12 15:00
  * @description
  */
-public class MonitorInterceptor implements MessageInterceptor {
+public class MonitorInterceptor implements Interceptor {
 
 
     @Override
