@@ -28,13 +28,14 @@
 
     <dependencyManagement>
         <dependencies>
-       
-            <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-collections4 -->
+
+            <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
             <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-collections4</artifactId>
-                <version>4.4</version>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>1.2.75</version>
             </dependency>
+
             <dependency>
                 <groupId>io.projectreactor.netty</groupId>
                 <artifactId>reactor-netty</artifactId>

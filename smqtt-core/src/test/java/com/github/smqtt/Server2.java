@@ -4,8 +4,11 @@ import io.netty.channel.ChannelOption;
 import org.junit.Test;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.netty.ByteBufFlux;
 import reactor.netty.Connection;
 import reactor.netty.DisposableServer;
+import reactor.netty.http.client.HttpClient;
+import reactor.netty.http.server.HttpServer;
 import reactor.netty.tcp.TcpClient;
 import reactor.netty.tcp.TcpServer;
 
@@ -21,44 +24,28 @@ public class Server2 {
 
     @Test
     public void test() throws InterruptedException {
-        DisposableServer server =
-                TcpServer.create()
-                        .port(0)
-                        .childOption(ChannelOption.ALLOW_HALF_CLOSURE, true)
-                        .wiretap(true)
-                        .handle((in, out) -> in.receive()
-                                .asString()
-                                .doOnNext(s -> {
-                                    if (s.endsWith("257\n")) {
-                                        out.sendString(Mono.just("END")
-                                                .delayElement(Duration.ofMillis(100)))
-                                                .then()
-                                                .subscribe();
-                                    }
-                                })
-                                .then())
-                        .bindNow();
+//        DisposableServer server= HttpServer.create().port(11113).route(routes ->
+//                routes.post("/test/{param}", (req, res) ->
+//                        res.sendString(req.receive()
+//                                .asString()
+//                                .map(s -> {
+//                                    return s + ' ' + req.param("param") + '!';
+//                                })))).bindNow();
 
-        Connection conn =
-                TcpClient.create()
-                        .remoteAddress(server::address)
-                        .wiretap(true)
-                        .connectNow();
+        HttpClient.create()             // Prepares a HTTP client for configuration.
+                .port(18997)  // Obtain the server's port and provide it as a port to which this
+                // client should connect.
+                .wiretap(true)            // Applies a wire logger configuration.
+                .headers(h -> h.add("Content-Type", "text/plain")) // Adds headers to the HTTP request.
+                .post()              // Specifies that POST method will be used.
+                .uri("/smqtt/publish/cejjksa")  // Specifies the path.
+                .send(ByteBufFlux.fromString(Flux.just("Hello")))  // Sends the request body.
+                .responseContent()   // Receives the response body.
+                .aggregate()
+                .asString()
+                .block();
 
         CountDownLatch latch = new CountDownLatch(1);
-        conn.inbound()
-                .receive()
-                .asString()
-                .subscribe(s -> {
-                    if ("END".equals(s)) {
-                        latch.countDown();
-                    }
-                });
-
-        conn.outbound()
-                .sendString(Flux.range(1, 257).map(count -> count + "\n"))
-                .then()
-                .subscribe(null, null, () -> ((io.netty.channel.socket.SocketChannel) conn.channel()).shutdownOutput());
         latch.await();
     }
 

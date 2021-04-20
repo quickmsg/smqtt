@@ -15,27 +15,31 @@ import java.util.concurrent.CountDownLatch;
  * @date 2021/4/5 20:51
  * @description
  */
-public class TransportFactoryTest2 {
-
-
+public class MqttTransportFactoryTest {
 
 
     @Test
-    public void testWsTransport() throws InterruptedException {
-        System.out.println(DefaultTransport.receiveContext);
-
+    public void testTransport() throws InterruptedException {
         DirectUsedMonitor directUsedMonitor = new DirectUsedMonitor();
         CountDownLatch countDownLatch = new CountDownLatch(1);
         MqttConfiguration mqttConfiguration = new MqttConfiguration();
-        mqttConfiguration.setPort(8998);
-        WebSocketMqttTransportFactory mqttTransportFactory = new WebSocketMqttTransportFactory();
+        mqttConfiguration.setPort(8997);
+        MqttTransportFactory mqttTransportFactory = new MqttTransportFactory();
         Transport transport1= mqttTransportFactory.createTransport(mqttConfiguration)
                 .start()
                 .doOnError(Throwable::printStackTrace)
                 .block();
-        System.out.println(transport1);
         directUsedMonitor.startMonitor();
+
+//
+//
+        System.out.println(transport1);
+        System.out.println(DefaultTransport.receiveContext);
+
+
         countDownLatch.await();
     }
+
+
 
 }
