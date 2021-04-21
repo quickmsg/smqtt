@@ -147,7 +147,7 @@ public class PublishProtocol implements Protocol<MqttPublishMessage> {
         MqttFixedHeader mqttFixedHeader = message.fixedHeader();
         MqttFixedHeader newFixedHeader = new MqttFixedHeader(mqttFixedHeader.messageType(), false, mqttFixedHeader.qosLevel(), false, mqttFixedHeader.remainingLength());
         MqttPublishVariableHeader newHeader = new MqttPublishVariableHeader(mqttPublishVariableHeader.topicName(), messageId);
-        return new MqttPublishMessage(newFixedHeader, newHeader, message.payload());
+        return new MqttPublishMessage(newFixedHeader, newHeader, message.payload().retain());
 
     }
 

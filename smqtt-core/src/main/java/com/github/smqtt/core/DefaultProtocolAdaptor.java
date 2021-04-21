@@ -43,7 +43,8 @@ public class DefaultProtocolAdaptor implements ProtocolAdaptor {
             log.info("channel {} message {}", mqttChannel, mqttMessage);
         }
         Optional.ofNullable(types.get(mqttMessage.fixedHeader().messageType()))
-                .ifPresent(protocol -> protocol.doParseProtocol(mqttMessage, mqttChannel)
+                .ifPresent(protocol -> protocol
+                        .doParseProtocol(mqttMessage, mqttChannel)
                         .contextWrite(context -> context.putNonNull(ReceiveContext.class, receiveContext))
                         .subscribeOn(Schedulers.parallel())
                         .subscribe(aVoid -> {

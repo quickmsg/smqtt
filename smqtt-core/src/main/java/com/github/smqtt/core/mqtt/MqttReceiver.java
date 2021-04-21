@@ -7,6 +7,7 @@ import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.WriteBufferWaterMark;
 import io.netty.handler.codec.mqtt.MqttDecoder;
+import io.netty.handler.codec.mqtt.MqttEncoder;
 import reactor.core.publisher.Mono;
 import reactor.netty.DisposableServer;
 import reactor.netty.tcp.TcpServer;
@@ -42,7 +43,7 @@ public class MqttReceiver extends AbstractSslHandler implements Receiver {
                 .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
                 .runOn(receiveContext.getLoopResources())
                 .doOnConnection(connection -> {
-                    connection.addHandler(new MqttDecoder());
+                    connection.addHandler(new MqttDecoder()).addHandler(MqttEncoder.INSTANCE);
                     receiveContext.apply(MqttChannel.init(connection));
                 });
     }

@@ -1,18 +1,13 @@
 package com.github.smqtt.common.channel;
 
 import com.github.smqtt.common.enums.ChannelStatus;
-import com.github.smqtt.common.message.MqttEncoder;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.handler.codec.mqtt.*;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
-import reactor.core.publisher.Sinks;
 import reactor.netty.Connection;
 
 import java.time.Duration;
@@ -22,7 +17,6 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
 
 /**
  * @author luxurong
@@ -63,20 +57,18 @@ public class MqttChannel {
     private Map<Integer, Disposable> replyMqttMessageMap;
 
 
-    public static MqttChannel init(Connection connection){
+    public static MqttChannel init(Connection connection) {
         MqttChannel mqttChannel = new MqttChannel();
         mqttChannel.setTopics(new CopyOnWriteArrayList<>());
         mqttChannel.setAtomicInteger(new AtomicInteger(0));
         mqttChannel.setReplyMqttMessageMap(new ConcurrentHashMap<>());
         mqttChannel.setMqttMessageSink(new MqttMessageSink());
-        mqttChannel.setQos2MsgCache( new ConcurrentHashMap<>());
+        mqttChannel.setQos2MsgCache(new ConcurrentHashMap<>());
         mqttChannel.setActiveTime(System.currentTimeMillis());
         mqttChannel.setConnection(connection);
         mqttChannel.setStatus(ChannelStatus.INIT);
         return mqttChannel;
     }
-
-
 
 
     public Mono<Void> cacheQos2Msg(int messageId, MqttPublishMessage publishMessage) {
@@ -188,12 +180,12 @@ public class MqttChannel {
     /**
      * 写入消息
      *
-     * @param buf 消息体
+     * @param messageMono 消息体
      * @return boolean状态
      */
-    private Mono<Void> write(Mono<ByteBuf> buf) {
+    private Mono<Void> write(Mono<MqttMessage> messageMono) {
         if (this.connection.channel().isActive() && this.connection.channel().isWritable()) {
-            return connection.outbound().send(buf).then();
+            return connection.outbound().sendObject(messageMono).then();
         } else {
             return Mono.empty();
         }
@@ -215,19 +207,17 @@ public class MqttChannel {
 
         public static MqttMessageSink MQTT_SINK = new MqttMessageSink();
 
-        private Function<MqttMessage, ByteBuf> messageTransfer = msg -> MqttEncoder.doEncode(PooledByteBufAllocator.DEFAULT, msg);
-
 
         public Mono<Void> sendMessage(MqttMessage mqttMessage, MqttChannel mqttChannel, boolean retry, Map<Integer, Disposable> replyMqttMessageMap) {
-            ByteBuf byteBuf = messageTransfer.apply(mqttMessage);
             if (retry) {
                 /*
                 Increase the reference count of bytebuf, and the reference count of retrybytebuf is 2
                 mqttChannel.write() method releases a reference count.
                  */
-                return mqttChannel.write(Mono.just(byteBuf)).then(offerReply(setIsDup(byteBuf.copy().retain(Integer.MAX_VALUE >> 2)), mqttChannel, getMessageId(mqttMessage), replyMqttMessageMap));
+                MqttMessage dupMessage = getDupMessage(mqttMessage);
+                return mqttChannel.write(Mono.just(mqttMessage)).then(offerReply(dupMessage, mqttChannel, getMessageId(mqttMessage), replyMqttMessageMap));
             } else {
-                return mqttChannel.write(Mono.just(byteBuf));
+                return mqttChannel.write(Mono.just(mqttMessage));
             }
         }
 
@@ -246,44 +236,56 @@ public class MqttChannel {
         /**
          * Set resend flag
          *
-         * @param byteBuf mqttMessage
+         * @param mqttMessage mqttMessage
          * @return ByteBuf
          */
-        private ByteBuf setIsDup(ByteBuf byteBuf) {
-            byte readByte = byteBuf.getByte(0);
-            byteBuf.setByte(0, readByte | 0x08);
-            return byteBuf;
+        private MqttMessage getDupMessage(MqttMessage mqttMessage) {
+            MqttFixedHeader oldFixedHeader = mqttMessage.fixedHeader();
+            MqttFixedHeader fixedHeader = new MqttFixedHeader(
+                    oldFixedHeader.messageType(),
+                    true,
+                    oldFixedHeader.qosLevel(),
+                    oldFixedHeader.isRetain(),
+                    oldFixedHeader.remainingLength());
+            Object payload = mqttMessage.payload();
+            if (payload instanceof ByteBuf) {
+                ((ByteBuf) mqttMessage.payload()).retain(Integer.MAX_VALUE >> 2);
+            }
+            return new MqttMessage(fixedHeader, mqttMessage.variableHeader(), payload);
         }
 
 
         /**
          * Set resend action
          *
-         * @param byteBuf             mqttMessage
+         * @param message             mqttMessage
          * @param mqttChannel         connection
          * @param messageId           messageId
          * @param replyMqttMessageMap
          * @return Mono
          */
-        public Mono<Void> offerReply(ByteBuf byteBuf, final MqttChannel mqttChannel, final int messageId, Map<Integer, Disposable> replyMqttMessageMap) {
+        public Mono<Void> offerReply(MqttMessage message, final MqttChannel mqttChannel, final int messageId, Map<Integer, Disposable> replyMqttMessageMap) {
             return Mono.fromRunnable(() ->
                     replyMqttMessageMap.put(messageId,
-                            mqttChannel.write(Mono.just(byteBuf))
+                            mqttChannel.write(Mono.just(message))
                                     .delaySubscription(Duration.ofSeconds(5))
                                     .repeat()
                                     .doOnError(error -> {
-                                        releaseByteBufCount(byteBuf);
+                                        releaseByteBufCount(message.payload());
                                         log.error("offerReply", error);
                                     })
-                                    .doOnCancel(() -> releaseByteBufCount(byteBuf))
+                                    .doOnCancel(() -> releaseByteBufCount(message.payload()))
                                     .subscribe()));
         }
 
-        private void releaseByteBufCount(ByteBuf byteBuf) {
-            if (byteBuf.refCnt() > 0) {
-                int count = byteBuf.refCnt();
-                byteBuf.release(count);
-                log.info("netty success release reply byteBuf {} count {} ", byteBuf, count);
+        private void releaseByteBufCount(Object payload) {
+            if (payload instanceof ByteBuf) {
+                ByteBuf byteBuf = (ByteBuf) payload;
+                if (byteBuf.refCnt() > 0) {
+                    int count = byteBuf.refCnt();
+                    byteBuf.release(count);
+                    log.info("netty success release reply byteBuf {} count {} ", byteBuf, count);
+                }
             }
         }
 

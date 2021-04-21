@@ -1,6 +1,5 @@
 package com.github.smqtt;
 
-import com.github.smqtt.common.message.MqttEncoder;
 import com.github.smqtt.common.message.MqttMessageBuilder;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;

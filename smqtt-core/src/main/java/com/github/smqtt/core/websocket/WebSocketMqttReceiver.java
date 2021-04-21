@@ -13,6 +13,7 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.codec.mqtt.MqttDecoder;
+import io.netty.handler.codec.mqtt.MqttEncoder;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 import reactor.netty.DisposableServer;
@@ -56,7 +57,8 @@ public class WebSocketMqttReceiver extends AbstractSslHandler implements Receive
                             .addHandler(new WebSocketServerProtocolHandler("/", "mqtt, mqttv3.1, mqttv3.1.1"))
                             .addHandler(new WebSocketFrameToByteBufDecoder())
                             .addHandler(new ByteBufToWebSocketFrameEncoder())
-                            .addHandler(new MqttDecoder());
+                            .addHandler(new MqttDecoder())
+                            .addHandler(MqttEncoder.INSTANCE);
                     receiveContext.apply(MqttChannel.init(connection));
                 });
     }
