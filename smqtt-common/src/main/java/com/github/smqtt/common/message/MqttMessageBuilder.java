@@ -22,6 +22,14 @@ public class MqttMessageBuilder {
     }
 
 
+    public static MqttPublishMessage buildPub(boolean isDup, MqttQoS qoS, boolean isRetain,int messageId, String topic, ByteBuf message) {
+        MqttFixedHeader mqttFixedHeader = new MqttFixedHeader(MqttMessageType.PUBLISH, isDup, qoS, isRetain, 0);
+        MqttPublishVariableHeader mqttPublishVariableHeader = new MqttPublishVariableHeader(topic, messageId);
+        MqttPublishMessage mqttPublishMessage = new MqttPublishMessage(mqttFixedHeader, mqttPublishVariableHeader, message);
+        return mqttPublishMessage;
+    }
+
+
     public static MqttPubAckMessage buildPublishAck(int messageId) {
         return ackMessage(MqttMessageType.PUBACK, messageId, false);
     }

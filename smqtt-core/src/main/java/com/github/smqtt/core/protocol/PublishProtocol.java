@@ -49,6 +49,10 @@ public class PublishProtocol implements Protocol<MqttPublishMessage> {
             MqttPublishVariableHeader variableHeader = message.variableHeader();
             MessageRegistry messageRegistry = receiveContext.getMessageRegistry();
             Optional<Set<MqttChannel>> channelsOptional = topicRegistry.getChannelListByTopic(variableHeader.topicName());
+            // http mock
+            if (mqttChannel.getIsMock()) {
+                return send(channelsOptional, message, messageRegistry, filterRetainMessage(message, messageRegistry));
+            }
             switch (message.fixedHeader().qosLevel()) {
                 case AT_MOST_ONCE:
                     return send(channelsOptional, message, messageRegistry, filterRetainMessage(message, messageRegistry));
@@ -65,12 +69,10 @@ public class PublishProtocol implements Protocol<MqttPublishMessage> {
                 default:
                     return Mono.empty();
             }
-        }
-        catch (Exception e){
-            log.error("error ",e);
+        } catch (Exception e) {
+            log.error("error ", e);
         }
         return Mono.empty();
-
     }
 
 
@@ -104,9 +106,9 @@ public class PublishProtocol implements Protocol<MqttPublishMessage> {
                 channels.stream()
                         .filter(channel -> filterOfflineSession(channel, messageRegistry, message))
                         .map(channel ->
-                             channel.write(generateMqttPublishMessage(message,
-                                    channel.generateMessageId()),
-                                     message.fixedHeader().qosLevel().value()>0)
+                                channel.write(generateMqttPublishMessage(message,
+                                        channel.generateMessageId()),
+                                        message.fixedHeader().qosLevel().value() > 0)
                         )
                         .collect(Collectors.toList()))).orElse(Mono.empty()).then(other);
 

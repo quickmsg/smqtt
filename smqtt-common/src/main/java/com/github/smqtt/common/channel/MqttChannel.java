@@ -50,6 +50,9 @@ public class MqttChannel {
 
     private List<String> topics;
 
+    @Builder.Default
+    private Boolean isMock = false;
+
 
     private AtomicInteger atomicInteger;
 
@@ -146,7 +149,12 @@ public class MqttChannel {
      * @return boolean状态
      */
     public Mono<Void> write(MqttMessage mqttMessage, boolean retry) {
-        return MqttMessageSink.MQTT_SINK.sendMessage(mqttMessage, this, retry, replyMqttMessageMap);
+        // http本地mock
+        if (this.getIsMock()) {
+            return Mono.empty();
+        } else {
+            return MqttMessageSink.MQTT_SINK.sendMessage(mqttMessage, this, retry, replyMqttMessageMap);
+        }
     }
 
 

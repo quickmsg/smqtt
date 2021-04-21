@@ -1,6 +1,8 @@
 package com.github.smqtt.common.http;
 
 import com.alibaba.fastjson.JSON;
+import com.github.smqtt.common.channel.MockMqttChannel;
+import com.github.smqtt.common.channel.MqttChannel;
 import com.github.smqtt.common.spi.DynamicLoader;
 import org.reactivestreams.Publisher;
 import reactor.netty.http.server.HttpServerRequest;
@@ -21,6 +23,7 @@ public interface HttpActor {
 
     List<HttpActor> INSTANCE = DynamicLoader.findAll(HttpActor.class).collect(Collectors.toList());
 
+    MqttChannel DEFAULT_MOCK_CHANNEL = MockMqttChannel.builder().build();
 
     /**
      * 处理
