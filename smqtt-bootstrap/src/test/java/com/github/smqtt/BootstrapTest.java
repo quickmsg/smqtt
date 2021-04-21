@@ -20,7 +20,7 @@ public class BootstrapTest {
                 .ssl(false)
                 .isWebsocket(true)
                 .wiretap(false)
-                .httpOptions(Bootstrap.HttpOptions.builder().accessLog(true).wiretap(true).build())
+                .httpOptions(Bootstrap.HttpOptions.builder().httpPort(62212).accessLog(true).wiretap(false).build())
                 .build()
                 .startAwait();
 

@@ -43,7 +43,7 @@ public class WebSocketMqttReceiver extends AbstractSslHandler implements Receive
         return server
                 .port(mqttConfiguration.getWebSocketPort())
                 .doOnBind(mqttConfiguration.getTcpServerConfig())
-                .wiretap(true)
+                .wiretap(mqttConfiguration.getWiretap())
                 .childOption(ChannelOption.WRITE_BUFFER_WATER_MARK, new WriteBufferWaterMark(mqttConfiguration.getLowWaterMark(), mqttConfiguration.getHighWaterMark()))
                 .childOption(ChannelOption.TCP_NODELAY, true)
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
@@ -57,13 +57,7 @@ public class WebSocketMqttReceiver extends AbstractSslHandler implements Receive
                             .addHandler(new WebSocketFrameToByteBufDecoder())
                             .addHandler(new ByteBufToWebSocketFrameEncoder())
                             .addHandler(new MqttDecoder());
-                    receiveContext.apply(
-                            MqttChannel
-                                    .builder()
-                                    .activeTime(System.currentTimeMillis())
-                                    .connection(connection)
-                                    .status(ChannelStatus.INIT)
-                                    .build().initChannel());
+                    receiveContext.apply(MqttChannel.init(connection));
                 });
     }
 

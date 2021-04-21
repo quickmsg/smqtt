@@ -1,9 +1,12 @@
 package com.github.smqtt.core.protocol;
 
 import com.github.smqtt.common.channel.MqttChannel;
+import com.github.smqtt.common.context.ReceiveContext;
 import com.github.smqtt.common.message.MqttMessageBuilder;
 import com.github.smqtt.common.protocol.Protocol;
+import com.github.smqtt.common.topic.TopicRegistry;
 import io.netty.handler.codec.mqtt.MqttMessage;
+import io.netty.handler.codec.mqtt.MqttMessageIdVariableHeader;
 import io.netty.handler.codec.mqtt.MqttMessageType;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
@@ -11,6 +14,9 @@ import reactor.util.context.ContextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author luxurong
@@ -27,6 +33,9 @@ public class CommonProtocol implements Protocol<MqttMessage> {
         MESSAGE_TYPE_LIST.add(MqttMessageType.PINGRESP);
         MESSAGE_TYPE_LIST.add(MqttMessageType.PINGREQ);
         MESSAGE_TYPE_LIST.add(MqttMessageType.DISCONNECT);
+        MESSAGE_TYPE_LIST.add(MqttMessageType.PUBCOMP);
+        MESSAGE_TYPE_LIST.add(MqttMessageType.PUBREC);
+        MESSAGE_TYPE_LIST.add(MqttMessageType.PUBREL);
     }
 
 
@@ -39,6 +48,33 @@ public class CommonProtocol implements Protocol<MqttMessage> {
                 mqttChannel.setWill(null);
                 mqttChannel.getConnection().dispose();
                 return Mono.empty();
+            case PUBREC:
+                MqttMessageIdVariableHeader messageIdVariableHeader = (MqttMessageIdVariableHeader) message.variableHeader();
+                int messageId = messageIdVariableHeader.messageId();
+                return mqttChannel.cancelRetry(messageId)
+                        .then(mqttChannel.write(MqttMessageBuilder.buildPublishRel(messageId), true));
+            case PUBREL:
+                MqttMessageIdVariableHeader relMessageIdVariableHeader = (MqttMessageIdVariableHeader) message.variableHeader();
+                int id = relMessageIdVariableHeader.messageId();
+                return mqttChannel.removeQos2Msg(id)
+                        .map(msg -> {
+                            ReceiveContext<?> receiveContext = contextView.get(ReceiveContext.class);
+                            TopicRegistry topicRegistry = receiveContext.getTopicRegistry();
+                            Optional<Set<MqttChannel>> channelsOptional = topicRegistry.getChannelListByTopic(msg.variableHeader().topicName());
+                            return channelsOptional.map(channels -> Mono.when(
+                                    channels.stream()
+                                            .map(channel -> {
+                                                return channel.write(msg, true);
+                                            })
+                                            .collect(Collectors.toList())
+                            )).orElse(Mono.empty());
+                        }).orElse(Mono.empty())
+                        .then(mqttChannel.cancelRetry(id))
+                        .then(mqttChannel.write(MqttMessageBuilder.buildPublishComp(id), false));
+            case PUBCOMP:
+                MqttMessageIdVariableHeader messageIdVariableHeader1= (MqttMessageIdVariableHeader) message.variableHeader();
+                int compId = messageIdVariableHeader1.messageId();
+                mqttChannel.cancelRetry(compId);
             case PINGRESP:
             default:
                 return Mono.empty();

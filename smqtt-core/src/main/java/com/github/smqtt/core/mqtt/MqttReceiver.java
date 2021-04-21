@@ -2,7 +2,6 @@ package com.github.smqtt.core.mqtt;
 
 import com.github.smqtt.common.Receiver;
 import com.github.smqtt.common.channel.MqttChannel;
-import com.github.smqtt.common.enums.ChannelStatus;
 import com.github.smqtt.core.ssl.AbstractSslHandler;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.ChannelOption;
@@ -35,7 +34,7 @@ public class MqttReceiver extends AbstractSslHandler implements Receiver {
         }
         return server.port(mqttConfiguration.getPort())
                 .doOnBind(mqttConfiguration.getTcpServerConfig())
-                .wiretap(true)
+                .wiretap(mqttConfiguration.getWiretap())
                 .childOption(ChannelOption.WRITE_BUFFER_WATER_MARK, new WriteBufferWaterMark(mqttConfiguration.getLowWaterMark(), mqttConfiguration.getHighWaterMark()))
                 .childOption(ChannelOption.TCP_NODELAY, true)
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
@@ -44,13 +43,7 @@ public class MqttReceiver extends AbstractSslHandler implements Receiver {
                 .runOn(receiveContext.getLoopResources())
                 .doOnConnection(connection -> {
                     connection.addHandler(new MqttDecoder());
-                    receiveContext.apply(
-                            MqttChannel
-                                    .builder()
-                                    .activeTime(System.currentTimeMillis())
-                                    .connection(connection)
-                                    .status(ChannelStatus.INIT)
-                                    .build().initChannel());
+                    receiveContext.apply(MqttChannel.init(connection));
                 });
     }
 }

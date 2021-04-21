@@ -1,7 +1,7 @@
 package com.github.smqtt.common.channel;
 
 import io.netty.handler.codec.mqtt.MqttMessage;
-import lombok.Builder;
+import lombok.Data;
 import reactor.core.publisher.Mono;
 
 /**
@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
  * @date 2021/4/21 14:34
  * @description
  */
-@Builder
+@Data
 public class MockMqttChannel extends MqttChannel {
 
 

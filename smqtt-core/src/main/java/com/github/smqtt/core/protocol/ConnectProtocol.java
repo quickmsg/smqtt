@@ -61,7 +61,6 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
         if (passwordAuthentication.auth(mqttConnectPayload.userName(), mqttConnectPayload.passwordInBytes())) {
             /*cancel  defer close not authenticate channel */
             mqttReceiveContext.getDeferCloseDisposable().dispose();
-            MqttChannel channel = channelRegistry.get(clientIdentifier);
             mqttChannel.setClientIdentifier(mqttConnectPayload.clientIdentifier());
             if (mqttConnectVariableHeader.isWillFlag()) {
                 mqttChannel.setWill(MqttChannel.Will.builder()

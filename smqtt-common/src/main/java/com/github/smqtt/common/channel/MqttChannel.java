@@ -5,8 +5,10 @@ import com.github.smqtt.common.message.MqttEncoder;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.handler.codec.mqtt.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
@@ -27,7 +29,6 @@ import java.util.function.Function;
  * @date 2021/3/30 13:43
  * @description
  */
-@Builder
 @Data
 @Slf4j
 public class MqttChannel {
@@ -50,7 +51,6 @@ public class MqttChannel {
 
     private List<String> topics;
 
-    @Builder.Default
     private Boolean isMock = false;
 
 
@@ -62,17 +62,21 @@ public class MqttChannel {
 
     private Map<Integer, Disposable> replyMqttMessageMap;
 
-    private Sinks.Many<MqttMessage> deferMessage = Sinks.many().multicast().directBestEffort();
 
-
-    public MqttChannel initChannel() {
-        this.atomicInteger = new AtomicInteger(0);
-        this.mqttMessageSink = new MqttMessageSink();
-        this.qos2MsgCache = new ConcurrentHashMap<>();
-        this.topics = new CopyOnWriteArrayList<>();
-        this.replyMqttMessageMap = new ConcurrentHashMap<>();
-        return this;
+    public static MqttChannel init(Connection connection){
+        MqttChannel mqttChannel = new MqttChannel();
+        mqttChannel.setTopics(new CopyOnWriteArrayList<>());
+        mqttChannel.setAtomicInteger(new AtomicInteger(0));
+        mqttChannel.setReplyMqttMessageMap(new ConcurrentHashMap<>());
+        mqttChannel.setMqttMessageSink(new MqttMessageSink());
+        mqttChannel.setQos2MsgCache( new ConcurrentHashMap<>());
+        mqttChannel.setActiveTime(System.currentTimeMillis());
+        mqttChannel.setConnection(connection);
+        mqttChannel.setStatus(ChannelStatus.INIT);
+        return mqttChannel;
     }
+
+
 
 
     public Mono<Void> cacheQos2Msg(int messageId, MqttPublishMessage publishMessage) {

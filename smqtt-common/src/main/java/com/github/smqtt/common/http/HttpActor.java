@@ -23,7 +23,7 @@ public interface HttpActor {
 
     List<HttpActor> INSTANCE = DynamicLoader.findAll(HttpActor.class).collect(Collectors.toList());
 
-    MqttChannel DEFAULT_MOCK_CHANNEL = MockMqttChannel.builder().build();
+    MqttChannel DEFAULT_MOCK_CHANNEL = new MockMqttChannel();
 
     /**
      * 处理
