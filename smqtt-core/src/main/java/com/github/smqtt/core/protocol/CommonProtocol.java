@@ -5,6 +5,7 @@ import com.github.smqtt.common.context.ReceiveContext;
 import com.github.smqtt.common.message.MqttMessageBuilder;
 import com.github.smqtt.common.protocol.Protocol;
 import com.github.smqtt.common.topic.TopicRegistry;
+import com.github.smqtt.common.utils.MessageUtils;
 import io.netty.handler.codec.mqtt.MqttMessage;
 import io.netty.handler.codec.mqtt.MqttMessageIdVariableHeader;
 import io.netty.handler.codec.mqtt.MqttMessageType;
@@ -64,17 +65,18 @@ public class CommonProtocol implements Protocol<MqttMessage> {
                             return channelsOptional.map(channels -> Mono.when(
                                     channels.stream()
                                             .map(channel -> {
-                                                return channel.write(msg, true);
+                                                return channel.write(MessageUtils.wrapPublishMessage(msg,channel.generateMessageId()), true);
                                             })
                                             .collect(Collectors.toList())
-                            )).orElse(Mono.empty());
+                            )).orElse(Mono.empty())
+                                    .doOnSuccess(v->MessageUtils.safeRelease(msg));
                         }).orElse(Mono.empty())
                         .then(mqttChannel.cancelRetry(id))
                         .then(mqttChannel.write(MqttMessageBuilder.buildPublishComp(id), false));
             case PUBCOMP:
                 MqttMessageIdVariableHeader messageIdVariableHeader1= (MqttMessageIdVariableHeader) message.variableHeader();
                 int compId = messageIdVariableHeader1.messageId();
-                mqttChannel.cancelRetry(compId);
+                return mqttChannel.cancelRetry(compId);
             case PINGRESP:
             default:
                 return Mono.empty();

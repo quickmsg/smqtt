@@ -23,7 +23,6 @@ import java.util.function.Function;
  * @description
  */
 public class ClientTest2 {
-    private Function<MqttMessage, ByteBuf> messageTransfer = msg -> MqttEncoder.doEncode(PooledByteBufAllocator.DEFAULT, msg);
 
 
     @Test
@@ -32,15 +31,13 @@ public class ClientTest2 {
 
         MqttPublishMessage mqttPublishMessage =
                 MqttMessageBuilder.buildPub(false, MqttQoS.AT_MOST_ONCE, 1, "topic", Unpooled.wrappedBuffer("adsad".getBytes()));
-        ByteBuf byteBuf = messageTransfer.apply(mqttPublishMessage);
         List<Disposable> disposables = new ArrayList<>();
         Disposable disposable = TcpClient.create()
                 .remoteAddress(() -> InetSocketAddress.createUnresolved("127.0.0.1", 8111))
                 .wiretap(true)
                 .doOnConnected(connection -> {
-                    int s = byteBuf.refCnt();
                     connection.inbound().receive().asString().subscribe(System.out::println);
-                    connection.outbound().send(Mono.just(byteBuf)).then().subscribe();
+//                    connection.outbound().send(Mono.just(byteBuf)).then().subscribe();
 //                    int s2 = byteBuf.refCnt();
 //                    byteBuf.retain(Integer.MAX_VALUE >> 2);
 //                    connection

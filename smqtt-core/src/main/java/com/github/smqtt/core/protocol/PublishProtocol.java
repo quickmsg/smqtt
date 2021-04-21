@@ -7,7 +7,7 @@ import com.github.smqtt.common.message.MessageRegistry;
 import com.github.smqtt.common.message.MqttMessageBuilder;
 import com.github.smqtt.common.protocol.Protocol;
 import com.github.smqtt.common.topic.TopicRegistry;
-import io.netty.handler.codec.mqtt.MqttFixedHeader;
+import com.github.smqtt.common.utils.MessageUtils;
 import io.netty.handler.codec.mqtt.MqttMessageType;
 import io.netty.handler.codec.mqtt.MqttPublishMessage;
 import io.netty.handler.codec.mqtt.MqttPublishVariableHeader;
@@ -63,7 +63,7 @@ public class PublishProtocol implements Protocol<MqttPublishMessage> {
                 case EXACTLY_ONCE:
                     if (!mqttChannel.existQos2Msg(variableHeader.packetId())) {
                         return mqttChannel
-                                .cacheQos2Msg(variableHeader.packetId(), generateMqttPublishMessage(message, mqttChannel.generateMessageId()))
+                                .cacheQos2Msg(variableHeader.packetId(), MessageUtils.wrapPublishMessage(message, 0))
                                 .then(mqttChannel.write(MqttMessageBuilder.buildPublishRec(variableHeader.packetId()), true));
                     }
                 default:
@@ -75,21 +75,6 @@ public class PublishProtocol implements Protocol<MqttPublishMessage> {
         return Mono.empty();
     }
 
-
-    /**
-     * 判断是不是保留消息
-     *
-     * @param message         消息体
-     * @param messageRegistry 消息中心
-     * @return Mono
-     */
-    private Mono<Void> filterRetainMessage(MqttPublishMessage message, MessageRegistry messageRegistry) {
-        return Mono.fromRunnable(() -> {
-            if (message.fixedHeader().isRetain()) {
-                messageRegistry.saveRetainMessage(message.variableHeader().topicName(), message);
-            }
-        });
-    }
 
 
     /**
@@ -106,7 +91,7 @@ public class PublishProtocol implements Protocol<MqttPublishMessage> {
                 channels.stream()
                         .filter(channel -> filterOfflineSession(channel, messageRegistry, message))
                         .map(channel ->
-                                channel.write(generateMqttPublishMessage(message,
+                                channel.write(MessageUtils.wrapPublishMessage(message,
                                         channel.generateMessageId()),
                                         message.fixedHeader().qosLevel().value() > 0)
                         )
@@ -128,27 +113,25 @@ public class PublishProtocol implements Protocol<MqttPublishMessage> {
             return true;
         } else {
             messageRegistry
-                    .sendSessionMessages(mqttChannel.getClientIdentifier(),
-                            generateMqttPublishMessage(mqttMessage, mqttChannel.generateMessageId()));
+                    .sendSessionMessages(mqttChannel.getClientIdentifier(), mqttMessage.duplicate());
             return false;
         }
     }
 
 
     /**
-     * 生成发布消息
+     * 过滤保留消息
      *
-     * @param messageId 消息id
-     * @param message   消息
-     * @return MqttPublishMessage
+     * @param message         消息体
+     * @param messageRegistry 消息中心
+     * @return Mono
      */
-    private MqttPublishMessage generateMqttPublishMessage(MqttPublishMessage message, int messageId) {
-        MqttPublishVariableHeader mqttPublishVariableHeader = message.variableHeader();
-        MqttFixedHeader mqttFixedHeader = message.fixedHeader();
-        MqttFixedHeader newFixedHeader = new MqttFixedHeader(mqttFixedHeader.messageType(), false, mqttFixedHeader.qosLevel(), false, mqttFixedHeader.remainingLength());
-        MqttPublishVariableHeader newHeader = new MqttPublishVariableHeader(mqttPublishVariableHeader.topicName(), messageId);
-        return new MqttPublishMessage(newFixedHeader, newHeader, message.payload().retain());
-
+    private Mono<Void> filterRetainMessage(MqttPublishMessage message, MessageRegistry messageRegistry) {
+        return Mono.fromRunnable(() -> {
+            if (message.fixedHeader().isRetain()) {
+                messageRegistry.saveRetainMessage(message.variableHeader().topicName(), message.duplicate());
+            }
+        });
     }
 
 

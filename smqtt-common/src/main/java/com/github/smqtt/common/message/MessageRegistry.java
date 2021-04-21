@@ -50,7 +50,7 @@ public interface MessageRegistry {
      * 保留Topic保留消息
      *
      * @param
-     * @param topic     设备id
+     * @param topic       设备id
      * @param mqttChannel 通道
      * @return List
      */

@@ -1,5 +1,7 @@
 package com.github.smqtt;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -18,41 +20,46 @@ import java.util.concurrent.CountDownLatch;
 public class Test {
 
     public static void main(String[] args) throws InterruptedException {
+        ByteBuf byteBuf  = Unpooled.wrappedBuffer("s".getBytes());
+        byteBuf.retain();
+        System.out.println(byteBuf.refCnt());
+        ByteBuf byteBuf2 = byteBuf.copy();
+        System.out.println(byteBuf2.refCnt());
 
 
         CountDownLatch latch = new CountDownLatch(3);
-       DisposableServer disposableServer = HttpServer.create()
-                .handle((req, resp) ->
-                        resp.sendWebsocket((in, out) -> {
-                            in.receiveCloseStatus()
-                                    .doOnNext(o -> {
-                                        latch.countDown();
-                                    })
-                                    .subscribe();
-
-                            return out.sendString(Flux.interval(Duration.ofMillis(10))
-                                    .map(l -> l + ""));
-                        }))
-                .bindNow();
-
-        HttpClient.create()
-                .port(disposableServer.port())
-                .websocket()
-                .uri("/")
-                .handle((in, out) -> {
-                    in.receiveCloseStatus()
-                            .doOnNext(o -> {
-                                latch.countDown();
-                            })
-                            .subscribe();
-
-                    in.receive()
-                            .take(1)
-                            .subscribe();
-
-                    return Mono.never();
-                })
-                .subscribe();
+//       DisposableServer disposableServer = HttpServer.create()
+//                .handle((req, resp) ->
+//                        resp.sendWebsocket((in, out) -> {
+//                            in.receiveCloseStatus()
+//                                    .doOnNext(o -> {
+//                                        latch.countDown();
+//                                    })
+//                                    .subscribe();
+//
+//                            return out.sendString(Flux.interval(Duration.ofMillis(10))
+//                                    .map(l -> l + ""));
+//                        }))
+//                .bindNow();
+//
+//        HttpClient.create()
+//                .port(disposableServer.port())
+//                .websocket()
+//                .uri("/")
+//                .handle((in, out) -> {
+//                    in.receiveCloseStatus()
+//                            .doOnNext(o -> {
+//                                latch.countDown();
+//                            })
+//                            .subscribe();
+//
+//                    in.receive()
+//                            .take(1)
+//                            .subscribe();
+//
+//                    return Mono.never();
+//                })
+//                .subscribe();
         latch.await();
     }
 

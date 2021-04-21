@@ -1,6 +1,7 @@
 package com.github.smqtt.common.channel;
 
 import com.github.smqtt.common.enums.ChannelStatus;
+import com.github.smqtt.common.utils.MessageUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.mqtt.*;
 import lombok.Builder;
@@ -209,6 +210,7 @@ public class MqttChannel {
 
 
         public Mono<Void> sendMessage(MqttMessage mqttMessage, MqttChannel mqttChannel, boolean retry, Map<Integer, Disposable> replyMqttMessageMap) {
+            log.info("write channel {} message {}", mqttChannel.getConnection(), mqttMessage);
             if (retry) {
                 /*
                 Increase the reference count of bytebuf, and the reference count of retrybytebuf is 2
@@ -249,7 +251,7 @@ public class MqttChannel {
                     oldFixedHeader.remainingLength());
             Object payload = mqttMessage.payload();
             if (payload instanceof ByteBuf) {
-                ((ByteBuf) mqttMessage.payload()).retain(Integer.MAX_VALUE >> 2);
+                ((ByteBuf) payload).copy().retain(Integer.MAX_VALUE >> 2);
             }
             return new MqttMessage(fixedHeader, mqttMessage.variableHeader(), payload);
         }
@@ -271,24 +273,12 @@ public class MqttChannel {
                                     .delaySubscription(Duration.ofSeconds(5))
                                     .repeat()
                                     .doOnError(error -> {
-                                        releaseByteBufCount(message.payload());
+                                        MessageUtils.safeRelease(message);
                                         log.error("offerReply", error);
                                     })
-                                    .doOnCancel(() -> releaseByteBufCount(message.payload()))
+                                    .doOnCancel(() -> MessageUtils.safeRelease(message))
                                     .subscribe()));
         }
-
-        private void releaseByteBufCount(Object payload) {
-            if (payload instanceof ByteBuf) {
-                ByteBuf byteBuf = (ByteBuf) payload;
-                if (byteBuf.refCnt() > 0) {
-                    int count = byteBuf.refCnt();
-                    byteBuf.release(count);
-                    log.info("netty success release reply byteBuf {} count {} ", byteBuf, count);
-                }
-            }
-        }
-
 
     }
 

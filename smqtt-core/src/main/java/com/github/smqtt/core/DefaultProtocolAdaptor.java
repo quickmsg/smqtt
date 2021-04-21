@@ -6,7 +6,7 @@ import com.github.smqtt.common.context.ReceiveContext;
 import com.github.smqtt.common.protocol.Protocol;
 import com.github.smqtt.common.protocol.ProtocolAdaptor;
 import com.github.smqtt.common.spi.DynamicLoader;
-import io.netty.buffer.ByteBuf;
+import com.github.smqtt.common.utils.MessageUtils;
 import io.netty.handler.codec.mqtt.MqttMessage;
 import io.netty.handler.codec.mqtt.MqttMessageType;
 import lombok.extern.slf4j.Slf4j;
@@ -39,9 +39,6 @@ public class DefaultProtocolAdaptor implements ProtocolAdaptor {
 
     @Override
     public <C extends Configuration> void chooseProtocol(MqttChannel mqttChannel, MqttMessage mqttMessage, ReceiveContext<C> receiveContext) {
-        if (log.isDebugEnabled()) {
-            log.info("channel {} message {}", mqttChannel, mqttMessage);
-        }
         Optional.ofNullable(types.get(mqttMessage.fixedHeader().messageType()))
                 .ifPresent(protocol -> protocol
                         .doParseProtocol(mqttMessage, mqttChannel)
@@ -50,22 +47,8 @@ public class DefaultProtocolAdaptor implements ProtocolAdaptor {
                         .subscribe(aVoid -> {
                         }, error -> {
                             log.error("channel {} chooseProtocol:", mqttChannel, error);
-                            releaseMessage(mqttMessage);
-                        }, () -> releaseMessage(mqttMessage)));
-    }
-
-    private void releaseMessage(MqttMessage mqttMessage) {
-        if (mqttMessage.payload() instanceof ByteBuf) {
-            // safe release byteBuf
-            ByteBuf byteBuf = ((ByteBuf) mqttMessage.payload());
-            int count = byteBuf.refCnt();
-            if (count > 0) {
-                byteBuf.release(count);
-                if (log.isDebugEnabled()) {
-                    log.info("netty success release byteBuf {} count {} ", byteBuf, count);
-                }
-            }
-        }
+                            MessageUtils.safeRelease(mqttMessage);
+                        }, () -> MessageUtils.safeRelease(mqttMessage)));
     }
 
 

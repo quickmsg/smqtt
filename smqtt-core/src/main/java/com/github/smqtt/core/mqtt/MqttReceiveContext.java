@@ -61,9 +61,7 @@ public class MqttReceiveContext extends AbstractReceiveContext<MqttConfiguration
 
     @Override
     public void accept(MqttChannel mqttChannel, MqttMessage mqttMessage) {
-        if(log.isDebugEnabled()){
-            log.debug("[channel] {} send {}",mqttChannel,mqttMessage);
-        }
+        log.info("accept channel] {} message {}",mqttChannel.getConnection(),mqttMessage);
         this.getProtocolAdaptor().chooseProtocol(mqttChannel, mqttMessage, this);
     }
 
