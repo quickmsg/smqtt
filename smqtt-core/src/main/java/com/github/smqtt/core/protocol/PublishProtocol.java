@@ -84,6 +84,7 @@ public class PublishProtocol implements Protocol<MqttPublishMessage> {
      * @param other           其他操作
      * @return Mono
      */
+    // todo 实时写入的可以使用duplicate 避免使用copy
     private Mono<Void> send(Set<MqttChannel> mqttChannels, MqttPublishMessage message, MessageRegistry messageRegistry, Mono<Void> other) {
         return Mono.when(
                 mqttChannels.stream()
