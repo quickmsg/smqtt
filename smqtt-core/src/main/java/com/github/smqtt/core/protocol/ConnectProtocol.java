@@ -87,21 +87,20 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
                     .getConnection()
                     .onDispose(() ->
                             Optional.ofNullable(mqttChannel.getWill())
-                                    .ifPresent(will -> {
-                                        topicRegistry.getChannelListByTopic(will.getWillTopic())
-                                                .ifPresent(mqttChannels -> mqttChannels.forEach(mqttChannel1 -> {
-                                                    mqttChannel1.write(
-                                                            MqttMessageBuilder
-                                                                    .buildPub(false,
-                                                                            will.getMqttQoS(),
-                                                                            will.getMqttQoS() == MqttQoS.AT_MOST_ONCE
-                                                                                    ? 0 : mqttChannel1.generateMessageId(),
-                                                                            will.getWillTopic(),
-                                                                            Unpooled.wrappedBuffer(will.getWillMessage())
-                                                                    ), will.getMqttQoS().value() > 0
-                                                    ).subscribe();
-                                                }));
-                                    }));
+                                    .ifPresent(will ->
+                                            topicRegistry.getChannelListByTopic(will.getWillTopic())
+                                                    .forEach(mqttChannel1 -> {
+                                                        mqttChannel1.write(
+                                                                MqttMessageBuilder
+                                                                        .buildPub(false,
+                                                                                will.getMqttQoS(),
+                                                                                will.getMqttQoS() == MqttQoS.AT_MOST_ONCE
+                                                                                        ? 0 : mqttChannel1.generateMessageId(),
+                                                                                will.getWillTopic(),
+                                                                                Unpooled.wrappedBuffer(will.getWillMessage())
+                                                                        ), will.getMqttQoS().value() > 0
+                                                        ).subscribe();
+                                                    })));
 
             Optional.ofNullable(channelRegistry.get(clientIdentifier))
                     .ifPresent(sessionChannel -> {

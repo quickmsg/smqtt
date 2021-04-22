@@ -15,7 +15,6 @@ import reactor.util.context.ContextView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -61,20 +60,17 @@ public class CommonProtocol implements Protocol<MqttMessage> {
                         .map(msg -> {
                             ReceiveContext<?> receiveContext = contextView.get(ReceiveContext.class);
                             TopicRegistry topicRegistry = receiveContext.getTopicRegistry();
-                            Optional<Set<MqttChannel>> channelsOptional = topicRegistry.getChannelListByTopic(msg.variableHeader().topicName());
-                            return channelsOptional.map(channels -> Mono.when(
-                                    channels.stream()
-                                            .map(channel -> {
-                                                return channel.write(MessageUtils.wrapPublishMessage(msg,channel.generateMessageId()), true);
-                                            })
-                                            .collect(Collectors.toList())
-                            )).orElse(Mono.empty())
-                                    .doOnSuccess(v->MessageUtils.safeRelease(msg));
-                        }).orElse(Mono.empty())
-                        .then(mqttChannel.cancelRetry(id))
-                        .then(mqttChannel.write(MqttMessageBuilder.buildPublishComp(id), false));
+                            Set<MqttChannel> mqttChannels = topicRegistry.getChannelListByTopic(msg.variableHeader().topicName());
+                            return Mono.when(
+                                    mqttChannels.stream()
+                                            .map(channel -> channel.write(MessageUtils.wrapPublishMessage(msg, channel.generateMessageId()), true))
+                                            .collect(Collectors.toList()))
+                                    .then(mqttChannel.cancelRetry(id))
+                                    .then(mqttChannel.write(MqttMessageBuilder.buildPublishComp(id), false));
+                        }).orElse(Mono.empty());
+
             case PUBCOMP:
-                MqttMessageIdVariableHeader messageIdVariableHeader1= (MqttMessageIdVariableHeader) message.variableHeader();
+                MqttMessageIdVariableHeader messageIdVariableHeader1 = (MqttMessageIdVariableHeader) message.variableHeader();
                 int compId = messageIdVariableHeader1.messageId();
                 return mqttChannel.cancelRetry(compId);
             case PINGRESP:

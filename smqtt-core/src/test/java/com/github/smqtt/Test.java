@@ -10,6 +10,7 @@ import reactor.netty.http.client.HttpClient;
 import reactor.netty.http.server.HttpServer;
 
 import java.time.Duration;
+import java.util.Collections;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -26,6 +27,8 @@ public class Test {
         ByteBuf byteBuf2 = byteBuf.copy();
         System.out.println(byteBuf2.refCnt());
 
+        Mono mono=   Mono.when(Collections.EMPTY_LIST);
+        mono.then(Mono.just(1)).subscribe(System.out::println);
 
         CountDownLatch latch = new CountDownLatch(3);
 //       DisposableServer disposableServer = HttpServer.create()

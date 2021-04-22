@@ -42,7 +42,7 @@ public class DefaultTopicRegistry implements TopicRegistry {
     }
 
     @Override
-    public Optional<Set<MqttChannel>> getChannelListByTopic(String topicName) {
+    public Set<MqttChannel> getChannelListByTopic(String topicName) {
         Set<String> matchKey = new HashSet<>();
         for (String topic : topicChannels.keySet()) {
             if (topicName.matches(topic)) {
@@ -50,9 +50,9 @@ public class DefaultTopicRegistry implements TopicRegistry {
             }
         }
         if (matchKey.size() > 0) {
-            return Optional.of(matchKey.stream().flatMap(key -> topicChannels.get(key).stream()).collect(Collectors.toSet()));
+            return matchKey.stream().flatMap(key -> topicChannels.get(key).stream()).collect(Collectors.toSet());
         } else {
-            return Optional.empty();
+            return Collections.emptySet();
         }
 
 

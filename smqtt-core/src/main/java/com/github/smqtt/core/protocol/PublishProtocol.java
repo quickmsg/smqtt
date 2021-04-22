@@ -17,7 +17,6 @@ import reactor.util.context.ContextView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -48,16 +47,16 @@ public class PublishProtocol implements Protocol<MqttPublishMessage> {
             TopicRegistry topicRegistry = receiveContext.getTopicRegistry();
             MqttPublishVariableHeader variableHeader = message.variableHeader();
             MessageRegistry messageRegistry = receiveContext.getMessageRegistry();
-            Optional<Set<MqttChannel>> channelsOptional = topicRegistry.getChannelListByTopic(variableHeader.topicName());
+            Set<MqttChannel> mqttChannels = topicRegistry.getChannelListByTopic(variableHeader.topicName());
             // http mock
             if (mqttChannel.getIsMock()) {
-                return send(channelsOptional, message, messageRegistry, filterRetainMessage(message, messageRegistry));
+                return send(mqttChannels, message, messageRegistry, filterRetainMessage(message, messageRegistry));
             }
             switch (message.fixedHeader().qosLevel()) {
                 case AT_MOST_ONCE:
-                    return send(channelsOptional, message, messageRegistry, filterRetainMessage(message, messageRegistry));
+                    return send(mqttChannels, message, messageRegistry, filterRetainMessage(message, messageRegistry));
                 case AT_LEAST_ONCE:
-                    return send(channelsOptional, message, messageRegistry,
+                    return send(mqttChannels, message, messageRegistry,
                             mqttChannel.write(MqttMessageBuilder.buildPublishAck(variableHeader.packetId()), false)
                                     .then(filterRetainMessage(message, messageRegistry)));
                 case EXACTLY_ONCE:
@@ -76,26 +75,25 @@ public class PublishProtocol implements Protocol<MqttPublishMessage> {
     }
 
 
-
     /**
      * 通用发送消息
      *
-     * @param channelsOptional topic 匹配channels
-     * @param message          消息体
-     * @param messageRegistry  消息中心
-     * @param other            其他操作
+     * @param mqttChannels    topic 匹配channels
+     * @param message         消息体
+     * @param messageRegistry 消息中心
+     * @param other           其他操作
      * @return Mono
      */
-    private Mono<Void> send(Optional<Set<MqttChannel>> channelsOptional, MqttPublishMessage message, MessageRegistry messageRegistry, Mono<Void> other) {
-        return channelsOptional.map(channels -> Mono.when(
-                channels.stream()
+    private Mono<Void> send(Set<MqttChannel> mqttChannels, MqttPublishMessage message, MessageRegistry messageRegistry, Mono<Void> other) {
+        return Mono.when(
+                mqttChannels.stream()
                         .filter(channel -> filterOfflineSession(channel, messageRegistry, message))
                         .map(channel ->
                                 channel.write(MessageUtils.wrapPublishMessage(message,
                                         channel.generateMessageId()),
                                         message.fixedHeader().qosLevel().value() > 0)
                         )
-                        .collect(Collectors.toList()))).orElse(Mono.empty()).then(other);
+                        .collect(Collectors.toList())).then(other);
 
     }
 

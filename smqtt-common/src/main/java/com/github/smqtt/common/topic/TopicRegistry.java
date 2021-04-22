@@ -52,7 +52,7 @@ public interface TopicRegistry {
      * @param topicName topic name
      * @return list
      */
-    Optional<Set<MqttChannel>> getChannelListByTopic(String topicName);
+    Set<MqttChannel> getChannelListByTopic(String topicName);
 
 
     /**
