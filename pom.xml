@@ -6,7 +6,7 @@
 
     <groupId>com.github.smqtt</groupId>
     <artifactId>smqtt</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
     <modules>
         <module>smqtt-common</module>
         <module>smqtt-core</module>
@@ -131,6 +131,12 @@
                 <plugin>
                     <artifactId>maven-project-info-reports-plugin</artifactId>
                     <version>3.0.0</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>versions-maven-plugin</artifactId>
+                    <version>2.5</version>
                 </plugin>
             </plugins>
     </build>
