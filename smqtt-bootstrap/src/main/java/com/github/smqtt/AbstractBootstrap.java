@@ -20,6 +20,7 @@ public abstract class AbstractBootstrap {
 
 
     public static void bootstrap(Function<String, String> function) {
+
         Integer port = Optional.ofNullable(function.apply(BootstrapKey.BOOTSTRAP_PORT))
                 .map(Integer::parseInt).orElse(DEFAULT_MQTT_PORT);
         Integer lowWaterMark = Optional.ofNullable(function.apply(BootstrapKey.BOOTSTRAP_LOW_WATERMARK))
