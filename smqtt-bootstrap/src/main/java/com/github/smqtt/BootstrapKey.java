@@ -40,6 +40,8 @@ public class BootstrapKey {
 
     public final static String BOOTSTRAP_HTTP_ACCESS_LOG = "smqtt.http.accesslog";
 
+    public final static String BOOTSTRAP_HTTP_SSL_ENABLE = "smqtt.http.ssl.enable";
+
     public final static String BOOTSTRAP_HTTP_SSL_CRT = "smqtt.http.ssl.crt";
 
     public final static String BOOTSTRAP_HTTP_SSL_KEY = "smqtt.http.ssl.key";

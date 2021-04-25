@@ -1,5 +1,7 @@
 package com.github.smqtt.common.utils;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.*;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -11,6 +13,7 @@ import java.util.Properties;
  * @date 2021/4/22 18:36
  * @description
  */
+@Slf4j
 public class PropertiesLoader {
 
 
@@ -21,7 +24,6 @@ public class PropertiesLoader {
             InputStream inputStream = new BufferedInputStream(new FileInputStream(new File(filePath)));
             prop.load(inputStream);
         } catch (IOException e) {
-            e.printStackTrace();
         }
         return map;
     }

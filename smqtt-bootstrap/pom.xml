@@ -55,7 +55,7 @@
                         </tags>
                     </to>
                     <container>
-                        <mainClass>com.github.smqtt.container.DockerBootstrap</mainClass>
+                        <mainClass>com.github.smqtt.docker.DockerStarter</mainClass>
                     </container>
                 </configuration>
 <!--                <executions>-->
@@ -85,7 +85,7 @@
                     <archive>
                         <manifest>
                             <!-- 此处指定main方法入口的class -->
-                            <mainClass>com.github.smqtt.jar.JarBootstrap</mainClass>
+                            <mainClass>com.github.smqtt.jar.JarStarter</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

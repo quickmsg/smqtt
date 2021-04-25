@@ -172,7 +172,6 @@ public class Bootstrap {
 
     private HttpConfiguration buildHttpConfiguration() {
         HttpConfiguration httpConfiguration = new HttpConfiguration();
-        Optional.ofNullable(this.httpOptions.wiretap).ifPresent(httpConfiguration::setWiretap);
         Optional.ofNullable(this.httpOptions.accessLog).ifPresent(httpConfiguration::setAccessLog);
         Optional.ofNullable(this.httpOptions.sslContext).ifPresent(httpConfiguration::setSslContext);
         Optional.ofNullable(this.httpOptions.httpPort).ifPresent(httpConfiguration::setPort);
@@ -191,7 +190,7 @@ public class Bootstrap {
         private Integer httpPort = 0;
 
         @Builder.Default
-        private Boolean wiretap = false;
+        private Boolean ssl = false;
 
         private SslContext sslContext;
 
