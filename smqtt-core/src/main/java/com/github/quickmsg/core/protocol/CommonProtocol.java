@@ -51,11 +51,16 @@ public class CommonProtocol implements Protocol<MqttMessage> {
             case PUBREC:
                 MqttMessageIdVariableHeader messageIdVariableHeader = (MqttMessageIdVariableHeader) message.variableHeader();
                 int messageId = messageIdVariableHeader.messageId();
-                return mqttChannel.cancelRetry(MqttMessageType.PUBLISH,messageId)
+                return mqttChannel.cancelRetry(MqttMessageType.PUBLISH, messageId)
                         .then(mqttChannel.write(MqttMessageBuilder.buildPublishRel(messageId), true));
             case PUBREL:
                 MqttMessageIdVariableHeader relMessageIdVariableHeader = (MqttMessageIdVariableHeader) message.variableHeader();
                 int id = relMessageIdVariableHeader.messageId();
+                /*
+                 * 判断是不是缓存qos2消息
+                 *       是： 走消息分发 & 回复 comp消息
+                 *       否： 直接回复 comp消息
+                 */
                 return mqttChannel.removeQos2Msg(id)
                         .map(msg -> {
                             ReceiveContext<?> receiveContext = contextView.get(ReceiveContext.class);
@@ -65,14 +70,14 @@ public class CommonProtocol implements Protocol<MqttMessage> {
                                     mqttChannels.stream()
                                             .map(channel -> channel.write(MessageUtils.wrapPublishMessage(msg, channel.generateMessageId()), true))
                                             .collect(Collectors.toList()))
-                                    .then(mqttChannel.cancelRetry(MqttMessageType.PUBREC,id))
+                                    .then(mqttChannel.cancelRetry(MqttMessageType.PUBREC, id))
                                     .then(mqttChannel.write(MqttMessageBuilder.buildPublishComp(id), false));
-                        }).orElse(Mono.empty());
+                        }).orElse(mqttChannel.write(MqttMessageBuilder.buildPublishComp(id), false));
 
             case PUBCOMP:
                 MqttMessageIdVariableHeader messageIdVariableHeader1 = (MqttMessageIdVariableHeader) message.variableHeader();
                 int compId = messageIdVariableHeader1.messageId();
-                return mqttChannel.cancelRetry(MqttMessageType.PUBREL,compId);
+                return mqttChannel.cancelRetry(MqttMessageType.PUBREL, compId);
             case PINGRESP:
             default:
                 return Mono.empty();
