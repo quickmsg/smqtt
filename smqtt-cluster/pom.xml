@@ -6,7 +6,7 @@
 
     <parent>
         <artifactId>smqtt</artifactId>
-        <groupId>com.github.smqtt</groupId>
+        <groupId>com.github.quickmsg</groupId>
         <version>1.0.1-SNAPSHOT</version>
     </parent>
     <packaging>jar</packaging>
@@ -31,7 +31,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.smqtt</groupId>
+            <groupId>com.github.quickmsg</groupId>
             <artifactId>smqtt-core</artifactId>
             <version>1.0.1-SNAPSHOT</version>
         </dependency>
