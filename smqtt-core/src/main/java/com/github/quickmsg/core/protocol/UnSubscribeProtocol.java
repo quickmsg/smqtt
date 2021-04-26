@@ -11,7 +11,9 @@ import reactor.core.publisher.Mono;
 import reactor.util.context.ContextView;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author luxurong
@@ -32,7 +34,7 @@ public class UnSubscribeProtocol implements Protocol<MqttUnsubscribeMessage> {
         return Mono.fromRunnable(() -> {
             ReceiveContext<?> receiveContext = contextView.get(ReceiveContext.class);
             TopicRegistry topicRegistry = receiveContext.getTopicRegistry();
-            topicRegistry.clear(message.payload().topics(), mqttChannel);
+            topicRegistry.clear(new HashSet<>(message.payload().topics()), mqttChannel);
         }).then(mqttChannel.write(MqttMessageBuilder.buildUnsubAck(message.variableHeader().messageId()), false));
     }
 

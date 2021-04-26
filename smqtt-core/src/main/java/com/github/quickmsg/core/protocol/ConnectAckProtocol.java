@@ -27,7 +27,7 @@ public class ConnectAckProtocol implements Protocol<MqttConnAckMessage> {
 
     @Override
     public Mono<Void> parseProtocol(MqttConnAckMessage message, MqttChannel mqttChannel, ContextView contextView) {
-        return mqttChannel.cancelRetry(-1);
+        return mqttChannel.cancelRetry(MqttMessageType.CONNECT,-1);
     }
 
     @Override

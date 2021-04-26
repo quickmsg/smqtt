@@ -25,7 +25,7 @@ public class UnSubscribeAckProtocol implements Protocol<MqttUnsubAckMessage> {
 
     @Override
     public Mono<Void> parseProtocol(MqttUnsubAckMessage message, MqttChannel mqttChannel, ContextView contextView) {
-        return mqttChannel.cancelRetry(message.variableHeader().messageId());
+        return mqttChannel.cancelRetry(MqttMessageType.UNSUBSCRIBE,message.variableHeader().messageId());
     }
 
     @Override

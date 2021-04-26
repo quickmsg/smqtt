@@ -1,4 +1,4 @@
-package com.github.quickmsg;
+package com.github.quickmsg.common.bootstrap;
 
 /**
  * @author luxurong

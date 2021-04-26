@@ -26,7 +26,7 @@ public class SubscribeAckProtocol implements Protocol<MqttSubAckMessage> {
 
     @Override
     public Mono<Void> parseProtocol(MqttSubAckMessage message, MqttChannel mqttChannel, ContextView contextView) {
-        return mqttChannel.cancelRetry(message.variableHeader().messageId());
+        return mqttChannel.cancelRetry(MqttMessageType.SUBSCRIBE,message.variableHeader().messageId());
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.github.quickmsg.core.protocol;
 
-import com.github.quickmsg.core.mqtt.MqttReceiveContext;
 import com.github.quickmsg.common.auth.PasswordAuthentication;
 import com.github.quickmsg.common.channel.ChannelRegistry;
 import com.github.quickmsg.common.channel.MqttChannel;
@@ -10,6 +9,7 @@ import com.github.quickmsg.common.message.MessageRegistry;
 import com.github.quickmsg.common.message.MqttMessageBuilder;
 import com.github.quickmsg.common.protocol.Protocol;
 import com.github.quickmsg.common.topic.TopicRegistry;
+import com.github.quickmsg.core.mqtt.MqttReceiveContext;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.mqtt.*;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +20,7 @@ import reactor.util.context.ContextView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * @author luxurong
@@ -131,7 +132,7 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
                            ChannelRegistry channelRegistry,
                            TopicRegistry topicRegistry,
                            MessageRegistry messageRegistry) {
-        List<String> topics = sessionChannel.getTopics();
+        Set<String> topics = sessionChannel.getTopics();
         mqttChannel.setTopics(topics);
         topicRegistry.clear(sessionChannel);
         topics.forEach(topic -> topicRegistry.registryTopicConnection(topic, mqttChannel));

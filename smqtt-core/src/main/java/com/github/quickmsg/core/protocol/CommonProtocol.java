@@ -51,7 +51,7 @@ public class CommonProtocol implements Protocol<MqttMessage> {
             case PUBREC:
                 MqttMessageIdVariableHeader messageIdVariableHeader = (MqttMessageIdVariableHeader) message.variableHeader();
                 int messageId = messageIdVariableHeader.messageId();
-                return mqttChannel.cancelRetry(messageId)
+                return mqttChannel.cancelRetry(MqttMessageType.PUBLISH,messageId)
                         .then(mqttChannel.write(MqttMessageBuilder.buildPublishRel(messageId), true));
             case PUBREL:
                 MqttMessageIdVariableHeader relMessageIdVariableHeader = (MqttMessageIdVariableHeader) message.variableHeader();
@@ -65,14 +65,14 @@ public class CommonProtocol implements Protocol<MqttMessage> {
                                     mqttChannels.stream()
                                             .map(channel -> channel.write(MessageUtils.wrapPublishMessage(msg, channel.generateMessageId()), true))
                                             .collect(Collectors.toList()))
-                                    .then(mqttChannel.cancelRetry(id))
+                                    .then(mqttChannel.cancelRetry(MqttMessageType.PUBREC,id))
                                     .then(mqttChannel.write(MqttMessageBuilder.buildPublishComp(id), false));
                         }).orElse(Mono.empty());
 
             case PUBCOMP:
                 MqttMessageIdVariableHeader messageIdVariableHeader1 = (MqttMessageIdVariableHeader) message.variableHeader();
                 int compId = messageIdVariableHeader1.messageId();
-                return mqttChannel.cancelRetry(compId);
+                return mqttChannel.cancelRetry(MqttMessageType.PUBREL,compId);
             case PINGRESP:
             default:
                 return Mono.empty();

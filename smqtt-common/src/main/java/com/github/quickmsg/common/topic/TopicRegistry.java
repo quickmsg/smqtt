@@ -43,7 +43,7 @@ public interface TopicRegistry {
      * @param mqttChannel 通道信息
      * @return Void
      */
-    void clear(List<String> topics, MqttChannel mqttChannel);
+    void clear(Set<String> topics, MqttChannel mqttChannel);
 
     /**
      * 获取topic的channels

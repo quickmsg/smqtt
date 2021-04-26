@@ -12,11 +12,11 @@ import reactor.core.publisher.Mono;
 import reactor.netty.Connection;
 
 import java.time.Duration;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -44,7 +44,7 @@ public class MqttChannel {
 
     private long keepalive;
 
-    private List<String> topics;
+    private Set<String> topics;
 
     private Boolean isMock = false;
 
@@ -55,12 +55,12 @@ public class MqttChannel {
 
     private Map<Integer, MqttPublishMessage> qos2MsgCache;
 
-    private Map<Integer, Disposable> replyMqttMessageMap;
+    private Map<MqttMessageType, Map<Integer, Disposable>> replyMqttMessageMap;
 
 
     public static MqttChannel init(Connection connection) {
         MqttChannel mqttChannel = new MqttChannel();
-        mqttChannel.setTopics(new CopyOnWriteArrayList<>());
+        mqttChannel.setTopics(new CopyOnWriteArraySet<>());
         mqttChannel.setAtomicInteger(new AtomicInteger(0));
         mqttChannel.setReplyMqttMessageMap(new ConcurrentHashMap<>());
         mqttChannel.setMqttMessageSink(new MqttMessageSink());
@@ -158,23 +158,25 @@ public class MqttChannel {
     /**
      * 取消重发
      *
+     * @param type      type
      * @param messageId 消息Id
      * @return boolean状态
      */
-    public Mono<Void> cancelRetry(Integer messageId) {
-        return Mono.fromRunnable(() -> this.removeReply(messageId));
+    public Mono<Void> cancelRetry(MqttMessageType type, Integer messageId) {
+        return Mono.fromRunnable(() -> this.removeReply(type, messageId));
     }
 
     /**
      * remove resend action
      *
+     * @param type      type
      * @param messageId messageId
      * @return void
      */
-    private void removeReply(Integer messageId) {
-        Optional.ofNullable(replyMqttMessageMap.get(messageId))
+    private void removeReply(MqttMessageType type, Integer messageId) {
+        Optional.ofNullable(replyMqttMessageMap.get(type))
+                .map(messageIds -> messageIds.remove(messageId))
                 .ifPresent(Disposable::dispose);
-        replyMqttMessageMap.remove(messageId);
     }
 
 
@@ -194,7 +196,7 @@ public class MqttChannel {
 
 
     private void clear() {
-        replyMqttMessageMap.values().forEach(Disposable::dispose);
+        replyMqttMessageMap.values().forEach(maps -> maps.values().forEach(Disposable::dispose));
         replyMqttMessageMap.clear();
     }
 
@@ -209,7 +211,7 @@ public class MqttChannel {
         public static MqttMessageSink MQTT_SINK = new MqttMessageSink();
 
 
-        public Mono<Void> sendMessage(MqttMessage mqttMessage, MqttChannel mqttChannel, boolean retry, Map<Integer, Disposable> replyMqttMessageMap) {
+        public Mono<Void> sendMessage(MqttMessage mqttMessage, MqttChannel mqttChannel, boolean retry, Map<MqttMessageType, Map<Integer, Disposable>> replyMqttMessageMap) {
             log.info("write channel {} message {}", mqttChannel.getConnection(), mqttMessage);
             if (retry) {
                 /*
@@ -266,9 +268,10 @@ public class MqttChannel {
          * @param replyMqttMessageMap
          * @return Mono
          */
-        public Mono<Void> offerReply(MqttMessage message, final MqttChannel mqttChannel, final int messageId, Map<Integer, Disposable> replyMqttMessageMap) {
+        public Mono<Void> offerReply(MqttMessage message, final MqttChannel mqttChannel, final int messageId, Map<MqttMessageType, Map<Integer, Disposable>> replyMqttMessageMap) {
+
             return Mono.fromRunnable(() ->
-                    replyMqttMessageMap.put(messageId,
+                    replyMqttMessageMap.computeIfAbsent(message.fixedHeader().messageType(), mqttMessageType -> new ConcurrentHashMap<>(8)).put(messageId,
                             mqttChannel.write(Mono.just(message))
                                     .delaySubscription(Duration.ofSeconds(5))
                                     .repeat()

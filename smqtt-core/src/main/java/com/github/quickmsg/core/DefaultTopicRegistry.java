@@ -30,12 +30,12 @@ public class DefaultTopicRegistry implements TopicRegistry {
 
     @Override
     public void clear(MqttChannel mqttChannel) {
-        List<String> topics = mqttChannel.getTopics();
+        Set<String> topics = mqttChannel.getTopics();
         this.clear(topics, mqttChannel);
     }
 
     @Override
-    public void clear(List<String> topics, MqttChannel mqttChannel) {
+    public void clear(Set<String> topics, MqttChannel mqttChannel) {
         for (String topic : topics) {
             topicChannels.get(TopicRegexUtils.regexTopic(topic)).remove(mqttChannel);
         }

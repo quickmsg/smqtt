@@ -2,7 +2,7 @@
 
 ## SMQTT是一款开源的MQTT消息代理Broker，
 
-SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署，支持容器化部署，
+SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持插拔式接口，支持单机部署，支持容器化部署，
 ### smqtt目前拥有的功能如下：
 
 1.  消息质量等级实现(支持qos0，qos1，qos2)
@@ -32,6 +32,65 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
 
 ## 快速开始
 
+- main方式启动
+
+引入依赖
+```markdown
+
+        Bootstrap.builder()
+                .port(8555)
+                .websocketPort(8999)
+                .options(channelOptionMap -> {})
+                .ssl(false)
+                .sslContext(new SslContext("crt","key"))
+                .isWebsocket(true)
+                .wiretap(false)
+                .httpOptions(Bootstrap.HttpOptions.builder().ssl(false).httpPort(62212).accessLog(true).build())
+                .build()
+                .startAwait();
+
+```
+
+阻塞式启动服务：
+
+```markdown
+
+        Bootstrap.builder()
+                .port(8555)
+                .websocketPort(8999)
+                .options(channelOptionMap -> {})
+                .ssl(false)
+                .sslContext(new SslContext("crt","key"))
+                .isWebsocket(true)
+                .wiretap(false)
+                .httpOptions(Bootstrap.HttpOptions.builder().ssl(false).httpPort(62212).accessLog(true).build())
+                .build()
+                .startAwait();
+
+```
+
+非阻塞式启动服务：
+
+```markdown
+
+        Bootstrap.builder()
+                .port(8555)
+                .websocketPort(8999)
+                .options(channelOptionMap -> {})
+                .ssl(false)
+                .sslContext(new SslContext("crt","key"))
+                .isWebsocket(true)
+                .wiretap(false)
+                .httpOptions(Bootstrap.HttpOptions.builder().ssl(false).httpPort(62212).accessLog(true).build())
+                .build()
+                .startAwait();
+
+```
+
+
+-- jar方式
+
+- docker 方式
 
 
 

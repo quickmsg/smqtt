@@ -30,7 +30,7 @@ public class PublishAckProtocol implements Protocol<MqttPubAckMessage> {
     public Mono<Void> parseProtocol(MqttPubAckMessage message, MqttChannel mqttChannel, ContextView contextView) {
         MqttMessageIdVariableHeader idVariableHeader = message.variableHeader();
         int messageId = idVariableHeader.messageId();
-        return mqttChannel.cancelRetry(messageId);
+        return mqttChannel.cancelRetry(MqttMessageType.PUBLISH,messageId);
     }
 
     @Override

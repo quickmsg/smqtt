@@ -1,4 +1,4 @@
-package com.github.quickmsg;
+package com.github.quickmsg.core;
 
 import com.github.quickmsg.core.http.HttpTransportFactory;
 import com.github.quickmsg.common.auth.PasswordAuthentication;

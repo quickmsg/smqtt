@@ -61,7 +61,7 @@ public class DefaultMessageRegistry implements MessageRegistry {
                                 retainMessage.getMqttQoS(),
                                 retainMessage.getMqttQoS() == MqttQoS.AT_MOST_ONCE ? 0 : mqttChannel.generateMessageId(),
                                 key,
-                                retainMessage.getByteBuf());
+                                retainMessage.getByteBuf().copy());
                     }).collect(Collectors.toList()));
         } else {
             return Optional.empty();
