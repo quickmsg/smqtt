@@ -1,4 +1,4 @@
-package com.github.quickmsg.cluster.base;
+package com.github.quickmsg.common.cluster;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

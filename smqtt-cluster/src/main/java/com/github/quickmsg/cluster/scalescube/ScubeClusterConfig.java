@@ -1,6 +1,6 @@
 package com.github.quickmsg.cluster.scalescube;
 
-import com.github.quickmsg.cluster.base.ClusterConfig;
+import com.github.quickmsg.common.cluster.ClusterConfig;
 
 import java.util.List;
 import java.util.Map;

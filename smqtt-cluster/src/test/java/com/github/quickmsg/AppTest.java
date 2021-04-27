@@ -5,6 +5,7 @@ import io.scalecube.cluster.ClusterImpl;
 import io.scalecube.cluster.ClusterMessageHandler;
 import io.scalecube.cluster.membership.MembershipEvent;
 import io.scalecube.cluster.transport.api.Message;
+import io.scalecube.net.Address;
 import org.junit.Test;
 
 import java.util.concurrent.CountDownLatch;
@@ -22,7 +23,8 @@ public class AppTest
         CountDownLatch countDownLatch = new CountDownLatch(1);
         Cluster alice =
                 new ClusterImpl()
-                        .config(opts -> opts.memberAlias("Dan1").externalPort(9777))
+                        .config(opts -> opts.memberAlias("Dan1"))
+                        .membership(opts -> opts.seedMembers(Address.from("localhost:8778"),Address.from("localhost:8779")))
                         .transport(transportConfig -> transportConfig.port(8777))
                         .handler(
                                 cluster -> {
@@ -44,9 +46,12 @@ public class AppTest
                                         }
                                     };
                                 })
-                        .startAwait();
-        System.out.println(alice.address().toString());
-        alice.members().forEach(System.out::println);
-        countDownLatch.await();
+                        .start().block();
+        for(;;){
+            Thread.sleep(1000);
+            alice.spreadGossip(Message.fromQualifier("ads").fromData("ad")).subscribe();
+
+        }
+//        countDownLatch.await();
     }
 }

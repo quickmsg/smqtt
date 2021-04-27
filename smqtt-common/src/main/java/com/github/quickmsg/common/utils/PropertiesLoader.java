@@ -21,15 +21,18 @@ public class PropertiesLoader {
         Map<String, String> map = new HashMap<>(16);
         Properties prop = new Properties();
         try {
+
             InputStream inputStream = new BufferedInputStream(new FileInputStream(new File(filePath)));
             prop.load(inputStream);
+            loadMap(prop,map);
         } catch (IOException e) {
+            log.error("properties load error ",e);
         }
         return map;
     }
 
 
-    private static void getProperties(Properties props, Map<String, String> map) {
+    private static void loadMap(Properties props, Map<String, String> map) {
         @SuppressWarnings("rawtypes")
         Enumeration en = props.propertyNames();
         while (en.hasMoreElements()) {

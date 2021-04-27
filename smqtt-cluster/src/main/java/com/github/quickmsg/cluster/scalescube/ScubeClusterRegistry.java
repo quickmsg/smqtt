@@ -1,8 +1,8 @@
 package com.github.quickmsg.cluster.scalescube;
 
-import com.github.quickmsg.cluster.base.ClusterEvent;
-import com.github.quickmsg.cluster.base.ClusterMessage;
-import com.github.quickmsg.cluster.base.ClusterRegistry;
+import com.github.quickmsg.common.cluster.ClusterEvent;
+import com.github.quickmsg.common.cluster.ClusterMessage;
+import com.github.quickmsg.common.cluster.ClusterRegistry;
 import io.scalecube.cluster.ClusterImpl;
 import io.scalecube.cluster.ClusterMessageHandler;
 import io.scalecube.cluster.membership.MembershipEvent;

@@ -1,5 +1,6 @@
 package com.github.quickmsg;
 
+import com.github.quickmsg.common.utils.PropertiesLoader;
 import io.scalecube.cluster.Cluster;
 import io.scalecube.cluster.ClusterImpl;
 import io.scalecube.cluster.ClusterMessageHandler;
@@ -8,6 +9,7 @@ import io.scalecube.cluster.transport.api.Message;
 import io.scalecube.net.Address;
 import org.junit.Test;
 
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -25,8 +27,7 @@ public class AppTest4
         Cluster bob =
                 new ClusterImpl()
                         .config(opts -> opts.memberAlias("Dan4"))
-
-                        .membership(opts -> opts.seedMembers(Address.from("192.168.124.10:8777")))
+                        .membership(opts -> opts.seedMembers(Address.from("localhost:8777"),Address.from("localhost:8779"),Address.from("localhost:8778")))
                         .handler(
                                 cluster -> {
                                     return new ClusterMessageHandler() {

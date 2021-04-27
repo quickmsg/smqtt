@@ -39,7 +39,7 @@
     <!--<logger name="reactor.netty.channel.FluxReceive" level="DEBUG" />-->
     <!--<logger name="reactor.netty.http.server.HttpServer" level="DEBUG" />-->
 
-    <root level="DEBUG">
+    <root level="error">
         <appender-ref ref="stdout"/>
     </root>
 

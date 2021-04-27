@@ -40,8 +40,8 @@ public class BootstrapTest {
                 .build()
                 .start().block();
         assert bootstrap != null;
-        // 关闭服务
-//        bootstrap.shutdown();
+        // 关闭服
+        bootstrap.shutdown();
         Thread.sleep(1000000);
 
     }

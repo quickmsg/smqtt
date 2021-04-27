@@ -1,6 +1,6 @@
 package com.github.quickmsg.cluster.scalescube;
 
-import com.github.quickmsg.cluster.base.ClusterNode;
+import com.github.quickmsg.common.cluster.ClusterNode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

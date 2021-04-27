@@ -32,22 +32,10 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
 
 ## 快速开始
 
-- main方式启动
+- ### main方式启动
 
 引入依赖
 ```markdown
-
-        Bootstrap.builder()
-                .port(8555)
-                .websocketPort(8999)
-                .options(channelOptionMap -> {})
-                .ssl(false)
-                .sslContext(new SslContext("crt","key"))
-                .isWebsocket(true)
-                .wiretap(false)
-                .httpOptions(Bootstrap.HttpOptions.builder().ssl(false).httpPort(62212).accessLog(true).build())
-                .build()
-                .startAwait();
 
 ```
 
@@ -73,26 +61,84 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
 
 ```markdown
 
-        Bootstrap.builder()
+        Bootstrap bootstrap = Bootstrap.builder()
                 .port(8555)
                 .websocketPort(8999)
                 .options(channelOptionMap -> {})
+                .highWaterMark(1000000)
+                .lowWaterMark(1000)
                 .ssl(false)
                 .sslContext(new SslContext("crt","key"))
                 .isWebsocket(true)
-                .wiretap(false)
+                .wiretap(true)
                 .httpOptions(Bootstrap.HttpOptions.builder().ssl(false).httpPort(62212).accessLog(true).build())
                 .build()
-                .startAwait();
+                .start().block();
+        assert bootstrap != null;
+        // 关闭服
+        bootstrap.shutdown();
 
 ```
 
 
--- jar方式
-
-- docker 方式
+- ### jar方式
 
 
+- 下载源码 compile package smqtt-bootstrap module
+
+    >在target目录下生成jar
+
+
+
+- 准备配置文件 config.properties
+
+
+```markdown
+    
+    # 开启tcp端口
+    smqtt.tcp.port=1883
+    # 高水位
+    smqtt.tcp.lowWaterMark=4000000
+    # 低水位
+    smqtt.tcp.highWaterMark=80000000
+    # 开启ssl加密
+    smqtt.tcp.ssl=false
+    # 证书crt smqtt.tcp.ssl.crt =
+    # 证书key smqtt.tcp.ssl.key =
+    # 开启日志
+    smqtt.tcp.wiretap=false
+    # boss线程
+    smqtt.tcp.bossThreadSize=4;
+    # work线程
+    smqtt.tcp.workThreadSize=8;
+    # websocket端口
+    smqtt.websocket.port=8999;
+    # websocket开启
+    smqtt.websocket.enable=true;
+    # smqtt用户
+    smqtt.tcp.username=smqtt;
+    # smqtt密码
+    smqtt.tcp.password=smqtt;
+    # 开启http
+    smqtt.http.enable=true;
+    # 开启http端口
+    smqtt.http.port=1999;
+    # 开启http日志
+    smqtt.http.accesslog=true;
+    # 开启ssl
+    smqtt.http.ssl.enable=false;
+    # smqtt.http.ssl.crt =;
+    # smqtt.http.ssl.key;
+  ```
+
+- 启动服务
+
+java -jar smqtt-bootstrap-1.0.1-SNAPSHOT.jar <conf.properties路径>
+
+
+
+
+- ### docker 方式
 
 
 docker镜像地址
@@ -103,11 +149,10 @@ docker pull 1ssqq1lxr/smqtt:latest
 启动服务(默认1883端口)
 
 ``` 
-docker run -it  -p  1883:1883 -e wiretap=true 1ssqq1lxr/smqtt
-
-修改端口使用 -e port =1884 -p 1883:1884
-
+docker run -it  -v <conf.properties路径>:/conf/config.properties  -p <宿主机 port>:<config配置端口，默认1883> 1ssqq1lxr/smqtt
 ```
 
 ### 压测报告
+
+
 

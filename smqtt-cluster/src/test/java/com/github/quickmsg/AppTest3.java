@@ -25,8 +25,8 @@ public class AppTest3
         Cluster bob =
                 new ClusterImpl()
                         .config(opts -> opts.memberAlias("Dan3"))
-
-                        .membership(opts -> opts.seedMembers(Address.from("192.168.124.10:8777")))
+                        .membership(opts -> opts.seedMembers(Address.from("localhost:8777"),Address.from("localhost:8778")))
+                        .transport(transportConfig -> transportConfig.port(8779))
                         .handler(
                                 cluster -> {
                                     return new ClusterMessageHandler() {

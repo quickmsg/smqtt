@@ -57,21 +57,20 @@
                         <mainClass>com.github.quickmsg.docker.DockerStarter</mainClass>
                     </container>
                 </configuration>
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <phase>package</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>build</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                    </execution>
 <!--                    <execution>-->
 <!--                        <phase>deploy</phase>-->
 <!--                        <goals>-->
 <!--                            <goal>push</goal>-->
 <!--                        </goals>-->
 <!--                    </execution>-->
-<!--                </executions>-->
+                </executions>
             </plugin>
 
             <plugin>

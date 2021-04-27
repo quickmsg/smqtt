@@ -24,8 +24,9 @@ public class AppTest2
         //noinspection unused
         Cluster bob =
                 new ClusterImpl()
-                        .membership(opts -> opts.seedMembers(Address.from("192.168.124.10:8777")))
+                        .membership(opts -> opts.seedMembers(Address.from("localhost:8777"),Address.from("localhost:8779")))
                         .config(opts -> opts.memberAlias("Dan2"))
+                        .transport(transportConfig -> transportConfig.port(8778))
                         .handler(
                                 cluster -> {
                                     return new ClusterMessageHandler() {
@@ -37,7 +38,6 @@ public class AppTest2
                                         @Override
                                         public void onMembershipEvent(MembershipEvent event) {
                                             System.out.println("MembershipEvent event: " + event);
-
                                         }
 
                                         @Override

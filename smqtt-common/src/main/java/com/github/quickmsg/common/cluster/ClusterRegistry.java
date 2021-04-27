@@ -1,4 +1,4 @@
-package com.github.quickmsg.cluster.base;
+package com.github.quickmsg.common.cluster;
 
 import com.github.quickmsg.common.spi.DynamicLoader;
 import reactor.core.publisher.Flux;
