@@ -30,6 +30,8 @@ public class BootstrapTest {
                 .port(8555)
                 .websocketPort(8999)
                 .options(channelOptionMap -> {})
+                .highWaterMark(1000000)
+                .lowWaterMark(1000)
                 .ssl(false)
                 .sslContext(new SslContext("crt","key"))
                 .isWebsocket(true)

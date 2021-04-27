@@ -43,15 +43,12 @@
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
         </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.apache.gossip/gossip -->
         <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-transport-native-epoll</artifactId>
+            <groupId>org.apache.gossip</groupId>
+            <artifactId>gossip</artifactId>
+            <version>0.1.2-incubating</version>
         </dependency>
 
 
