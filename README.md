@@ -84,7 +84,7 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
 - ### jar方式
 
 
-1. 下载源码 compile package smqtt-bootstrap module
+1. 下载源码 compile package <smqtt-bootstrap module>
 
     >在target目录下生成jar
 
