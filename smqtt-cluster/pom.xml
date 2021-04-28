@@ -6,13 +6,13 @@
 
     <parent>
         <artifactId>smqtt</artifactId>
-        <groupId>com.github.quickmsg</groupId>
-        <version>1.0.1-SNAPSHOT</version>
+        <groupId>io.github.quickmsg</groupId>
+        <version>1.0.2</version>
     </parent>
     <packaging>jar</packaging>
 
     <artifactId>smqtt-cluster</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.2</version>
 
     <name>smqtt-cluster</name>
 
@@ -31,9 +31,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.quickmsg</groupId>
+            <groupId>io.github.quickmsg</groupId>
             <artifactId>smqtt-core</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
+            <version>1.0.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
