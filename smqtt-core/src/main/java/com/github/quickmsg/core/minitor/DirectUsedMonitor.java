@@ -10,8 +10,6 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author luxurong
- * @date 2021/4/7 10:35
- * @description
  */
 @Slf4j
 public class DirectUsedMonitor implements Monitor {

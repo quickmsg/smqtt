@@ -24,8 +24,6 @@ import java.util.Set;
 
 /**
  * @author luxurong
- * @date 2021/3/29 14:05
- * @description server handler
  */
 @Slf4j
 public class ConnectProtocol implements Protocol<MqttConnectMessage> {

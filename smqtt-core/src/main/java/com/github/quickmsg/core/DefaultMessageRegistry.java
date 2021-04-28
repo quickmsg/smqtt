@@ -17,8 +17,6 @@ import java.util.stream.Collectors;
 
 /**
  * @author luxurong
- * @date 2021/4/4 12:53
- * @description
  */
 public class DefaultMessageRegistry implements MessageRegistry {
 

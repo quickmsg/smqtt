@@ -22,8 +22,6 @@ import java.util.stream.Collectors;
 
 /**
  * @author luxurong
- * @date 2021/3/29 14:05
- * @description client && server handler
  */
 @Slf4j
 public class PublishProtocol implements Protocol<MqttPublishMessage> {

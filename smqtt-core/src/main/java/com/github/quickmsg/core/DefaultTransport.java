@@ -13,8 +13,6 @@ import java.util.Optional;
 
 /**
  * @author luxurong
- * @date 2021/3/30 13:53
- * @description
  */
 @Slf4j
 public class DefaultTransport implements Transport<MqttConfiguration> {

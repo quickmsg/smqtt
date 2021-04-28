@@ -12,8 +12,6 @@ import java.util.stream.Collectors;
 
 /**
  * @author luxurong
- * @date 2021/4/1 15:15
- * @description topic 管理器
  */
 public class DefaultTopicRegistry implements TopicRegistry {
 

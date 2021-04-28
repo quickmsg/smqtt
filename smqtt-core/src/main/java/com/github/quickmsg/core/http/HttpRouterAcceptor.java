@@ -8,8 +8,6 @@ import java.util.function.Consumer;
 
 /**
  * @author luxurong
- * @date 2021/4/19 15:10
- * @description 处理http协议
  */
 public class HttpRouterAcceptor implements Consumer<HttpServerRoutes> {
 

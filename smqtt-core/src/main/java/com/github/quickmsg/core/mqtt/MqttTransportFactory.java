@@ -6,8 +6,6 @@ import com.github.quickmsg.common.transport.TransportFactory;
 
 /**
  * @author luxurong
- * @date 2021/3/30 19:55
- * @description
  */
 public class MqttTransportFactory implements TransportFactory<MqttConfiguration> {
 

@@ -20,8 +20,6 @@ import java.util.stream.Collectors;
 
 /**
  * @author luxurong
- * @date 2021/4/1 20:08
- * @description client && server handler
  */
 @Slf4j
 public class CommonProtocol implements Protocol<MqttMessage> {

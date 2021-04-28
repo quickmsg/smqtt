@@ -7,8 +7,6 @@ import com.github.quickmsg.core.mqtt.MqttConfiguration;
 
 /**
  * @author luxurong
- * @date 2021/3/30 19:55
- * @description
  */
 public class WebSocketMqttTransportFactory implements TransportFactory<MqttConfiguration> {
 

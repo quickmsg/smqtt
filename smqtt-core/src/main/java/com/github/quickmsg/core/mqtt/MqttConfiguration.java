@@ -18,8 +18,6 @@ import java.util.function.Consumer;
 
 /**
  * @author luxurong
- * @date 2021/3/30 13:26
- * @Description MQTT协议配置类
  */
 @Data
 public class MqttConfiguration extends AbstractSslHandler implements AbstractConfiguration {

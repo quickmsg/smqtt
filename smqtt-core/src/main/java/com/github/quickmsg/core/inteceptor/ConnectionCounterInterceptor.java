@@ -7,8 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author luxurong
- * @date 2021/4/20 19:06
- * @description
  */
 @Slf4j
 public class ConnectionCounterInterceptor implements Interceptor {

@@ -11,8 +11,6 @@ import java.io.File;
 
 /**
  * @author luxurong
- * @date 2021/4/20 17:02
- * @description
  */
 @Slf4j
 public class AbstractSslHandler {

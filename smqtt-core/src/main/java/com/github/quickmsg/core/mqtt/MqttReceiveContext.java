@@ -16,8 +16,6 @@ import java.util.function.Function;
 
 /**
  * @author luxurong
- * @date 2021/3/30 13:25
- * @Description 服务端操作连接channel类
  */
 @Getter
 @Slf4j

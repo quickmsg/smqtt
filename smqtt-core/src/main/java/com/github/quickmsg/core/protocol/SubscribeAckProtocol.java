@@ -12,8 +12,6 @@ import java.util.List;
 
 /**
  * @author luxurong
- * @date 2021/3/29 14:05
- * @description client handler
  */
 public class SubscribeAckProtocol implements Protocol<MqttSubAckMessage> {
 

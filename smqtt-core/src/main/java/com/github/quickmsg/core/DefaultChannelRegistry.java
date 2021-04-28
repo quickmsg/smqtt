@@ -11,8 +11,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author luxurong
- * @date 2021/3/30 19:20
- * @description
  */
 @Slf4j
 public class DefaultChannelRegistry implements ChannelRegistry {

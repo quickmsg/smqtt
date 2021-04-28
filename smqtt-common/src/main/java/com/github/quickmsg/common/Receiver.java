@@ -5,8 +5,6 @@ import reactor.netty.DisposableServer;
 
 /**
  * @author luxurong
- * @date 2021/3/29 20:09
- * @description
  */
 public interface Receiver {
 

@@ -29,8 +29,6 @@ import java.util.function.Consumer;
 
 /**
  * @author luxurong
- * @date 2021/4/13 11:46
- * @description broker 启动类
  */
 @Builder
 @Getter
@@ -124,8 +122,6 @@ public class Bootstrap {
 
     /**
      * 阻塞启动 生产环境慎用
-     *
-     * @return void
      */
     public void startAwait() {
         this.start()

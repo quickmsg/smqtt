@@ -10,8 +10,6 @@ import reactor.netty.http.server.HttpServer;
 
 /**
  * @author luxurong
- * @date 2021/4/19 15:07
- * @description
  */
 public class HttpReceiver extends AbstractSslHandler implements Receiver {
 

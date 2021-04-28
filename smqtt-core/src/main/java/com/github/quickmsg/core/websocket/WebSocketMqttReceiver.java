@@ -21,8 +21,6 @@ import reactor.util.context.ContextView;
 
 /**
  * @author luxurong
- * @date 2021/3/29 20:08
- * @description
  */
 @Slf4j
 public class WebSocketMqttReceiver extends AbstractSslHandler implements Receiver {

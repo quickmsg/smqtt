@@ -18,8 +18,6 @@ import java.util.stream.Collectors;
 
 /**
  * @author luxurong
- * @date 2021/3/29 14:05
- * @description server handler
  */
 public class SubscribeProtocol implements Protocol<MqttSubscribeMessage> {
 

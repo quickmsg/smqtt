@@ -6,8 +6,6 @@ import lombok.Data;
 
 /**
  * @author luxurong
- * @date 2021/4/19 16:44
- * @description
  */
 @Data
 public class HttpConfiguration implements Configuration {

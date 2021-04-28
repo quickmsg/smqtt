@@ -15,8 +15,6 @@ import reactor.util.context.ContextView;
 
 /**
  * @author luxurong
- * @date 2021/3/29 20:08
- * @description
  */
 public class MqttReceiver extends AbstractSslHandler implements Receiver {
 

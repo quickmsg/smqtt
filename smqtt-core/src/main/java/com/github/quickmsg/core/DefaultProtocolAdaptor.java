@@ -18,8 +18,6 @@ import java.util.Optional;
 
 /**
  * @author luxurong
- * @date 2021/3/31 15:22
- * @description
  */
 @Slf4j
 public class DefaultProtocolAdaptor implements ProtocolAdaptor {

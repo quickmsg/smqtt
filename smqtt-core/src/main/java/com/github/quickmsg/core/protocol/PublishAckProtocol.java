@@ -13,8 +13,6 @@ import java.util.List;
 
 /**
  * @author luxurong
- * @date 2021/3/29 14:05
- * @description server handler
  */
 public class PublishAckProtocol implements Protocol<MqttPubAckMessage> {
 

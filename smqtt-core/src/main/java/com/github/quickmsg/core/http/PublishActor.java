@@ -14,8 +14,6 @@ import reactor.netty.http.server.HttpServerResponse;
 
 /**
  * @author luxurong
- * @date 2021/4/19 14:57
- * @description
  */
 @Router(value = "/smqtt/publish", type = HttpType.POST)
 @Slf4j

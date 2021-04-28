@@ -9,8 +9,6 @@ import java.util.List;
 
 /**
  * @author luxurong
- * @date 2021/4/12 21:12
- * @description
  */
 public class ByteBufToWebSocketFrameEncoder extends MessageToMessageEncoder<ByteBuf> {
 
