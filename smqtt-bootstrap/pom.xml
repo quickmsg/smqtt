@@ -6,11 +6,11 @@
 
     <parent>
         <artifactId>smqtt</artifactId>
-        <groupId>com.github.quickmsg</groupId>
-        <version>1.0.1-SNAPSHOT</version>
+        <groupId>io.github.quickmsg</groupId>
+        <version>1.0.2</version>
     </parent>
     <artifactId>smqtt-bootstrap</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.2</version>
 
     <name>smqtt-bootstrap</name>
     <!-- FIXME change it to the project's website -->
@@ -28,9 +28,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.quickmsg</groupId>
+            <groupId>io.github.quickmsg</groupId>
             <artifactId>smqtt-core</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
+            <version>1.0.2</version>
         </dependency>
 
     </dependencies>
@@ -54,7 +54,7 @@
                         </tags>
                     </to>
                     <container>
-                        <mainClass>com.github.quickmsg.docker.DockerStarter</mainClass>
+                        <mainClass>io.github.quickmsg.docker.DockerStarter</mainClass>
                     </container>
                 </configuration>
                 <executions>
@@ -83,7 +83,7 @@
                     <archive>
                         <manifest>
                             <!-- 此处指定main方法入口的class -->
-                            <mainClass>com.github.quickmsg.jar.JarStarter</mainClass>
+                            <mainClass>io.github.quickmsg.jar.JarStarter</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
