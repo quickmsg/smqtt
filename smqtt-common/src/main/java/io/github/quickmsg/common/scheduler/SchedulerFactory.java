@@ -7,8 +7,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author luxurong
- * @date 2021/4/6 13:16
- * @description
  */
 public interface SchedulerFactory {
 
@@ -19,7 +17,7 @@ public interface SchedulerFactory {
      * 获取Scheduler
      *
      * @param topic 主题
-     * @return Scheduler
+     * @return 定时器
      */
     Scheduler schedulerForTopic(String topic);
 
@@ -29,7 +27,6 @@ public interface SchedulerFactory {
      *
      * @param topic     主题
      * @param scheduler Scheduler
-     * @return void
      */
     void buildSchedulerForTopic(String topic, Scheduler scheduler);
 

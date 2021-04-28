@@ -2,8 +2,6 @@ package io.github.quickmsg.common.utils;
 
 /**
  * @author luxurong
- * @date 2021/4/7 17:11
- * @description
  */
 public class TopicRegexUtils {
 

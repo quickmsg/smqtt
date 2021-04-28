@@ -9,8 +9,6 @@ import java.util.Optional;
 
 /**
  * @author luxurong
- * @date 2021/4/4 12:47
- * @description
  */
 public interface MessageRegistry {
 
@@ -21,7 +19,7 @@ public interface MessageRegistry {
      * 获取连接下线后的session消息
      *
      * @param clientIdentifier 设备id
-     * @return List
+     * @return 发布消息
      */
     Optional<List<MqttPublishMessage>> getSessionMessages(String clientIdentifier);
 
@@ -31,7 +29,6 @@ public interface MessageRegistry {
      *
      * @param clientIdentifier 设备id
      * @param messages         消息
-     * @return void
      */
     void sendSessionMessages(String clientIdentifier, MqttPublishMessage messages);
 
@@ -41,7 +38,6 @@ public interface MessageRegistry {
      *
      * @param topic    设备id
      * @param messages 消息
-     * @return void
      */
     void saveRetainMessage(String topic, MqttPublishMessage messages);
 
@@ -49,10 +45,9 @@ public interface MessageRegistry {
     /**
      * 保留Topic保留消息
      *
-     * @param
      * @param topic       设备id
      * @param mqttChannel 通道
-     * @return List
+     * @return 发布消息
      */
     Optional<List<MqttPublishMessage>> getRetainMessage(String topic, MqttChannel mqttChannel);
 

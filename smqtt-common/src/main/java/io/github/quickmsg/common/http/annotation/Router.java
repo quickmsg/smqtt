@@ -6,8 +6,6 @@ import java.lang.annotation.*;
 
 /**
  * @author luxurong
- * @date 2021/4/18 15:19
- * @description
  */
 
 @Target({ElementType.TYPE})

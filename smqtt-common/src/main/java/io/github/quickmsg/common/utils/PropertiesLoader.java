@@ -10,8 +10,6 @@ import java.util.Properties;
 
 /**
  * @author luxurong
- * @date 2021/4/22 18:36
- * @description
  */
 @Slf4j
 public class PropertiesLoader {

@@ -16,8 +16,6 @@ import java.util.stream.Collectors;
 
 /**
  * @author luxurong
- * @date 2021/4/9 19:31
- * @description
  */
 public class ScubeClusterRegistry implements ClusterRegistry<ScubeClusterConfig> {
 

@@ -5,8 +5,6 @@ import java.util.Map;
 
 /**
  * @author luxurong
- * @date 2021/4/8 14:42
- * @description
  */
 public interface ClusterConfig {
 

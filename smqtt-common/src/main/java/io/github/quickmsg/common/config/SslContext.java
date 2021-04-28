@@ -5,8 +5,6 @@ import lombok.Getter;
 
 /**
  * @author luxurong
- * @date 2021/4/20 17:00
- * @description
  */
 @AllArgsConstructor
 @Getter

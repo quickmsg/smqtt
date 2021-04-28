@@ -4,8 +4,6 @@ import io.github.quickmsg.common.config.Configuration;
 
 /**
  * @author luxurong
- * @date 2021/3/30 19:28
- * @description
  */
 public interface TransportFactory<C extends Configuration> {
 

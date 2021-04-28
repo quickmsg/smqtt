@@ -14,8 +14,6 @@ import java.util.stream.Collectors;
 
 /**
  * @author luxurong
- * @date 2021/4/16 20:47
- * @description
  */
 @FunctionalInterface
 public interface HttpActor {
@@ -41,6 +39,7 @@ public interface HttpActor {
      * json转换器
      *
      * @param tClass class
+     * @param <T> 返回类型
      * @return Function
      */
     default <T> Function<String, T> toJson(Class<T> tClass) {

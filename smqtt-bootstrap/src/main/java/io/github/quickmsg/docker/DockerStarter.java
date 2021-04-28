@@ -5,8 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author luxurong
- * @date 2021/4/14 20:40
- * @description
  */
 @Slf4j
 public class DockerStarter extends AbstractStarter {

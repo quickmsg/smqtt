@@ -6,8 +6,6 @@ import lombok.Data;
 
 /**
  * @author luxurong
- * @date 2021/4/12 17:14
- * @description
  */
 @Data
 @AllArgsConstructor

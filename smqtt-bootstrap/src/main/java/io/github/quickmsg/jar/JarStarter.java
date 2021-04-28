@@ -8,8 +8,6 @@ import java.util.Map;
 
 /**
  * @author luxurong
- * @date 2021/4/14 20:39
- * @description
  */
 @Slf4j
 public class JarStarter extends AbstractStarter {

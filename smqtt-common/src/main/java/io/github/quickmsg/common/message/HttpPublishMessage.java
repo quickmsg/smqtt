@@ -9,8 +9,6 @@ import java.util.Map;
 
 /**
  * @author luxurong
- * @date 2021/4/19 14:58
- * @description
  */
 @Data
 public class HttpPublishMessage {

@@ -7,8 +7,6 @@ import reactor.core.publisher.Mono;
 
 /**
  * @author luxurong
- * @date 2021/3/29 11:21
- * @description
  */
 public interface Transport<C extends Configuration> extends Disposable {
 

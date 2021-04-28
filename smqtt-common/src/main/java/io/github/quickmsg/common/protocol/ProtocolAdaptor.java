@@ -18,8 +18,6 @@ import java.util.stream.Collectors;
 
 /**
  * @author luxurong
- * @date 2021/3/31 10:59
- * @Description 协议分流器
  */
 public interface ProtocolAdaptor {
 
@@ -35,7 +33,7 @@ public interface ProtocolAdaptor {
      * @param mqttChannel    通道
      * @param mqttMessage    消息
      * @param receiveContext 上下文
-     * @return void
+     * @param <C> 配置文件
      */
     <C extends Configuration> void chooseProtocol(MqttChannel mqttChannel, MqttMessage mqttMessage, ReceiveContext<C> receiveContext);
 
@@ -43,7 +41,7 @@ public interface ProtocolAdaptor {
     /**
      * 代理类  用来注入 filter monitor
      *
-     * @return ProtocolAdaptor
+     * @return 适配器
      */
     default ProtocolAdaptor proxy() {
         return (ProtocolAdaptor) Proxy.newProxyInstance(ProtocolAdaptor.class.getClassLoader(),
@@ -57,9 +55,9 @@ public interface ProtocolAdaptor {
      *
      * @param method 方法
      * @param args   参数
-     * @return Object
-     * @throws InvocationTargetException
-     * @throws IllegalAccessException
+     * @return 代理类
+     * @throws InvocationTargetException 代理异常
+     * @throws IllegalAccessException 非法状态异常
      */
     default Object intercept(Method method, Object[] args) throws InvocationTargetException, IllegalAccessException {
         MqttMessage mqttMessage = (MqttMessage) args[1];

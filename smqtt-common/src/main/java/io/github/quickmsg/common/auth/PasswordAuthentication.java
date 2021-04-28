@@ -4,8 +4,6 @@ import io.github.quickmsg.common.spi.DynamicLoader;
 
 /**
  * @author luxurong
- * @date 2021/3/30 13:35
- * @description 认证类
  */
 public interface PasswordAuthentication {
 
@@ -17,7 +15,7 @@ public interface PasswordAuthentication {
      *
      * @param userName        用户名称
      * @param passwordInBytes 密钥
-     * @return
+     * @return 布尔
      */
     boolean auth(String userName, byte[] passwordInBytes);
 

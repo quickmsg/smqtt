@@ -9,8 +9,6 @@ import java.util.Set;
 
 /**
  * @author luxurong
- * @date 2021/3/30 13:56
- * @description
  */
 public interface TopicRegistry {
 
@@ -22,7 +20,6 @@ public interface TopicRegistry {
      *
      * @param topic       订阅主题
      * @param mqttChannel 通道信息
-     * @return 空
      */
     void registryTopicConnection(String topic, MqttChannel mqttChannel);
 
@@ -31,7 +28,6 @@ public interface TopicRegistry {
      * 清除订阅消息
      *
      * @param mqttChannel 通道信息
-     * @return Void
      */
     void clear(MqttChannel mqttChannel);
 
@@ -41,7 +37,6 @@ public interface TopicRegistry {
      *
      * @param topics topics
      * @param mqttChannel 通道信息
-     * @return Void
      */
     void clear(Set<String> topics, MqttChannel mqttChannel);
 
@@ -49,7 +44,7 @@ public interface TopicRegistry {
      * 获取topic的channels
      *
      * @param topicName topic name
-     * @return list
+     * @return 通道
      */
     Set<MqttChannel> getChannelListByTopic(String topicName);
 
@@ -58,7 +53,6 @@ public interface TopicRegistry {
      * 绑定主题跟channel关系
      *
      * @param mqttTopicSubscriptions 通道信息/订阅主题
-     * @return 空
      */
     void registryTopicConnection(List<SubscribeChannelContext> mqttTopicSubscriptions);
 }

@@ -7,8 +7,6 @@ import java.util.Map;
 
 /**
  * @author luxurong
- * @date 2021/4/9 19:32
- * @description
  */
 public class ScubeClusterConfig implements ClusterConfig {
     @Override

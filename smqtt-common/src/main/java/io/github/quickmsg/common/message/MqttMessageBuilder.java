@@ -8,8 +8,6 @@ import java.util.List;
 
 /**
  * @author luxurong
- * @date 2021/4/1 11:21
- * @description 构建 mqtt协议
  */
 public class MqttMessageBuilder {
 

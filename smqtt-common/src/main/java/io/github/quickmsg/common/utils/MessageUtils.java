@@ -9,8 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author luxurong
- * @description
- * @date 2021/3/29 11:21
  */
 @Slf4j
 public class MessageUtils {

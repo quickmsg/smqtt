@@ -9,8 +9,6 @@ import java.util.stream.Collectors;
 
 /**
  * @author luxurong
- * @date 2021/4/9 10:55
- * @description 针对push消息过滤
  */
 public interface Interceptor {
 

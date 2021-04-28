@@ -12,8 +12,6 @@ import java.util.function.BiConsumer;
 
 /**
  * @author luxurong
- * @date 2021/3/29 20:29
- * @description
  */
 
 public interface ReceiveContext<T extends Configuration> extends BiConsumer<MqttChannel, MqttMessage> {

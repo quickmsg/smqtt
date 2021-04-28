@@ -2,8 +2,6 @@ package io.github.quickmsg.common.http.enums;
 
 /**
  * @author luxurong
- * @date 2021/4/18 15:20
- * @description
  */
 public enum HttpType {
 

@@ -12,8 +12,6 @@ import java.util.function.Function;
 
 /**
  * @author luxurong
- * @date 2021/4/15 14:14
- * @description
  */
 public abstract class AbstractStarter {
 

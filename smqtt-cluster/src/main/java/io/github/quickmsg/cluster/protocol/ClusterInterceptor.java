@@ -6,8 +6,6 @@ import io.netty.handler.codec.mqtt.MqttPublishMessage;
 
 /**
  * @author luxurong
- * @date 2021/4/12 11:54
- * @description 集群适配器
  */
 public class ClusterInterceptor implements Interceptor {
 

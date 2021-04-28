@@ -11,8 +11,6 @@ import java.util.function.Consumer;
 
 /**
  * @author luxurong
- * @date 2021/4/19 17:12
- * @description
  */
 public interface AbstractConfiguration extends Configuration {
 

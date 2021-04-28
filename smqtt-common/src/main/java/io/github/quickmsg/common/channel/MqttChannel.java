@@ -21,8 +21,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author luxurong
- * @date 2021/3/30 13:43
- * @description
  */
 @Data
 @Slf4j
@@ -143,7 +141,8 @@ public class MqttChannel {
      * 写入消息
      *
      * @param mqttMessage 消息体
-     * @return boolean状态
+     * @param retry 是否重试
+     * @return 空操作符
      */
     public Mono<Void> write(MqttMessage mqttMessage, boolean retry) {
         // http本地mock
@@ -160,7 +159,7 @@ public class MqttChannel {
      *
      * @param type      type
      * @param messageId 消息Id
-     * @return boolean状态
+     * @return 空操作符
      */
     public Mono<Void> cancelRetry(MqttMessageType type, Integer messageId) {
         return Mono.fromRunnable(() -> this.removeReply(type, messageId));
@@ -171,7 +170,6 @@ public class MqttChannel {
      *
      * @param type      type
      * @param messageId messageId
-     * @return void
      */
     private void removeReply(MqttMessageType type, Integer messageId) {
         Optional.ofNullable(replyMqttMessageMap.get(type))
@@ -184,7 +182,7 @@ public class MqttChannel {
      * 写入消息
      *
      * @param messageMono 消息体
-     * @return boolean状态
+     * @return 空操作符
      */
     private Mono<Void> write(Mono<MqttMessage> messageMono) {
         if (this.connection.channel().isActive() && this.connection.channel().isWritable()) {
@@ -241,7 +239,7 @@ public class MqttChannel {
          * Set resend flag
          *
          * @param mqttMessage mqttMessage
-         * @return ByteBuf
+         * @return 消息体
          */
         private MqttMessage getDupMessage(MqttMessage mqttMessage) {
             MqttFixedHeader oldFixedHeader = mqttMessage.fixedHeader();
@@ -265,8 +263,8 @@ public class MqttChannel {
          * @param message             mqttMessage
          * @param mqttChannel         connection
          * @param messageId           messageId
-         * @param replyMqttMessageMap
-         * @return Mono
+         * @param replyMqttMessageMap 重试缓存
+         * @return 空操作符
          */
         public Mono<Void> offerReply(MqttMessage message, final MqttChannel mqttChannel, final int messageId, Map<MqttMessageType, Map<Integer, Disposable>> replyMqttMessageMap) {
 

@@ -4,8 +4,6 @@ import io.github.quickmsg.common.spi.DynamicLoader;
 
 /**
  * @author luxurong
- * @date 2021/3/30 13:35
- * @description
  */
 public interface ChannelRegistry {
 
@@ -17,7 +15,6 @@ public interface ChannelRegistry {
      * 关闭通道
      *
      * @param mqttChannel 通道关闭
-     * @return void
      */
     void close(MqttChannel mqttChannel);
 
@@ -26,7 +23,6 @@ public interface ChannelRegistry {
      *
      * @param clientIdentifier 客户端id
      * @param mqttChannel 通道关闭
-     * @return void
      */
     void registry(String clientIdentifier, MqttChannel mqttChannel);
 
@@ -34,7 +30,7 @@ public interface ChannelRegistry {
      * 判读通道是否存在
      *
      * @param clientIdentifier 客户端id
-     * @return boolean
+     * @return 布尔
      */
     boolean exists(String clientIdentifier);
 
@@ -51,7 +47,7 @@ public interface ChannelRegistry {
     /**
      * 获取通道计数
      *
-     * @return MqttChannel
+     * @return 通道数
      */
     Integer counts();
 

@@ -6,8 +6,6 @@ import java.util.List;
 
 /**
  * @author luxurong
- * @date 2021/4/9 21:14
- * @description
  */
 public interface ClusterHandler<T> {
 

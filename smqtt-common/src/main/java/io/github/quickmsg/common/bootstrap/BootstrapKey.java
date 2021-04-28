@@ -2,8 +2,6 @@ package io.github.quickmsg.common.bootstrap;
 
 /**
  * @author luxurong
- * @date 2021/4/14 21:18
- * @description
  */
 public class BootstrapKey {
 

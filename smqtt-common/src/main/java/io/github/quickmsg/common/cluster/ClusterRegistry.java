@@ -6,8 +6,6 @@ import reactor.core.publisher.Mono;
 
 /**
  * @author luxurong
- * @date 2021/4/9 18:01
- * @description
  */
 public interface ClusterRegistry<C extends ClusterConfig> {
 
@@ -19,7 +17,7 @@ public interface ClusterRegistry<C extends ClusterConfig> {
      * 开始监听
      *
      * @param c 集群配置
-     * @return Mono
+     * @return Mono 操作类
      */
     Mono<Void> registry(C c);
 
@@ -34,7 +32,8 @@ public interface ClusterRegistry<C extends ClusterConfig> {
 
     /**
      * 开始订阅Node事件
-     *
+     * @param <E>  事件
+     * @param <N>  节点
      * @return Flux
      */
     <E, N extends ClusterNode> Flux<ClusterEvent<E, N>> clusterEvent();
