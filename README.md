@@ -44,17 +44,17 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
 
 ```markdown
 
-        Bootstrap.builder()
-                .port(8555)
-                .websocketPort(8999)
-                .options(channelOptionMap -> {})
-                .ssl(false)
-                .sslContext(new SslContext("crt","key"))
-                .isWebsocket(true)
-                .wiretap(false)
-                .httpOptions(Bootstrap.HttpOptions.builder().ssl(false).httpPort(62212).accessLog(true).build())
-                .build()
-                .startAwait();
+ Bootstrap.builder()
+       .port(8555)
+       .websocketPort(8999)
+       .options(channelOptionMap -> {})
+       .ssl(false)
+       .sslContext(new SslContext("crt","key"))
+       .isWebsocket(true)
+       .wiretap(false)
+       .httpOptions(Bootstrap.HttpOptions.builder().ssl(false).httpPort(62212).accessLog(true).build())
+       .build()
+        .startAwait();
 
 ```
 
@@ -62,22 +62,23 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
 
 ```markdown
 
-        Bootstrap bootstrap = Bootstrap.builder()
-                .port(8555)
-                .websocketPort(8999)
-                .options(channelOptionMap -> {})
-                .highWaterMark(1000000)
-                .lowWaterMark(1000)
-                .ssl(false)
-                .sslContext(new SslContext("crt","key"))
-                .isWebsocket(true)
-                .wiretap(true)
-                .httpOptions(Bootstrap.HttpOptions.builder().ssl(false).httpPort(62212).accessLog(true).build())
-                .build()
-                .start().block();
-        assert bootstrap != null;
-        // 关闭服务
-        bootstrap.shutdown();
+ 
+ Bootstrap bootstrap = 
+        Bootstrap.builder()
+       .port(8555)
+       .websocketPort(8999)
+       .options(channelOptionMap -> {})
+       .ssl(false)
+       .sslContext(new SslContext("crt","key"))
+       .isWebsocket(true)
+       .wiretap(false)
+       .httpOptions(Bootstrap.HttpOptions.builder().ssl(false).httpPort(62212).accessLog(true).build())
+       .build()
+       .start().block();
+
+assert bootstrap != null;
+ // 关闭服务
+ bootstrap.shutdown();
 
 ```
 
