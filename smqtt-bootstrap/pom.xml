@@ -88,9 +88,24 @@
                                     <tag>latest</tag>
                                     <tag>${project.version}</tag>
                                 </tags>
+                                <auth>
+                                    <username>1ssqq1lxr</username>
+                                    <password>lxr7293209</password>
+                                </auth>
                             </to>
                             <container>
+                                <!--容器相关的属性-->
                                 <mainClass>io.github.quickmsg.docker.DockerStarter</mainClass>
+                                <!--jvm内存参数-->
+<!--                                <jvmFlags>-->
+<!--                                    <jvmFlag>-Xms4g</jvmFlag>-->
+<!--                                    <jvmFlag>-Xmx4g</jvmFlag>-->
+<!--                                </jvmFlags>-->
+                                <!--要暴露的端口-->
+<!--                                <ports>-->
+<!--                                    <port>8083</port>-->
+<!--                                </ports>-->
+                                <creationTime>USE_CURRENT_TIMESTAMP</creationTime>
                             </container>
                         </configuration>
                         <executions>
