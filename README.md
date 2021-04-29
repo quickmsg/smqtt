@@ -143,19 +143,45 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
 
 ## docker 方式
 
-1. 准备配置文件conf.properties同上
+
+拉取镜像
 
 ``` 
 # 拉取docker镜像地址
 docker pull 1ssqq1lxr/smqtt:latest
 ```
 
-2. 启动服务(默认1883端口)
+启动镜像默认配置
 
 ``` 
 # 启动服务
-docker run -it  -v <conf.properties路径>:/conf/config.properties  -p <宿主机 port>:<config配置端口，默认1883> 1ssqq1lxr/smqtt
+docker run -it  -p 1883:1883 1ssqq1lxr/smqtt
 ```
+
+启动镜像使用自定义配置（ 准备配置文件conf.properties）
+
+
+``` 
+# 启动服务
+docker run -it  -v <配置文件路径目录>:/conf -p 1883:1883  -p 1999:1999 1ssqq1lxr/smqtt
+```
+
+
+## 测试服务（启动http端口）
+
+- 启动客户端订阅主题 test/+
+
+- 使用http接口推送mqtt消息
+
+``` 
+# 推送消息
+curl -H "Content-Type: application/json" -X POST -d '{"topic": "test/teus", "qos":2, "retain":true, "message":"我来测试保留消息3" }' "http://localhost:1999/smqtt/publish"
+```
+
+
+
+## 其他功能文档尚未完善，有兴趣同学可以加我微信群！
+
 
 ###压测报告
 
