@@ -1,4 +1,3 @@
-
 <configuration>
 
     <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
@@ -9,7 +8,7 @@
         </encoder>
     </appender>
     <appender name="file" class="ch.qos.logback.core.FileAppender">
-       <file>testFile.log</file>
+        <file>testFile.log</file>
         <append>false</append>
         <!-- encoders are assigned the type
              ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
@@ -34,13 +33,14 @@
 
     <!--<logger name="reactor" level="DEBUG"/>-->
     <!--<logger name="reactor" level="INFO"/>-->
-    <logger name="reactor.netty" level="DEBUG" />
+    <logger name="reactor.netty" level="DEBUG"/>
     <!--<logger name="reactor.netty.http.client.HttpClient" level="DEBUG" />-->
     <!--<logger name="reactor.netty.channel.FluxReceive" level="DEBUG" />-->
     <!--<logger name="reactor.netty.http.server.HttpServer" level="DEBUG" />-->
 
-    <root level="error">
+    <root level="info">
         <appender-ref ref="stdout"/>
     </root>
+
 
 </configuration>
