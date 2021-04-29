@@ -32,7 +32,7 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
 
 ## 快速开始
 
-- ### main方式启动
+### main方式启动
 
 引入依赖
 ```markdown
@@ -86,12 +86,12 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
 ```
 
 
-- ### jar方式
+### jar方式
 
 
 1. 下载源码 compile package <smqtt-bootstrap module> -P jar
 
-    >在smqtt-bootstrap/target目录下生成jar
+  `在smqtt-bootstrap/target目录下生成jar`
 
 
 
@@ -138,12 +138,12 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
 
 3. 启动服务
 
-> java -jar smqtt-bootstrap-1.0.1-SNAPSHOT.jar <conf.properties路径>
+`java -jar smqtt-bootstrap-1.0.1-SNAPSHOT.jar <conf.properties路径>`
 
 
 
 
-- ### docker 方式
+### docker 方式
 
 1. 准备配置文件conf.properties同上
 
