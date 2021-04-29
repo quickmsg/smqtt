@@ -7,10 +7,10 @@
     <parent>
         <artifactId>smqtt</artifactId>
         <groupId>io.github.quickmsg</groupId>
-        <version>1.0.2</version>
+        <version>1.0.3.SNAPSHOT</version>
     </parent>
     <artifactId>smqtt-bootstrap</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3.SNAPSHOT</version>
 
     <name>smqtt-bootstrap</name>
     <!-- FIXME change it to the project's website -->
@@ -18,6 +18,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.deploy.skip>true</maven.deploy.skip>
     </properties>
 
     <dependencies>
@@ -30,75 +31,81 @@
         <dependency>
             <groupId>io.github.quickmsg</groupId>
             <artifactId>smqtt-core</artifactId>
-            <version>1.0.2</version>
+            <version>1.0.3.SNAPSHOT</version>
         </dependency>
-
     </dependencies>
+    <profiles>
+        <profile>
+            <id>jar</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <configuration>
+                            <appendAssemblyId>false</appendAssemblyId>
+                            <descriptorRefs>
+                                <descriptorRef>jar-with-dependencies</descriptorRef>
+                            </descriptorRefs>
+                            <archive>
+                                <manifest>
+                                    <mainClass>io.github.quickmsg.jar.JarStarter</mainClass>
+                                </manifest>
+                            </archive>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>make-assembly</id>
+                                <phase>package</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
 
+        <profile>
+            <id>docker</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>com.google.cloud.tools</groupId>
-                <artifactId>jib-maven-plugin</artifactId>
-                <version>3.0.0</version>
-                <configuration>
-                    <from>
-                        <image>openjdk:8-jre-alpine</image>
-                    </from>
-                    <to>
-                        <image>1ssqq1lxr/smqtt</image>
-                        <tags>
-                            <tag>latest</tag>
-                            <tag>${project.version}</tag>
-                        </tags>
-                    </to>
-                    <container>
-                        <mainClass>io.github.quickmsg.docker.DockerStarter</mainClass>
-                    </container>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>build</goal>
-                        </goals>
-                    </execution>
-<!--                    <execution>-->
-<!--                        <phase>deploy</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>push</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-                </executions>
-            </plugin>
-
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <appendAssemblyId>false</appendAssemblyId>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                    <archive>
-                        <manifest>
-                            <!-- 此处指定main方法入口的class -->
-                            <mainClass>io.github.quickmsg.jar.JarStarter</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>make-assembly</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>assembly</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+                    <plugin>
+                        <groupId>com.google.cloud.tools</groupId>
+                        <artifactId>jib-maven-plugin</artifactId>
+                        <version>3.0.0</version>
+                        <configuration>
+                            <from>
+                                <image>openjdk:8-jre-alpine</image>
+                            </from>
+                            <to>
+                                <image>1ssqq1lxr/smqtt</image>
+                                <tags>
+                                    <tag>latest</tag>
+                                    <tag>${project.version}</tag>
+                                </tags>
+                            </to>
+                            <container>
+                                <mainClass>io.github.quickmsg.docker.DockerStarter</mainClass>
+                            </container>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 
 </project>

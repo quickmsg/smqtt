@@ -5,23 +5,17 @@
     <parent>
         <artifactId>smqtt</artifactId>
         <groupId>io.github.quickmsg</groupId>
-        <version>1.0.2</version>
+        <version>1.0.3.SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <packaging>jar</packaging>
-
-
     <name>smqtt-core</name>
-
     <artifactId>smqtt-core</artifactId>
     <dependencies>
         <dependency>
             <groupId>io.github.quickmsg</groupId>
             <artifactId>smqtt-common</artifactId>
-            <version>1.0.2</version>
-            <type>jar</type>
+            <version>1.0.3.SNAPSHOT</version>
         </dependency>
-
     </dependencies>
 
 </project>
