@@ -3,7 +3,7 @@
 ## SMQTT是一款开源的MQTT消息代理Broker，
 
 SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署，支持容器化部署，具备低延迟，高吞吐量，支持百万TCP连接，同时支持多种协议交互，是一款非常优秀的消息中间件！
-### smqtt目前拥有的功能如下：
+## smqtt目前拥有的功能如下：
 
 1.  消息质量等级实现(支持qos0，qos1，qos2)
 2.  会话消息
@@ -22,7 +22,7 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
 11. 容器化支持 
 
 
-### 后面规划项目
+## 后面规划项目
 
 1. 规则引擎
 2. Web管理系统
@@ -30,9 +30,7 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
 4. 协议桥接agent（用户其他协议与broker之间交互）
 
 
-## 快速开始
-
-### main方式启动
+## main方式启动
 
 引入依赖
 ```markdown
@@ -80,13 +78,13 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
                 .build()
                 .start().block();
         assert bootstrap != null;
-        // 关闭服
+        // 关闭服务
         bootstrap.shutdown();
 
 ```
 
 
-### jar方式
+## jar方式
 
 
 1. 下载源码 compile package <smqtt-bootstrap module> -P jar
@@ -143,7 +141,7 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
 
 
 
-### docker 方式
+## docker 方式
 
 1. 准备配置文件conf.properties同上
 
@@ -159,9 +157,13 @@ docker pull 1ssqq1lxr/smqtt:latest
 docker run -it  -v <conf.properties路径>:/conf/config.properties  -p <宿主机 port>:<config配置端口，默认1883> 1ssqq1lxr/smqtt
 ```
 
-### 压测报告
+###压测报告
 
 
+
+## License
+
+[Apache License, Version 2.0](https://github.com/quickmsg/smqtt/blob/main/LICENSE)
 
 ### 关注公众号，输入 `物联网`  扫码加入微信交流群
 ![image](icon/icon.jpg)
