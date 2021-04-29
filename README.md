@@ -36,6 +36,11 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
 
 引入依赖
 ```markdown
+<dependency>
+  <groupId>io.github.quickmsg</groupId>
+  <artifactId>smqtt-core</artifactId>
+  <version>1.0.3</version>
+</dependency>
 
 ```
 
@@ -84,9 +89,9 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
 - ### jar方式
 
 
-1. 下载源码 compile package <smqtt-bootstrap module>
+1. 下载源码 compile package <smqtt-bootstrap module> -P jar
 
-    >在target目录下生成jar
+    >在smqtt-bootstrap/target目录下生成jar
 
 
 
@@ -133,26 +138,33 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
 
 3. 启动服务
 
-java -jar smqtt-bootstrap-1.0.1-SNAPSHOT.jar <conf.properties路径>
+> java -jar smqtt-bootstrap-1.0.1-SNAPSHOT.jar <conf.properties路径>
 
 
 
 
 - ### docker 方式
 
+1. 准备配置文件conf.properties同上
 
-docker镜像地址
 ``` 
+# 拉取docker镜像地址
 docker pull 1ssqq1lxr/smqtt:latest
 ```
 
-启动服务(默认1883端口)
+2. 启动服务(默认1883端口)
 
 ``` 
+# 启动服务
 docker run -it  -v <conf.properties路径>:/conf/config.properties  -p <宿主机 port>:<config配置端口，默认1883> 1ssqq1lxr/smqtt
 ```
 
 ### 压测报告
+
+
+
+### 关注公众号，输入 `物联网`  扫码加入微信交流群
+![image](image/icon.jpg)
 
 
 
