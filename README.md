@@ -164,7 +164,7 @@ docker run -it  -v <conf.properties路径>:/conf/config.properties  -p <宿主�
 
 
 ### 关注公众号，输入 `物联网`  扫码加入微信交流群
-![image](image/icon.jpg)
+![image](icon/icon.jpg)
 
 
 
