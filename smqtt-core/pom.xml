@@ -16,11 +16,6 @@
             <artifactId>smqtt-common</artifactId>
             <version>1.0.3</version>
         </dependency>
-        <dependency>
-            <groupId>io.github.quickmsg</groupId>
-            <artifactId>smqtt-cluster</artifactId>
-            <version>1.0.3</version>
-        </dependency>
     </dependencies>
 
 </project>
