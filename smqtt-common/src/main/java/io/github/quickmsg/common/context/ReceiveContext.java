@@ -1,10 +1,11 @@
 package io.github.quickmsg.common.context;
 
-import io.github.quickmsg.common.config.Configuration;
-import io.github.quickmsg.common.protocol.ProtocolAdaptor;
 import io.github.quickmsg.common.channel.ChannelRegistry;
 import io.github.quickmsg.common.channel.MqttChannel;
+import io.github.quickmsg.common.cluster.ClusterRegistry;
+import io.github.quickmsg.common.config.Configuration;
 import io.github.quickmsg.common.message.MessageRegistry;
+import io.github.quickmsg.common.protocol.ProtocolAdaptor;
 import io.github.quickmsg.common.topic.TopicRegistry;
 import io.netty.handler.codec.mqtt.MqttMessage;
 
@@ -46,6 +47,14 @@ public interface ReceiveContext<T extends Configuration> extends BiConsumer<Mqtt
      * @return ProtocolAdaptor
      */
     MessageRegistry getMessageRegistry();
+
+
+    /**
+     * 集群注册器
+     *
+     * @return ProtocolAdaptor
+     */
+    ClusterRegistry getClusterRegistry();
 
 
     /**

@@ -1,10 +1,12 @@
 package io.github.quickmsg.core.mqtt;
 
 import io.github.quickmsg.common.channel.MqttChannel;
+import io.github.quickmsg.common.cluster.ClusterMessage;
 import io.github.quickmsg.common.enums.ChannelStatus;
 import io.github.quickmsg.common.transport.Transport;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.mqtt.MqttMessage;
+import io.netty.handler.codec.mqtt.MqttPublishMessage;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.Disposable;
@@ -38,14 +40,15 @@ public class MqttReceiveContext extends AbstractReceiveContext<MqttConfiguration
                 .inbound()
                 .receiveObject()
                 .cast(MqttMessage.class)
-                .map(this.retainMessage())
+                .map(this.clusterTransport())
                 .subscribe(mqttMessage -> this.accept(mqttChannel, mqttMessage));
 
     }
 
-    private Function<MqttMessage, MqttMessage> retainMessage() {
+    private Function<MqttMessage, MqttMessage> clusterTransport() {
         return mqttMessage -> {
-            if (mqttMessage.payload() instanceof ByteBuf) {
+            if(mqttMessage instanceof MqttPublishMessage){
+                this.getClusterRegistry().spreadPublishMessage((MqttPublishMessage)mqttMessage).subscribe();
                 ((ByteBuf) mqttMessage.payload()).retain();
             }
             return mqttMessage;

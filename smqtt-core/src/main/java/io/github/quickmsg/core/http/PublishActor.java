@@ -1,5 +1,6 @@
 package io.github.quickmsg.core.http;
 
+import io.github.quickmsg.common.channel.MockMqttChannel;
 import io.github.quickmsg.core.DefaultTransport;
 import io.github.quickmsg.common.http.HttpActor;
 import io.github.quickmsg.common.http.annotation.Router;
@@ -28,7 +29,7 @@ public class PublishActor implements HttpActor {
                 .map(this.toJson(HttpPublishMessage.class))
                 .doOnNext(message -> {
                     ProtocolAdaptor protocolAdaptor = DefaultTransport.receiveContext.getProtocolAdaptor();
-                    protocolAdaptor.chooseProtocol(DEFAULT_MOCK_CHANNEL, message.getPublishMessage(), DefaultTransport.receiveContext);
+                    protocolAdaptor.chooseProtocol(MockMqttChannel.DEFAULT_MOCK_CHANNEL, message.getPublishMessage(), DefaultTransport.receiveContext);
                     log.info("http request url {} body {}", request.path(), message);
                 }).then(response.sendString(Mono.just("success")).then());
     }

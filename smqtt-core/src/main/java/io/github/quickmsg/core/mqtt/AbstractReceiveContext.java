@@ -1,19 +1,22 @@
 package io.github.quickmsg.core.mqtt;
 
-import io.github.quickmsg.core.DefaultTopicRegistry;
 import io.github.quickmsg.common.auth.PasswordAuthentication;
 import io.github.quickmsg.common.channel.ChannelRegistry;
+import io.github.quickmsg.common.channel.MockMqttChannel;
+import io.github.quickmsg.common.cluster.ClusterConfig;
+import io.github.quickmsg.common.cluster.ClusterRegistry;
 import io.github.quickmsg.common.config.AbstractConfiguration;
 import io.github.quickmsg.common.config.Configuration;
 import io.github.quickmsg.common.context.ReceiveContext;
 import io.github.quickmsg.common.message.MessageRegistry;
 import io.github.quickmsg.common.protocol.ProtocolAdaptor;
-import io.github.quickmsg.common.spi.DynamicLoader;
 import io.github.quickmsg.common.topic.TopicRegistry;
 import io.github.quickmsg.common.transport.Transport;
 import io.github.quickmsg.core.DefaultChannelRegistry;
 import io.github.quickmsg.core.DefaultMessageRegistry;
 import io.github.quickmsg.core.DefaultProtocolAdaptor;
+import io.github.quickmsg.core.DefaultTopicRegistry;
+import io.github.quickmsg.core.cluster.InJvmClusterRegistry;
 import lombok.Getter;
 import lombok.Setter;
 import reactor.netty.resources.LoopResources;
@@ -43,63 +46,63 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
 
     private final PasswordAuthentication passwordAuthentication;
 
+    private ClusterRegistry clusterRegistry;
+
     public AbstractReceiveContext(T configuration, Transport<T> transport) {
         this.configuration = configuration;
         this.transport = transport;
-        this.protocolAdaptor = protocolAdaptor(configuration);
-        this.channelRegistry = channelRegistry(configuration);
-        this.topicRegistry = topicRegistry(configuration);
+        this.protocolAdaptor = protocolAdaptor();
+        this.channelRegistry = channelRegistry();
+        this.topicRegistry = topicRegistry();
         this.loopResources = LoopResources.create("smqtt-cluster-io", configuration.getBossThreadSize(), configuration.getWorkThreadSize(), true);
-        this.messageRegistry = messageRegistry(configuration);
+        this.messageRegistry = messageRegistry();
+        this.clusterRegistry = clusterRegistry(configuration.getClusterConfig());
         this.passwordAuthentication = basicAuthentication();
     }
 
-    private MessageRegistry messageRegistry(T configuration) {
-        AbstractConfiguration abstractConfiguration = castConfiguration(configuration);
-        return Optional.ofNullable(DynamicLoader
-                .findFirst(abstractConfiguration.getMessageRegistry())
-                .map(messageRegistry -> (MessageRegistry) messageRegistry)
-                .orElse(MessageRegistry.INSTANCE)).orElse(new DefaultMessageRegistry());
+    private MessageRegistry messageRegistry() {
+        return Optional.ofNullable(MessageRegistry.INSTANCE)
+                .orElse(new DefaultMessageRegistry());
     }
 
     private PasswordAuthentication basicAuthentication() {
         AbstractConfiguration abstractConfiguration = castConfiguration(configuration);
-        return Optional.ofNullable(DynamicLoader
-                .findFirst(abstractConfiguration.getPasswordAuthentication())
-                .map(passwordAuthentication -> (PasswordAuthentication) passwordAuthentication)
-                .orElse(PasswordAuthentication.INSTANCE)).orElse(abstractConfiguration.getReactivePasswordAuth());
+        return Optional.ofNullable(PasswordAuthentication.INSTANCE)
+                .orElse(abstractConfiguration.getReactivePasswordAuth());
     }
 
-    ;
-
-    private ChannelRegistry channelRegistry(T configuration) {
-        AbstractConfiguration abstractConfiguration = castConfiguration(configuration);
-        return Optional.ofNullable(DynamicLoader
-                .findFirst(abstractConfiguration.getChannelRegistry())
-                .map(channelRegistry -> (ChannelRegistry) channelRegistry)
-                .orElse(ChannelRegistry.INSTANCE)).orElse(new DefaultChannelRegistry());
+    private ChannelRegistry channelRegistry() {
+        return Optional.ofNullable(ChannelRegistry.INSTANCE)
+                .orElse(new DefaultChannelRegistry());
     }
 
-    private TopicRegistry topicRegistry(T configuration) {
-        AbstractConfiguration abstractConfiguration = castConfiguration(configuration);
-        return Optional.ofNullable(DynamicLoader
-                .findFirst(abstractConfiguration.getTopicRegistry())
-                .map(topicRegistry -> (TopicRegistry) topicRegistry)
-                .orElse(TopicRegistry.INSTANCE)).orElse(new DefaultTopicRegistry());
+    private TopicRegistry topicRegistry() {
+        return Optional.ofNullable(TopicRegistry.INSTANCE)
+                .orElse(new DefaultTopicRegistry());
     }
 
-    private ProtocolAdaptor protocolAdaptor(T configuration) {
-        AbstractConfiguration abstractConfiguration = castConfiguration(configuration);
-        return Optional.ofNullable(DynamicLoader
-                .findFirst(abstractConfiguration.getProtocolAdaptor())
-                .map(ProtocolAdaptor::proxy)
-                .orElse(ProtocolAdaptor.INSTANCE)).orElse(new DefaultProtocolAdaptor().proxy());
-
+    private ProtocolAdaptor protocolAdaptor() {
+        return Optional.ofNullable(ProtocolAdaptor.INSTANCE)
+                .orElse(new DefaultProtocolAdaptor())
+                .proxy();
     }
+
+    private ClusterRegistry clusterRegistry(ClusterConfig clusterConfig) {
+        ClusterRegistry clusterRegistry = Optional.ofNullable(ClusterRegistry.INSTANCE)
+                .orElse(new InJvmClusterRegistry());
+        clusterRegistry.registry(clusterConfig);
+        clusterRegistry.handlerClusterMessage()
+                .subscribe(clusterMessage -> this.protocolAdaptor
+                        .chooseProtocol(MockMqttChannel.
+                                        DEFAULT_MOCK_CHANNEL,
+                                null,
+                                this));
+        return clusterRegistry;
+    }
+
 
     private AbstractConfiguration castConfiguration(T configuration) {
         return (AbstractConfiguration) configuration;
     }
-
 
 }

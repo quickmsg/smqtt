@@ -1,14 +1,18 @@
 package io.github.quickmsg.common.channel;
 
 import io.netty.handler.codec.mqtt.MqttMessage;
-import lombok.Data;
 import reactor.core.publisher.Mono;
 
 /**
  * @author luxurong
  */
-@Data
 public class MockMqttChannel extends MqttChannel {
+
+    private MockMqttChannel() {
+
+    }
+
+    public final static MockMqttChannel DEFAULT_MOCK_CHANNEL = new MockMqttChannel();
 
 
     @Override

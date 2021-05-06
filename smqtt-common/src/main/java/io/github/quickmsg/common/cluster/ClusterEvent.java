@@ -10,11 +10,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ClusterEvent<T, N extends ClusterNode> {
+public class ClusterEvent<T> {
 
 
     private T event;
 
-    private N n;
+    private ClusterNode n;
 
 }

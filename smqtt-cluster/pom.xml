@@ -32,7 +32,7 @@
 
         <dependency>
             <groupId>io.github.quickmsg</groupId>
-            <artifactId>smqtt-core</artifactId>
+            <artifactId>smqtt-common</artifactId>
             <version>1.0.3</version>
         </dependency>
         <dependency>
@@ -49,11 +49,12 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.apache.gossip/gossip -->
+<!--         https://mvnrepository.com/artifact/org.apache.gossip/gossip-->
 <!--        <dependency>-->
 <!--            <groupId>org.apache.gossip</groupId>-->
 <!--            <artifactId>gossip</artifactId>-->
 <!--            <version>0.1.2-incubating</version>-->
+<!--            <type>jar</type>-->
 <!--        </dependency>-->
 <!--        &lt;!&ndash; https://mvnrepository.com/artifact/io.teknek/gossip &ndash;&gt;-->
 <!--        <dependency>-->

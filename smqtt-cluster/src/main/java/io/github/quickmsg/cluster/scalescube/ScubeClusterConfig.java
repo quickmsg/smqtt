@@ -1,6 +1,7 @@
 package io.github.quickmsg.cluster.scalescube;
 
 import io.github.quickmsg.common.cluster.ClusterConfig;
+import lombok.Data;
 
 import java.util.List;
 import java.util.Map;
@@ -8,29 +9,18 @@ import java.util.Map;
 /**
  * @author luxurong
  */
+@Data
 public class ScubeClusterConfig implements ClusterConfig {
-    @Override
-    public String getAddress() {
-        return null;
-    }
 
-    @Override
-    public Integer getPort() {
-        return null;
-    }
+    private String address;
 
-    @Override
-    public String getNodeName() {
-        return null;
-    }
+    private Integer port;
 
-    @Override
-    public Map<String, Object> getOptions() {
-        return null;
-    }
+    private String nodeName;
 
-    @Override
-    public List<String> getClusterUrl() {
-        return null;
-    }
+    private List<String> clusterUrl;
+
+    private Map<String, Object> options;
+
+
 }

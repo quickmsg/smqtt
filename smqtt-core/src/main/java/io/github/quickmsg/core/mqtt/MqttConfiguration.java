@@ -2,6 +2,8 @@ package io.github.quickmsg.core.mqtt;
 
 import io.github.quickmsg.common.auth.PasswordAuthentication;
 import io.github.quickmsg.common.channel.ChannelRegistry;
+import io.github.quickmsg.common.cluster.ClusterConfig;
+import io.github.quickmsg.common.cluster.ClusterRegistry;
 import io.github.quickmsg.common.config.AbstractConfiguration;
 import io.github.quickmsg.common.config.SslContext;
 import io.github.quickmsg.common.message.MessageRegistry;
@@ -54,6 +56,8 @@ public class MqttConfiguration extends AbstractSslHandler implements AbstractCon
 
     private Class<? extends MessageRegistry> messageRegistry = MessageRegistry.class;
 
+    private Class<? extends ClusterRegistry> clusterRegistry = ClusterRegistry.class;
+
     private Class<? extends PasswordAuthentication> passwordAuthentication = PasswordAuthentication.class;
 
 
@@ -66,4 +70,13 @@ public class MqttConfiguration extends AbstractSslHandler implements AbstractCon
     }
 
 
+    @Override
+    public Boolean getCluster() {
+        return null;
+    }
+
+    @Override
+    public ClusterConfig getClusterConfig() {
+        return null;
+    }
 }
