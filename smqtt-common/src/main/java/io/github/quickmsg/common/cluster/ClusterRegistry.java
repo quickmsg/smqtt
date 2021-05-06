@@ -1,5 +1,6 @@
 package io.github.quickmsg.common.cluster;
 
+import io.github.quickmsg.common.enums.ClusterEvent;
 import io.github.quickmsg.common.spi.DynamicLoader;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.mqtt.MqttFixedHeader;
@@ -7,6 +8,8 @@ import io.netty.handler.codec.mqtt.MqttPublishMessage;
 import io.netty.handler.codec.mqtt.MqttPublishVariableHeader;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 /**
  * @author luxurong
@@ -37,10 +40,17 @@ public interface ClusterRegistry {
     /**
      * 开始订阅Node事件
      *
-     * @param <E> 事件
      * @return Flux
      */
-    <E> Flux<ClusterEvent<E>> clusterEvent();
+    Flux<ClusterEvent> clusterEvent();
+
+
+    /**
+     * 获取集群节点信息
+     *
+     * @return 节点集合
+     */
+    List<ClusterNode> getClusterNode();
 
 
     /**

@@ -1,7 +1,6 @@
 package io.github.quickmsg.core.cluster;
 
 import io.github.quickmsg.common.cluster.ClusterConfig;
-import io.github.quickmsg.common.cluster.ClusterEvent;
 import io.github.quickmsg.common.cluster.ClusterMessage;
 import io.github.quickmsg.common.cluster.ClusterRegistry;
 import reactor.core.publisher.Flux;

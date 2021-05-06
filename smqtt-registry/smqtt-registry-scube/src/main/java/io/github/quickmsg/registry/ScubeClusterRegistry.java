@@ -1,6 +1,10 @@
-package io.github.quickmsg.cluster.scalescube;
+package io.github.quickmsg.registry;
 
-import io.github.quickmsg.common.cluster.*;
+import io.github.quickmsg.common.cluster.ClusterConfig;
+import io.github.quickmsg.common.cluster.ClusterMessage;
+import io.github.quickmsg.common.cluster.ClusterNode;
+import io.github.quickmsg.common.cluster.ClusterRegistry;
+import io.github.quickmsg.common.enums.ClusterEvent;
 import io.scalecube.cluster.Cluster;
 import io.scalecube.cluster.ClusterImpl;
 import io.scalecube.cluster.ClusterMessageHandler;
@@ -12,6 +16,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -22,7 +27,7 @@ public class ScubeClusterRegistry implements ClusterRegistry {
 
     private Sinks.Many<ClusterMessage> messageMany = Sinks.many().multicast().onBackpressureBuffer();
 
-    private Sinks.Many<ClusterEvent<MembershipEvent>> eventMany = Sinks.many().multicast().onBackpressureBuffer();
+    private Sinks.Many<ClusterEvent> eventMany = Sinks.many().multicast().onBackpressureBuffer();
 
     private Cluster cluster;
 
@@ -47,6 +52,11 @@ public class ScubeClusterRegistry implements ClusterRegistry {
     }
 
     @Override
+    public List<ClusterNode> getClusterNode() {
+        return null;
+    }
+
+    @Override
     public Mono<Void> spreadMessage(ClusterMessage clusterMessage) {
         return Optional.ofNullable(cluster)
                 .map(cs -> cs.spreadGossip(Message.withData(clusterMessage).build()).then()).orElse(Mono.empty());
@@ -59,7 +69,7 @@ public class ScubeClusterRegistry implements ClusterRegistry {
     }
 
     @Override
-    public Flux<ClusterEvent<MembershipEvent>> clusterEvent() {
+    public Flux<ClusterEvent> clusterEvent() {
         return eventMany.asFlux();
     }
 
@@ -80,12 +90,7 @@ public class ScubeClusterRegistry implements ClusterRegistry {
         @Override
         public void onMembershipEvent(MembershipEvent event) {
             Member member = event.member();
-            eventMany.tryEmitNext(new ClusterEvent(event, ClusterNode.builder()
-                    .alias(member.alias())
-                    .host(member.address().host())
-                    .port(member.address().port())
-                    .namespace(member.namespace())
-                    .build()));
+            eventMany.tryEmitNext(null);
         }
     }
 }

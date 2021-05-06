@@ -1,4 +1,4 @@
-package io.github.quickmsg.cluster.scalescube;
+package io.github.quickmsg.registry;
 
 import io.github.quickmsg.common.cluster.ClusterConfig;
 import lombok.Data;
