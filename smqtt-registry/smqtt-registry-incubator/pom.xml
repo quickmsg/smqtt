@@ -6,7 +6,7 @@
     <parent>
         <artifactId>smqtt</artifactId>
         <groupId>io.github.quickmsg</groupId>
-        <version>1.0.3</version>
+        <version>1.0.4</version>
     </parent>
     <artifactId>smqtt-registry-incubator</artifactId>
 
