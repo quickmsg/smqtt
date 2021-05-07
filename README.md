@@ -179,11 +179,9 @@ curl -H "Content-Type: application/json" -X POST -d '{"topic": "test/teus", "qos
 
 
 
-## 其他功能文档尚未完善，有兴趣同学可以加我微信群！
+## wiki地址
 
-
-###压测报告
-
+[smqtt文档](https://quickmsg.github.io/smqtt)
 
 
 ## License
