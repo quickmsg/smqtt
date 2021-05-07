@@ -39,9 +39,9 @@
             <artifactId>log4j-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.gossip</groupId>
-            <artifactId>gossip</artifactId>
-            <version>0.1.2-incubating</version>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>
