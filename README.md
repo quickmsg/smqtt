@@ -190,8 +190,9 @@ curl -H "Content-Type: application/json" -X POST -d '{"topic": "test/teus", "qos
 
 [Apache License, Version 2.0](https://github.com/quickmsg/smqtt/blob/main/LICENSE)
 
-### 关注公众号，输入 `物联网`  扫码加入微信交流群
+### 添加微信号`Lemon877164954`，拉入smqtt官方交流群
+### 加入qq群 `700152283` 
+### 麻烦关注下公众号！
+
 ![image](icon/icon.jpg)
-
-
 
