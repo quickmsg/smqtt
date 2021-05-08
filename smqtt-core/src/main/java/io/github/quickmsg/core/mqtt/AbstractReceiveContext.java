@@ -4,11 +4,13 @@ import io.github.quickmsg.common.auth.PasswordAuthentication;
 import io.github.quickmsg.common.channel.ChannelRegistry;
 import io.github.quickmsg.common.channel.MockMqttChannel;
 import io.github.quickmsg.common.cluster.ClusterConfig;
+import io.github.quickmsg.common.cluster.ClusterMessage;
 import io.github.quickmsg.common.cluster.ClusterRegistry;
 import io.github.quickmsg.common.config.AbstractConfiguration;
 import io.github.quickmsg.common.config.Configuration;
 import io.github.quickmsg.common.context.ReceiveContext;
 import io.github.quickmsg.common.message.MessageRegistry;
+import io.github.quickmsg.common.message.MqttMessageBuilder;
 import io.github.quickmsg.common.protocol.ProtocolAdaptor;
 import io.github.quickmsg.common.topic.TopicRegistry;
 import io.github.quickmsg.common.transport.Transport;
@@ -17,6 +19,9 @@ import io.github.quickmsg.core.DefaultMessageRegistry;
 import io.github.quickmsg.core.DefaultProtocolAdaptor;
 import io.github.quickmsg.core.DefaultTopicRegistry;
 import io.github.quickmsg.core.cluster.InJvmClusterRegistry;
+import io.netty.buffer.PooledByteBufAllocator;
+import io.netty.handler.codec.mqtt.MqttPublishMessage;
+import io.netty.handler.codec.mqtt.MqttQoS;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -104,10 +109,19 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
                     .subscribe(clusterMessage -> this.protocolAdaptor
                             .chooseProtocol(MockMqttChannel.
                                             DEFAULT_MOCK_CHANNEL,
-                                    clusterMessage.getMqttMessage(),
+                                    getMqttMessage(clusterMessage),
                                     this));
         }
         return clusterRegistry;
+    }
+
+    private MqttPublishMessage getMqttMessage(ClusterMessage clusterMessage) {
+        return MqttMessageBuilder
+                .buildPub(false,
+                        MqttQoS.valueOf(clusterMessage.getQos()),
+                        0,
+                        clusterMessage.getTopic(),
+                        PooledByteBufAllocator.DEFAULT.buffer().writeBytes(clusterMessage.getMessage()));
     }
 
 

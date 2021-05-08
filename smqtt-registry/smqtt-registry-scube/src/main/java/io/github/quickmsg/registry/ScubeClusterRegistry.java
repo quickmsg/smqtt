@@ -37,7 +37,7 @@ public class ScubeClusterRegistry implements ClusterRegistry {
 
     @Override
     public void registry(ClusterConfig clusterConfig) {
-        cluster = new ClusterImpl()
+        this.cluster = new ClusterImpl()
                 .config(opts -> opts.memberAlias(clusterConfig.getNodeName()))
                 .transport(transportConfig -> transportConfig.port(clusterConfig.getPort()))
                 .membership(opts -> opts.seedMembers(Arrays.stream(clusterConfig
@@ -61,7 +61,7 @@ public class ScubeClusterRegistry implements ClusterRegistry {
 
     @Override
     public Mono<Void> spreadMessage(ClusterMessage clusterMessage) {
-        log.info("cluster send message {} ",clusterMessage);
+        log.info("cluster send message {} ", clusterMessage);
         return Optional.ofNullable(cluster)
                 .map(cs -> cs.spreadGossip(Message.withData(clusterMessage).build()).then()).orElse(Mono.empty());
     }

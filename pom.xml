@@ -27,6 +27,7 @@
         <reactor.version>2020.0.6</reactor.version>
         <slf4j.version>1.7.30</slf4j.version>
         <log4j.version>2.13.2</log4j.version>
+        <jackson.version>2.11.0</jackson.version>
     </properties>
 
     <licenses>
@@ -51,8 +52,16 @@
         </developer>
     </developers>
     <dependencyManagement>
-
         <dependencies>
+
+            <!-- Jackson -->
+            <dependency>
+                <groupId>com.fasterxml.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>${jackson.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>io.projectreactor</groupId>
                 <artifactId>reactor-bom</artifactId>
