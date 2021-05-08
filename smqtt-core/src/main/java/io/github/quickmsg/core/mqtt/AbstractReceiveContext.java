@@ -19,8 +19,11 @@ import io.github.quickmsg.core.DefaultTopicRegistry;
 import io.github.quickmsg.core.cluster.InJvmClusterRegistry;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Flux;
 import reactor.netty.resources.LoopResources;
 
+import java.time.Duration;
 import java.util.Optional;
 
 /**
@@ -28,6 +31,7 @@ import java.util.Optional;
  */
 @Getter
 @Setter
+@Slf4j
 public abstract class AbstractReceiveContext<T extends Configuration> implements ReceiveContext<T> {
 
     private T configuration;
@@ -46,7 +50,7 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
 
     private final PasswordAuthentication passwordAuthentication;
 
-    private ClusterRegistry clusterRegistry;
+    private final ClusterRegistry clusterRegistry;
 
     public AbstractReceiveContext(T configuration, Transport<T> transport) {
         this.configuration = configuration;
@@ -90,13 +94,19 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
     private ClusterRegistry clusterRegistry(ClusterConfig clusterConfig) {
         ClusterRegistry clusterRegistry = Optional.ofNullable(ClusterRegistry.INSTANCE)
                 .orElse(new InJvmClusterRegistry());
-        clusterRegistry.registry(clusterConfig);
-        clusterRegistry.handlerClusterMessage()
-                .subscribe(clusterMessage -> this.protocolAdaptor
-                        .chooseProtocol(MockMqttChannel.
-                                        DEFAULT_MOCK_CHANNEL,
-                                null,
-                                this));
+        if (clusterConfig.getClustered()) {
+            if (clusterRegistry instanceof InJvmClusterRegistry) {
+                Flux.interval(Duration.ofSeconds(2))
+                        .subscribe(index -> log.warn("please set  smqtt-registry dependency  "));
+            }
+            clusterRegistry.registry(clusterConfig);
+            clusterRegistry.handlerClusterMessage()
+                    .subscribe(clusterMessage -> this.protocolAdaptor
+                            .chooseProtocol(MockMqttChannel.
+                                            DEFAULT_MOCK_CHANNEL,
+                                    clusterMessage.getMqttMessage(),
+                                    this));
+        }
         return clusterRegistry;
     }
 

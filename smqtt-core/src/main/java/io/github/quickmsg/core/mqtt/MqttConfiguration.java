@@ -48,18 +48,7 @@ public class MqttConfiguration extends AbstractSslHandler implements AbstractCon
 
     private Consumer<Map<ChannelOption<?>, ?>> childOptions;
 
-    private Class<? extends ChannelRegistry> channelRegistry = ChannelRegistry.class;
-
-    private Class<? extends TopicRegistry> topicRegistry = TopicRegistry.class;
-
-    private Class<? extends ProtocolAdaptor> protocolAdaptor = ProtocolAdaptor.class;
-
-    private Class<? extends MessageRegistry> messageRegistry = MessageRegistry.class;
-
-    private Class<? extends ClusterRegistry> clusterRegistry = ClusterRegistry.class;
-
-    private Class<? extends PasswordAuthentication> passwordAuthentication = PasswordAuthentication.class;
-
+    private ClusterConfig clusterConfig = ClusterConfig.defaultClusterConfig();
 
     @Override
     public Consumer<? super TcpServerConfig> getTcpServerConfig() {
@@ -67,16 +56,5 @@ public class MqttConfiguration extends AbstractSslHandler implements AbstractCon
             Optional.ofNullable(options).ifPresent(options -> options.accept(tcpServerConfig.options()));
             Optional.ofNullable(childOptions).ifPresent(options -> options.accept(tcpServerConfig.childOptions()));
         };
-    }
-
-
-    @Override
-    public Boolean getCluster() {
-        return null;
-    }
-
-    @Override
-    public ClusterConfig getClusterConfig() {
-        return null;
     }
 }

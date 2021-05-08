@@ -1,6 +1,7 @@
 package io.github.quickmsg.core;
 
 import io.github.quickmsg.common.auth.PasswordAuthentication;
+import io.github.quickmsg.common.cluster.ClusterConfig;
 import io.github.quickmsg.common.config.SslContext;
 import io.github.quickmsg.common.transport.Transport;
 import io.github.quickmsg.core.http.HttpConfiguration;
@@ -43,9 +44,7 @@ public class Bootstrap {
     @Builder.Default
     private Integer websocketPort = 0;
 
-
-    @Builder.Default
-    private List<Transport<?>> transports = new ArrayList<>();
+    private final List<Transport<?>> transports = new ArrayList<>();
 
     private Integer port;
 
@@ -65,7 +64,6 @@ public class Bootstrap {
 
     private HttpOptions httpOptions;
 
-
     private String host;
 
     private PasswordAuthentication reactivePasswordAuth;
@@ -73,6 +71,8 @@ public class Bootstrap {
     private Consumer<Map<ChannelOption<?>, ?>> options;
 
     private Consumer<Map<ChannelOption<?>, ?>> childOptions;
+
+    private ClusterConfig clusterConfig;
 
 
     private MqttConfiguration initMqttConfiguration() {
@@ -88,6 +88,7 @@ public class Bootstrap {
         Optional.ofNullable(workThreadSize).ifPresent(mqttConfiguration::setWorkThreadSize);
         Optional.ofNullable(ssl).ifPresent(mqttConfiguration::setSsl);
         Optional.ofNullable(sslContext).ifPresent(mqttConfiguration::setSslContext);
+        Optional.ofNullable(clusterConfig).ifPresent(mqttConfiguration::setClusterConfig);
         if (isWebsocket) {
             mqttConfiguration.setWebSocketPort(websocketPort);
         }
@@ -177,6 +178,7 @@ public class Bootstrap {
         private Boolean accessLog = false;
 
     }
+
 
 
 }

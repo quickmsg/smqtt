@@ -38,11 +38,6 @@ public class HttpConfiguration implements Configuration {
     }
 
     @Override
-    public Boolean getCluster() {
-        return false;
-    }
-
-    @Override
     public ClusterConfig getClusterConfig() {
         throw new UnsupportedOperationException("getClusterConfig");
     }

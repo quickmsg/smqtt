@@ -12,10 +12,12 @@ import io.scalecube.cluster.Member;
 import io.scalecube.cluster.membership.MembershipEvent;
 import io.scalecube.cluster.transport.api.Message;
 import io.scalecube.net.Address;
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 /**
  * @author luxurong
  */
+@Slf4j
 public class ScubeClusterRegistry implements ClusterRegistry {
 
     private Sinks.Many<ClusterMessage> messageMany = Sinks.many().multicast().onBackpressureBuffer();
@@ -36,14 +39,14 @@ public class ScubeClusterRegistry implements ClusterRegistry {
     public void registry(ClusterConfig clusterConfig) {
         cluster = new ClusterImpl()
                 .config(opts -> opts.memberAlias(clusterConfig.getNodeName()))
-                .membership(opts -> opts.seedMembers(clusterConfig
+                .transport(transportConfig -> transportConfig.port(clusterConfig.getPort()))
+                .membership(opts -> opts.seedMembers(Arrays.stream(clusterConfig
                         .getClusterUrl()
-                        .stream()
+                        .split(","))
                         .map(Address::from)
                         .collect(Collectors.toList())))
                 .handler(cluster -> new ClusterHandler())
                 .startAwait();
-
     }
 
     @Override
@@ -58,6 +61,7 @@ public class ScubeClusterRegistry implements ClusterRegistry {
 
     @Override
     public Mono<Void> spreadMessage(ClusterMessage clusterMessage) {
+        log.info("cluster send message {} ",clusterMessage);
         return Optional.ofNullable(cluster)
                 .map(cs -> cs.spreadGossip(Message.withData(clusterMessage).build()).then()).orElse(Mono.empty());
     }
@@ -90,7 +94,7 @@ public class ScubeClusterRegistry implements ClusterRegistry {
         @Override
         public void onMembershipEvent(MembershipEvent event) {
             Member member = event.member();
-            eventMany.tryEmitNext(null);
+            eventMany.tryEmitNext(ClusterEvent.ADDED);
         }
     }
 }

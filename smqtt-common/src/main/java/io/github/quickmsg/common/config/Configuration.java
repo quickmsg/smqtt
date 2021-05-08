@@ -71,13 +71,6 @@ public interface Configuration {
     SslContext getSslContext();
 
 
-    /**
-     * 是否开启cluster模式
-     *
-     * @return 布尔
-     */
-    Boolean getCluster();
-
 
     /**
      * 获取集群配置
