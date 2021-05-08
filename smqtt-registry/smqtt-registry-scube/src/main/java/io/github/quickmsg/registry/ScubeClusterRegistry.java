@@ -82,12 +82,14 @@ public class ScubeClusterRegistry implements ClusterRegistry {
 
         @Override
         public void onMessage(Message message) {
-            messageMany.tryEmitNext(new ClusterMessage());
+            log.info("cluster accept message {} ", message);
+            messageMany.tryEmitNext(message.data());
         }
 
         @Override
-        public void onGossip(Message gossip) {
-            messageMany.tryEmitNext(gossip.data());
+        public void onGossip(Message message) {
+            log.info("cluster accept message {} ", message);
+            messageMany.tryEmitNext(message.data());
         }
 
         @Override

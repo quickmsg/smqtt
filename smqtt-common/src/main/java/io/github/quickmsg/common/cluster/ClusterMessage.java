@@ -1,17 +1,14 @@
 package io.github.quickmsg.common.cluster;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 /**
  * @author luxurong
  */
-@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Data
 public class ClusterMessage {
 
     private String topic;
