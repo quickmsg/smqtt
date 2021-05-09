@@ -49,12 +49,13 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
        .websocketPort(8999)
        .options(channelOptionMap -> {})
        .ssl(false)
+       .reactivePasswordAuth((U,P)->true)
        .sslContext(new SslContext("crt","key"))
        .isWebsocket(true)
        .wiretap(false)
        .httpOptions(Bootstrap.HttpOptions.builder().ssl(false).httpPort(62212).accessLog(true).build())
        .build()
-        .startAwait();
+       .startAwait();
 
 ```
 

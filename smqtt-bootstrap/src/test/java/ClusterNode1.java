@@ -16,6 +16,7 @@ public class ClusterNode1 {
                 .options(channelOptionMap -> {})//netty options设置
                 .childOptions(channelOptionMap ->{}) //netty childOptions设置
                 .highWaterMark(1000000)
+                .reactivePasswordAuth((U,P)->true)
                 .lowWaterMark(1000)
                 .ssl(false)
                 .sslContext(new SslContext("crt","key"))
