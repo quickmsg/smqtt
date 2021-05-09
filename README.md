@@ -35,7 +35,7 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
 <dependency>
   <groupId>io.github.quickmsg</groupId>
   <artifactId>smqtt-core</artifactId>
-  <version>1.0.3</version>
+  <version>1.0.4</version>
 </dependency>
 
 ```
