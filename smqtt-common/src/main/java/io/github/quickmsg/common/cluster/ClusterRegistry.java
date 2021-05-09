@@ -24,7 +24,6 @@ public interface ClusterRegistry {
      * 开始监听
      *
      * @param c 集群配置
-     * @return Mono 操作类
      */
     void registry(ClusterConfig c);
 

@@ -86,7 +86,7 @@ assert bootstrap != null;
 ## jar方式
 
 
-1. 下载源码 mvn compile package <smqtt-bootstrap module> -P jar
+1. 下载源码 mvn compile package -Dmaven.test.skip=true  smqtt-bootstrap -P jar
 
 ```markdown
   在smqtt-bootstrap/target目录下生成jar
