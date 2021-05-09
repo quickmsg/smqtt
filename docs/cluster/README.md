@@ -1,6 +1,6 @@
 ---
-sort: 6
+sort: 5
 ---
-# 其他
+# 集群文档
 
 {% include list.liquid %}
