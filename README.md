@@ -181,6 +181,8 @@ curl -H "Content-Type: application/json" -X POST -d '{"topic": "test/teus", "qos
 
 ## wiki地址
 
+集群类配置参考文档:
+
 [smqtt文档](https://quickmsg.github.io/smqtt)
 
 
@@ -188,9 +190,11 @@ curl -H "Content-Type: application/json" -X POST -d '{"topic": "test/teus", "qos
 
 [Apache License, Version 2.0](https://github.com/quickmsg/smqtt/blob/main/LICENSE)
 
-### 添加微信号`Lemon877164954`，拉入smqtt官方交流群
-### 加入qq群 `700152283` 
-### 麻烦关注下公众号！
 
+## 麻烦关注下公众号！
 ![image](icon/icon.jpg)
+
+- 添加微信号`Lemon877164954`，拉入smqtt官方交流群
+- 加入qq群 `700152283` 
+
 
