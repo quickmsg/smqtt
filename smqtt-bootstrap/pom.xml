@@ -94,8 +94,8 @@
                                     <tag>${project.version}</tag>
                                 </tags>
                                 <auth>
-                                    <username>1ssqq1lxr</username>
-                                    <password>lxr7293209</password>
+                                    <username>${registry_username}</username>
+                                    <password>${registry_password}</password>
                                 </auth>
                             </to>
                             <container>
