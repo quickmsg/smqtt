@@ -35,7 +35,7 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
 <dependency>
   <groupId>io.github.quickmsg</groupId>
   <artifactId>smqtt-core</artifactId>
-  <version>1.0.3</version>
+  <version>1.0.4</version>
 </dependency>
 
 ```
@@ -49,12 +49,13 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
        .websocketPort(8999)
        .options(channelOptionMap -> {})
        .ssl(false)
+       .reactivePasswordAuth((U,P)->true)
        .sslContext(new SslContext("crt","key"))
        .isWebsocket(true)
        .wiretap(false)
        .httpOptions(Bootstrap.HttpOptions.builder().ssl(false).httpPort(62212).accessLog(true).build())
        .build()
-        .startAwait();
+       .startAwait();
 
 ```
 
@@ -86,7 +87,7 @@ assert bootstrap != null;
 ## jar方式
 
 
-1. 下载源码 mvn compile package <smqtt-bootstrap module> -P jar
+1. 下载源码 mvn compile package -Dmaven.test.skip=true  smqtt-bootstrap -P jar
 
 ```markdown
   在smqtt-bootstrap/target目录下生成jar
@@ -179,19 +180,22 @@ curl -H "Content-Type: application/json" -X POST -d '{"topic": "test/teus", "qos
 
 
 
-## 其他功能文档尚未完善，有兴趣同学可以加我微信群！
+## wiki地址
 
+集群类配置参考文档:
 
-###压测报告
-
+[smqtt文档](https://quickmsg.github.io/smqtt)
 
 
 ## License
 
 [Apache License, Version 2.0](https://github.com/quickmsg/smqtt/blob/main/LICENSE)
 
-### 关注公众号，输入 `物联网`  扫码加入微信交流群
+
+## 麻烦关注下公众号！
 ![image](icon/icon.jpg)
 
+- 添加微信号`Lemon877164954`，拉入smqtt官方交流群
+- 加入qq群 `700152283` 
 
 

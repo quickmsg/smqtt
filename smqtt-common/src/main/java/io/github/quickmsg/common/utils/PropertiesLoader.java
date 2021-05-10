@@ -24,7 +24,6 @@ public class PropertiesLoader {
             prop.load(inputStream);
             loadMap(prop,map);
         } catch (IOException e) {
-            log.error("properties load error ",e);
         }
         return map;
     }

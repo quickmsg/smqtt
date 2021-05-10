@@ -1,8 +1,7 @@
 package io.github.quickmsg.common.http;
 
 import com.alibaba.fastjson.JSON;
-import io.github.quickmsg.common.channel.MockMqttChannel;
-import io.github.quickmsg.common.channel.MqttChannel;
+import io.github.quickmsg.common.protocol.ProtocolAdaptor;
 import io.github.quickmsg.common.spi.DynamicLoader;
 import org.reactivestreams.Publisher;
 import reactor.netty.http.server.HttpServerRequest;
@@ -15,13 +14,11 @@ import java.util.stream.Collectors;
 /**
  * @author luxurong
  */
-@FunctionalInterface
 public interface HttpActor {
 
 
     List<HttpActor> INSTANCE = DynamicLoader.findAll(HttpActor.class).collect(Collectors.toList());
 
-    MqttChannel DEFAULT_MOCK_CHANNEL = new MockMqttChannel();
 
     /**
      * 处理
@@ -36,13 +33,23 @@ public interface HttpActor {
 
 
     /**
+     * 获取mqtt协议适配器
+     *
+     * @return ProtocolAdaptor
+     */
+    ProtocolAdaptor getProtocolAdaptor();
+
+
+    /**
      * json转换器
      *
      * @param tClass class
-     * @param <T> 返回类型
+     * @param <T>    返回类型
      * @return Function
      */
     default <T> Function<String, T> toJson(Class<T> tClass) {
         return message -> JSON.parseObject(message, tClass);
     }
+
+
 }

@@ -1,14 +1,11 @@
 package io.github.quickmsg.core;
 
-import io.github.quickmsg.core.http.HttpTransportFactory;
 import io.github.quickmsg.common.auth.PasswordAuthentication;
-import io.github.quickmsg.common.channel.ChannelRegistry;
+import io.github.quickmsg.common.cluster.ClusterConfig;
 import io.github.quickmsg.common.config.SslContext;
-import io.github.quickmsg.common.message.MessageRegistry;
-import io.github.quickmsg.common.protocol.ProtocolAdaptor;
-import io.github.quickmsg.common.topic.TopicRegistry;
 import io.github.quickmsg.common.transport.Transport;
 import io.github.quickmsg.core.http.HttpConfiguration;
+import io.github.quickmsg.core.http.HttpTransportFactory;
 import io.github.quickmsg.core.mqtt.MqttConfiguration;
 import io.github.quickmsg.core.mqtt.MqttTransportFactory;
 import io.github.quickmsg.core.websocket.WebSocketMqttTransportFactory;
@@ -47,9 +44,7 @@ public class Bootstrap {
     @Builder.Default
     private Integer websocketPort = 0;
 
-
-    @Builder.Default
-    private List<Transport<?>> transports = new ArrayList<>();
+    private final List<Transport<?>> transports = new ArrayList<>();
 
     private Integer port;
 
@@ -69,23 +64,15 @@ public class Bootstrap {
 
     private HttpOptions httpOptions;
 
-
     private String host;
 
     private PasswordAuthentication reactivePasswordAuth;
 
-    private Class<? extends ChannelRegistry> channelRegistry;
-
-    private Class<? extends TopicRegistry> topicRegistry;
-
-    private Class<? extends ProtocolAdaptor> protocolAdaptor;
-
-    private Class<? extends MessageRegistry> messageRegistry;
-
-
     private Consumer<Map<ChannelOption<?>, ?>> options;
 
     private Consumer<Map<ChannelOption<?>, ?>> childOptions;
+
+    private ClusterConfig clusterConfig;
 
 
     private MqttConfiguration initMqttConfiguration() {
@@ -93,18 +80,15 @@ public class Bootstrap {
         Optional.ofNullable(options).ifPresent(mqttConfiguration::setOptions);
         Optional.ofNullable(childOptions).ifPresent(mqttConfiguration::setChildOptions);
         Optional.ofNullable(reactivePasswordAuth).ifPresent(mqttConfiguration::setReactivePasswordAuth);
-        Optional.ofNullable(channelRegistry).ifPresent(mqttConfiguration::setChannelRegistry);
-        Optional.ofNullable(topicRegistry).ifPresent(mqttConfiguration::setTopicRegistry);
-        Optional.ofNullable(protocolAdaptor).ifPresent(mqttConfiguration::setProtocolAdaptor);
         Optional.ofNullable(port).ifPresent(mqttConfiguration::setPort);
         Optional.ofNullable(lowWaterMark).ifPresent(mqttConfiguration::setLowWaterMark);
         Optional.ofNullable(highWaterMark).ifPresent(mqttConfiguration::setHighWaterMark);
         Optional.ofNullable(wiretap).ifPresent(mqttConfiguration::setWiretap);
         Optional.ofNullable(bossThreadSize).ifPresent(mqttConfiguration::setBossThreadSize);
         Optional.ofNullable(workThreadSize).ifPresent(mqttConfiguration::setWorkThreadSize);
-        Optional.ofNullable(messageRegistry).ifPresent(mqttConfiguration::setMessageRegistry);
         Optional.ofNullable(ssl).ifPresent(mqttConfiguration::setSsl);
         Optional.ofNullable(sslContext).ifPresent(mqttConfiguration::setSslContext);
+        Optional.ofNullable(clusterConfig).ifPresent(mqttConfiguration::setClusterConfig);
         if (isWebsocket) {
             mqttConfiguration.setWebSocketPort(websocketPort);
         }
@@ -194,6 +178,7 @@ public class Bootstrap {
         private Boolean accessLog = false;
 
     }
+
 
 
 }

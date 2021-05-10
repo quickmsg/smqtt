@@ -1,51 +1,29 @@
 package io.github.quickmsg.common.cluster;
 
+import lombok.Builder;
+import lombok.Data;
+
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author luxurong
  */
-public interface ClusterConfig {
+@Data
+@Builder
+public class ClusterConfig {
 
+    private Boolean clustered;
 
-    /**
-     * 获取地址
-     *
-     * @return String
-     */
-    String getAddress();
+    private Integer port;
 
+    private String nodeName;
 
-    /**
-     * 获取端口
-     *
-     * @return Integer
-     */
-    Integer getPort();
+    private String clusterUrl;
 
-
-    /**
-     * 获取节点名称
-     *
-     * @return String
-     */
-    String getNodeName();
-
-
-    /**
-     * 获取集群配置信息
-     *
-     * @return Map
-     */
-    Map<String, Object> getOptions();
-
-
-    /**
-     * 获取集群Url
-     *
-     * @return Map
-     */
-    List<String> getClusterUrl();
-
+    public static ClusterConfig defaultClusterConfig() {
+        return ClusterConfig.builder()
+                .clustered(false)
+                .port(0)
+                .build();
+    }
 }

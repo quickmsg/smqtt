@@ -2,6 +2,8 @@ package io.github.quickmsg.core.mqtt;
 
 import io.github.quickmsg.common.auth.PasswordAuthentication;
 import io.github.quickmsg.common.channel.ChannelRegistry;
+import io.github.quickmsg.common.cluster.ClusterConfig;
+import io.github.quickmsg.common.cluster.ClusterRegistry;
 import io.github.quickmsg.common.config.AbstractConfiguration;
 import io.github.quickmsg.common.config.SslContext;
 import io.github.quickmsg.common.message.MessageRegistry;
@@ -46,16 +48,7 @@ public class MqttConfiguration extends AbstractSslHandler implements AbstractCon
 
     private Consumer<Map<ChannelOption<?>, ?>> childOptions;
 
-    private Class<? extends ChannelRegistry> channelRegistry = ChannelRegistry.class;
-
-    private Class<? extends TopicRegistry> topicRegistry = TopicRegistry.class;
-
-    private Class<? extends ProtocolAdaptor> protocolAdaptor = ProtocolAdaptor.class;
-
-    private Class<? extends MessageRegistry> messageRegistry = MessageRegistry.class;
-
-    private Class<? extends PasswordAuthentication> passwordAuthentication = PasswordAuthentication.class;
-
+    private ClusterConfig clusterConfig = ClusterConfig.defaultClusterConfig();
 
     @Override
     public Consumer<? super TcpServerConfig> getTcpServerConfig() {
@@ -64,6 +57,4 @@ public class MqttConfiguration extends AbstractSslHandler implements AbstractCon
             Optional.ofNullable(childOptions).ifPresent(options -> options.accept(tcpServerConfig.childOptions()));
         };
     }
-
-
 }

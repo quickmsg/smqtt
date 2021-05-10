@@ -1,5 +1,6 @@
 package io.github.quickmsg.core.http;
 
+import io.github.quickmsg.common.cluster.ClusterConfig;
 import io.github.quickmsg.common.config.Configuration;
 import io.github.quickmsg.common.config.SslContext;
 import lombok.Data;
@@ -34,5 +35,10 @@ public class HttpConfiguration implements Configuration {
     @Override
     public Integer getHighWaterMark() {
         return 0;
+    }
+
+    @Override
+    public ClusterConfig getClusterConfig() {
+        throw new UnsupportedOperationException("getClusterConfig");
     }
 }
