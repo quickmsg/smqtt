@@ -10,33 +10,21 @@
     <appender name="file" class="ch.qos.logback.core.FileAppender">
         <file>testFile.log</file>
         <append>false</append>
-        <!-- encoders are assigned the type
-             ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
-    <!-- Access Log configuration
-    <appender name="accessLog" class="ch.qos.logback.core.FileAppender">
-        <file>access_log.log</file>
-        <encoder>
-            <pattern>%msg%n</pattern>
-        </encoder>
-    </appender>
-    <appender name="async" class="ch.qos.logback.classic.AsyncAppender">
-        <appender-ref ref="accessLog" />
-    </appender>
-
-    <logger name="reactor.netty.http.server.AccessLog" level="INFO" additivity="false">
-        <appender-ref ref="async"/>
-    </logger> -->
-
-    <!--<logger name="reactor" level="DEBUG"/>-->
-    <!--<logger name="reactor" level="INFO"/>-->
-    <logger name="reactor.netty" level="DEBUG"/>
-    <!--<logger name="reactor.netty.http.client.HttpClient" level="DEBUG" />-->
-    <!--<logger name="reactor.netty.channel.FluxReceive" level="DEBUG" />-->
-    <!--<logger name="reactor.netty.http.server.HttpServer" level="DEBUG" />-->
+    <logger name="reactor.netty" level="info"/>
+    <logger name="reactor.netty.http.client.HttpClient" level="info" />
+    <logger name="reactor.netty.channel.FluxReceive" level="info" />
+    <logger name="reactor.netty.http.server.HttpServer" level="info" />
+    <logger name="io.scalecube.cluster.transport" level="info"/>
+    <logger name="io.scalecube.cluster.fdetector" level="info"/>
+    <logger name="io.scalecube.cluster.gossip" level="info"/>
+    <logger name="io.scalecube.cluster.membership" level="info"/>
+    <logger name="io.scalecube.cluster.metadata" level="info"/>
+    <logger name="io.scalecube.cluster" level="info"/>
+    <logger name="io.scalecube.services" level="info"/>
 
     <root level="info">
         <appender-ref ref="stdout"/>

@@ -1,6 +1,7 @@
 package io.github.quickmsg;
 
 import io.github.quickmsg.common.bootstrap.BootstrapKey;
+import io.github.quickmsg.common.cluster.ClusterConfig;
 import io.github.quickmsg.common.config.SslContext;
 import io.github.quickmsg.common.utils.PropertiesLoader;
 import io.github.quickmsg.core.Bootstrap;
@@ -8,6 +9,7 @@ import io.netty.channel.WriteBufferWaterMark;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Function;
 
 /**
@@ -20,6 +22,9 @@ public abstract class AbstractStarter {
     private static final Integer DEFAULT_MQTT_PORT = 1883;
 
     private static final Integer DEFAULT_WEBSOCKET_MQTT_PORT = 8999;
+
+    private static final Integer DEFAULT_CLUSTER_PORT = 4333;
+
 
     private static final Integer DEFAULT_HTTP_PORT = 12000;
 
@@ -69,6 +74,9 @@ public abstract class AbstractStarter {
         Boolean httpEnable = Optional.ofNullable(params.getOrDefault(BootstrapKey.BOOTSTRAP_HTTP_ENABLE, function.apply(BootstrapKey.BOOTSTRAP_HTTP_ENABLE)))
                 .map(Boolean::parseBoolean).orElse(false);
 
+        Boolean clusterEnable = Optional.ofNullable(params.getOrDefault(BootstrapKey.BOOTSTRAP_CLUSTER_ENABLE, function.apply(BootstrapKey.BOOTSTRAP_CLUSTER_ENABLE)))
+                .map(Boolean::parseBoolean).orElse(false);
+
 
         Bootstrap.BootstrapBuilder builder = Bootstrap.builder();
         builder.port(port)
@@ -89,6 +97,22 @@ public abstract class AbstractStarter {
             } else {
                 builder.sslContext(new SslContext(sslCrt, sslKey));
             }
+        }
+        if (clusterEnable) {
+            Integer clusterPort = Optional.ofNullable(params.getOrDefault(BootstrapKey.BOOTSTRAP_CLUSTER_PORT, function.apply(BootstrapKey.BOOTSTRAP_CLUSTER_PORT)))
+                    .map(Integer::parseInt).orElse(DEFAULT_CLUSTER_PORT);
+            String clusterUrl = Optional.ofNullable(params.getOrDefault(BootstrapKey.BOOTSTRAP_CLUSTER_URL, function.apply(BootstrapKey.BOOTSTRAP_CLUSTER_URL)))
+                    .map(String::valueOf).orElse(null);
+            String clusterNode = Optional.ofNullable(params.getOrDefault(BootstrapKey.BOOTSTRAP_CLUSTER_NODE, function.apply(BootstrapKey.BOOTSTRAP_CLUSTER_NODE)))
+                    .map(String::valueOf).orElse(UUID.randomUUID().toString().replaceAll("-", ""));
+            ClusterConfig clusterConfig =
+                    ClusterConfig.builder()
+                            .port(clusterPort)
+                            .clusterUrl(clusterUrl)
+                            .nodeName(clusterNode)
+                            .clustered(true)
+                            .build();
+            builder.clusterConfig(clusterConfig);
         }
         if (isWebsocket) {
             Integer websocketPort = Optional.ofNullable(params.getOrDefault(BootstrapKey.BOOTSTRAP_WEB_SOCKET_PORT, function.apply(BootstrapKey.BOOTSTRAP_WEB_SOCKET_PORT)))

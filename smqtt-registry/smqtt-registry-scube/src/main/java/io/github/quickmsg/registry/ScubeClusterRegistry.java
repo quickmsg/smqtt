@@ -82,19 +82,36 @@ public class ScubeClusterRegistry implements ClusterRegistry {
 
         @Override
         public void onMessage(Message message) {
-            messageMany.tryEmitNext(new ClusterMessage());
+            log.info("cluster accept message {} ", message);
+            messageMany.tryEmitNext(message.data());
         }
 
         @Override
-        public void onGossip(Message gossip) {
-            messageMany.tryEmitNext(new ClusterMessage());
-
+        public void onGossip(Message message) {
+            log.info("cluster accept message {} ", message);
+            messageMany.tryEmitNext(message.data());
         }
 
         @Override
         public void onMembershipEvent(MembershipEvent event) {
             Member member = event.member();
-            eventMany.tryEmitNext(ClusterEvent.ADDED);
+            log.info("cluster onMembershipEvent {}  {}", member, event);
+            switch (event.type()) {
+                case ADDED:
+                    eventMany.tryEmitNext(ClusterEvent.ADDED);
+                    break;
+                case LEAVING:
+                    eventMany.tryEmitNext(ClusterEvent.LEAVING);
+                    break;
+                case REMOVED:
+                    eventMany.tryEmitNext(ClusterEvent.REMOVED);
+                    break;
+                case UPDATED:
+                    eventMany.tryEmitNext(ClusterEvent.UPDATED);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
