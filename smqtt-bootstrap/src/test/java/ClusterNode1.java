@@ -33,8 +33,6 @@ public class ClusterNode1 {
                 .build()
                 .start().block();
         assert bootstrap != null;
-        // 关闭服
-//        bootstrap.shutdown();
         Thread.sleep(1000000);
     }
 
