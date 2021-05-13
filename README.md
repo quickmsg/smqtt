@@ -131,6 +131,8 @@ assert bootstrap != null;
     smqtt.http.ssl.enable=false;
     # smqtt.http.ssl.crt =;
     # smqtt.http.ssl.key;
+    # 开启集群
+    smqtt.cluster.enable=false
     # 集群节点地址
     smqtt.cluster.url=127.0.0.1:7771,127.0.0.1:7772
     # 节点端口
