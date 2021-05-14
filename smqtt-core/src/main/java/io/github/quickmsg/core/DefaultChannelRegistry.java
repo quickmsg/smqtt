@@ -5,6 +5,7 @@ import io.github.quickmsg.common.channel.MqttChannel;
 import io.github.quickmsg.common.enums.ChannelStatus;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -49,5 +50,10 @@ public class DefaultChannelRegistry implements ChannelRegistry {
     @Override
     public Integer counts() {
         return channelMap.size();
+    }
+
+    @Override
+    public Collection<MqttChannel> getChannels() {
+        return channelMap.values();
     }
 }

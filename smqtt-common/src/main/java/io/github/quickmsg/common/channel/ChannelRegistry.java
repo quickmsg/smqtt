@@ -2,6 +2,9 @@ package io.github.quickmsg.common.channel;
 
 import io.github.quickmsg.common.spi.DynamicLoader;
 
+import java.util.Collection;
+import java.util.List;
+
 /**
  * @author luxurong
  */
@@ -22,7 +25,7 @@ public interface ChannelRegistry {
      * 注册通道
      *
      * @param clientIdentifier 客户端id
-     * @param mqttChannel 通道关闭
+     * @param mqttChannel      通道关闭
      */
     void registry(String clientIdentifier, MqttChannel mqttChannel);
 
@@ -51,5 +54,12 @@ public interface ChannelRegistry {
      */
     Integer counts();
 
+
+    /**
+     * 获取说有channel信息
+     *
+     * @return list
+     */
+    Collection<MqttChannel> getChannels();
 
 }

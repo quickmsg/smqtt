@@ -18,4 +18,6 @@ public @interface Router {
 
     HttpType type() default HttpType.GET;
 
+//    ContextType contextType();
+
 }
