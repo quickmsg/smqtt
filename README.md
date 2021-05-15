@@ -184,12 +184,12 @@ curl -H "Content-Type: application/json" -X POST -d '{"topic": "test/teus", "qos
 
 集群类配置参考文档:
 
-[smqtt文档](https://quickmsg.github.io/smqtt)
+[smqtt文档](https://doc.smqtt.cc/)
 
 
 ## License
 
-[Apache License, Version 2.0](https://github.com/quickmsg/smqtt/blob/main/LICENSE)
+[Apache License, Version 2.0](LICENSE)
 
 
 ## 麻烦关注下公众号！
