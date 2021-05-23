@@ -22,6 +22,11 @@ public enum HttpType {
      */
     PUT,
 
+    /**
+     * 文件流
+     */
+    File,
+
 
 
 }

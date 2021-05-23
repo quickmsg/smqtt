@@ -139,14 +139,14 @@ public class Bootstrap {
     private Mono<Void> startWs(MqttConfiguration mqttConfiguration) {
         return this.isWebsocket ? new WebSocketMqttTransportFactory().createTransport(mqttConfiguration)
                 .start()
-                .doOnSuccess(transports::add).then() : Mono.empty();
+                .doOnSuccess(transports::add).doOnError(throwable -> log.error("start websocket error",throwable)).then() : Mono.empty();
     }
 
 
     private Mono<Void> startHttp() {
         return httpOptions != null ? new HttpTransportFactory().createTransport(this.buildHttpConfiguration())
                 .start()
-                .doOnSuccess(transports::add).then() : Mono.empty();
+                .doOnSuccess(transports::add).doOnError(throwable ->log.error("start http error",throwable)).then() : Mono.empty();
     }
 
 
