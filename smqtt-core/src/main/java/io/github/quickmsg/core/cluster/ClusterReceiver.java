@@ -17,8 +17,6 @@ import java.time.Duration;
 
 /**
  * @author luxurong
- * @date 2021/5/25 15:34
- * @description
  */
 @Slf4j
 public class ClusterReceiver {
