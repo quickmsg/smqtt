@@ -41,4 +41,5 @@ public class HttpConfiguration implements Configuration {
     public ClusterConfig getClusterConfig() {
         throw new UnsupportedOperationException("getClusterConfig");
     }
+
 }

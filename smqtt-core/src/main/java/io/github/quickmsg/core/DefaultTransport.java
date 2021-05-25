@@ -51,7 +51,7 @@ public class DefaultTransport implements Transport<MqttConfiguration> {
     public ReceiveContext<MqttConfiguration> buildReceiveContext(MqttConfiguration mqttConfiguration) {
         synchronized (this) {
             if (DefaultTransport.receiveContext == null) {
-                DefaultTransport.receiveContext = new MqttReceiveContext(mqttConfiguration, this, clusterReceiver);
+                DefaultTransport.receiveContext = new MqttReceiveContext(mqttConfiguration, this);
             }
             return DefaultTransport.receiveContext;
         }

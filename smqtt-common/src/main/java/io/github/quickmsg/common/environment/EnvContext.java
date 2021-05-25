@@ -1,5 +1,7 @@
 package io.github.quickmsg.common.environment;
 
+import lombok.Getter;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -9,6 +11,7 @@ import java.util.Optional;
  * @date 2021/5/25 14:15
  * @description
  */
+@Getter
 public class EnvContext {
 
     private final Map<String, String> environments;

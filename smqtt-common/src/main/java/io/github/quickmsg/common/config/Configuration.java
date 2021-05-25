@@ -80,13 +80,4 @@ public interface Configuration {
      */
     ClusterConfig getClusterConfig();
 
-
-    /**
-     * 获取环境变量
-     *
-
-     *
-     * @return 配置config
-     */
-    EnvContext getEnvContext();
 }
