@@ -1,5 +1,6 @@
 package io.github.quickmsg.common.utils;
 
+import io.github.quickmsg.common.environment.EnvContext;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
@@ -15,17 +16,16 @@ import java.util.Properties;
 public class PropertiesLoader {
 
 
-    public static Map<String, String> loadProperties(String filePath) {
+    public static EnvContext loadProperties(String filePath) {
         Map<String, String> map = new HashMap<>(16);
         Properties prop = new Properties();
         try {
-
             InputStream inputStream = new BufferedInputStream(new FileInputStream(new File(filePath)));
             prop.load(inputStream);
-            loadMap(prop,map);
+            loadMap(prop, map);
         } catch (IOException e) {
         }
-        return map;
+        return new EnvContext(map);
     }
 
 

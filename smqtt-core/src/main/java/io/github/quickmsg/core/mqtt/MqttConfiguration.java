@@ -1,14 +1,10 @@
 package io.github.quickmsg.core.mqtt;
 
 import io.github.quickmsg.common.auth.PasswordAuthentication;
-import io.github.quickmsg.common.channel.ChannelRegistry;
 import io.github.quickmsg.common.cluster.ClusterConfig;
-import io.github.quickmsg.common.cluster.ClusterRegistry;
 import io.github.quickmsg.common.config.AbstractConfiguration;
 import io.github.quickmsg.common.config.SslContext;
-import io.github.quickmsg.common.message.MessageRegistry;
-import io.github.quickmsg.common.protocol.ProtocolAdaptor;
-import io.github.quickmsg.common.topic.TopicRegistry;
+import io.github.quickmsg.common.environment.EnvContext;
 import io.github.quickmsg.core.ssl.AbstractSslHandler;
 import io.netty.channel.ChannelOption;
 import lombok.Data;
@@ -50,6 +46,8 @@ public class MqttConfiguration extends AbstractSslHandler implements AbstractCon
 
     private ClusterConfig clusterConfig = ClusterConfig.defaultClusterConfig();
 
+    private EnvContext envContext;
+
     @Override
     public Consumer<? super TcpServerConfig> getTcpServerConfig() {
         return tcpServerConfig -> {
@@ -57,4 +55,5 @@ public class MqttConfiguration extends AbstractSslHandler implements AbstractCon
             Optional.ofNullable(childOptions).ifPresent(options -> options.accept(tcpServerConfig.childOptions()));
         };
     }
+
 }

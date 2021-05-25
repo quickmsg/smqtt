@@ -1,14 +1,14 @@
 package io.github.quickmsg.common.channel;
 
+import io.github.quickmsg.common.StartUp;
 import io.github.quickmsg.common.spi.DynamicLoader;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * @author luxurong
  */
-public interface ChannelRegistry {
+public interface ChannelRegistry extends StartUp {
 
 
     ChannelRegistry INSTANCE = DynamicLoader.findFirst(ChannelRegistry.class).orElse(null);

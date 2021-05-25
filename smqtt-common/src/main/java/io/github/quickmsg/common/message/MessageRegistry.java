@@ -1,5 +1,6 @@
 package io.github.quickmsg.common.message;
 
+import io.github.quickmsg.common.StartUp;
 import io.github.quickmsg.common.channel.MqttChannel;
 import io.github.quickmsg.common.spi.DynamicLoader;
 import io.netty.handler.codec.mqtt.MqttPublishMessage;
@@ -10,7 +11,7 @@ import java.util.Optional;
 /**
  * @author luxurong
  */
-public interface MessageRegistry {
+public interface MessageRegistry extends StartUp {
 
     MessageRegistry INSTANCE = DynamicLoader.findFirst(MessageRegistry.class).orElse(null);
 

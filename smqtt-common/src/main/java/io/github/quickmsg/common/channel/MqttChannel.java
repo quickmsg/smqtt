@@ -60,6 +60,9 @@ public class MqttChannel {
     @JSONField(serialize=false)
     private Map<MqttMessageType, Map<Integer, Disposable>> replyMqttMessageMap;
 
+    @JSONField(serialize=false)
+    private Disposable closeDisposable;
+
 
     public static MqttChannel init(Connection connection) {
         MqttChannel mqttChannel = new MqttChannel();

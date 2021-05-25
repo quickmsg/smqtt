@@ -1,6 +1,7 @@
 package io.github.quickmsg.common.config;
 
 import io.github.quickmsg.common.cluster.ClusterConfig;
+import io.github.quickmsg.common.environment.EnvContext;
 
 /**
  * @author luxurong
@@ -80,4 +81,12 @@ public interface Configuration {
     ClusterConfig getClusterConfig();
 
 
+    /**
+     * 获取环境变量
+     *
+
+     *
+     * @return 配置config
+     */
+    EnvContext getEnvContext();
 }
