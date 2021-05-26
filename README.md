@@ -110,27 +110,27 @@ assert bootstrap != null;
     # 开启日志
     smqtt.tcp.wiretap=false
     # boss线程
-    smqtt.tcp.bossThreadSize=4;
+    smqtt.tcp.bossThreadSize=4
     # work线程
-    smqtt.tcp.workThreadSize=8;
+    smqtt.tcp.workThreadSize=8
     # websocket端口
-    smqtt.websocket.port=8999;
+    smqtt.websocket.port=8999
     # websocket开启
-    smqtt.websocket.enable=true;
+    smqtt.websocket.enable=true
     # smqtt用户
-    smqtt.tcp.username=smqtt;
+    smqtt.tcp.username=smqtt
     # smqtt密码
-    smqtt.tcp.password=smqtt;
+    smqtt.tcp.password=smqtt
     # 开启http
-    smqtt.http.enable=true;
+    smqtt.http.enable=true
     # 开启http端口
-    smqtt.http.port=1999;
+    smqtt.http.port=1999
     # 开启http日志
-    smqtt.http.accesslog=true;
+    smqtt.http.accesslog=true
     # 开启ssl
-    smqtt.http.ssl.enable=false;
-    # smqtt.http.ssl.crt =;
-    # smqtt.http.ssl.key;
+    smqtt.http.ssl.enable=false
+    # smqtt.http.ssl.crt =
+    # smqtt.http.ssl.key
   ```
 
 3. 启动服务
