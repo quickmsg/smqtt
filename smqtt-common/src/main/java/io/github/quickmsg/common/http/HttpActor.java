@@ -32,13 +32,6 @@ public interface HttpActor {
     Publisher<Void> doRequest(HttpServerRequest request, HttpServerResponse response);
 
 
-    /**
-     * 获取mqtt协议适配器
-     *
-     * @return ProtocolAdaptor
-     */
-    ProtocolAdaptor getProtocolAdaptor();
-
 
     /**
      * json转换器

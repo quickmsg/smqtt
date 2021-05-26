@@ -65,5 +65,10 @@ public class DefaultTopicRegistry implements TopicRegistry {
 
     }
 
+    @Override
+    public Map<String, CopyOnWriteArraySet<MqttChannel>> getAllTopics() {
+        return this.topicChannels;
+    }
+
 
 }

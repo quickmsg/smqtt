@@ -1,5 +1,6 @@
 package io.github.quickmsg.common.channel;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import io.github.quickmsg.common.enums.ChannelStatus;
 import io.github.quickmsg.common.utils.MessageUtils;
 import io.netty.buffer.ByteBuf;
@@ -11,6 +12,7 @@ import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
 import reactor.netty.Connection;
 
+import java.beans.Transient;
 import java.time.Duration;
 import java.util.Map;
 import java.util.Optional;
@@ -46,14 +48,20 @@ public class MqttChannel {
 
     private Boolean isMock = false;
 
+    @JSONField(serialize=false)
+    private transient AtomicInteger atomicInteger;
 
-    private AtomicInteger atomicInteger;
+    @JSONField(serialize=false)
+    private transient MqttMessageSink mqttMessageSink;
 
-    private MqttMessageSink mqttMessageSink;
+    @JSONField(serialize=false)
+    private transient Map<Integer, MqttPublishMessage> qos2MsgCache;
 
-    private Map<Integer, MqttPublishMessage> qos2MsgCache;
-
+    @JSONField(serialize=false)
     private Map<MqttMessageType, Map<Integer, Disposable>> replyMqttMessageMap;
+
+    @JSONField(serialize=false)
+    private Disposable closeDisposable;
 
 
     public static MqttChannel init(Connection connection) {

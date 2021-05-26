@@ -2,7 +2,6 @@
 
 SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署，支持容器化部署，具备低延迟，高吞吐量，支持百万TCP连接，同时支持多种协议交互，是一款非常优秀的消息中间件！
 ## smqtt目前拥有的功能如下：
-
 ![架构图](icon/component.png)
 
 1.  消息质量等级实现(支持qos0，qos1，qos2)
@@ -22,6 +21,13 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
 11. 容器化支持 
 
 
+## 后面规划项目
+
+1. 规则引擎
+2. Web管理系统
+3. 监控系统
+4. 协议桥接agent（用户其他协议与broker之间交互）
+
 
 ## main方式启动
 
@@ -30,7 +36,7 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
 <dependency>
   <groupId>io.github.quickmsg</groupId>
   <artifactId>smqtt-core</artifactId>
-  <version>1.0.4</version>
+  <version>1.0.5</version>
 </dependency>
 
 ```
@@ -82,7 +88,7 @@ assert bootstrap != null;
 ## jar方式
 
 
-1. 下载源码 mvn compile package -P jar
+1. 下载源码 mvn compile package -Dmaven.test.skip=true -P jar
 
 ```markdown
   在smqtt-bootstrap/target目录下生成jar
@@ -105,35 +111,27 @@ assert bootstrap != null;
     # 开启日志
     smqtt.tcp.wiretap=false
     # boss线程
-    smqtt.tcp.bossThreadSize=4;
+    smqtt.tcp.bossThreadSize=4
     # work线程
-    smqtt.tcp.workThreadSize=8;
+    smqtt.tcp.workThreadSize=8
     # websocket端口
-    smqtt.websocket.port=8999;
+    smqtt.websocket.port=8999
     # websocket开启
-    smqtt.websocket.enable=true;
+    smqtt.websocket.enable=true
     # smqtt用户
-    smqtt.tcp.username=smqtt;
+    smqtt.tcp.username=smqtt
     # smqtt密码
-    smqtt.tcp.password=smqtt;
+    smqtt.tcp.password=smqtt
     # 开启http
-    smqtt.http.enable=true;
+    smqtt.http.enable=true
     # 开启http端口
-    smqtt.http.port=1999;
+    smqtt.http.port=1999
     # 开启http日志
-    smqtt.http.accesslog=true;
+    smqtt.http.accesslog=true
     # 开启ssl
-    smqtt.http.ssl.enable=false;
-    # smqtt.http.ssl.crt =;
-    # smqtt.http.ssl.key;
-    # 开启集群
-    smqtt.cluster.enable=false
-    # 集群节点地址
-    smqtt.cluster.url=127.0.0.1:7771,127.0.0.1:7772
-    # 节点端口
-    smqtt.cluster.port=7771
-    # 节点名称
-    smqtt.cluster.node=node-1
+    smqtt.http.ssl.enable=false
+    # smqtt.http.ssl.crt =
+    # smqtt.http.ssl.key
   ```
 
 3. 启动服务
@@ -187,12 +185,13 @@ curl -H "Content-Type: application/json" -X POST -d '{"topic": "test/teus", "qos
 
 集群类配置参考文档:
 
-[smqtt文档](https://doc.smqtt.cc/)
+[smqtt文档](https://quickmsg.github.io/smqtt)
 
 
 ## License
 
-[Apache License, Version 2.0](LICENSE)
+[Apache License, Version 2.0](https://github.com/quickmsg/smqtt/blob/main/LICENSE)
+
 
 ## 麻烦关注下公众号！
 ![image](icon/icon.jpg)

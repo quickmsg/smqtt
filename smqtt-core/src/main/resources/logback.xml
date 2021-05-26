@@ -14,9 +14,9 @@
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
-    <logger name="reactor.netty" level="debug"/>
-    <logger name="reactor.netty.http.client.HttpClient" level="debug" />
-    <logger name="reactor.netty.channel.FluxReceive" level="debug" />
+`    <logger name="reactor.netty" level="debug"/>
+    <logger name="reactor.netty.http.client.HttpClient" level="info" />
+    <logger name="reactor.netty.channel.FluxReceive" level="info" />
     <logger name="reactor.netty.http.server.HttpServer" level="debug" />
     <logger name="io.scalecube.cluster.transport" level="info"/>
     <logger name="io.scalecube.cluster.fdetector" level="info"/>
@@ -26,7 +26,7 @@
     <logger name="io.scalecube.cluster" level="info"/>
     <logger name="io.scalecube.services" level="info"/>
 
-    <root level="info">
+    <root level="debug">
         <appender-ref ref="stdout"/>
     </root>
 

@@ -2,6 +2,7 @@ package io.github.quickmsg.common.cluster;
 
 import io.github.quickmsg.common.enums.ClusterEvent;
 import io.github.quickmsg.common.spi.DynamicLoader;
+import io.github.quickmsg.common.utils.MessageUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.mqtt.MqttFixedHeader;
 import io.netty.handler.codec.mqtt.MqttPublishMessage;
@@ -108,6 +109,7 @@ public interface ClusterRegistry {
         byte[] bytes = new byte[byteBuf.readableBytes()];
         byteBuf.readBytes(bytes);
         byteBuf.resetReaderIndex();
+        MessageUtils.safeRelease(byteBuf);
         return bytes;
     }
 

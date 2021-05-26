@@ -23,7 +23,6 @@ public abstract class AbstractHttpActor implements HttpActor {
         getProtocolAdaptor().chooseProtocol(MockMqttChannel.DEFAULT_MOCK_CHANNEL, mqttPublishMessage, DefaultTransport.receiveContext);
     }
 
-    @Override
     public ProtocolAdaptor getProtocolAdaptor() {
         return this.protocolAdaptor;
     }
