@@ -5,7 +5,9 @@ import io.github.quickmsg.common.channel.MqttChannel;
 import io.github.quickmsg.common.spi.DynamicLoader;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * @author luxurong
@@ -55,4 +57,12 @@ public interface TopicRegistry {
      * @param mqttTopicSubscriptions 通道信息/订阅主题
      */
     void registryTopicConnection(List<SubscribeChannelContext> mqttTopicSubscriptions);
+
+
+    /**
+     * 获取所有topic信息
+     *
+     * @return  map
+     */
+    Map<String, CopyOnWriteArraySet<MqttChannel>> getAllTopics();
 }

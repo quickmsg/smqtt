@@ -3,6 +3,7 @@ package io.github.quickmsg.core;
 import io.github.quickmsg.common.auth.PasswordAuthentication;
 import io.github.quickmsg.common.cluster.ClusterConfig;
 import io.github.quickmsg.common.config.SslContext;
+import io.github.quickmsg.common.environment.EnvContext;
 import io.github.quickmsg.common.transport.Transport;
 import io.github.quickmsg.core.http.HttpConfiguration;
 import io.github.quickmsg.core.http.HttpTransportFactory;
@@ -43,6 +44,9 @@ public class Bootstrap {
 
     @Builder.Default
     private Integer websocketPort = 0;
+
+    @Builder.Default
+    private EnvContext envContext = EnvContext.empty();
 
     private final List<Transport<?>> transports = new ArrayList<>();
 
@@ -89,6 +93,7 @@ public class Bootstrap {
         Optional.ofNullable(ssl).ifPresent(mqttConfiguration::setSsl);
         Optional.ofNullable(sslContext).ifPresent(mqttConfiguration::setSslContext);
         Optional.ofNullable(clusterConfig).ifPresent(mqttConfiguration::setClusterConfig);
+        Optional.ofNullable(envContext).ifPresent(mqttConfiguration::setEnvContext);
         if (isWebsocket) {
             mqttConfiguration.setWebSocketPort(websocketPort);
         }
@@ -139,14 +144,14 @@ public class Bootstrap {
     private Mono<Void> startWs(MqttConfiguration mqttConfiguration) {
         return this.isWebsocket ? new WebSocketMqttTransportFactory().createTransport(mqttConfiguration)
                 .start()
-                .doOnSuccess(transports::add).then() : Mono.empty();
+                .doOnSuccess(transports::add).doOnError(throwable -> log.error("start websocket error", throwable)).then() : Mono.empty();
     }
 
 
     private Mono<Void> startHttp() {
         return httpOptions != null ? new HttpTransportFactory().createTransport(this.buildHttpConfiguration())
                 .start()
-                .doOnSuccess(transports::add).then() : Mono.empty();
+                .doOnSuccess(transports::add).doOnError(throwable -> log.error("start http error", throwable)).then() : Mono.empty();
     }
 
 
@@ -178,7 +183,6 @@ public class Bootstrap {
         private Boolean accessLog = false;
 
     }
-
 
 
 }

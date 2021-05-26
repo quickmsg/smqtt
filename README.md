@@ -3,8 +3,6 @@
 SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署，支持容器化部署，具备低延迟，高吞吐量，支持百万TCP连接，同时支持多种协议交互，是一款非常优秀的消息中间件！
 ## smqtt目前拥有的功能如下：
 
-![架构图](icon/component.png)
-
 1.  消息质量等级实现(支持qos0，qos1，qos2)
 2.  会话消息
 3.  保留消息
@@ -21,6 +19,13 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
 10. 集群支持（gossip协议实现）
 11. 容器化支持 
 
+
+## 后面规划项目
+
+1. 规则引擎
+2. Web管理系统
+3. 监控系统
+4. 协议桥接agent（用户其他协议与broker之间交互）
 
 
 ## main方式启动
@@ -82,7 +87,7 @@ assert bootstrap != null;
 ## jar方式
 
 
-1. 下载源码 mvn compile package -P jar
+1. 下载源码 mvn compile package -Dmaven.test.skip=true -P jar
 
 ```markdown
   在smqtt-bootstrap/target目录下生成jar
@@ -126,14 +131,6 @@ assert bootstrap != null;
     smqtt.http.ssl.enable=false;
     # smqtt.http.ssl.crt =;
     # smqtt.http.ssl.key;
-    # 开启集群
-    smqtt.cluster.enable=false
-    # 集群节点地址
-    smqtt.cluster.url=127.0.0.1:7771,127.0.0.1:7772
-    # 节点端口
-    smqtt.cluster.port=7771
-    # 节点名称
-    smqtt.cluster.node=node-1
   ```
 
 3. 启动服务
@@ -187,12 +184,18 @@ curl -H "Content-Type: application/json" -X POST -d '{"topic": "test/teus", "qos
 
 集群类配置参考文档:
 
-[smqtt文档](https://doc.smqtt.cc/)
+[smqtt文档](https://quickmsg.github.io/smqtt)
 
 
 ## License
 
-[Apache License, Version 2.0](LICENSE)
+[Apache License, Version 2.0](https://github.com/quickmsg/smqtt/blob/main/LICENSE)
 
+
+## 麻烦关注下公众号！
+![image](icon/icon.jpg)
+
+- 添加微信号`Lemon877164954`，拉入smqtt官方交流群
+- 加入qq群 `700152283` 
 
 

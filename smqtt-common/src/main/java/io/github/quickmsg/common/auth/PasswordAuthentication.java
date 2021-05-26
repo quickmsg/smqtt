@@ -1,14 +1,14 @@
 package io.github.quickmsg.common.auth;
 
+import io.github.quickmsg.common.StartUp;
 import io.github.quickmsg.common.spi.DynamicLoader;
 
 /**
  * @author luxurong
  */
-public interface PasswordAuthentication {
+public interface PasswordAuthentication extends StartUp {
 
     PasswordAuthentication INSTANCE = DynamicLoader.findFirst(PasswordAuthentication.class).orElse(null);
-
 
     /**
      * 认证接口

@@ -26,6 +26,16 @@ public class MessageUtils {
         }
     }
 
+    public static void safeRelease(ByteBuf buf) {
+        int count = buf.refCnt();
+        if (count > 0) {
+            buf.release(count);
+            if (log.isDebugEnabled()) {
+                log.info("netty success release byteBuf {} count {} ", buf, count);
+            }
+        }
+    }
+
 
     /**
      * 生成发布消息

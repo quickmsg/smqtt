@@ -1,6 +1,7 @@
 package io.github.quickmsg.core;
 
 import io.github.quickmsg.common.channel.MqttChannel;
+import io.github.quickmsg.common.environment.EnvContext;
 import io.github.quickmsg.common.message.MessageRegistry;
 import io.github.quickmsg.common.message.MqttMessageBuilder;
 import io.github.quickmsg.common.message.RetainMessage;
@@ -69,4 +70,8 @@ public class DefaultMessageRegistry implements MessageRegistry {
     }
 
 
+    @Override
+    public void startUp(EnvContext envContext) {
+        // todo 实现
+    }
 }

@@ -3,8 +3,10 @@ package io.github.quickmsg.core;
 import io.github.quickmsg.common.channel.ChannelRegistry;
 import io.github.quickmsg.common.channel.MqttChannel;
 import io.github.quickmsg.common.enums.ChannelStatus;
+import io.github.quickmsg.common.environment.EnvContext;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -19,6 +21,11 @@ public class DefaultChannelRegistry implements ChannelRegistry {
     private Map<String, MqttChannel> channelMap = new ConcurrentHashMap<>();
 
     public DefaultChannelRegistry() {
+    }
+
+    @Override
+    public void startUp(EnvContext envContext) {
+
     }
 
     @Override
@@ -49,5 +56,10 @@ public class DefaultChannelRegistry implements ChannelRegistry {
     @Override
     public Integer counts() {
         return channelMap.size();
+    }
+
+    @Override
+    public Collection<MqttChannel> getChannels() {
+        return channelMap.values();
     }
 }

@@ -1,1 +1,7 @@
-io.github.quickmsg.core.http.PublishActor
+io.github.quickmsg.core.http.actors.PublishActor
+io.github.quickmsg.core.http.actors.ConnectionActor
+io.github.quickmsg.core.http.actors.ClusterActor
+io.github.quickmsg.core.http.actors.SubscribeActor
+io.github.quickmsg.core.http.actors.resource.IndexResourceActor
+io.github.quickmsg.core.http.actors.resource.OneResourceActor
+io.github.quickmsg.core.http.actors.resource.TwoResourceActor
