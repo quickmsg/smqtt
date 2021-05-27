@@ -18,10 +18,10 @@ public class MessageProxy {
             .sorted(Comparator.comparing(Interceptor::sort))
             .collect(Collectors.toList());
 
-    public  ProtocolAdaptor proxy(ProtocolAdaptor protocolAdaptor) {
+    public ProtocolAdaptor proxy(ProtocolAdaptor protocolAdaptor) {
         if (interceptors.size() > 0) {
             for (Interceptor interceptor : interceptors) {
-                protocolAdaptor = interceptor.proxyProtocol(protocolAdaptor, interceptor);
+                protocolAdaptor = interceptor.proxyProtocol(protocolAdaptor);
             }
         }
         return protocolAdaptor;

@@ -23,11 +23,10 @@ public interface Interceptor {
      * 拦截链
      *
      * @param protocolAdaptor 协议转换
-     * @param interceptor     拦截器
      * @return 代理类
      */
-    default ProtocolAdaptor proxyProtocol(ProtocolAdaptor protocolAdaptor, Interceptor interceptor) {
-        return (ProtocolAdaptor) Proxy.newProxyInstance(protocolAdaptor.getClass().getClassLoader(), new Class[]{ProtocolAdaptor.class}, new InterceptorHandler(interceptor,protocolAdaptor));
+    default ProtocolAdaptor proxyProtocol(ProtocolAdaptor protocolAdaptor) {
+        return (ProtocolAdaptor) Proxy.newProxyInstance(protocolAdaptor.getClass().getClassLoader(), new Class[]{ProtocolAdaptor.class}, new InterceptorHandler(this,protocolAdaptor));
     }
 
 

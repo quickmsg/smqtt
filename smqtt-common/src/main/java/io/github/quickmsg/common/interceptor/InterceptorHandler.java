@@ -18,15 +18,17 @@ public class InterceptorHandler implements InvocationHandler {
 
     public InterceptorHandler(Interceptor interceptor, Object target) {
         this.interceptor = interceptor;
-        this.target=target;
+        this.target = target;
     }
 
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws InvocationTargetException, IllegalAccessException {
         Intercept intercept = method.getAnnotation(Intercept.class);
-        return Optional.ofNullable(intercept)
-                .map(it -> interceptor.intercept(new Invocation(method, target, args)))
-                .orElse(method.invoke(target, args));
+        if (intercept == null) {
+            return method.invoke(target, args);
+        } else {
+            return interceptor.intercept(new Invocation(method, target, args));
+        }
     }
 }
