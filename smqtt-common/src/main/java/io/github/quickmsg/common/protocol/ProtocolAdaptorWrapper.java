@@ -1,4 +1,4 @@
-package io.github.quickmsg.common.http;
+package io.github.quickmsg.common.protocol;
 
 import io.github.quickmsg.common.channel.MqttChannel;
 import io.github.quickmsg.common.config.Configuration;
@@ -11,11 +11,11 @@ import reactor.core.scheduler.Schedulers;
 /**
  * @author luxurong
  */
-public class ClusterWrapper implements ProtocolAdaptor {
+public class ProtocolAdaptorWrapper implements ProtocolAdaptor {
 
     private final ProtocolAdaptor protocolAdaptor;
 
-    public ClusterWrapper(ProtocolAdaptor protocolAdaptor) {
+    public ProtocolAdaptorWrapper(ProtocolAdaptor protocolAdaptor) {
         this.protocolAdaptor = protocolAdaptor;
     }
 

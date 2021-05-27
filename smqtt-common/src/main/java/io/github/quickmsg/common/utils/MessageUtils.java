@@ -20,7 +20,7 @@ public class MessageUtils {
             if (count > 0) {
                 byteBuf.release(count);
                 if (log.isDebugEnabled()) {
-                    log.info("netty success release byteBuf {} count {} ", byteBuf, count);
+                    log.info("netty success release mqttMessage {} count {} ", byteBuf, count);
                 }
             }
         }

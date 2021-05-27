@@ -1,7 +1,7 @@
 package io.github.quickmsg.core.http.actors;
 
-import io.github.quickmsg.common.http.annotation.Router;
-import io.github.quickmsg.common.http.enums.HttpType;
+import io.github.quickmsg.common.annotation.Router;
+import io.github.quickmsg.common.enums.HttpType;
 import io.github.quickmsg.common.message.HttpPublishMessage;
 import io.github.quickmsg.core.http.AbstractHttpActor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package io.github.quickmsg.common.http.annotation;
+package io.github.quickmsg.common.annotation;
 
 import java.lang.annotation.*;
 import java.util.Map;

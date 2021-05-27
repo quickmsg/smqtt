@@ -1,4 +1,4 @@
-package io.github.quickmsg.common.http.enums;
+package io.github.quickmsg.common.enums;
 
 /**
  * @author luxurong

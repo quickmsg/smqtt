@@ -36,14 +36,17 @@ public class ClusterReceiver {
             if (clusterRegistry instanceof InJvmClusterRegistry) {
                 Flux.interval(Duration.ofSeconds(2))
                         .subscribe(index -> log.warn("please set  smqtt-registry dependency  "));
+            } else {
+                //registry cluster
+                clusterRegistry.registry(clusterConfig);
+                //begin listen cluster message
+                clusterRegistry.handlerClusterMessage()
+                        .subscribe(clusterMessage -> protocolAdaptor
+                                .chooseProtocol(MockMqttChannel.
+                                                DEFAULT_MOCK_CHANNEL,
+                                        getMqttMessage(clusterMessage),
+                                        mqttReceiveContext));
             }
-            clusterRegistry.registry(clusterConfig);
-            clusterRegistry.handlerClusterMessage()
-                    .subscribe(clusterMessage -> protocolAdaptor
-                            .chooseProtocol(MockMqttChannel.
-                                            DEFAULT_MOCK_CHANNEL,
-                                    getMqttMessage(clusterMessage),
-                                    mqttReceiveContext));
         }
     }
 

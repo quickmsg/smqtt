@@ -1,6 +1,6 @@
-package io.github.quickmsg.common.http.annotation;
+package io.github.quickmsg.common.annotation;
 
-import io.github.quickmsg.common.http.enums.HttpType;
+import io.github.quickmsg.common.enums.HttpType;
 
 import java.lang.annotation.*;
 

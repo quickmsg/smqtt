@@ -1,44 +1,40 @@
 package io.github.quickmsg.common.interceptor;
 
-import io.github.quickmsg.common.spi.DynamicLoader;
-import io.netty.handler.codec.mqtt.MqttMessageType;
+import io.github.quickmsg.common.annotation.Intercept;
+import io.github.quickmsg.common.protocol.ProtocolAdaptor;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.lang.reflect.Proxy;
 
 /**
  * @author luxurong
  */
 public interface Interceptor {
 
-    List<Interceptor> FILTER_LIST = DynamicLoader.findAll(Interceptor.class)
-            .sorted(Comparator.comparing(Interceptor::order))
-            .collect(Collectors.toList());
-
     /**
      * 拦截目标参数
      *
-     * @param args 参数
-     * @return Object[]
+     * @param invocation 消息体
+     * @return Object 返回值
      */
-    Object[] doInterceptor(Object[] args);
+    Object intercept(Invocation invocation);
+
+
+    /**
+     * 拦截链
+     *
+     * @param protocolAdaptor 协议转换
+     * @param interceptor     拦截器
+     * @return 代理类
+     */
+    default ProtocolAdaptor proxyProtocol(ProtocolAdaptor protocolAdaptor, Interceptor interceptor) {
+        return (ProtocolAdaptor) Proxy.newProxyInstance(protocolAdaptor.getClass().getClassLoader(), new Class[]{ProtocolAdaptor.class}, new InterceptorHandler(interceptor,protocolAdaptor));
+    }
 
 
     /**
      * 排序
-     *
-     * @return int
+     * @return 排序
      */
-    int order();
-
-
-    /**
-     * 拦截消息类型
-     *
-     * @return MqttMessageType
-     */
-    MqttMessageType interceptorType();
-
+    int sort();
 
 }
