@@ -1,6 +1,5 @@
 package io.github.quickmsg.common.interceptor;
 
-import io.github.quickmsg.common.annotation.Intercept;
 import io.github.quickmsg.common.protocol.ProtocolAdaptor;
 
 import java.lang.reflect.Proxy;
@@ -26,12 +25,13 @@ public interface Interceptor {
      * @return 代理类
      */
     default ProtocolAdaptor proxyProtocol(ProtocolAdaptor protocolAdaptor) {
-        return (ProtocolAdaptor) Proxy.newProxyInstance(protocolAdaptor.getClass().getClassLoader(), new Class[]{ProtocolAdaptor.class}, new InterceptorHandler(this,protocolAdaptor));
+        return (ProtocolAdaptor) Proxy.newProxyInstance(protocolAdaptor.getClass().getClassLoader(), new Class[]{ProtocolAdaptor.class}, new InterceptorHandler(this, protocolAdaptor));
     }
 
 
     /**
      * 排序
+     *
      * @return 排序
      */
     int sort();

@@ -1,16 +1,16 @@
 package io.github.quickmsg.common.interceptor;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
  * @author luxurong
- * @date 2021/5/27 11:53
- * @description
  */
 @AllArgsConstructor
+@Getter
 public class Invocation {
 
     private Method method;

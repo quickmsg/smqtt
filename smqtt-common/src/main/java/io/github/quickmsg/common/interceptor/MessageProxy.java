@@ -9,8 +9,6 @@ import java.util.stream.Collectors;
 
 /**
  * @author luxurong
- * @date 2021/5/27 11:53
- * @description
  */
 public class MessageProxy {
 
