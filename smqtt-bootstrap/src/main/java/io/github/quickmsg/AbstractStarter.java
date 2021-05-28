@@ -1,14 +1,15 @@
 package io.github.quickmsg;
 
+import ch.qos.logback.classic.Level;
 import io.github.quickmsg.common.bootstrap.BootstrapKey;
 import io.github.quickmsg.common.cluster.ClusterConfig;
 import io.github.quickmsg.common.config.SslContext;
 import io.github.quickmsg.common.environment.EnvContext;
+import io.github.quickmsg.common.utils.LoggerLevel;
 import io.github.quickmsg.common.utils.PropertiesLoader;
 import io.github.quickmsg.core.Bootstrap;
 import io.netty.channel.WriteBufferWaterMark;
 
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
@@ -78,6 +79,13 @@ public abstract class AbstractStarter {
         Boolean clusterEnable = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_CLUSTER_ENABLE, function.apply(BootstrapKey.BOOTSTRAP_CLUSTER_ENABLE)))
                 .map(Boolean::parseBoolean).orElse(false);
 
+
+        String loggerLevel = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_LOGGER_LEVEL, function.apply(BootstrapKey.BOOTSTRAP_LOGGER_LEVEL)))
+                .map(String::valueOf).orElse(null);
+
+        if (loggerLevel != null) {
+            LoggerLevel.root(Level.toLevel(loggerLevel));
+        }
 
         Bootstrap.BootstrapBuilder builder = Bootstrap.builder();
         builder.port(port)

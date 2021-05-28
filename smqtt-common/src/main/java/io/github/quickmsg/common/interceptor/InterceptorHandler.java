@@ -1,6 +1,7 @@
 package io.github.quickmsg.common.interceptor;
 
 import io.github.quickmsg.common.annotation.Intercept;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;

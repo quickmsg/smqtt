@@ -6,6 +6,8 @@ package io.github.quickmsg.common.bootstrap;
 public class BootstrapKey {
 
 
+    public final static String BOOTSTRAP_LOGGER_LEVEL = " smqtt.log.level";
+
     public final static String BOOTSTRAP_PORT = "smqtt.tcp.port";
 
     public final static String BOOTSTRAP_LOW_WATERMARK = "smqtt.tcp.lowWaterMark";
