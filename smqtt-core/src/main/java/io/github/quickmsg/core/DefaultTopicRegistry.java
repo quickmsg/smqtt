@@ -57,7 +57,6 @@ public class DefaultTopicRegistry implements TopicRegistry {
     }
 
     @Override
-    //todo not retain subscribe qos
     public void registryTopicConnection(List<SubscribeChannelContext> mqttTopicSubscriptions) {
         for (SubscribeChannelContext channelContext : mqttTopicSubscriptions) {
             this.registryTopicConnection(channelContext.getTopic(), channelContext.getMqttChannel());

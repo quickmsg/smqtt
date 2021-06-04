@@ -16,7 +16,7 @@ import java.util.Properties;
  */
 public class DruidConnection {
     private DataSource dataSource = null;
-    private volatile static DruidConnection instatce = null;
+    private volatile static DruidConnection instance = null;
 
     /**
      * 私有构造函数, 防止实例化对象
@@ -28,17 +28,17 @@ public class DruidConnection {
     /**
      * 用简单单例模式确保只返回一个链接对象
      *
-     * @return
+     * @return 连接池
      */
-    public static DruidConnection getInstace() {
-        if (instatce == null) {
+    public static DruidConnection getInstance() {
+        if (instance == null) {
             synchronized (DruidConnection.class) {
-                if (instatce == null) {
-                    instatce = new DruidConnection();
+                if (instance == null) {
+                    instance = new DruidConnection();
                 }
             }
         }
-        return instatce;
+        return instance;
     }
 
     /**

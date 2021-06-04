@@ -13,7 +13,6 @@
     <version>1.0.5</version>
 
     <name>smqtt-bootstrap</name>
-    <!-- FIXME change it to the project's website -->
     <url>http://www.example.com</url>
 
     <properties>

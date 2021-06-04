@@ -10,6 +10,7 @@ public interface SQL {
     /**
      * 创建mqtt消息历史记录表sql
      */
+    //todo 维护成sql脚本 然后读取内容 一个表一个脚本  调研下liquibase
     String MQTT_MSG_LOG = "CREATE TABLE IF NOT EXISTS `mqtt_msg_log` (" +
             "  `message_id` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '消息ID'," +
             "  `clientId` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '客户端ID'," +

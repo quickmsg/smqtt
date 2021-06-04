@@ -25,12 +25,16 @@ public class DbMessageRegistry implements MessageRegistry {
 
     DbConnection dbConnection = DynamicLoader.findFirst(DbConnection.class).orElse(null);
 
-    public static final int INITIALSIZE_DB = 10;
-    public static final int MAXACTIVE_DB = 300;
-    public static final int MAXWAIT_DB = 60000;
-    public static final int MINIDLE_DB = 2;
+    private static final Integer INIT_SIZE_DB = 10;
+
+    private static final Integer MAX_ACTIVE_DB = 300;
+
+    private static final Integer MAX_WAIT_DB = 60000;
+
+    private static final Integer MIN_IDLE_DB = 2;
 
     @Override
+    //todo mysql.driverClassName 这些变量 定义到 BootstrapKey
     public void startUp(EnvContext envContext) {
         Map<String, String> environments = envContext.getEnvironments();
         // 数据库驱动
@@ -42,13 +46,13 @@ public class DbMessageRegistry implements MessageRegistry {
         // 数据库密码
         String password = Optional.ofNullable(environments.get("mysql.password")).orElse("");
         // 连接池初始化连接数
-        String initialSize = Optional.ofNullable(environments.get("mysql.initialSize")).orElse(String.valueOf(INITIALSIZE_DB));
+        String initialSize = Optional.ofNullable(environments.get("mysql.initialSize")).orElse(String.valueOf(INIT_SIZE_DB));
         // 连接池中最多支持多少个活动会话
-        String maxActive = Optional.ofNullable(environments.get("mysql.maxActive")).orElse(String.valueOf(MAXACTIVE_DB));
+        String maxActive = Optional.ofNullable(environments.get("mysql.maxActive")).orElse(String.valueOf(MAX_ACTIVE_DB));
         // 程序向连接池中请求连接时,超过maxWait的值后，认为本次请求失败，即连接池
-        String maxWait = Optional.ofNullable(environments.get("mysql.maxWait")).orElse(String.valueOf(MAXWAIT_DB));
+        String maxWait = Optional.ofNullable(environments.get("mysql.maxWait")).orElse(String.valueOf(MAX_WAIT_DB));
         // 回收空闲连接时，将保证至少有minIdle个连接.
-        String minIdle = Optional.ofNullable(environments.get("mysql.minIdle")).orElse(String.valueOf(MINIDLE_DB));
+        String minIdle = Optional.ofNullable(environments.get("mysql.minIdle")).orElse(String.valueOf(MIN_IDLE_DB));
 
         Properties properties = new Properties();
         properties.put("driverClassName", driverClassName);
@@ -60,7 +64,7 @@ public class DbMessageRegistry implements MessageRegistry {
         properties.put("maxWait", maxWait);
         properties.put("minIdle", minIdle);
         // 初始化连接池
-        DruidConnection.getInstace().initDatasource(properties);
+        DruidConnection.getInstance().initDatasource(properties);
 
         if (dbConnection != null) {
             try (Connection connection = dbConnection.getConnection()) {
