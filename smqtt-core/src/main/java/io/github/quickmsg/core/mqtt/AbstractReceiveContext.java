@@ -58,6 +58,9 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
         this.messageRegistry = messageRegistry();
         this.clusterRegistry = clusterRegistry();
         this.passwordAuthentication = basicAuthentication();
+        AbstractConfiguration abstractConfiguration = castConfiguration(configuration);
+        this.channelRegistry.startUp(abstractConfiguration.getEnvContext());
+        this.messageRegistry.startUp(abstractConfiguration.getEnvContext());
     }
 
     private MessageRegistry messageRegistry() {
