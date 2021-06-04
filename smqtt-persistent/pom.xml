@@ -11,5 +11,9 @@
     <packaging>pom</packaging>
     <artifactId>smqtt-persistent</artifactId>
     <name>smqtt-persistent</name>
-    
+
+    <modules>
+        <module>smqtt-persistent-db</module>
+    </modules>
+
 </project>
