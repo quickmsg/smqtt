@@ -1,9 +1,10 @@
 package io.github.quickmsg.persistent;
 
-import io.github.quickmsg.persistent.config.DruidConnection;
+import io.github.quickmsg.persistent.config.DruidConnectionProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
+import reactor.core.publisher.Mono;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -17,20 +18,19 @@ public class DbConnectionHolder {
     /**
      * 获取DSLContext
      *
-     * @return {@link Connection}
+     * @return {@link Mono<Connection>}
      */
-    public static Connection getConnection() throws SQLException {
-        return DruidConnection.getInstance().getDataSource().getConnection();
+    public static Mono<Connection> getConnection() throws SQLException {
+        return DruidConnectionProvider.singleTon().getConnection();
     }
 
     /**
      * 获取DSLContext
      *
-     * @return {@link DSLContext}
+     * @return {@link Mono<DSLContext>}
      */
-    public DSLContext getDslContext(Connection connection) {
-        DSLContext dslContext = DSL.using(connection);
-        return dslContext;
+    public static Mono<DSLContext> getDslContext() {
+        return DruidConnectionProvider.singleTon().getConnection().map(DSL::using);
     }
 
 }

@@ -91,7 +91,7 @@ public interface ClusterRegistry {
         MqttPublishVariableHeader header = message.variableHeader();
         MqttFixedHeader fixedHeader = message.fixedHeader();
         return ClusterMessage.builder()
-                .message(copyByteBuf(message.payload()))
+                .message(MessageUtils.copyReleaseByteBuf(message.payload()))
                 .topic(header.topicName())
                 .retain(fixedHeader.isRetain())
                 .qos(fixedHeader.qosLevel().value())
@@ -99,19 +99,7 @@ public interface ClusterRegistry {
     }
 
 
-    /**
-     * 获取消息字节数组
-     *
-     * @param byteBuf 消息ByteBuf
-     * @return 字节数组
-     */
-    default byte[] copyByteBuf(ByteBuf byteBuf) {
-        byte[] bytes = new byte[byteBuf.readableBytes()];
-        byteBuf.readBytes(bytes);
-        byteBuf.resetReaderIndex();
-        MessageUtils.safeRelease(byteBuf);
-        return bytes;
-    }
+
 
 
 }

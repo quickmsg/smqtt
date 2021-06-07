@@ -1,10 +1,7 @@
 package io.github.quickmsg.common.message;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.handler.codec.mqtt.MqttQoS;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import reactor.netty.ReactorNetty;
 
 /**
  * @author luxurong
@@ -13,13 +10,10 @@ import reactor.netty.ReactorNetty;
 @AllArgsConstructor
 public class RetainMessage {
 
-    private MqttQoS mqttQoS;
+    private int qos;
 
-    private ByteBuf byteBuf;
+    private String topic;
 
-    public void release() {
-        ReactorNetty.safeRelease(byteBuf);
-    }
-
+    private byte[] body;
 
 }

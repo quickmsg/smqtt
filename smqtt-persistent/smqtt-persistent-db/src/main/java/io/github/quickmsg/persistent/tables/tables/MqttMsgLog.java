@@ -63,7 +63,6 @@ public class MqttMsgLog extends TableImpl<MqttMsgLogRecord> {
      * The column <code>smqtt.mqtt_msg_log.qos</code>. 消息质量
      */
     public final TableField<MqttMsgLogRecord, Integer> QOS = createField(DSL.name("qos"), SQLDataType.INTEGER.defaultValue(DSL.inline("NULL", SQLDataType.INTEGER)), this, "消息质量");
-
     /**
      * The column <code>smqtt.mqtt_msg_log.retain</code>. 保留标志
      */

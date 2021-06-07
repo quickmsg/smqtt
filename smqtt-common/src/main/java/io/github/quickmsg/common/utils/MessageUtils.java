@@ -54,4 +54,34 @@ public class MessageUtils {
     }
 
 
+    /**
+     * 获取&释放消息字节数组
+     *
+     * @param byteBuf 消息ByteBuf
+     * @return 字节数组
+     */
+    public static byte[] copyReleaseByteBuf(ByteBuf byteBuf) {
+        byte[] bytes = new byte[byteBuf.readableBytes()];
+        byteBuf.readBytes(bytes);
+        byteBuf.resetReaderIndex();
+        MessageUtils.safeRelease(byteBuf);
+        return bytes;
+    }
+
+
+    /**
+     * 获取&释放消息字节数组
+     *
+     * @param byteBuf 消息ByteBuf
+     * @return 字节数组
+     */
+    public static byte[] copyByteBuf(ByteBuf byteBuf) {
+        byte[] bytes = new byte[byteBuf.readableBytes()];
+        byteBuf.resetReaderIndex();
+        byteBuf.readBytes(bytes);
+        byteBuf.resetReaderIndex();
+        return bytes;
+    }
+
+
 }
