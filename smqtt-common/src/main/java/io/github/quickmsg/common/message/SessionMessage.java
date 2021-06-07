@@ -1,8 +1,11 @@
 package io.github.quickmsg.common.message;
 
+import io.github.quickmsg.common.channel.MqttChannel;
 import io.github.quickmsg.common.utils.MessageUtils;
+import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.handler.codec.mqtt.MqttPublishMessage;
 import io.netty.handler.codec.mqtt.MqttPublishVariableHeader;
+import io.netty.handler.codec.mqtt.MqttQoS;
 import lombok.Data;
 
 /**
@@ -31,6 +34,15 @@ public class SessionMessage {
         sessionMessage.setRetain(mqttPublishMessage.fixedHeader().isRetain());
         sessionMessage.setBody(MessageUtils.copyByteBuf(mqttPublishMessage.payload()));
         return sessionMessage;
+    }
+
+    public MqttPublishMessage toPublishMessage(MqttChannel mqttChannel) {
+        return MqttMessageBuilder.buildPub(
+                false,
+                MqttQoS.valueOf(this.qos),
+                qos > 0 ? mqttChannel.generateMessageId() : 0,
+                topic,
+                PooledByteBufAllocator.DEFAULT.directBuffer().writeBytes(body));
     }
 
 }

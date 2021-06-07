@@ -1,17 +1,16 @@
 package io.github.quickmsg.persistent.registry;
 
-import io.github.quickmsg.common.channel.MqttChannel;
 import io.github.quickmsg.common.environment.EnvContext;
 import io.github.quickmsg.common.message.MessageRegistry;
+import io.github.quickmsg.common.message.RetainMessage;
+import io.github.quickmsg.common.message.SessionMessage;
 import io.github.quickmsg.persistent.DbConnectionHolder;
 import io.github.quickmsg.persistent.config.DruidConnectionProvider;
 import io.github.quickmsg.persistent.sql.SqlLoader;
-import io.netty.handler.codec.mqtt.MqttPublishMessage;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
@@ -39,45 +38,24 @@ public class DbMessageRegistry implements MessageRegistry {
                 .subscribe();
     }
 
+   // TODO session一个表  retain 一个表
     @Override
-    public Optional<List<MqttPublishMessage>> getSessionMessages(String clientIdentifier) {
-        return Optional.empty();
+    public List<SessionMessage> getSessionMessages(String clientIdentifier) {
+        return null;
     }
 
     @Override
-    public void sendSessionMessages(String clientIdentifier, MqttPublishMessage messages) {
+    public void sendSessionMessages(SessionMessage sessionMessage) {
 
     }
 
     @Override
-    public void saveRetainMessage(String topic, MqttPublishMessage messages) {
-        // TODO 修改MqttPublishMessage类型
-//        if (dbConnection != null) {
-//            try (Connection connection = dbConnection.getConnection()) {
-//                DSLContext dslContext = dbConnection.getDSLContext(connection);
-//                String payload = messages.payload().toString(CharsetUtil.UTF_8);
-//                dslContext.insertInto(Tables.MQTT_MSG_LOG)
-//                        .columns(Tables.MQTT_MSG_LOG.MESSAGE_ID,
-//                                Tables.MQTT_MSG_LOG.CLIENTID,
-//                                Tables.MQTT_MSG_LOG.TOPIC,
-//                                Tables.MQTT_MSG_LOG.QOS,
-//                                Tables.MQTT_MSG_LOG.RETAIN,
-//                                Tables.MQTT_MSG_LOG.PAYLOAD,
-//                                Tables.MQTT_MSG_LOG.CREATE_TIME)
-//                        .values("", "", topic, 1, 1, payload, LocalDateTime.now())
-//                        .execute();
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        } else {
-//            log.error("not found DbConnection implementation class");
-//        }
+    public void saveRetainMessage(RetainMessage retainMessage) {
+
     }
 
     @Override
-    public Optional<List<MqttPublishMessage>> getRetainMessage(String s, MqttChannel mqttChannel) {
-        return Optional.empty();
+    public List<RetainMessage> getRetainMessage(String topic) {
+        return null;
     }
-
-
 }

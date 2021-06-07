@@ -55,14 +55,10 @@ public class SubscribeProtocol implements Protocol<MqttSubscribeMessage> {
     }
 
     private void loadRetainMessage(MessageRegistry messageRegistry, MqttChannel mqttChannel, String topicName) {
-        messageRegistry.getRetainMessage(topicName, mqttChannel)
-                .ifPresent(messages ->
-                        Mono.when(messages.stream()
-                                .map(message ->
-                                        mqttChannel.write(message, message.fixedHeader().qosLevel().value() > 0))
-                                .collect(Collectors.toList())
-                        ).subscribe()
-                );
+        messageRegistry.getRetainMessage(topicName)
+                .forEach(retainMessage -> {
+                    mqttChannel.write(retainMessage.toPublishMessage(mqttChannel), retainMessage.getQos() > 0);
+                });
     }
 
     @Override
