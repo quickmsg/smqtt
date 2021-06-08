@@ -57,7 +57,7 @@ public class SubscribeProtocol implements Protocol<MqttSubscribeMessage> {
     private void loadRetainMessage(MessageRegistry messageRegistry, MqttChannel mqttChannel, String topicName) {
         messageRegistry.getRetainMessage(topicName)
                 .forEach(retainMessage -> {
-                    mqttChannel.write(retainMessage.toPublishMessage(mqttChannel), retainMessage.getQos() > 0);
+                    mqttChannel.write(retainMessage.toPublishMessage(mqttChannel), retainMessage.getQos() > 0).subscribe();
                 });
     }
 
