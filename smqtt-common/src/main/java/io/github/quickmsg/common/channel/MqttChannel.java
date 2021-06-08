@@ -46,6 +46,7 @@ public class MqttChannel {
 
     private Set<String> topics;
 
+    @JSONField(serialize=false)
     private Boolean isMock = false;
 
     @JSONField(serialize=false)

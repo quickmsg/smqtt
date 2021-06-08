@@ -15,7 +15,7 @@ import reactor.netty.http.server.HttpServerResponse;
 /**
  * @author luxurong
  */
-@Router(value = "/smqtt/Connection", type = HttpType.POST)
+@Router(value = "/smqtt/connection", type = HttpType.POST)
 @Slf4j
 @Header(key = "Content-Type", value = "application/json")
 public class ConnectionActor extends AbstractHttpActor {
