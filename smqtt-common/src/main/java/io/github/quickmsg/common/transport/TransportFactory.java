@@ -10,8 +10,8 @@ public interface TransportFactory<C extends Configuration> {
     /**
      * 创建通道
      *
-     * @param c 配置文件
-     * @return Transport 通道类
+     * @param c {@link Configuration}
+     * @return {@link Transport}
      */
     Transport<C> createTransport(C c);
 

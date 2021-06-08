@@ -22,10 +22,10 @@ public interface ProtocolAdaptor {
     /**
      * 分发某种协议下  消息类型
      *
-     * @param mqttChannel    通道
-     * @param mqttMessage    消息
-     * @param receiveContext 上下文
-     * @param <C>            配置文件
+     * @param mqttChannel    {@link MqttChannel}
+     * @param mqttMessage    {@link MqttMessage}
+     * @param receiveContext {@link ReceiveContext}
+     * @param <C>            {@link Configuration}
      */
     @Intercept
     <C extends Configuration> void chooseProtocol(MqttChannel mqttChannel, MqttMessage mqttMessage, ReceiveContext<C> receiveContext);
@@ -34,7 +34,7 @@ public interface ProtocolAdaptor {
     /**
      * 代理类  用来注入 filter monitor
      *
-     * @return 适配器
+     * @return {@link ProtocolAdaptor}
      */
     default ProtocolAdaptor proxy() {
         return MESSAGE_PROXY.proxy(this);

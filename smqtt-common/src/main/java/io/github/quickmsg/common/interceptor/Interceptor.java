@@ -12,8 +12,8 @@ public interface Interceptor {
     /**
      * 拦截目标参数
      *
-     * @param invocation 消息体
-     * @return Object 返回值
+     * @param invocation {{@link Invocation}
+     * @return Object
      */
     Object intercept(Invocation invocation);
 
@@ -21,7 +21,7 @@ public interface Interceptor {
     /**
      * 拦截链
      *
-     * @param protocolAdaptor 协议转换
+     * @param protocolAdaptor {{@link ProtocolAdaptor}
      * @return 代理类
      */
     default ProtocolAdaptor proxyProtocol(ProtocolAdaptor protocolAdaptor) {

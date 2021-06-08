@@ -3,7 +3,6 @@ package io.github.quickmsg.common.cluster;
 import io.github.quickmsg.common.enums.ClusterEvent;
 import io.github.quickmsg.common.spi.DynamicLoader;
 import io.github.quickmsg.common.utils.MessageUtils;
-import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.mqtt.MqttFixedHeader;
 import io.netty.handler.codec.mqtt.MqttPublishMessage;
 import io.netty.handler.codec.mqtt.MqttPublishVariableHeader;
@@ -32,7 +31,7 @@ public interface ClusterRegistry {
     /**
      * 开始订阅消息
      *
-     * @return Flux
+     * @return {@link Flux<ClusterMessage>}
      */
     Flux<ClusterMessage> handlerClusterMessage();
 
@@ -40,7 +39,7 @@ public interface ClusterRegistry {
     /**
      * 开始订阅Node事件
      *
-     * @return Flux
+     * @return {@link Flux<ClusterEvent>}
      */
     Flux<ClusterEvent> clusterEvent();
 
@@ -48,7 +47,7 @@ public interface ClusterRegistry {
     /**
      * 获取集群节点信息
      *
-     * @return 节点集合
+     * @return {@link Flux<ClusterNode>}
      */
     List<ClusterNode> getClusterNode();
 
@@ -57,7 +56,7 @@ public interface ClusterRegistry {
      * 扩散消息
      *
      * @param clusterMessage 集群消息
-     * @return Flux
+     * @return {@link Mono}
      */
     Mono<Void> spreadMessage(ClusterMessage clusterMessage);
 
@@ -65,7 +64,7 @@ public interface ClusterRegistry {
     /**
      * 停止
      *
-     * @return Mono
+     * @return {@link Mono}
      */
     Mono<Void> shutdown();
 
@@ -74,7 +73,7 @@ public interface ClusterRegistry {
      * 扩散消息
      *
      * @param message mqtt Publish消息
-     * @return Flux
+     * @return {@link Mono}
      */
     default Mono<Void> spreadPublishMessage(MqttPublishMessage message) {
         return spreadMessage(clusterMessage(message));
@@ -84,8 +83,8 @@ public interface ClusterRegistry {
     /**
      * 构建集群消息体
      *
-     * @param message mqtt Publish消息
-     * @return 集群消息
+     * @param message {@link MqttPublishMessage}
+     * @return {@link ClusterMessage}
      */
     default ClusterMessage clusterMessage(MqttPublishMessage message) {
         MqttPublishVariableHeader header = message.variableHeader();
@@ -97,9 +96,6 @@ public interface ClusterRegistry {
                 .qos(fixedHeader.qosLevel().value())
                 .build();
     }
-
-
-
 
 
 }

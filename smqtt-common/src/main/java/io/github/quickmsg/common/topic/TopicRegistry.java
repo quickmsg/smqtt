@@ -1,7 +1,7 @@
 package io.github.quickmsg.common.topic;
 
-import io.github.quickmsg.common.message.SubscribeChannelContext;
 import io.github.quickmsg.common.channel.MqttChannel;
+import io.github.quickmsg.common.message.SubscribeChannelContext;
 import io.github.quickmsg.common.spi.DynamicLoader;
 
 import java.util.List;
@@ -21,7 +21,7 @@ public interface TopicRegistry {
      * 绑定主题跟channel关系
      *
      * @param topic       订阅主题
-     * @param mqttChannel 通道信息
+     * @param mqttChannel {@link MqttChannel}
      */
     void registryTopicConnection(String topic, MqttChannel mqttChannel);
 
@@ -29,7 +29,7 @@ public interface TopicRegistry {
     /**
      * 清除订阅消息
      *
-     * @param mqttChannel 通道信息
+     * @param mqttChannel {@link MqttChannel}
      */
     void clear(MqttChannel mqttChannel);
 
@@ -38,7 +38,7 @@ public interface TopicRegistry {
      * 清除订阅消息
      *
      * @param topics topics
-     * @param mqttChannel 通道信息
+     * @param mqttChannel {@link MqttChannel}
      */
     void clear(Set<String> topics, MqttChannel mqttChannel);
 
@@ -46,7 +46,7 @@ public interface TopicRegistry {
      * 获取topic的channels
      *
      * @param topicName topic name
-     * @return 通道
+     * @return {@link Set<MqttChannel>}
      */
     Set<MqttChannel> getChannelListByTopic(String topicName);
 
@@ -54,7 +54,7 @@ public interface TopicRegistry {
     /**
      * 绑定主题跟channel关系
      *
-     * @param mqttTopicSubscriptions 通道信息/订阅主题
+     * @param mqttTopicSubscriptions {@link SubscribeChannelContext}
      */
     void registryTopicConnection(List<SubscribeChannelContext> mqttTopicSubscriptions);
 
@@ -62,7 +62,7 @@ public interface TopicRegistry {
     /**
      * 获取所有topic信息
      *
-     * @return  map
+     * @return  {@link MqttChannel}
      */
     Map<String, CopyOnWriteArraySet<MqttChannel>> getAllTopics();
 }
