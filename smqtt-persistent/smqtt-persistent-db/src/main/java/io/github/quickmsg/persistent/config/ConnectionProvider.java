@@ -1,7 +1,5 @@
 package io.github.quickmsg.persistent.config;
 
-import reactor.core.publisher.Mono;
-
 import java.sql.Connection;
 import java.util.Properties;
 
@@ -15,24 +13,21 @@ public interface ConnectionProvider {
      * 初始化
      *
      * @param properties 配置
-     * @return {@link Mono<Void>}
      */
-    Mono<Void> init(Properties properties);
+    void init(Properties properties);
 
     /**
      * 获取链接
      *
-     * @return {@link Mono<Connection>}
+     * @return {@link Connection}
      */
-    Mono<Connection> getConnection();
+    Connection getConnection();
 
 
     /**
      * 关闭链接
-     *
-     * @return {@link Mono<Connection>}
      */
-    Mono<Void> shutdown();
+    void shutdown();
 
 
 }

@@ -31,31 +31,29 @@ public class DruidConnectionProvider implements ConnectionProvider {
     private AtomicInteger startUp = new AtomicInteger(0);
 
     @Override
-    public Mono<Void> init(Properties properties) {
-        return Mono.fromRunnable(() -> {
-            if (startUp.compareAndSet(0, 1)) {
-                try {
-                    this.druidDataSource = (DruidDataSource) DruidDataSourceFactory.createDataSource(properties);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+    public void init(Properties properties) {
+        if (startUp.compareAndSet(0, 1)) {
+            try {
+                this.druidDataSource = (DruidDataSource) DruidDataSourceFactory.createDataSource(properties);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        });
-    }
-
-    @Override
-    public Mono<Connection> getConnection() {
-        try {
-            return Mono.just(druidDataSource.getConnection());
-        } catch (SQLException e) {
-            log.error("getConnection error", e);
-            return Mono.empty();
         }
     }
 
     @Override
-    public Mono<Void> shutdown() {
-        return Mono.fromRunnable(() -> druidDataSource.close());
+    public Connection getConnection() {
+        try {
+            return druidDataSource.getConnection();
+        } catch (SQLException e) {
+            log.error("getConnection error", e);
+            return null;
+        }
+    }
+
+    @Override
+    public void shutdown() {
+        druidDataSource.close();
     }
 
 }

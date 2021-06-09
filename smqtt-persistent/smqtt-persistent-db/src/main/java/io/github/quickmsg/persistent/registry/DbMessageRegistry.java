@@ -12,7 +12,7 @@ import liquibase.database.jvm.JdbcConnection;
 import liquibase.resource.FileSystemResourceAccessor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.sql.SQLException;
+import java.sql.Connection;
 import java.util.List;
 import java.util.Properties;
 
@@ -33,26 +33,14 @@ public class DbMessageRegistry implements MessageRegistry {
         properties.putAll(envContext.getEnvironments());
         DruidConnectionProvider
                 .singleTon()
-                .init(properties)
-                .subscribe();
-
-        DruidConnectionProvider.singleTon().getConnection().subscribe(conn -> {
-                    Database database;
-                    try {
-                        database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(conn));
-                        Liquibase liquibase = new Liquibase("classpath:liquibase/dbChangelog.xml", new FileSystemResourceAccessor(), database);
-                        liquibase.update("db");
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    } finally {
-                        try {
-                            conn.close();
-                        } catch (SQLException e) {
-
-                        }
-                    }
-                }
-        );
+                .init(properties);
+        try (Connection connection = DruidConnectionProvider.singleTon().getConnection()) {
+            Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
+            Liquibase liquibase = new Liquibase("classpath:liquibase/dbChangelog.xml", new FileSystemResourceAccessor(), database);
+            liquibase.update("db");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // TODO session一个表  retain 一个表
