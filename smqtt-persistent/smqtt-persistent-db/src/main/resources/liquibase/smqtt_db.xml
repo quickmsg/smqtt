@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <property name="autoIncrement" value="true" dbms="mysql,h2,postgresql,oracle,mssql"/>
+
+    <changeSet id="1" author="smqtt">
+        <comment>create smqtt_retain table</comment>
+        <createTable tableName="smqtt_retain">
+            <column name="topic" type="varchar(255)" remarks="话题"/>
+            <column name="qos" type="int" remarks="qos"/>
+            <column name="body" type="varchar(255)"  remarks="消息内容"/>
+            <column name="create_time" type="timestamp" remarks="记录保存时间"/>
+            <column name="update_time" type="timestamp" remarks="记录更新时间"/>
+        </createTable>
+
+        <createIndex tableName="smqtt_retain" indexName="index_topic">
+            <column name="topic"></column>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="2" author="smqtt">
+        <comment>create smqtt_session table</comment>
+        <createTable tableName="smqtt_session">
+            <column name="topic" type="varchar(255)" remarks="话题"/>
+            <column name="client_id" type="varchar(255)" remarks="客户端ID"/>
+            <column name="qos" type="int" remarks="qos"/>
+            <column name="body" type="varchar(255)"  remarks="消息内容"/>
+            <column name="create_time" type="timestamp" remarks="记录保存时间"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

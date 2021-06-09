@@ -4,7 +4,8 @@
 package io.github.quickmsg.persistent.tables;
 
 
-import io.github.quickmsg.persistent.tables.tables.MqttMsgLog;
+import io.github.quickmsg.persistent.tables.tables.SmqttRetain;
+import io.github.quickmsg.persistent.tables.tables.SmqttSession;
 
 import java.util.Arrays;
 import java.util.List;
@@ -28,9 +29,14 @@ public class Smqtt extends SchemaImpl {
     public static final Smqtt SMQTT = new Smqtt();
 
     /**
-     * The table <code>smqtt.mqtt_msg_log</code>.
+     * The table <code>smqtt.smqtt_retain</code>.
      */
-    public final MqttMsgLog MQTT_MSG_LOG = MqttMsgLog.MQTT_MSG_LOG;
+    public final SmqttRetain SMQTT_RETAIN = SmqttRetain.SMQTT_RETAIN;
+
+    /**
+     * The table <code>smqtt.smqtt_session</code>.
+     */
+    public final SmqttSession SMQTT_SESSION = SmqttSession.SMQTT_SESSION;
 
     /**
      * No further instances allowed
@@ -48,6 +54,7 @@ public class Smqtt extends SchemaImpl {
     @Override
     public final List<Table<?>> getTables() {
         return Arrays.<Table<?>>asList(
-            MqttMsgLog.MQTT_MSG_LOG);
+            SmqttRetain.SMQTT_RETAIN,
+            SmqttSession.SMQTT_SESSION);
     }
 }

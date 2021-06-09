@@ -53,9 +53,8 @@ public class BootstrapKey {
     public final static String BOOTSTRAP_CLUSTER_PORT = "smqtt.cluster.port";
 
     public final static String BOOTSTRAP_CLUSTER_NODE = "smqtt.cluster.node";
-
-
-
-
-
+    /**
+     * 数据库配置参数前缀
+     */
+    public static final String DB_PREFIX = "db.";
 }

@@ -4,7 +4,8 @@
 package io.github.quickmsg.persistent.tables;
 
 
-import io.github.quickmsg.persistent.tables.tables.MqttMsgLog;
+import io.github.quickmsg.persistent.tables.tables.SmqttRetain;
+import io.github.quickmsg.persistent.tables.tables.SmqttSession;
 
 
 /**
@@ -14,7 +15,12 @@ import io.github.quickmsg.persistent.tables.tables.MqttMsgLog;
 public class Tables {
 
     /**
-     * The table <code>smqtt.mqtt_msg_log</code>.
+     * The table <code>smqtt.smqtt_retain</code>.
      */
-    public static final MqttMsgLog MQTT_MSG_LOG = MqttMsgLog.MQTT_MSG_LOG;
+    public static final SmqttRetain SMQTT_RETAIN = SmqttRetain.SMQTT_RETAIN;
+
+    /**
+     * The table <code>smqtt.smqtt_session</code>.
+     */
+    public static final SmqttSession SMQTT_SESSION = SmqttSession.SMQTT_SESSION;
 }
