@@ -4,24 +4,17 @@ import io.github.quickmsg.common.environment.EnvContext;
 import io.github.quickmsg.common.message.MessageRegistry;
 import io.github.quickmsg.common.message.RetainMessage;
 import io.github.quickmsg.common.message.SessionMessage;
-import io.github.quickmsg.persistent.DbConnectionHolder;
 import io.github.quickmsg.persistent.config.DruidConnectionProvider;
-import io.github.quickmsg.persistent.sql.SqlLoader;
 import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
-import liquibase.exception.DatabaseException;
-import liquibase.exception.LiquibaseException;
 import liquibase.resource.FileSystemResourceAccessor;
 import lombok.extern.slf4j.Slf4j;
-import reactor.core.publisher.Mono;
 
-import java.io.File;
-import java.net.URL;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
-import java.util.stream.Collectors;
 
 @Slf4j
 public class DbMessageRegistry implements MessageRegistry {
@@ -36,29 +29,27 @@ public class DbMessageRegistry implements MessageRegistry {
 
     @Override
     public void startUp(EnvContext envContext) {
-        String path = DbMessageRegistry.class.getClassLoader().getResource("/dbChangelog.xml").getPath();
         Properties properties = new Properties();
         properties.putAll(envContext.getEnvironments());
         DruidConnectionProvider
                 .singleTon()
                 .init(properties)
-             /*   .then(Mono.when(SqlLoader.loadSql().stream().map(sql ->
-                        DbConnectionHolder.getDslContext().doOnNext(dslContext -> dslContext.execute(sql))
-                ).collect(Collectors.toList())))*/
                 .subscribe();
 
         DruidConnectionProvider.singleTon().getConnection().subscribe(conn -> {
-                    Database database = null;
+                    Database database;
                     try {
                         database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(conn));
-                    } catch (DatabaseException e) {
-                        e.printStackTrace();
-                    }
-                    Liquibase liquibase = new Liquibase(path, new FileSystemResourceAccessor(), database);
-                    try {
+                        Liquibase liquibase = new Liquibase("classpath:liquibase/dbChangelog.xml", new FileSystemResourceAccessor(), database);
                         liquibase.update("db");
-                    } catch (LiquibaseException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
+                    } finally {
+                        try {
+                            conn.close();
+                        } catch (SQLException e) {
+
+                        }
                     }
                 }
         );
@@ -83,5 +74,10 @@ public class DbMessageRegistry implements MessageRegistry {
     @Override
     public List<RetainMessage> getRetainMessage(String topic) {
         return null;
+    }
+
+    public static void main(String[] args) {
+        DbMessageRegistry dbMessageRegistry = new DbMessageRegistry();
+        dbMessageRegistry.startUp(new EnvContext());
     }
 }
