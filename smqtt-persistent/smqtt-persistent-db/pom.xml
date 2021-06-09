@@ -20,6 +20,13 @@
 
     <dependencies>
         <dependency>
+            <groupId>io.github.quickmsg</groupId>
+            <artifactId>smqtt-common</artifactId>
+            <version>1.0.5</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>${mysql.connector.version}</version>
@@ -44,17 +51,18 @@
         </dependency>
 
         <dependency>
-            <groupId>io.github.quickmsg</groupId>
-            <artifactId>smqtt-common</artifactId>
-            <version>1.0.5</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
             <version>1.2.6</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <version>4.3.5</version>
+        </dependency>
+
+
 
     </dependencies>
 
