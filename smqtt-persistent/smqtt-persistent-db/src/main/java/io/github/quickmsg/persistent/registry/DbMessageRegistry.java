@@ -94,8 +94,8 @@ public class DbMessageRegistry implements MessageRegistry {
                 // 消息为空, 删除话题
                 dslContext.deleteFrom(Tables.SMQTT_RETAIN).where(Tables.SMQTT_RETAIN.TOPIC.eq(topic)).execute();
             }else{
-                Result<SmqttRetainRecord> fetch = dslContext.selectFrom(Tables.SMQTT_RETAIN).where(Tables.SMQTT_RETAIN.TOPIC.eq(topic)).fetch();
-                if (fetch.size()>0) {
+                Record1<Integer> integerRecord1 = dslContext.selectCount().from(Tables.SMQTT_RETAIN).where(Tables.SMQTT_RETAIN.TOPIC.eq(topic)).fetchOne();
+                if (integerRecord1.value1() > 0) {
                     // 更新记录
                     String bodyMsg = new String(retainMessage.getBody(), CharsetUtil.UTF_8);
                     dslContext.update(Tables.SMQTT_RETAIN)
