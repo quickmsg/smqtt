@@ -15,7 +15,6 @@
 
     <properties>
         <jooq.version>3.14.11</jooq.version>
-        <mysql.connector.version>8.0.25</mysql.connector.version>
     </properties>
 
     <dependencies>
@@ -24,12 +23,6 @@
             <artifactId>smqtt-common</artifactId>
             <version>1.0.5</version>
             <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>${mysql.connector.version}</version>
         </dependency>
 
         <dependency>
