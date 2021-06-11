@@ -6,6 +6,7 @@ import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.handler.codec.mqtt.MqttPublishMessage;
 import io.netty.handler.codec.mqtt.MqttPublishVariableHeader;
 import io.netty.handler.codec.mqtt.MqttQoS;
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -13,6 +14,7 @@ import lombok.Data;
  */
 
 @Data
+@Builder
 public class SessionMessage {
 
     private int qos;
@@ -27,13 +29,13 @@ public class SessionMessage {
 
     public static SessionMessage of(String clientIdentifier, MqttPublishMessage mqttPublishMessage) {
         MqttPublishVariableHeader publishVariableHeader = mqttPublishMessage.variableHeader();
-        SessionMessage sessionMessage = new SessionMessage();
-        sessionMessage.setClientIdentifier(clientIdentifier);
-        sessionMessage.setTopic(publishVariableHeader.topicName());
-        sessionMessage.setQos(mqttPublishMessage.fixedHeader().qosLevel().value());
-        sessionMessage.setRetain(mqttPublishMessage.fixedHeader().isRetain());
-        sessionMessage.setBody(MessageUtils.copyByteBuf(mqttPublishMessage.payload()));
-        return sessionMessage;
+        return SessionMessage.builder()
+                .clientIdentifier(clientIdentifier)
+                .topic(publishVariableHeader.topicName())
+                .qos(mqttPublishMessage.fixedHeader().qosLevel().value())
+                .retain(mqttPublishMessage.fixedHeader().isRetain())
+                .body(MessageUtils.copyByteBuf(mqttPublishMessage.payload()))
+                .build();
     }
 
     public MqttPublishMessage toPublishMessage(MqttChannel mqttChannel) {

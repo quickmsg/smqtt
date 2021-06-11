@@ -27,7 +27,7 @@ public interface MessageRegistry extends StartUp {
      *
      * @param sessionMessage {@link SessionMessage}
      */
-    void sendSessionMessages(SessionMessage sessionMessage);
+    void saveSessionMessages(SessionMessage sessionMessage);
 
 
     /**

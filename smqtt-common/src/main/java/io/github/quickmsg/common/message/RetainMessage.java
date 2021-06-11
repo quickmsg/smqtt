@@ -6,14 +6,14 @@ import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.handler.codec.mqtt.MqttPublishMessage;
 import io.netty.handler.codec.mqtt.MqttPublishVariableHeader;
 import io.netty.handler.codec.mqtt.MqttQoS;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 
 /**
  * @author luxurong
  */
 @Data
+@Builder
 public class RetainMessage {
 
     private int qos;
@@ -22,13 +22,13 @@ public class RetainMessage {
 
     private byte[] body;
 
-    public static RetainMessage of( MqttPublishMessage mqttPublishMessage) {
+    public static RetainMessage of(MqttPublishMessage mqttPublishMessage) {
         MqttPublishVariableHeader publishVariableHeader = mqttPublishMessage.variableHeader();
-        RetainMessage retainMessage = new RetainMessage();
-        retainMessage.setTopic(publishVariableHeader.topicName());
-        retainMessage.setQos(mqttPublishMessage.fixedHeader().qosLevel().value());
-        retainMessage.setBody(MessageUtils.copyByteBuf(mqttPublishMessage.payload()));
-        return retainMessage;
+        return RetainMessage.builder()
+                .topic(publishVariableHeader.topicName())
+                .qos(mqttPublishMessage.fixedHeader().qosLevel().value())
+                .body(MessageUtils.copyByteBuf(mqttPublishMessage.payload()))
+                .build();
     }
 
     public MqttPublishMessage toPublishMessage(MqttChannel mqttChannel) {
