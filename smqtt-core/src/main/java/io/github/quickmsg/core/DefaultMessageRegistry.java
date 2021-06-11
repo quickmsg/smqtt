@@ -23,12 +23,12 @@ public class DefaultMessageRegistry implements MessageRegistry {
 
 
     @Override
-    public List<SessionMessage> getSessionMessages(String clientIdentifier) {
+    public List<SessionMessage> getSessionMessage(String clientIdentifier) {
         return sessionMessages.remove(clientIdentifier);
     }
 
     @Override
-    public void saveSessionMessages(SessionMessage sessionMessage) {
+    public void saveSessionMessage(SessionMessage sessionMessage) {
         List<SessionMessage> sessionList = sessionMessages.computeIfAbsent(sessionMessage.getClientIdentifier(), key -> new CopyOnWriteArrayList<>());
         sessionList.add(sessionMessage);
     }

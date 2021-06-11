@@ -60,7 +60,7 @@ public class DbMessageRegistry implements MessageRegistry {
     }
 
     @Override
-    public List<SessionMessage> getSessionMessages(String clientIdentifier) {
+    public List<SessionMessage> getSessionMessage(String clientIdentifier) {
         try (Connection connection = DruidConnectionProvider.singleTon().getConnection()) {
             DSLContext dslContext = DSL.using(connection);
             return dslContext
@@ -84,7 +84,7 @@ public class DbMessageRegistry implements MessageRegistry {
     }
 
     @Override
-    public void saveSessionMessages(SessionMessage sessionMessage) {
+    public void saveSessionMessage(SessionMessage sessionMessage) {
         String topic = sessionMessage.getTopic();
         String clientIdentifier = sessionMessage.getClientIdentifier();
         int qos = sessionMessage.getQos();
