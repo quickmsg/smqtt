@@ -27,7 +27,7 @@
             <column name="topic" type="varchar(255)" remarks="话题"/>
             <column name="client_id" type="varchar(255)" remarks="客户端ID"/>
             <column name="qos" type="int" remarks="qos"/>
-            <column name="retain" type="int" remarks="retain"/>
+            <column name="retain" type="bit" remarks="retain"/>
             <column name="body" type="varchar(255)"  remarks="消息内容"/>
             <column name="create_time" type="timestamp" remarks="记录保存时间"/>
         </createTable>

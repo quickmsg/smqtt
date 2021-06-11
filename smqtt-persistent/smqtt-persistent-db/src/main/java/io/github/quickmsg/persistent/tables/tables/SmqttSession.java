@@ -62,7 +62,7 @@ public class SmqttSession extends TableImpl<SmqttSessionRecord> {
     /**
      * The column <code>smqtt.smqtt_session.retain</code>. retain
      */
-    public final TableField<SmqttSessionRecord, Integer> RETAIN = createField(DSL.name("retain"), SQLDataType.INTEGER.defaultValue(DSL.inline("NULL", SQLDataType.INTEGER)), this, "retain");
+    public final TableField<SmqttSessionRecord, Boolean> RETAIN = createField(DSL.name("retain"), SQLDataType.BIT.defaultValue(DSL.inline("NULL", SQLDataType.BIT)), this, "retain");
 
     /**
      * The column <code>smqtt.smqtt_session.body</code>. 消息内容
@@ -143,7 +143,7 @@ public class SmqttSession extends TableImpl<SmqttSessionRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<String, String, Integer, Integer, String, LocalDateTime> fieldsRow() {
+    public Row6<String, String, Integer, Boolean, String, LocalDateTime> fieldsRow() {
         return (Row6) super.fieldsRow();
     }
 }
