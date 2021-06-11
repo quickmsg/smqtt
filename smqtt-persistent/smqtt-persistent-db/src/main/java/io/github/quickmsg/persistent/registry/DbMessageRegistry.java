@@ -5,6 +5,7 @@ import io.github.quickmsg.common.environment.EnvContext;
 import io.github.quickmsg.common.message.MessageRegistry;
 import io.github.quickmsg.common.message.RetainMessage;
 import io.github.quickmsg.common.message.SessionMessage;
+import io.github.quickmsg.common.utils.TopicRegexUtils;
 import io.github.quickmsg.persistent.config.DruidConnectionProvider;
 import io.github.quickmsg.persistent.tables.Tables;
 import io.netty.util.CharsetUtil;
@@ -158,6 +159,7 @@ public class DbMessageRegistry implements MessageRegistry {
                     .where(Tables.SMQTT_RETAIN.TOPIC.eq(topic))
                     .fetch()
                     .stream()
+                    .filter(record->record.getTopic().matches(TopicRegexUtils.regexTopic(topic)))
                     .map(record -> RetainMessage.builder()
                             .topic(record.getTopic())
                             .qos(record.getQos())
