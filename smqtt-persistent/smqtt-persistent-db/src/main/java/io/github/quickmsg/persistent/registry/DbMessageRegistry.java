@@ -74,7 +74,7 @@ public class DbMessageRegistry implements MessageRegistry {
                                     .topic(record.getTopic())
                                     .body(record.getBody().getBytes())
                                     .clientIdentifier(record.getClientId())
-                                    .retain(record.getRetain() == 1)
+                                    .retain(record.getRetain())
                                     .build())
                     .collect(Collectors.toList());
         } catch (Exception e) {
@@ -88,7 +88,7 @@ public class DbMessageRegistry implements MessageRegistry {
         String topic = sessionMessage.getTopic();
         String clientIdentifier = sessionMessage.getClientIdentifier();
         int qos = sessionMessage.getQos();
-        int retain = sessionMessage.isRetain() ? 1 : 0;
+        boolean retain = sessionMessage.isRetain();
         byte[] body = sessionMessage.getBody();
 
         try (Connection connection = DruidConnectionProvider.singleTon().getConnection()) {
