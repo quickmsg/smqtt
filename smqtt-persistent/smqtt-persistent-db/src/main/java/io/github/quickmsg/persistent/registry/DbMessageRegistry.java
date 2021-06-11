@@ -151,7 +151,6 @@ public class DbMessageRegistry implements MessageRegistry {
 
     @Override
     public List<RetainMessage> getRetainMessage(String topic) {
-        List<RetainMessage> list = new ArrayList<>();
         try (Connection connection = DruidConnectionProvider.singleTon().getConnection()) {
             DSLContext dslContext = DSL.using(connection);
             return dslContext
@@ -170,8 +169,9 @@ public class DbMessageRegistry implements MessageRegistry {
 
         } catch (Exception e) {
             log.error("getRetainMessage error  topic: {}", topic, e);
+            return Collections.emptyList();
+
         }
-        return list;
     }
 
     public byte[] getBody(String body) {
