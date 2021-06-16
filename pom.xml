@@ -12,6 +12,7 @@
         <module>smqtt-bootstrap</module>
         <module>smqtt-registry</module>
         <module>smqtt-persistent</module>
+        <module>smqtt-rule</module>
     </modules>
     <packaging>pom</packaging>
 
