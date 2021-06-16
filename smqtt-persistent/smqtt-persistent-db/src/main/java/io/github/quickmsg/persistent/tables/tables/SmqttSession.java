@@ -13,7 +13,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row5;
+import org.jooq.Row6;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -58,6 +58,11 @@ public class SmqttSession extends TableImpl<SmqttSessionRecord> {
      * The column <code>smqtt.smqtt_session.qos</code>. qos
      */
     public final TableField<SmqttSessionRecord, Integer> QOS = createField(DSL.name("qos"), SQLDataType.INTEGER.defaultValue(DSL.inline("NULL", SQLDataType.INTEGER)), this, "qos");
+
+    /**
+     * The column <code>smqtt.smqtt_session.retain</code>. retain
+     */
+    public final TableField<SmqttSessionRecord, Boolean> RETAIN = createField(DSL.name("retain"), SQLDataType.BIT.defaultValue(DSL.inline("NULL", SQLDataType.BIT)), this, "retain");
 
     /**
      * The column <code>smqtt.smqtt_session.body</code>. 消息内容
@@ -134,11 +139,11 @@ public class SmqttSession extends TableImpl<SmqttSessionRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row5 type methods
+    // Row6 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<String, String, Integer, String, LocalDateTime> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public Row6<String, String, Integer, Boolean, String, LocalDateTime> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 }

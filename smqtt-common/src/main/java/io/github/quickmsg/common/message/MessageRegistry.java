@@ -19,7 +19,7 @@ public interface MessageRegistry extends StartUp {
      * @param clientIdentifier 设备id
      * @return {@link List<SessionMessage>}
      */
-    List<SessionMessage> getSessionMessages(String clientIdentifier);
+    List<SessionMessage> getSessionMessage(String clientIdentifier);
 
 
     /**
@@ -27,7 +27,7 @@ public interface MessageRegistry extends StartUp {
      *
      * @param sessionMessage {@link SessionMessage}
      */
-    void sendSessionMessages(SessionMessage sessionMessage);
+    void saveSessionMessage(SessionMessage sessionMessage);
 
 
     /**

@@ -4,6 +4,8 @@
 package io.github.quickmsg.persistent.tables;
 
 
+import io.github.quickmsg.persistent.tables.tables.Databasechangelog;
+import io.github.quickmsg.persistent.tables.tables.Databasechangeloglock;
 import io.github.quickmsg.persistent.tables.tables.SmqttRetain;
 import io.github.quickmsg.persistent.tables.tables.SmqttSession;
 
@@ -13,6 +15,16 @@ import io.github.quickmsg.persistent.tables.tables.SmqttSession;
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
+
+    /**
+     * The table <code>smqtt.databasechangelog</code>.
+     */
+    public static final Databasechangelog DATABASECHANGELOG = Databasechangelog.DATABASECHANGELOG;
+
+    /**
+     * The table <code>smqtt.databasechangeloglock</code>.
+     */
+    public static final Databasechangeloglock DATABASECHANGELOGLOCK = Databasechangeloglock.DATABASECHANGELOGLOCK;
 
     /**
      * The table <code>smqtt.smqtt_retain</code>.

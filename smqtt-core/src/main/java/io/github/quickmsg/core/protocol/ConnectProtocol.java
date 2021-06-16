@@ -135,7 +135,7 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
         topicRegistry.clear(sessionChannel);
         topics.forEach(topic -> topicRegistry.registryTopicConnection(topic, mqttChannel));
         channelRegistry.close(sessionChannel);
-        messageRegistry.getSessionMessages(mqttChannel.getClientIdentifier())
+        messageRegistry.getSessionMessage(mqttChannel.getClientIdentifier())
                 .forEach(sessionMessage -> {
                     mqttChannel
                             .write(sessionMessage.toPublishMessage(mqttChannel),

@@ -111,7 +111,7 @@ public class PublishProtocol implements Protocol<MqttPublishMessage> {
             return true;
         } else {
             messageRegistry
-                    .sendSessionMessages(SessionMessage.of(mqttChannel.getClientIdentifier(), mqttMessage));
+                    .saveSessionMessage(SessionMessage.of(mqttChannel.getClientIdentifier(), mqttMessage));
             return false;
         }
     }

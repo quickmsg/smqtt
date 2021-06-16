@@ -5,10 +5,10 @@ import io.github.quickmsg.common.message.RetainMessage;
 import io.github.quickmsg.common.message.SessionMessage;
 import io.github.quickmsg.common.utils.TopicRegexUtils;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 /**
@@ -17,17 +17,20 @@ import java.util.stream.Collectors;
 public class DefaultMessageRegistry implements MessageRegistry {
 
 
+    private Map<String, List<SessionMessage>> sessionMessages = new ConcurrentHashMap<>();
+
     private Map<String, RetainMessage> retainMessages = new ConcurrentHashMap<>();
 
 
     @Override
-    public List<SessionMessage> getSessionMessages(String clientIdentifier) {
-        return Collections.emptyList();
+    public List<SessionMessage> getSessionMessage(String clientIdentifier) {
+        return sessionMessages.remove(clientIdentifier);
     }
 
     @Override
-    public void sendSessionMessages(SessionMessage sessionMessage) {
-
+    public void saveSessionMessage(SessionMessage sessionMessage) {
+        List<SessionMessage> sessionList = sessionMessages.computeIfAbsent(sessionMessage.getClientIdentifier(), key -> new CopyOnWriteArrayList<>());
+        sessionList.add(sessionMessage);
     }
 
     @Override
