@@ -31,5 +31,9 @@
             <column name="body" type="varchar(255)"  remarks="消息内容"/>
             <column name="create_time" type="timestamp" remarks="记录保存时间"/>
         </createTable>
+
+        <createIndex tableName="smqtt_session" indexName="index_client_id">
+            <column name="client_id"></column>
+        </createIndex>
     </changeSet>
 </databaseChangeLog>

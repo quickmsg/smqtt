@@ -8,6 +8,7 @@ import io.github.quickmsg.common.message.SessionMessage;
 import io.github.quickmsg.common.utils.TopicRegexUtils;
 import io.github.quickmsg.persistent.config.DruidConnectionProvider;
 import io.github.quickmsg.persistent.tables.Tables;
+import io.github.quickmsg.persistent.tables.tables.records.SmqttSessionRecord;
 import io.netty.util.CharsetUtil;
 import liquibase.Liquibase;
 import liquibase.database.Database;
@@ -16,6 +17,7 @@ import liquibase.database.jvm.JdbcConnection;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
+import org.jooq.DeleteConditionStep;
 import org.jooq.Record1;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
@@ -63,7 +65,8 @@ public class DbMessageRegistry implements MessageRegistry {
     public List<SessionMessage> getSessionMessage(String clientIdentifier) {
         try (Connection connection = DruidConnectionProvider.singleTon().getConnection()) {
             DSLContext dslContext = DSL.using(connection);
-            return dslContext
+
+            List<SessionMessage> list = dslContext
                     .selectFrom(Tables.SMQTT_SESSION)
                     .where(Tables.SMQTT_SESSION.CLIENT_ID.eq(clientIdentifier))
                     .fetch()
@@ -77,6 +80,14 @@ public class DbMessageRegistry implements MessageRegistry {
                                     .retain(record.getRetain())
                                     .build())
                     .collect(Collectors.toList());
+
+            if (list.size() > 0) {
+                // 删除记录
+                dslContext.deleteFrom(Tables.SMQTT_SESSION)
+                        .where(Tables.SMQTT_SESSION.CLIENT_ID.eq(clientIdentifier))
+                        .execute();
+            }
+            return list;
         } catch (Exception e) {
             log.error("getSessionMessages error clientIdentifier:{}", clientIdentifier, e);
             return Collections.emptyList();
@@ -155,10 +166,9 @@ public class DbMessageRegistry implements MessageRegistry {
             DSLContext dslContext = DSL.using(connection);
             return dslContext
                     .selectFrom(Tables.SMQTT_RETAIN)
-                    .where(Tables.SMQTT_RETAIN.TOPIC.eq(topic))
                     .fetch()
                     .stream()
-                    .filter(record->record.getTopic().matches(TopicRegexUtils.regexTopic(topic)))
+                    .filter(record -> record.getTopic().matches(TopicRegexUtils.regexTopic(topic)))
                     .map(record -> RetainMessage.builder()
                             .topic(record.getTopic())
                             .qos(record.getQos())
