@@ -105,7 +105,12 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
                     .ifPresent(sessionChannel -> {
                         doSession(sessionChannel, mqttChannel, channelRegistry, topicRegistry, mqttReceiveContext.getMessageRegistry());
                     });
+
+            // registry close mqtt channel event
+            mqttChannel.registryClose(channel -> this.close(mqttChannel, mqttReceiveContext));
+
             channelRegistry.registry(clientIdentifier, mqttChannel);
+
             return mqttChannel.write(MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_ACCEPTED), false);
 
         } else {
@@ -113,6 +118,17 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
                     MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_BAD_USER_NAME_OR_PASSWORD),
                     false).then(mqttChannel.close());
         }
+    }
+
+    private void close(MqttChannel mqttChannel, MqttReceiveContext mqttReceiveContext) {
+        if (mqttChannel.isSessionPersistent()) {
+            mqttChannel.setStatus(ChannelStatus.OFFLINE);
+            mqttChannel.close().subscribe();
+        } else {
+            mqttReceiveContext.getTopicRegistry().clear(mqttChannel);
+            mqttReceiveContext.getChannelRegistry().close(mqttChannel);
+        }
+
     }
 
     /**
@@ -123,7 +139,6 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
      * @param channelRegistry channel注册
      * @param topicRegistry   主题注册
      * @param messageRegistry 消息注册
-     * @return Void
      */
     private void doSession(MqttChannel sessionChannel,
                            MqttChannel mqttChannel,
@@ -132,6 +147,7 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
                            MessageRegistry messageRegistry) {
         Set<String> topics = sessionChannel.getTopics();
         mqttChannel.setTopics(topics);
+        sessionChannel.setTopics(null);
         topicRegistry.clear(sessionChannel);
         topics.forEach(topic -> topicRegistry.registryTopicConnection(topic, mqttChannel));
         channelRegistry.close(sessionChannel);

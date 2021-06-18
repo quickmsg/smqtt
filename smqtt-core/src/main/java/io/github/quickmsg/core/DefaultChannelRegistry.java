@@ -29,8 +29,7 @@ public class DefaultChannelRegistry implements ChannelRegistry {
     }
 
     @Override
-    public void
-    close(MqttChannel mqttChannel) {
+    public void close(MqttChannel mqttChannel) {
         Optional.ofNullable(mqttChannel.getClientIdentifier())
                 .ifPresent(cliId -> {
                     channelMap.remove(cliId);
