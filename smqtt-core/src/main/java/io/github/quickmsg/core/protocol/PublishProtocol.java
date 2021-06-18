@@ -5,6 +5,8 @@ import io.github.quickmsg.common.context.ReceiveContext;
 import io.github.quickmsg.common.enums.ChannelStatus;
 import io.github.quickmsg.common.message.MessageRegistry;
 import io.github.quickmsg.common.message.MqttMessageBuilder;
+import io.github.quickmsg.common.message.RetainMessage;
+import io.github.quickmsg.common.message.SessionMessage;
 import io.github.quickmsg.common.protocol.Protocol;
 import io.github.quickmsg.common.topic.TopicRegistry;
 import io.github.quickmsg.common.utils.MessageUtils;
@@ -109,7 +111,7 @@ public class PublishProtocol implements Protocol<MqttPublishMessage> {
             return true;
         } else {
             messageRegistry
-                    .sendSessionMessages(mqttChannel.getClientIdentifier(), mqttMessage.duplicate());
+                    .saveSessionMessage(SessionMessage.of(mqttChannel.getClientIdentifier(), mqttMessage));
             return false;
         }
     }
@@ -125,7 +127,7 @@ public class PublishProtocol implements Protocol<MqttPublishMessage> {
     private Mono<Void> filterRetainMessage(MqttPublishMessage message, MessageRegistry messageRegistry) {
         return Mono.fromRunnable(() -> {
             if (message.fixedHeader().isRetain()) {
-                messageRegistry.saveRetainMessage(message.variableHeader().topicName(), message.duplicate());
+                messageRegistry.saveRetainMessage(RetainMessage.of(message));
             }
         });
     }

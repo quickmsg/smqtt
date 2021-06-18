@@ -5,6 +5,7 @@ import io.github.quickmsg.common.cluster.ClusterConfig;
 import io.github.quickmsg.common.config.SslContext;
 import io.github.quickmsg.common.environment.EnvContext;
 import io.github.quickmsg.common.transport.Transport;
+import io.github.quickmsg.common.utils.LoggerLevel;
 import io.github.quickmsg.core.http.HttpConfiguration;
 import io.github.quickmsg.core.http.HttpTransportFactory;
 import io.github.quickmsg.core.mqtt.MqttConfiguration;
@@ -96,6 +97,9 @@ public class Bootstrap {
         Optional.ofNullable(envContext).ifPresent(mqttConfiguration::setEnvContext);
         if (isWebsocket) {
             mqttConfiguration.setWebSocketPort(websocketPort);
+        }
+        if (wiretap != null && wiretap) {
+            LoggerLevel.wiretap();
         }
         return mqttConfiguration;
     }

@@ -5,3 +5,4 @@ io.github.quickmsg.core.http.actors.SubscribeActor
 io.github.quickmsg.core.http.actors.resource.IndexResourceActor
 io.github.quickmsg.core.http.actors.resource.OneResourceActor
 io.github.quickmsg.core.http.actors.resource.TwoResourceActor
+io.github.quickmsg.core.http.actors.LoginActor
