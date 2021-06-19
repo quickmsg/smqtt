@@ -20,7 +20,7 @@ public class DefaultTopicRegistry implements TopicRegistry {
 
     @Override
     public void registryTopicConnection(String topic, MqttChannel mqttChannel) {
-        CopyOnWriteArraySet<MqttChannel> channels = topicChannels.computeIfAbsent(TopicRegexUtils.regexTopic(topic), t -> new CopyOnWriteArraySet<>());
+        CopyOnWriteArraySet<MqttChannel> channels = topicChannels.computeIfAbsent(topic, t -> new CopyOnWriteArraySet<>());
         channels.add(mqttChannel);
         mqttChannel.getTopics().add(topic);
     }
@@ -34,16 +34,20 @@ public class DefaultTopicRegistry implements TopicRegistry {
 
     @Override
     public void clear(Set<String> topics, MqttChannel mqttChannel) {
-        for (String topic : topics) {
-            topicChannels.get(TopicRegexUtils.regexTopic(topic)).remove(mqttChannel);
-        }
+        Optional.ofNullable(topics)
+                .ifPresent(ts -> {
+                    for (String topic : ts) {
+                        topicChannels.get(topic).remove(mqttChannel);
+                    }
+                });
+
     }
 
     @Override
     public Set<MqttChannel> getChannelListByTopic(String topicName) {
         Set<String> matchKey = new HashSet<>();
         for (String topic : topicChannels.keySet()) {
-            if (topicName.matches(topic)) {
+            if (topicName.matches(TopicRegexUtils.regexTopic((topic)))) {
                 matchKey.add(topic);
             }
         }

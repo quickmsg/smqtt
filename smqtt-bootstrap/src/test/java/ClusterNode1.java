@@ -21,7 +21,7 @@ public class ClusterNode1 {
                 .ssl(false)
                 .sslContext(new SslContext("crt","key"))
                 .isWebsocket(true)
-                .wiretap(true)
+                .wiretap(false)
                 .httpOptions(Bootstrap.HttpOptions.builder().ssl(false).httpPort(60000).accessLog(true).build())
                 .clusterConfig(
                         ClusterConfig.builder()
