@@ -12,7 +12,7 @@ public interface Interceptor {
     /**
      * 拦截目标参数
      *
-     * @param invocation {{@link Invocation}
+     * @param invocation {@link Invocation}
      * @return Object
      */
     Object intercept(Invocation invocation);
