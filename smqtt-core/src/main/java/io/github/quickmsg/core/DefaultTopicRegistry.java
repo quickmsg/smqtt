@@ -8,6 +8,7 @@ import io.github.quickmsg.common.utils.TopicRegexUtils;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.Collectors;
 
 /**
@@ -18,8 +19,12 @@ public class DefaultTopicRegistry implements TopicRegistry {
     private Map<String, CopyOnWriteArraySet<MqttChannel>> topicChannels = new ConcurrentHashMap<>();
 
 
+    private LongAdder longAdder = new LongAdder();
+
+
     @Override
     public void registryTopicConnection(String topic, MqttChannel mqttChannel) {
+        longAdder.increment();
         CopyOnWriteArraySet<MqttChannel> channels = topicChannels.computeIfAbsent(topic, t -> new CopyOnWriteArraySet<>());
         channels.add(mqttChannel);
         mqttChannel.getTopics().add(topic);
@@ -28,6 +33,7 @@ public class DefaultTopicRegistry implements TopicRegistry {
 
     @Override
     public void clear(MqttChannel mqttChannel) {
+        longAdder.decrement();
         Set<String> topics = mqttChannel.getTopics();
         this.clear(topics, mqttChannel);
     }
@@ -71,6 +77,11 @@ public class DefaultTopicRegistry implements TopicRegistry {
     @Override
     public Map<String, CopyOnWriteArraySet<MqttChannel>> getAllTopics() {
         return this.topicChannels;
+    }
+
+    @Override
+    public Integer counts() {
+        return (int) longAdder.sum();
     }
 
 

@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.LongAdder;
 
 /**
  * @author luxurong
@@ -19,6 +20,7 @@ public class DefaultChannelRegistry implements ChannelRegistry {
 
 
     private Map<String, MqttChannel> channelMap = new ConcurrentHashMap<>();
+
 
     public DefaultChannelRegistry() {
     }
