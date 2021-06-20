@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class MetricManager {
 
-    private static WindowCounter transportBufferSize = new SideWindowCounter(10, TimeUnit.SECONDS, "TRANSPORT-BUFFER-SIZE");
+    private static WindowCounter transportBufferSize = new SideWindowCounter(1, TimeUnit.MINUTES, "TRANSPORT-BUFFER-SIZE");
 
     public static void registryMetric(MqttPublishMessage mqttPublishMessage) {
         transportBufferSize.apply(mqttPublishMessage.payload().readableBytes());
