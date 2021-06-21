@@ -73,6 +73,7 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
             mqttChannel.setKeepalive(mqttConnectVariableHeader.keepAliveTimeSeconds());
             mqttChannel.setSessionPersistent(!mqttConnectVariableHeader.isCleanSession());
             mqttChannel.setStatus(ChannelStatus.ONLINE);
+            mqttChannel.setUsername(mqttConnectPayload.userName());
             /*registry unread event close channel */
 
             mqttChannel.getConnection()
