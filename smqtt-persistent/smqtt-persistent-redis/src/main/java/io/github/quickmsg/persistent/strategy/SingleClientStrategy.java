@@ -14,15 +14,10 @@ import java.util.Map;
  * 单机客户端策略
  *
  * @author zhaopeng
- * @date 2021/06/21
  */
 public class SingleClientStrategy implements ClientStrategy {
 
-    /**
-     * 获取redisson客户端
-     *
-     * @return {@link RedissonClient}
-     */
+
     @Override
     public RedissonClient getRedissonClient(Map<String, String> environments) {
         Config config = new Config();

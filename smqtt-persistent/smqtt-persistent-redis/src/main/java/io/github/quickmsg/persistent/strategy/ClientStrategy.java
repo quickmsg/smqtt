@@ -8,7 +8,6 @@ import java.util.Map;
  * redisson客户策略
  *
  * @author zhaopeng
- * @date 2021/06/21
  */
 public interface ClientStrategy {
 
@@ -16,6 +15,7 @@ public interface ClientStrategy {
     /**
      * 获取redisson客户端
      *
+     * @param environments 參數map
      * @return {@link RedissonClient}
      */
     RedissonClient getRedissonClient(Map<String, String> environments);

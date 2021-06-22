@@ -11,7 +11,6 @@ import java.util.Date;
  * 保留消息实体
  *
  * @author zhaopeng
- * @date 2021/06/21
  */
 @Data
 @Builder

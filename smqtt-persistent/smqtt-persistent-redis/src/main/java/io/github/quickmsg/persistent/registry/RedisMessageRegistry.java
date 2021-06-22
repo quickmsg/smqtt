@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
  * 消息
  *
  * @author zhaopeng
- * @date 2021/06/21
  */
 @Slf4j
 public class RedisMessageRegistry implements MessageRegistry {
