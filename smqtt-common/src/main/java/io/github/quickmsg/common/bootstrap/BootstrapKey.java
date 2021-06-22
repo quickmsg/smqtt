@@ -54,10 +54,10 @@ public class BootstrapKey {
 
     public final static String BOOTSTRAP_CLUSTER_NODE = "smqtt.cluster.node";
     /*数据库配置参数前缀*/
-    public static final String DB_PREFIX = "db.";
+    public final static String DB_PREFIX = "db.";
 
 
-    public class Redis {
+    public static class Redis {
         /*redis前缀key*/
         public static final String REDIS_RETAIN_MESSAGE_PREFIX_KEY = "smqtt:retain:message:";
 
@@ -86,7 +86,7 @@ public class BootstrapKey {
         public static final String REDIS_POOL_SIZE = "redis.pool.size";
     }
 
-    public class RedisCluster {
+    public static class RedisCluster {
         public static final String REDIS_CLUSTER_SCAN_INTERVAL = "redis.cluster.scan.interval";
 
         public static final String REDIS_CLUSTER_NODES = "redis.cluster.nodes";
@@ -102,17 +102,17 @@ public class BootstrapKey {
         public static final String REDIS_CLUSTER_RETRY_INTERVAL = "redis.cluster.retry.interval";
     }
 
-    public class RedisSentinel {
+    public static class RedisSentinel {
         public static final String REDIS_SENTINEL_MASTER = "redis.sentinel.master";
 
         public static final String REDIS_SENTINEL_NODES = "redis.sentinel.nodes";
     }
 
-    public class RedisSingle {
+    public static class RedisSingle {
         public static final String REDIS_SINGLE_ADDRESS = "redis.single.address";
     }
 
-    public class RedisReadMode {
+    public static class RedisReadMode {
         public static final String SLAVE = "SLAVE";
 
         public static final String MASTER = "MASTER";
