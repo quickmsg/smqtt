@@ -43,7 +43,8 @@ public class DefaultTopicRegistry implements TopicRegistry {
         Optional.ofNullable(topics)
                 .ifPresent(ts -> {
                     for (String topic : ts) {
-                        topicChannels.get(topic).remove(mqttChannel);
+                        Optional.ofNullable(topicChannels.get(topic))
+                                .ifPresent(set -> set.remove(mqttChannel));
                     }
                 });
 
