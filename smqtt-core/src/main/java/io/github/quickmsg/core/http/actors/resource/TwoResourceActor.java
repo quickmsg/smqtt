@@ -7,6 +7,7 @@ import org.reactivestreams.Publisher;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
 
+import java.net.URI;
 import java.nio.file.Paths;
 
 /**
@@ -15,11 +16,11 @@ import java.nio.file.Paths;
 @Router(type = HttpType.GET, value = "/static/{path}/{path2}")
 public class TwoResourceActor implements HttpActor {
 
-    private final static String DEFAULT_STATIC_PATH = "ui/dist/static/";
+    private final static String DEFAULT_STATIC_PATH = "static/";
 
     @Override
     public Publisher<Void> doRequest(HttpServerRequest request, HttpServerResponse response) {
-        String path= DEFAULT_STATIC_PATH+request.param("path")+"/"+request.param("path2");
-        return response.sendFile(Paths.get(path));
+        String path= this.getClass().getResource("/")+DEFAULT_STATIC_PATH+request.path();
+        return response.sendFile(Paths.get(URI.create(path)));
     }
 }
