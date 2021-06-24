@@ -176,7 +176,7 @@ public abstract class AbstractStarter {
     public static void printUIUrl(Integer httpPort) {
         log.info("\n-------------------------------------------------------------\n\t" +
                 "Application UI is running AccessURLs:\n\t" +
-                "Local url: http://localhost:{}/smqtt/admin"+"\n\t"+
+                "Local url:    http://localhost:{}/smqtt/admin"+"\n\t"+
                 "External url: http://{}:{}/smqtt/admin"+"\n"+
                 "-------------------------------------------------------------"
                 , httpPort, IPUtils.getIP(), httpPort );
