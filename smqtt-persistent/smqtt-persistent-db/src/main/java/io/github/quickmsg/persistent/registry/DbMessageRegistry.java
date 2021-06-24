@@ -8,7 +8,6 @@ import io.github.quickmsg.common.message.SessionMessage;
 import io.github.quickmsg.common.utils.TopicRegexUtils;
 import io.github.quickmsg.persistent.config.DruidConnectionProvider;
 import io.github.quickmsg.persistent.tables.Tables;
-import io.github.quickmsg.persistent.tables.tables.records.SmqttSessionRecord;
 import io.netty.util.CharsetUtil;
 import liquibase.Liquibase;
 import liquibase.database.Database;
@@ -17,14 +16,16 @@ import liquibase.database.jvm.JdbcConnection;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
-import org.jooq.DeleteConditionStep;
 import org.jooq.Record1;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 
 import java.sql.Connection;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 /**

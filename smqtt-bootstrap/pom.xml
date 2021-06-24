@@ -88,6 +88,76 @@
         </profile>
 
         <profile>
+            <id>web</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.0.0</version>
+                        <executions>
+                            <execution>
+                                <id>exec-npm-run-build</id>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>npm</executable>
+                                    <arguments>
+                                        <argument>run</argument>
+                                        <argument>build</argument>
+                                    </arguments>
+                                    <workingDirectory>${project.parent.basedir}/smqtt-ui</workingDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!--资源插件，主要为了从前端项目里复制打包好的文件到springboot项目-->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <id>copy static</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- 复制前端打包文件到这里 -->
+                                    <outputDirectory>src/main/resources/static</outputDirectory>
+                                    <overwrite>true</overwrite>
+                                    <resources>
+                                        <resource>
+                                            <!-- 从前端打包的目录dist进行指定文件、文件夹内容的复制-->
+                                            <directory>${project.parent.basedir}/smqtt-ui/dist</directory>
+                                            <includes>
+                                                <!-- 具体根据实际前端代码、及目录结构进行配置-->
+                                                <include>css/</include>
+                                                <include>fonts/</include>
+                                                <include>img/</include>
+                                                <include>js/</include>
+                                                <include>static/</include>
+                                                <include>favicon.ico</include>
+                                                <include>index.html</include>
+                                            </includes>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
             <id>docker</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
