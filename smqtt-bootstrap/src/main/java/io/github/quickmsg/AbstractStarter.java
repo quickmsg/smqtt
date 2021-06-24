@@ -5,10 +5,12 @@ import io.github.quickmsg.common.bootstrap.BootstrapKey;
 import io.github.quickmsg.common.cluster.ClusterConfig;
 import io.github.quickmsg.common.config.SslContext;
 import io.github.quickmsg.common.environment.EnvContext;
+import io.github.quickmsg.common.utils.IPUtils;
 import io.github.quickmsg.common.utils.LoggerLevel;
 import io.github.quickmsg.common.utils.PropertiesLoader;
 import io.github.quickmsg.core.Bootstrap;
 import io.netty.channel.WriteBufferWaterMark;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -17,6 +19,7 @@ import java.util.function.Function;
 /**
  * @author luxurong
  */
+@Slf4j
 public abstract class AbstractStarter {
 
     private static final String DEFAULT_PROPERTIES_LOAD_CONFIG_PATH = "/conf/config.properties";
@@ -159,8 +162,24 @@ public abstract class AbstractStarter {
                     .ssl(httpSsl);
             Bootstrap.HttpOptions options = optionsBuilder.build();
             builder.httpOptions(options);
+
+            printUIUrl(httpPort);
         }
         builder.build().startAwait();
+    }
+
+    /**
+     * 打印前端访问地址
+     *
+     * @param httpPort http端口
+     */
+    public static void printUIUrl(Integer httpPort) {
+        log.info("\n-------------------------------------------------------------\n\t" +
+                "Application UI is running AccessURLs:\n\t" +
+                "Local url: http://localhost:{}/smqtt/admin"+"\n\t"+
+                "External url: http://{}:{}/smqtt/admin"+"\n"+
+                "-------------------------------------------------------------"
+                , httpPort, IPUtils.getIP(), httpPort );
     }
 
 }
