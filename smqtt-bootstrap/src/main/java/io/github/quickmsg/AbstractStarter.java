@@ -162,7 +162,6 @@ public abstract class AbstractStarter {
                     .ssl(httpSsl);
             Bootstrap.HttpOptions options = optionsBuilder.build();
             builder.httpOptions(options);
-
             printUIUrl(httpPort);
         }
         builder.build().startAwait();
