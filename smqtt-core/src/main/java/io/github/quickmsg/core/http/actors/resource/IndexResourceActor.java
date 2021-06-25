@@ -1,26 +1,18 @@
 package io.github.quickmsg.core.http.actors.resource;
 
-import io.github.quickmsg.common.http.HttpActor;
 import io.github.quickmsg.common.annotation.Router;
 import io.github.quickmsg.common.enums.HttpType;
+import io.github.quickmsg.common.http.HttpActor;
+import io.github.quickmsg.common.utils.ClassPathLoader;
 import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Publisher;
-import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
-
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /**
  * @author luxurong
  */
-@Router(type = HttpType.GET, value = "/file/admin")
+@Router(type = HttpType.GET, value = "/smqtt/admin")
 @Slf4j
 public class IndexResourceActor implements HttpActor {
 
@@ -28,15 +20,7 @@ public class IndexResourceActor implements HttpActor {
 
     @Override
     public Publisher<Void> doRequest(HttpServerRequest request, HttpServerResponse response) {
-        String path= DEFAULT_STATIC_PATH+"index.html";
-
-        try {
-            InputStream inputStream= this.getClass().getResourceAsStream(path);
-            return response.sendFile(Paths.get(null)).then();
-
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        return Mono.empty();
+        String path = DEFAULT_STATIC_PATH + "index.html";
+        return response.send(ClassPathLoader.readClassPathFile(path)).then();
     }
 }

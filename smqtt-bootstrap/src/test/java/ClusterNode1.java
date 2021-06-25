@@ -1,5 +1,3 @@
-package io.github.quickmsg;
-
 import io.github.quickmsg.common.cluster.ClusterConfig;
 import io.github.quickmsg.common.config.SslContext;
 import io.github.quickmsg.core.Bootstrap;
