@@ -30,10 +30,6 @@ public abstract class AbstractStarter {
 
     private static final Integer DEFAULT_CLUSTER_PORT = 4333;
 
-
-    private static final Integer DEFAULT_HTTP_PORT = 12000;
-
-
     private static final String DEFAULT_AUTH_USERNAME_PASSWORD = "smqtt";
 
     public static void start(Function<String, String> function) {
@@ -102,9 +98,11 @@ public abstract class AbstractStarter {
                 .highWaterMark(highWaterMark);
 
         if (ssl) {
-            String sslCrt = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_SSL_CRT, function.apply(BootstrapKey.BOOTSTRAP_SSL_CRT)))
+            String sslCrt = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_SSL_CRT,
+                    function.apply(BootstrapKey.BOOTSTRAP_SSL_CRT)))
                     .map(String::valueOf).orElse(null);
-            String sslKey = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_SSL_KEY, function.apply(BootstrapKey.BOOTSTRAP_SSL_KEY)))
+            String sslKey = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_SSL_KEY,
+                    function.apply(BootstrapKey.BOOTSTRAP_SSL_KEY)))
                     .map(String::valueOf).orElse(null);
             if (sslCrt == null || sslKey == null) {
                 builder.sslContext(null);
@@ -113,11 +111,14 @@ public abstract class AbstractStarter {
             }
         }
         if (clusterEnable) {
-            Integer clusterPort = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_CLUSTER_PORT, function.apply(BootstrapKey.BOOTSTRAP_CLUSTER_PORT)))
+            Integer clusterPort = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_CLUSTER_PORT,
+                    function.apply(BootstrapKey.BOOTSTRAP_CLUSTER_PORT)))
                     .map(Integer::parseInt).orElse(DEFAULT_CLUSTER_PORT);
-            String clusterUrl = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_CLUSTER_URL, function.apply(BootstrapKey.BOOTSTRAP_CLUSTER_URL)))
+            String clusterUrl = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_CLUSTER_URL,
+                    function.apply(BootstrapKey.BOOTSTRAP_CLUSTER_URL)))
                     .map(String::valueOf).orElse(null);
-            String clusterNode = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_CLUSTER_NODE, function.apply(BootstrapKey.BOOTSTRAP_CLUSTER_NODE)))
+            String clusterNode = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_CLUSTER_NODE,
+                    function.apply(BootstrapKey.BOOTSTRAP_CLUSTER_NODE)))
                     .map(String::valueOf).orElse(UUID.randomUUID().toString().replaceAll("-", ""));
             ClusterConfig clusterConfig =
                     ClusterConfig.builder()
@@ -129,7 +130,8 @@ public abstract class AbstractStarter {
             builder.clusterConfig(clusterConfig);
         }
         if (isWebsocket) {
-            Integer websocketPort = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_WEB_SOCKET_PORT, function.apply(BootstrapKey.BOOTSTRAP_WEB_SOCKET_PORT)))
+            Integer websocketPort = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_WEB_SOCKET_PORT,
+                    function.apply(BootstrapKey.BOOTSTRAP_WEB_SOCKET_PORT)))
                     .map(Integer::parseInt).orElse(DEFAULT_WEBSOCKET_MQTT_PORT);
             builder.isWebsocket(true)
                     .websocketPort(websocketPort);
@@ -137,17 +139,29 @@ public abstract class AbstractStarter {
         if (httpEnable) {
             Bootstrap.HttpOptions.HttpOptionsBuilder optionsBuilder = Bootstrap.HttpOptions.builder();
 
-            Boolean accessLog = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_HTTP_ACCESS_LOG, function.apply(BootstrapKey.BOOTSTRAP_HTTP_ACCESS_LOG)))
+            Boolean accessLog = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_HTTP_ACCESS_LOG,
+                    function.apply(BootstrapKey.BOOTSTRAP_HTTP_ACCESS_LOG)))
                     .map(Boolean::parseBoolean).orElse(false);
 
-
-            Boolean httpSsl = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_HTTP_SSL_ENABLE, function.apply(BootstrapKey.BOOTSTRAP_HTTP_SSL_ENABLE)))
+            Boolean httpSsl = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_HTTP_SSL_ENABLE,
+                    function.apply(BootstrapKey.BOOTSTRAP_HTTP_SSL_ENABLE)))
                     .map(Boolean::parseBoolean).orElse(false);
-
+            Boolean adminEnable = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_HTTP_ADMIN_ENABLE,
+                    function.apply(BootstrapKey.BOOTSTRAP_HTTP_ADMIN_ENABLE))).map(Boolean::parseBoolean).orElse(false);
+            optionsBuilder.enableAdmin(adminEnable);
+            if (adminEnable) {
+                String httpAdminUsername = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_HTTP_ADMIN_USERNAME,
+                        function.apply(BootstrapKey.BOOTSTRAP_HTTP_ADMIN_USERNAME))).orElse(null);
+                String httpAdminPassword = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_HTTP_ADMIN_PASSWORD,
+                        function.apply(BootstrapKey.BOOTSTRAP_HTTP_ADMIN_PASSWORD))).orElse(null);
+                optionsBuilder.username(httpAdminUsername).password(httpAdminPassword);
+            }
             if (httpSsl) {
-                String httpSslCrt = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_HTTP_SSL_CRT, function.apply(BootstrapKey.BOOTSTRAP_HTTP_SSL_CRT)))
+                String httpSslCrt = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_HTTP_SSL_CRT,
+                        function.apply(BootstrapKey.BOOTSTRAP_HTTP_SSL_CRT)))
                         .map(String::valueOf).orElse(null);
-                String httpSslKey = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_HTTP_SSL_KEY, function.apply(BootstrapKey.BOOTSTRAP_HTTP_SSL_KEY)))
+                String httpSslKey = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_HTTP_SSL_KEY,
+                        function.apply(BootstrapKey.BOOTSTRAP_HTTP_SSL_KEY)))
                         .map(String::valueOf).orElse(null);
                 if (httpSslKey == null || httpSslCrt == null) {
                     optionsBuilder.sslContext(null);

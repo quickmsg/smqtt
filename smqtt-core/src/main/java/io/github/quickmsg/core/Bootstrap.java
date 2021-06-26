@@ -166,7 +166,10 @@ public class Bootstrap {
         HttpConfiguration httpConfiguration = new HttpConfiguration();
         Optional.ofNullable(this.httpOptions.accessLog).ifPresent(httpConfiguration::setAccessLog);
         Optional.ofNullable(this.httpOptions.sslContext).ifPresent(httpConfiguration::setSslContext);
-        Optional.ofNullable(this.httpOptions.httpPort).ifPresent(httpConfiguration::setPort);
+        Optional.ofNullable(this.httpOptions.enableAdmin).ifPresent(httpConfiguration::setEnableAdmin);
+        Optional.ofNullable(this.httpOptions.username).ifPresent(httpConfiguration::setUsername);
+        Optional.ofNullable(this.httpOptions.password).ifPresent(httpConfiguration::setPassword);
+        httpConfiguration.setPort(this.httpOptions.httpPort);
         return httpConfiguration;
     }
 
@@ -188,6 +191,12 @@ public class Bootstrap {
 
         @Builder.Default
         private Boolean accessLog = false;
+
+        private Boolean enableAdmin;
+
+        private String username;
+
+        private String password;
 
     }
 
