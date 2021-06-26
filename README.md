@@ -173,7 +173,8 @@ docker run -it  -v <配置文件路径目录>:/conf -p 1883:1883  -p 1999:1999 1
 curl -H "Content-Type: application/json" -X POST -d '{"topic": "test/teus", "qos":2, "retain":true, "message":"我来测试保留消息3" }' "http://localhost:1999/smqtt/publish"
 ```
 
-
+## 压测文档
+[点这里](https://blog.csdn.net/JingleYe/article/details/118190935)
 
 ## wiki地址
 
