@@ -1,6 +1,7 @@
 package io.github.quickmsg.common.http;
 
 import com.alibaba.fastjson.JSON;
+import io.github.quickmsg.common.config.Configuration;
 import io.github.quickmsg.common.spi.DynamicLoader;
 import org.reactivestreams.Publisher;
 import reactor.netty.http.server.HttpServerRequest;
@@ -26,9 +27,10 @@ public interface HttpActor {
      *
      * @param request  {@link HttpServerRequest}
      * @param response {@link HttpServerResponse}
+     * @param configuration {@link Configuration}
      * @return Object
      */
-    Publisher<Void> doRequest(HttpServerRequest request, HttpServerResponse response);
+    Publisher<Void> doRequest(HttpServerRequest request, HttpServerResponse response, Configuration configuration);
 
 
     /**

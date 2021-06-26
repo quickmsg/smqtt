@@ -23,7 +23,7 @@ public class HttpReceiver extends AbstractSslHandler implements Receiver {
                 httpServer.secure(sslContextSpec -> this.secure(sslContextSpec, configuration));
             }
             return httpServer.port(configuration.getPort())
-                    .route(new HttpRouterAcceptor())
+                    .route( new HttpRouterAcceptor(configuration))
                     .accessLog(configuration.getAccessLog())
                     .childOption(ChannelOption.TCP_NODELAY, true)
                     .childOption(ChannelOption.SO_KEEPALIVE, true)

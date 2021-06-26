@@ -46,6 +46,11 @@ public class BootstrapKey {
 
     public final static String BOOTSTRAP_HTTP_SSL_KEY = "smqtt.http.ssl.key";
 
+    public final static String BOOTSTRAP_HTTP_USERNAME = "smqtt.http.username";
+
+    public final static String BOOTSTRAP_HTTP_PASSWORD = "smqtt.http.password";
+
+
     public final static String BOOTSTRAP_CLUSTER_ENABLE = "smqtt.cluster.enable";
 
     public final static String BOOTSTRAP_CLUSTER_URL = "smqtt.cluster.url";
