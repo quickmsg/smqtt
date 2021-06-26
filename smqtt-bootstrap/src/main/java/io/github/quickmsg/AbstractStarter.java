@@ -137,8 +137,6 @@ public abstract class AbstractStarter {
         if (httpEnable) {
             Bootstrap.HttpOptions.HttpOptionsBuilder optionsBuilder = Bootstrap.HttpOptions.builder();
 
-            Integer httpPort = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_HTTP_PORT, function.apply(BootstrapKey.BOOTSTRAP_HTTP_PORT)))
-                    .map(Integer::parseInt).orElse(DEFAULT_HTTP_PORT);
             Boolean accessLog = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_HTTP_ACCESS_LOG, function.apply(BootstrapKey.BOOTSTRAP_HTTP_ACCESS_LOG)))
                     .map(Boolean::parseBoolean).orElse(false);
 
@@ -157,14 +155,15 @@ public abstract class AbstractStarter {
                     optionsBuilder.sslContext(new SslContext(httpSslCrt, httpSslKey));
                 }
             }
-            optionsBuilder.httpPort(httpPort)
+            optionsBuilder
                     .accessLog(accessLog)
                     .ssl(httpSsl);
             Bootstrap.HttpOptions options = optionsBuilder.build();
             builder.httpOptions(options);
-            printUIUrl(httpPort);
+
         }
-        builder.build().startAwait();
+        Bootstrap bootstrap = builder.build();
+        bootstrap.doOnStarted(bt -> printUIUrl(bootstrap.getHttpOptions().getHttpPort())).startAwait();
     }
 
     /**
@@ -174,11 +173,11 @@ public abstract class AbstractStarter {
      */
     public static void printUIUrl(Integer httpPort) {
         log.info("\n-------------------------------------------------------------\n\t" +
-                "Application UI is running AccessURLs:\n\t" +
-                "Local url:    http://localhost:{}/smqtt/admin"+"\n\t"+
-                "External url: http://{}:{}/smqtt/admin"+"\n"+
-                "-------------------------------------------------------------"
-                , httpPort, IPUtils.getIP(), httpPort );
+                        "Application UI is running AccessURLs:\n\t" +
+                        "Http Local url:    http://localhost:{}/smqtt/admin" + "\n\t" +
+                        "Http External url: http://{}:{}/smqtt/admin" + "\n" +
+                        "-------------------------------------------------------------"
+                , httpPort, IPUtils.getIP(), httpPort);
     }
 
 }

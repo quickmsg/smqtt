@@ -79,6 +79,8 @@ public class Bootstrap {
 
     private ClusterConfig clusterConfig;
 
+    private Consumer<Bootstrap> started;
+
 
     private MqttConfiguration initMqttConfiguration() {
         MqttConfiguration mqttConfiguration = defaultConfiguration();
@@ -122,6 +124,7 @@ public class Bootstrap {
                     log.info("bootstrap server start error", err);
                     START_ONLY_MQTT.tryEmitEmpty();
                 })
+                .doOnSuccess(started)
                 .subscribe();
         START_ONLY_MQTT.asMono().block();
     }
@@ -175,17 +178,22 @@ public class Bootstrap {
     @Builder
     public static class HttpOptions {
 
-        @Builder.Default
-        private Integer httpPort = 0;
+        private final Integer httpPort = 60000;
 
         @Builder.Default
         private Boolean ssl = false;
+
 
         private SslContext sslContext;
 
         @Builder.Default
         private Boolean accessLog = false;
 
+    }
+
+    public Bootstrap doOnStarted(Consumer<Bootstrap> started) {
+        this.started = started;
+        return this;
     }
 
 
