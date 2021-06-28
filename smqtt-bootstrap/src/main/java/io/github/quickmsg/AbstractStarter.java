@@ -177,21 +177,24 @@ public abstract class AbstractStarter {
 
         }
         Bootstrap bootstrap = builder.build();
-        bootstrap.doOnStarted(httpEnable ? bt -> printUIUrl(bt.getHttpOptions().getHttpPort()) : bt -> log.info("")).startAwait();
+        bootstrap.doOnStarted(AbstractStarter::printUIUrl).startAwait();
     }
 
     /**
      * 打印前端访问地址
      *
-     * @param httpPort http端口
+     * @param bootstrap 启动类
      */
-    public static void printUIUrl(Integer httpPort) {
-        log.info("\n-------------------------------------------------------------\n\t" +
-                        "Application UI is running AccessURLs:\n\t" +
-                        "Http Local url:    http://localhost:{}/smqtt/admin" + "\n\t" +
-                        "Http External url: http://{}:{}/smqtt/admin" + "\n" +
-                        "-------------------------------------------------------------"
-                , httpPort, IPUtils.getIP(), httpPort);
+    public static void printUIUrl(Bootstrap bootstrap) {
+        if (bootstrap.getHttpOptions().getEnableAdmin()) {
+            Integer port = bootstrap.getHttpOptions().getHttpPort();
+            log.info("\n-------------------------------------------------------------\n\t" +
+                            "Application UI is running AccessURLs:\n\t" +
+                            "Http Local url:    http://localhost:{}/smqtt/admin" + "\n\t" +
+                            "Http External url: http://{}:{}/smqtt/admin" + "\n" +
+                            "-------------------------------------------------------------"
+                    , port, IPUtils.getIP(), port);
+        }
     }
 
 }
