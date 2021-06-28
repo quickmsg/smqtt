@@ -177,7 +177,7 @@ public abstract class AbstractStarter {
 
         }
         Bootstrap bootstrap = builder.build();
-        bootstrap.doOnStarted(bt -> printUIUrl(bootstrap.getHttpOptions().getHttpPort())).startAwait();
+        bootstrap.doOnStarted(httpEnable ? bt -> printUIUrl(bt.getHttpOptions().getHttpPort()) : bt -> log.info("")).startAwait();
     }
 
     /**
