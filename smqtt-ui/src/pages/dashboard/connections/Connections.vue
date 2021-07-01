@@ -29,6 +29,10 @@ const columns = [
     customRender: (text, record, index) => index + 1
   },
   {
+    title: '设备id',
+    dataIndex: 'clientIdentifier'
+  },
+  {
     title: '连接',
     dataIndex: 'connection',
     scopedSlots: {customRender: 'connection'},
@@ -52,6 +56,10 @@ const columns = [
     title: '是否持久化',
     dataIndex: 'sessionPersistent',
     customRender: (text, record) => record.sessionPersistent ? "是" : "否"
+  },
+  {
+    title: '用戶名',
+    dataIndex: 'username'
   },
   {
     title: '遗嘱消息',
