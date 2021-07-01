@@ -11,6 +11,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>smqtt-registry-scube</module>
+        <module>smqtt-registry-akka</module>
     </modules>
     <artifactId>smqtt-registry</artifactId>
     <name>smqtt-registry</name>
