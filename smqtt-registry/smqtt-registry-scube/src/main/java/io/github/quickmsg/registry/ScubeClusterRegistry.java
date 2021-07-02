@@ -18,6 +18,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -56,7 +57,9 @@ public class ScubeClusterRegistry implements ClusterRegistry {
 
     @Override
     public List<ClusterNode> getClusterNode() {
-        return cluster.members().stream().map(this::clusterNode).collect(Collectors.toList());
+        return Optional.ofNullable(cluster)
+                .map(cs -> cs.members().stream().map(this::clusterNode).collect(Collectors.toList()))
+                .orElse(Collections.emptyList());
     }
 
     private ClusterNode clusterNode(Member member) {
