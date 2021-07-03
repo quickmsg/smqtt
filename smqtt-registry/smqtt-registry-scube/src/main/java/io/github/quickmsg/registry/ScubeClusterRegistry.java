@@ -4,7 +4,7 @@ import io.github.quickmsg.common.cluster.ClusterConfig;
 import io.github.quickmsg.common.cluster.ClusterMessage;
 import io.github.quickmsg.common.cluster.ClusterNode;
 import io.github.quickmsg.common.cluster.ClusterRegistry;
-import io.github.quickmsg.common.enums.ClusterEvent;
+import io.github.quickmsg.common.enums.ClusterStatus;
 import io.scalecube.cluster.Cluster;
 import io.scalecube.cluster.ClusterImpl;
 import io.scalecube.cluster.ClusterMessageHandler;
@@ -31,7 +31,7 @@ public class ScubeClusterRegistry implements ClusterRegistry {
 
     private Sinks.Many<ClusterMessage> messageMany = Sinks.many().multicast().onBackpressureBuffer();
 
-    private Sinks.Many<ClusterEvent> eventMany = Sinks.many().multicast().onBackpressureBuffer();
+    private Sinks.Many<ClusterStatus> eventMany = Sinks.many().multicast().onBackpressureBuffer();
 
     private Cluster cluster;
 
@@ -45,7 +45,7 @@ public class ScubeClusterRegistry implements ClusterRegistry {
                         .getClusterUrl()
                         .split(","))
                         .map(Address::from)
-                        .collect(Collectors.toList())))
+                        .collect(Collectors.toList())).namespace(clusterConfig.getNamespace()))
                 .handler(cluster -> new ClusterHandler())
                 .startAwait();
     }
@@ -85,7 +85,7 @@ public class ScubeClusterRegistry implements ClusterRegistry {
     }
 
     @Override
-    public Flux<ClusterEvent> clusterEvent() {
+    public Flux<ClusterStatus> clusterEvent() {
         return eventMany.asFlux();
     }
 
@@ -110,16 +110,16 @@ public class ScubeClusterRegistry implements ClusterRegistry {
             log.info("cluster onMembershipEvent {}  {}", member, event);
             switch (event.type()) {
                 case ADDED:
-                    eventMany.tryEmitNext(ClusterEvent.ADDED);
+                    eventMany.tryEmitNext(ClusterStatus.ADDED);
                     break;
                 case LEAVING:
-                    eventMany.tryEmitNext(ClusterEvent.LEAVING);
+                    eventMany.tryEmitNext(ClusterStatus.LEAVING);
                     break;
                 case REMOVED:
-                    eventMany.tryEmitNext(ClusterEvent.REMOVED);
+                    eventMany.tryEmitNext(ClusterStatus.REMOVED);
                     break;
                 case UPDATED:
-                    eventMany.tryEmitNext(ClusterEvent.UPDATED);
+                    eventMany.tryEmitNext(ClusterStatus.UPDATED);
                     break;
                 default:
                     break;

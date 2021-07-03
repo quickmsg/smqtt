@@ -18,4 +18,6 @@ public class ClusterMessage {
     private boolean retain;
 
     private byte[] message;
+
+
 }

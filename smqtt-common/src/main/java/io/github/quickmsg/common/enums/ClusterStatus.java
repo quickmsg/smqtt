@@ -3,7 +3,7 @@ package io.github.quickmsg.common.enums;
 /**
  * @author luxurong
  */
-public enum ClusterEvent {
+public enum ClusterStatus {
 
     /**
      * 添加

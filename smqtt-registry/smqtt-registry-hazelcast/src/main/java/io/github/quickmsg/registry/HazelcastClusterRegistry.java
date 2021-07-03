@@ -1,6 +1,5 @@
 package io.github.quickmsg.registry;
 
-import com.hazelcast.cluster.Member;
 import com.hazelcast.cluster.MembershipEvent;
 import com.hazelcast.cluster.MembershipListener;
 import com.hazelcast.config.Config;
@@ -8,12 +7,13 @@ import com.hazelcast.config.MapConfig;
 import com.hazelcast.config.TcpIpConfig;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.topic.ITopic;
 import io.github.quickmsg.common.bootstrap.BootstrapKey;
 import io.github.quickmsg.common.cluster.ClusterConfig;
 import io.github.quickmsg.common.cluster.ClusterMessage;
 import io.github.quickmsg.common.cluster.ClusterNode;
 import io.github.quickmsg.common.cluster.ClusterRegistry;
-import io.github.quickmsg.common.enums.ClusterEvent;
+import io.github.quickmsg.common.enums.ClusterStatus;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -37,7 +37,9 @@ public class HazelcastClusterRegistry implements ClusterRegistry {
 
     private Sinks.Many<ClusterMessage> messageMany = Sinks.many().multicast().onBackpressureBuffer();
 
-    private Sinks.Many<ClusterEvent> eventMany = Sinks.many().multicast().onBackpressureBuffer();
+    private Sinks.Many<ClusterStatus> eventMany = Sinks.many().multicast().onBackpressureBuffer();
+
+    private final static String DEFAULT_TOPIC = "cluster";
 
     /**
      * hazelcast实例
@@ -47,30 +49,28 @@ public class HazelcastClusterRegistry implements ClusterRegistry {
     @Override
     public void registry(ClusterConfig clusterConfig) {
         Config cfg = new Config()
-                .setInstanceName(clusterConfig.getNodeName())
+                .setInstanceName(clusterConfig.getNamespace())
                 .addMapConfig(new MapConfig()
-                    .setName(clusterConfig.getNodeName())
-                    .setBackupCount(1)
-                    .setTimeToLiveSeconds(300)
+                        .setName(clusterConfig.getNodeName())
+                        .setBackupCount(1)
+                        .setTimeToLiveSeconds(300)
                 );
-
         TcpIpConfig tcpIpConfig = cfg.getNetworkConfig()
-                .setPort(BootstrapKey.HazelcastParameter.PORT)
+                .setPublicAddress(clusterConfig.getHost() + ":" + clusterConfig.getPort())
                 .setPortAutoIncrement(false)
                 .getJoin()
                 .getTcpIpConfig()
                 .setEnabled(false);
 
         // 循环注册集群IP地址
-        Arrays.stream(clusterConfig.getClusterUrl().split(BootstrapKey.SplitSymbol.COMMA)).forEach(record->{
-                String ip = record.split(BootstrapKey.SplitSymbol.COLON)[0];
-                tcpIpConfig.addMember(ip);
-        });
+        Arrays.stream(clusterConfig.getClusterUrl().split(BootstrapKey.SplitSymbol.COMMA)).forEach(tcpIpConfig::addMember);
 
         // 初始化hazelcast实例
         this.hazelcastInstance = Hazelcast.newHazelcastInstance(cfg);
         // 注册监听事件
         this.hazelcastInstance.getCluster().addMembershipListener(new ClusterHandler());
+        ITopic<ClusterMessage> topic = hazelcastInstance.getTopic(DEFAULT_TOPIC);
+        topic.addMessageListener(message -> messageMany.tryEmitNext(message.getMessageObject()));
     }
 
     @Override
@@ -96,9 +96,10 @@ public class HazelcastClusterRegistry implements ClusterRegistry {
 
     @Override
     public Mono<Void> spreadMessage(ClusterMessage clusterMessage) {
-        log.info("cluster send message {} ", clusterMessage);
-        hazelcastInstance.getMap("customers").put(1, clusterMessage);
-        return Mono.empty();
+        return Mono.fromRunnable(() -> {
+            ITopic<ClusterMessage> topic = hazelcastInstance.getTopic(DEFAULT_TOPIC);
+            topic.publish(clusterMessage);
+        });
     }
 
     @Override
@@ -108,7 +109,7 @@ public class HazelcastClusterRegistry implements ClusterRegistry {
     }
 
     @Override
-    public Flux<ClusterEvent> clusterEvent() {
+    public Flux<ClusterStatus> clusterEvent() {
         return eventMany.asFlux();
     }
 
@@ -116,12 +117,12 @@ public class HazelcastClusterRegistry implements ClusterRegistry {
 
         @Override
         public void memberAdded(MembershipEvent membershipEvent) {
-            eventMany.tryEmitNext(ClusterEvent.ADDED);
+            eventMany.tryEmitNext(ClusterStatus.ADDED);
         }
 
         @Override
         public void memberRemoved(MembershipEvent membershipEvent) {
-            eventMany.tryEmitNext(ClusterEvent.REMOVED);
+            eventMany.tryEmitNext(ClusterStatus.REMOVED);
         }
     }
 }
