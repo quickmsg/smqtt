@@ -32,8 +32,13 @@
             <artifactId>smqtt-core</artifactId>
             <version>1.0.5</version>
         </dependency>
-        <dependency>
+     <!--   <dependency>
             <artifactId>smqtt-registry-scube</artifactId>
+            <groupId>io.github.quickmsg</groupId>
+            <version>1.0.5</version>
+        </dependency>-->
+        <dependency>
+            <artifactId>smqtt-registry-hazelcast</artifactId>
             <groupId>io.github.quickmsg</groupId>
             <version>1.0.5</version>
         </dependency>

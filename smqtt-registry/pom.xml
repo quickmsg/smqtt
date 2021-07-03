@@ -12,6 +12,7 @@
     <modules>
         <module>smqtt-registry-scube</module>
         <module>smqtt-registry-akka</module>
+        <module>smqtt-registry-hazelcast</module>
     </modules>
     <artifactId>smqtt-registry</artifactId>
     <name>smqtt-registry</name>

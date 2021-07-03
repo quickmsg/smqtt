@@ -126,4 +126,19 @@ public class BootstrapKey {
         public static final String MASTER_SLAVE = "MASTER_SLAVE";
     }
 
+
+   /*分割符号*/
+    public static class SplitSymbol {
+        /*逗号*/
+        public static final String COMMA = ",";
+        /*冒号*/
+        public static final String COLON = ":";
+    }
+
+    /*hazelcast参数*/
+    public static class HazelcastParameter{
+        /*端口*/
+        public static final int PORT = 8000;
+    }
+
 }
