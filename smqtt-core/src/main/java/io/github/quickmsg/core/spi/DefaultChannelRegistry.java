@@ -1,4 +1,4 @@
-package io.github.quickmsg.core;
+package io.github.quickmsg.core.spi;
 
 import io.github.quickmsg.common.channel.ChannelRegistry;
 import io.github.quickmsg.common.channel.MqttChannel;
