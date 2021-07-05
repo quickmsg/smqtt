@@ -6,6 +6,7 @@ import reactor.core.publisher.Sinks;
 import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.LongAdder;
 
@@ -15,36 +16,53 @@ import java.util.concurrent.atomic.LongAdder;
 @Slf4j
 public class SideWindowCounter implements WindowCounter, Runnable {
 
-    private LongAdder longAdder = new LongAdder();
+    private LongAdder allAdder = new LongAdder();
+
+    private LongAdder windowAdder = new LongAdder();
 
     private Sinks.Many<Long> sinks = Sinks.many().multicast().onBackpressureBuffer();
 
+    private String windowName;
+
     public SideWindowCounter(Integer time, TimeUnit timeUnit, String threadName) {
-        this(+time, timeUnit, Schedulers.newSingle(threadName));
+        this(time, timeUnit, Schedulers.newSingle(threadName));
+        windowName = threadName;
     }
 
     public SideWindowCounter(Integer time, TimeUnit timeUnit, Scheduler scheduler) {
         scheduler.schedulePeriodically(this, 0L, time, timeUnit);
         scheduler.start();
+        if (log.isDebugEnabled()) {
+            Flux.interval(Duration.ofSeconds(10))
+                    .subscribe(interval -> {
+                        log.debug("request window {}  size {}", windowName,windowAdder.sum());
+                        log.debug("request window {}  size {}",windowName, allAdder.sum());
+                    });
+        }
     }
 
 
     @Override
     public void run() {
-        long sum = longAdder.sum();
-        log.info("request buffer size {}", sum);
+        long sum = windowAdder.sum();
         sinks.tryEmitNext(sum);
-        longAdder = new LongAdder();
+        allAdder.add(sum);
+        windowAdder = new LongAdder();
     }
 
     @Override
-    public Long count() {
-        return longAdder.sum();
+    public Long intervalCount() {
+        return windowAdder.sum();
     }
 
     @Override
     public void apply(Integer request) {
-        longAdder.add(request);
+        windowAdder.add(request);
+    }
+
+    @Override
+    public Long allCount() {
+        return allAdder.sum();
     }
 
     @Override

@@ -41,7 +41,7 @@ public class MqttReceiver extends AbstractSslHandler implements Receiver {
                 .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
                 .runOn(receiveContext.getLoopResources())
                 .doOnConnection(connection -> {
-                    connection.addHandler(new MqttDecoder()).addHandler(MqttEncoder.INSTANCE);
+                    connection.addHandler(MqttEncoder.INSTANCE).addHandler(new MetricChannelHandler()).addHandler(new MqttDecoder());
                     receiveContext.apply(MqttChannel.init(connection));
                 });
     }

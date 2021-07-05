@@ -8,11 +8,18 @@ import reactor.core.publisher.Flux;
 public interface WindowCounter {
 
     /**
+     * 周期汇总
+     *
+     * @return count
+     */
+    Long intervalCount();
+
+    /**
      * 汇总
      *
-     * @return {@link Flux<Long> }
+     * @return count
      */
-    Long count();
+    Long allCount();
 
 
     /**

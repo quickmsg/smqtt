@@ -9,6 +9,7 @@ import io.github.quickmsg.common.message.MessageRegistry;
 import io.github.quickmsg.common.message.MqttMessageBuilder;
 import io.github.quickmsg.common.protocol.Protocol;
 import io.github.quickmsg.common.topic.TopicRegistry;
+import io.github.quickmsg.core.metric.MetricManager;
 import io.github.quickmsg.core.mqtt.MqttReceiveContext;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.mqtt.*;
@@ -107,6 +108,11 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
 
             channelRegistry.registry(clientIdentifier, mqttChannel);
 
+            MetricManager.recordConnect(1);
+
+            mqttChannel.registryClose(mqttChannel1 -> {
+                MetricManager.recordConnect(-1);
+            });
             return mqttChannel.write(MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_ACCEPTED), false);
 
         } else {
