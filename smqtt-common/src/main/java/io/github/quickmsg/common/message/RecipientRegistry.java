@@ -1,7 +1,8 @@
 package io.github.quickmsg.common.message;
 
+import io.github.quickmsg.common.channel.MqttChannel;
+import io.github.quickmsg.common.enums.ChannelStatus;
 import io.github.quickmsg.common.spi.DynamicLoader;
-import io.netty.handler.codec.mqtt.MqttMessage;
 import io.netty.handler.codec.mqtt.MqttPublishMessage;
 
 /**
@@ -18,5 +19,14 @@ public interface RecipientRegistry {
      * @param publishMessage {@link MqttPublishMessage}
      */
     void accept(MqttPublishMessage publishMessage);
+
+
+    /**
+     * message
+     *
+     * @param mqttChannel   {@link MqttChannel}
+     * @param channelStatus {@link ChannelStatus}
+     */
+    void channelStatus(MqttChannel mqttChannel, ChannelStatus channelStatus);
 
 }
