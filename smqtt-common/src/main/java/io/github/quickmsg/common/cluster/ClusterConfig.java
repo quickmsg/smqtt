@@ -20,7 +20,8 @@ public class ClusterConfig {
 
     private String clusterUrl;
 
-    private final String namespace = "smqtt";
+    @Builder.Default
+    private String namespace = "smqtt";
 
     public static ClusterConfig defaultClusterConfig() {
         return ClusterConfig.builder()

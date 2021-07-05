@@ -25,7 +25,7 @@ public class ClusterNode1 {
                 .httpOptions(Bootstrap.HttpOptions.builder().ssl(false).accessLog(true).build())
                 .clusterConfig(
                         ClusterConfig.builder()
-                                .clustered(false)
+                                .clustered(true)
                                 .port(7773)
                                 .nodeName("node-2")
                                 .clusterUrl("127.0.0.1:7771,127.0.0.1:7772")

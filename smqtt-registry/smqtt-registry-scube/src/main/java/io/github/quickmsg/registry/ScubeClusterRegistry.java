@@ -74,8 +74,15 @@ public class ScubeClusterRegistry implements ClusterRegistry {
     @Override
     public Mono<Void> spreadMessage(ClusterMessage clusterMessage) {
         log.info("cluster send message {} ", clusterMessage);
-        return Optional.ofNullable(cluster)
-                .map(cs -> cs.spreadGossip(Message.withData(clusterMessage).build()).then()).orElse(Mono.empty());
+        return Mono.when(
+                cluster.otherMembers()
+                        .stream()
+                        .map(member ->
+                                Optional.ofNullable(cluster)
+                                        .map(cs ->
+                                                cs.send(member, Message.withData(clusterMessage).build()).then()
+                                        ).orElse(Mono.empty()))
+                        .collect(Collectors.toList()));
     }
 
     @Override
