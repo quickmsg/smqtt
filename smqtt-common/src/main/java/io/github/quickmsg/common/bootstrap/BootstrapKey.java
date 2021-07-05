@@ -134,11 +134,4 @@ public class BootstrapKey {
         /*冒号*/
         public static final String COLON = ":";
     }
-
-    /*hazelcast参数*/
-    public static class HazelcastParameter{
-        /*端口*/
-        public static final int PORT = 8000;
-    }
-
-}
+ }
