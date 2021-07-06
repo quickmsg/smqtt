@@ -37,6 +37,9 @@ public class DefaultProtocolAdaptor implements ProtocolAdaptor {
 
     @Override
     public <C extends Configuration> void chooseProtocol(MqttChannel mqttChannel, MqttMessage mqttMessage, ReceiveContext<C> receiveContext) {
+        if(log.isDebugEnabled()){
+            log.debug("chooseProtocol channel {} chooseProtocol:", mqttChannel);
+        }
         Optional.ofNullable(types.get(mqttMessage.fixedHeader().messageType()))
                 .ifPresent(protocol -> protocol
                         .doParseProtocol(mqttMessage, mqttChannel)
