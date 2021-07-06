@@ -1,17 +1,18 @@
 package io.github.quickmsg.core.cluster;
 
+import io.github.quickmsg.common.channel.MqttChannel;
 import io.github.quickmsg.common.message.RecipientRegistry;
 import io.github.quickmsg.core.mqtt.MqttReceiveContext;
 import io.netty.handler.codec.mqtt.MqttMessage;
 import io.netty.handler.codec.mqtt.MqttPublishMessage;
 import reactor.core.scheduler.Scheduler;
 
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 /**
  * @author luxurong
  */
-public class ClusterSender implements Function<MqttMessage, MqttMessage> {
+public class ClusterSender implements BiFunction<MqttChannel, MqttMessage, MqttMessage> {
 
     private final MqttReceiveContext mqttReceiveContext;
 
@@ -26,17 +27,17 @@ public class ClusterSender implements Function<MqttMessage, MqttMessage> {
     }
 
     @Override
-    public MqttMessage apply(MqttMessage mqttMessage) {
-        if (mqttMessage instanceof MqttPublishMessage) {
-            MqttPublishMessage publishMessage = (MqttPublishMessage) mqttMessage;
+    public MqttMessage apply(MqttChannel mqttChannel, MqttMessage message) {
+        if (message instanceof MqttPublishMessage) {
+            MqttPublishMessage publishMessage = (MqttPublishMessage) message;
             publishMessage.payload().resetReaderIndex();
-            recipientRegistry.accept(publishMessage);
+            recipientRegistry.accept(mqttChannel, publishMessage);
             publishMessage.retain();
             if (mqttReceiveContext.getConfiguration().getClusterConfig().getClustered()) {
-                mqttReceiveContext.getClusterRegistry().spreadPublishMessage(((MqttPublishMessage) mqttMessage).copy()).subscribeOn(scheduler).subscribe();
+                mqttReceiveContext.getClusterRegistry().spreadPublishMessage(publishMessage.copy()).subscribeOn(scheduler).subscribe();
             }
         }
-        return mqttMessage;
+        return message;
     }
 
 }

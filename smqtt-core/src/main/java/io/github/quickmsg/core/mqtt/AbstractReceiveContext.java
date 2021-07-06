@@ -2,6 +2,7 @@ package io.github.quickmsg.core.mqtt;
 
 import io.github.quickmsg.common.auth.PasswordAuthentication;
 import io.github.quickmsg.common.channel.ChannelRegistry;
+import io.github.quickmsg.common.channel.MqttChannel;
 import io.github.quickmsg.common.cluster.ClusterRegistry;
 import io.github.quickmsg.common.config.AbstractConfiguration;
 import io.github.quickmsg.common.config.Configuration;
@@ -13,6 +14,7 @@ import io.github.quickmsg.common.topic.TopicRegistry;
 import io.github.quickmsg.common.transport.Transport;
 import io.github.quickmsg.core.spi.*;
 import io.github.quickmsg.core.cluster.InJvmClusterRegistry;
+import io.netty.handler.codec.mqtt.MqttMessage;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;

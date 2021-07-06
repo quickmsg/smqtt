@@ -12,7 +12,7 @@ public class EmptyRecipientRegistry implements RecipientRegistry {
 
 
     @Override
-    public void accept(MqttPublishMessage message) {
+    public void accept(MqttChannel mqttChannel, MqttPublishMessage publishMessage) {
 
     }
 
@@ -20,6 +20,4 @@ public class EmptyRecipientRegistry implements RecipientRegistry {
     public void channelStatus(MqttChannel mqttChannel, ChannelStatus channelStatus) {
 
     }
-
-
 }

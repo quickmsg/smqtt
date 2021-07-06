@@ -14,11 +14,12 @@ public interface RecipientRegistry {
 
 
     /**
-     * message
+     * 全局消息处理
      *
+     * @param mqttChannel    {@link MqttChannel}
      * @param publishMessage {@link MqttPublishMessage}
      */
-    void accept(MqttPublishMessage publishMessage);
+    void accept(MqttChannel mqttChannel, MqttPublishMessage publishMessage);
 
 
     /**

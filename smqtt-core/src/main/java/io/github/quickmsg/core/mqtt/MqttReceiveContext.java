@@ -34,10 +34,12 @@ public class MqttReceiveContext extends AbstractReceiveContext<MqttConfiguration
                 .inbound()
                 .receiveObject()
                 .cast(MqttMessage.class)
-                .map(clusterSender)
+                .map(message -> clusterSender.apply(mqttChannel,message))
                 .subscribe(mqttMessage -> this.accept(mqttChannel, mqttMessage));
 
     }
+
+
 
 
     @Override
