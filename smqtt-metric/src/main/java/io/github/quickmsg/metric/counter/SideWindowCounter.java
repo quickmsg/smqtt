@@ -1,4 +1,4 @@
-package io.github.quickmsg.core.counter;
+package io.github.quickmsg.metric.counter;
 
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;

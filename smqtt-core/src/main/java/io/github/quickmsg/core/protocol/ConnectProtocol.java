@@ -10,7 +10,7 @@ import io.github.quickmsg.common.message.MqttMessageBuilder;
 import io.github.quickmsg.common.message.RecipientRegistry;
 import io.github.quickmsg.common.protocol.Protocol;
 import io.github.quickmsg.common.topic.TopicRegistry;
-import io.github.quickmsg.core.metric.MetricManager;
+import io.github.quickmsg.metric.counter.WindowMetric;
 import io.github.quickmsg.core.mqtt.MqttReceiveContext;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.mqtt.*;
@@ -40,7 +40,7 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
     }
 
     private static void accept(MqttChannel mqttChannel1) {
-        MetricManager.recordConnect(-1);
+        WindowMetric.WINDOW_METRIC_INSTANCE.recordConnect(-1);
     }
 
     @Override
@@ -114,16 +114,14 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
 
             channelRegistry.registry(clientIdentifier, mqttChannel);
 
-            MetricManager.recordConnect(1);
+            WindowMetric.WINDOW_METRIC_INSTANCE.recordConnect(1);
 
             mqttChannel.registryClose(ConnectProtocol::accept);
 
             recipientRegistry.channelStatus(mqttChannel, mqttChannel.getStatus());
-
             mqttChannel.registryClose(mqttChannel1 -> recipientRegistry.channelStatus(mqttChannel1, ChannelStatus.OFFLINE));
 
             return mqttChannel.write(MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_ACCEPTED), false);
-
         } else {
             return mqttChannel.write(
                     MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_BAD_USER_NAME_OR_PASSWORD),

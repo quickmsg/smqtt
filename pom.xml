@@ -14,6 +14,7 @@
         <module>smqtt-persistent</module>
         <module>smqtt-rule</module>
         <module>smqtt-ui</module>
+        <module>smqtt-metric</module>
     </modules>
     <packaging>pom</packaging>
 

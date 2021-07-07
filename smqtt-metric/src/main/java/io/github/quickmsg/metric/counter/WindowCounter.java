@@ -1,4 +1,4 @@
-package io.github.quickmsg.core.counter;
+package io.github.quickmsg.metric.counter;
 
 import reactor.core.publisher.Flux;
 

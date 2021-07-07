@@ -2,6 +2,7 @@ package io.github.quickmsg.core.websocket;
 
 import io.github.quickmsg.common.Receiver;
 import io.github.quickmsg.common.channel.MqttChannel;
+import io.github.quickmsg.core.mqtt.MetricChannelHandler;
 import io.github.quickmsg.core.mqtt.MqttConfiguration;
 import io.github.quickmsg.core.mqtt.MqttReceiveContext;
 import io.github.quickmsg.core.ssl.AbstractSslHandler;
@@ -54,8 +55,9 @@ public class WebSocketMqttReceiver extends AbstractSslHandler implements Receive
                             .addHandler(new WebSocketServerProtocolHandler("/", "mqtt, mqttv3.1, mqttv3.1.1"))
                             .addHandler(new WebSocketFrameToByteBufDecoder())
                             .addHandler(new ByteBufToWebSocketFrameEncoder())
-                            .addHandler(new MqttDecoder())
-                            .addHandler(MqttEncoder.INSTANCE);
+                            .addHandler(MqttEncoder.INSTANCE)
+                            .addHandler(new MetricChannelHandler())
+                            .addHandler(new MqttDecoder());
                     receiveContext.apply(MqttChannel.init(connection));
                 });
     }

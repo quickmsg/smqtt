@@ -1,6 +1,6 @@
 package io.github.quickmsg.core.mqtt;
 
-import io.github.quickmsg.core.metric.MetricManager;
+import io.github.quickmsg.metric.counter.WindowMetric;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -17,7 +17,7 @@ public class MetricChannelHandler extends ChannelDuplexHandler {
         if (msg instanceof ByteBuf) {
             ByteBuf buffer = (ByteBuf) msg;
             if (buffer.readableBytes() > 0) {
-                MetricManager.recordDataSend(buffer.readableBytes());
+                WindowMetric.WINDOW_METRIC_INSTANCE.recordDataSend(buffer.readableBytes());
             }
         }
         super.write(ctx, msg, promise);
@@ -28,7 +28,7 @@ public class MetricChannelHandler extends ChannelDuplexHandler {
         if (msg instanceof ByteBuf) {
             ByteBuf buffer = (ByteBuf) msg;
             if (buffer.readableBytes() > 0) {
-                MetricManager.recordDataReceived(buffer.readableBytes());
+                WindowMetric.WINDOW_METRIC_INSTANCE.recordDataReceived(buffer.readableBytes());
             }
         }
         super.channelRead(ctx, msg);
