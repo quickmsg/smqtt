@@ -44,10 +44,12 @@ public class WindowMetric implements MetricsGetter {
     @Override
     public JSONObject metrics() {
         JSONObject window = new JSONObject();
-        window.put("read_size", FormatUtils.formatByte(readAllBufferSize.allCount()));
-        window.put("read_hour_size", FormatUtils.formatByte(readAllBufferSize.intervalCount()));
-        window.put("write_size", FormatUtils.formatByte(writeAllBufferSize.allCount()));
-        window.put("write_hour_size", FormatUtils.formatByte(writeAllBufferSize.intervalCount()));
+        long readHour = readAllBufferSize.intervalCount();
+        long writeHour = writeAllBufferSize.intervalCount();
+        window.put("read_size", FormatUtils.formatByte(readAllBufferSize.allCount() + readHour));
+        window.put("read_hour_size", FormatUtils.formatByte(readHour));
+        window.put("write_size", FormatUtils.formatByte(writeAllBufferSize.allCount() + writeHour));
+        window.put("write_hour_size", FormatUtils.formatByte(writeHour));
         window.put("connect_size", connectCounter.allCount());
         return window;
     }
