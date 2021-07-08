@@ -6,7 +6,9 @@ import io.github.quickmsg.metric.utils.FormatUtils;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
+import java.lang.management.RuntimeMXBean;
 import java.lang.management.ThreadMXBean;
+import java.util.Date;
 import java.util.Properties;
 
 /**
@@ -16,10 +18,10 @@ import java.util.Properties;
  */
 public class JvmMetric implements MetricsGetter {
 
+
     public final static JvmMetric JVM_METRIC_INSTANCE = new JvmMetric();
 
     private JvmMetric() {
-
     }
 
 
@@ -29,6 +31,9 @@ public class JvmMetric implements MetricsGetter {
         JSONObject jvm = new JSONObject();
         MemoryMXBean mxb = ManagementFactory.getMemoryMXBean();
         ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
+        RuntimeMXBean runtimeBean = ManagementFactory.getRuntimeMXBean();
+        jvm.put("smqtt", "1.0.5");
+        jvm.put("start_time",new Date(runtimeBean.getStartTime()).toString());
         jvm.put("jdk_home", props.getProperty("java.home"));
         jvm.put("jdk_version", props.getProperty("java.version"));
         jvm.put("thread.count", threadBean.getThreadCount());
