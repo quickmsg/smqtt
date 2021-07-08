@@ -50,15 +50,20 @@ const options = {
             //   component: () => import('@/pages/dashboard/analysis'),
             // }
             {
+              path: 'console',
+              name: '控制台',
+              component: () => import('@/pages/dashboard/console'),
+            },
+            {
               path: 'connections',
               name: '连接信息',
               component: () => import('@/pages/dashboard/connections'),
             },
-            {
-              path: 'clusters',
-              name: '集群信息',
-              component: () => import('@/pages/dashboard/clusters'),
-            },
+            // {
+            //   path: 'clusters',
+            //   name: '集群信息',
+            //   component: () => import('@/pages/dashboard/clusters'),
+            // },
             {
               path: 'subscribes',
               name: '订阅信息',
