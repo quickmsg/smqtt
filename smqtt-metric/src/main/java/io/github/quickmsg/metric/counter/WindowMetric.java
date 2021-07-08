@@ -48,7 +48,7 @@ public class WindowMetric implements MetricsGetter {
         window.put("read_hour_size", FormatUtils.formatByte(readAllBufferSize.intervalCount()));
         window.put("write_size", FormatUtils.formatByte(writeAllBufferSize.allCount()));
         window.put("write_hour_size", FormatUtils.formatByte(writeAllBufferSize.intervalCount()));
-        window.put("connect_size", FormatUtils.formatByte(connectCounter.allCount()));
+        window.put("connect_size", connectCounter.allCount());
         return window;
     }
 
