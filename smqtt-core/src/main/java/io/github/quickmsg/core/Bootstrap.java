@@ -1,5 +1,6 @@
 package io.github.quickmsg.core;
 
+import ch.qos.logback.classic.Level;
 import io.github.quickmsg.common.auth.PasswordAuthentication;
 import io.github.quickmsg.common.cluster.ClusterConfig;
 import io.github.quickmsg.common.config.SslContext;
@@ -81,6 +82,9 @@ public class Bootstrap {
 
     private Consumer<Bootstrap> started;
 
+    @Builder.Default
+    private Level rootLevel = Level.INFO;
+
 
     private MqttConfiguration initMqttConfiguration() {
         MqttConfiguration mqttConfiguration = defaultConfiguration();
@@ -138,6 +142,7 @@ public class Bootstrap {
     public Mono<Bootstrap> start() {
         MqttConfiguration mqttConfiguration = initMqttConfiguration();
         MqttTransportFactory mqttTransportFactory = new MqttTransportFactory();
+        LoggerLevel.root(rootLevel);
         return mqttTransportFactory.createTransport(mqttConfiguration)
                 .start()
                 .doOnError(Throwable::printStackTrace)

@@ -6,7 +6,6 @@ import io.github.quickmsg.common.cluster.ClusterConfig;
 import io.github.quickmsg.common.config.SslContext;
 import io.github.quickmsg.common.environment.EnvContext;
 import io.github.quickmsg.common.utils.IPUtils;
-import io.github.quickmsg.common.utils.LoggerLevel;
 import io.github.quickmsg.common.utils.PropertiesLoader;
 import io.github.quickmsg.core.Bootstrap;
 import io.netty.channel.WriteBufferWaterMark;
@@ -31,10 +30,6 @@ public abstract class AbstractStarter {
     private static final Integer DEFAULT_CLUSTER_PORT = 4333;
 
     private static final String DEFAULT_AUTH_USERNAME_PASSWORD = "smqtt";
-
-    public static void start(Function<String, String> function) {
-        start(function, null);
-    }
 
 
     public static void start(Function<String, String> function, String path) {
@@ -79,12 +74,8 @@ public abstract class AbstractStarter {
                 .map(Boolean::parseBoolean).orElse(false);
 
 
-        String loggerLevel = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_LOGGER_LEVEL, function.apply(BootstrapKey.BOOTSTRAP_LOGGER_LEVEL)))
-                .map(String::valueOf).orElse(null);
-
-        if (loggerLevel != null) {
-            LoggerLevel.root(Level.toLevel(loggerLevel));
-        }
+        Level loggerLevel = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_LOGGER_LEVEL, function.apply(BootstrapKey.BOOTSTRAP_LOGGER_LEVEL)))
+                .map(Level::toLevel).orElse(null);
 
         Bootstrap.BootstrapBuilder builder = Bootstrap.builder();
         builder.port(port)
@@ -96,7 +87,9 @@ public abstract class AbstractStarter {
                 .lowWaterMark(lowWaterMark)
                 .envContext(params)
                 .highWaterMark(highWaterMark);
-
+        if (loggerLevel != null) {
+            builder.rootLevel(loggerLevel);
+        }
         if (ssl) {
             String sslCrt = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_SSL_CRT,
                     function.apply(BootstrapKey.BOOTSTRAP_SSL_CRT)))
@@ -177,7 +170,7 @@ public abstract class AbstractStarter {
 
         }
         Bootstrap bootstrap = builder.build();
-        bootstrap.doOnStarted(AbstractStarter::printUIUrl).startAwait();
+        bootstrap.doOnStarted(AbstractStarter::printUiUrl).startAwait();
     }
 
     /**
@@ -185,7 +178,7 @@ public abstract class AbstractStarter {
      *
      * @param bootstrap 启动类
      */
-    public static void printUIUrl(Bootstrap bootstrap) {
+    public static void printUiUrl(Bootstrap bootstrap) {
         if (bootstrap.getHttpOptions().getEnableAdmin()) {
             Integer port = bootstrap.getHttpOptions().getHttpPort();
             log.info("\n-------------------------------------------------------------\n\t" +

@@ -1,3 +1,4 @@
+import ch.qos.logback.classic.Level;
 import io.github.quickmsg.common.cluster.ClusterConfig;
 import io.github.quickmsg.common.config.SslContext;
 import io.github.quickmsg.core.Bootstrap;
@@ -9,6 +10,8 @@ public class ClusterNode1 {
 
     public static void main(String[] args) throws InterruptedException {
         Bootstrap bootstrap = Bootstrap.builder()
+                .rootLevel(Level.INFO)
+                .wiretap(false)
                 .port(8555)
                 .websocketPort(8999)
                 .options(channelOptionMap -> {
@@ -17,12 +20,10 @@ public class ClusterNode1 {
                 }) //netty childOptions设置
                 .highWaterMark(1000000)
                 .reactivePasswordAuth((U, P) -> true)
-
                 .lowWaterMark(1000)
                 .ssl(false)
                 .sslContext(new SslContext("crt", "key"))
                 .isWebsocket(true)
-                .wiretap(false)
                 .httpOptions(Bootstrap.HttpOptions.builder().enableAdmin(true).ssl(false).accessLog(true).build())
                 .clusterConfig(
                         ClusterConfig.builder()
