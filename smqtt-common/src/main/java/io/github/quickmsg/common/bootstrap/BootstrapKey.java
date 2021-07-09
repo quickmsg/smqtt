@@ -36,8 +36,6 @@ public class BootstrapKey {
 
     public final static String BOOTSTRAP_HTTP_ENABLE = "smqtt.http.enable";
 
-    public final static String BOOTSTRAP_HTTP_PORT = "smqtt.http.port";
-
     public final static String BOOTSTRAP_HTTP_ACCESS_LOG = "smqtt.http.accesslog";
 
     public final static String BOOTSTRAP_HTTP_SSL_ENABLE = "smqtt.http.ssl.enable";
@@ -124,14 +122,5 @@ public class BootstrapKey {
         public static final String MASTER = "MASTER";
 
         public static final String MASTER_SLAVE = "MASTER_SLAVE";
-    }
-
-
-   /*分割符号*/
-    public static class SplitSymbol {
-        /*逗号*/
-        public static final String COMMA = ",";
-        /*冒号*/
-        public static final String COLON = ":";
     }
  }

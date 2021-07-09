@@ -1,5 +1,6 @@
 package io.github.quickmsg.core.http.actors;
 
+import io.github.quickmsg.common.annotation.AllowCors;
 import io.github.quickmsg.common.annotation.Header;
 import io.github.quickmsg.common.annotation.Router;
 import io.github.quickmsg.common.config.Configuration;
@@ -19,6 +20,7 @@ import reactor.netty.http.server.HttpServerResponse;
 @Router(value = "/smqtt/monitor/cpu", type = HttpType.GET)
 @Slf4j
 @Header(key = "Content-Type", value = "application/json")
+@AllowCors
 public class CpuHttpActor implements HttpActor {
 
     @Override

@@ -1,6 +1,7 @@
 package io.github.quickmsg.core.http.actors.resource;
 
 import com.alibaba.fastjson.JSON;
+import io.github.quickmsg.common.annotation.AllowCors;
 import io.github.quickmsg.common.annotation.Header;
 import io.github.quickmsg.common.annotation.Router;
 import io.github.quickmsg.common.config.Configuration;
@@ -26,6 +27,7 @@ import java.util.Optional;
 @Router(value = "/auth/login", type = HttpType.POST,resource = true)
 @Slf4j
 @Header(key = "Content-Type", value = "application/json")
+@AllowCors
 public class LoginResourceActor implements HttpActor {
 
     @Override

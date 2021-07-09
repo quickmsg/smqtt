@@ -1,6 +1,7 @@
 package io.github.quickmsg.core.http.actors;
 
 import com.alibaba.fastjson.JSON;
+import io.github.quickmsg.common.annotation.AllowCors;
 import io.github.quickmsg.common.annotation.Header;
 import io.github.quickmsg.common.annotation.Router;
 import io.github.quickmsg.common.config.Configuration;
@@ -20,6 +21,7 @@ import reactor.netty.http.server.HttpServerResponse;
 @Router(value = "/smqtt/subscribe", type = HttpType.POST)
 @Slf4j
 @Header(key = "Content-Type", value = "application/json")
+@AllowCors
 public class SubscribeActor  implements HttpActor {
 
     @Override

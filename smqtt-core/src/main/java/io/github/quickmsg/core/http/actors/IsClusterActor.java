@@ -1,5 +1,6 @@
 package io.github.quickmsg.core.http.actors;
 
+import io.github.quickmsg.common.annotation.AllowCors;
 import io.github.quickmsg.common.annotation.Router;
 import io.github.quickmsg.common.config.Configuration;
 import io.github.quickmsg.common.enums.HttpType;
@@ -16,6 +17,7 @@ import reactor.netty.http.server.HttpServerResponse;
  */
 @Router(value = "/smqtt/is/cluster", type = HttpType.GET)
 @Slf4j
+@AllowCors
 public class IsClusterActor implements HttpActor {
 
 
