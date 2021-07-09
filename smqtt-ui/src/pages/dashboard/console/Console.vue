@@ -23,8 +23,52 @@
         <div style="margin-top: 30px;font-size: medium">系统信息</div>
         <div style="display: flex">
             <a-card title="JVM 信息" size="small" :bordered="false" style="margin-top: 15px;width:50%">
-                <span slot="extra"><img width="32" src="@/assets/img/jvm.png" /></span>
-                <p v-for="(v,k) in jvmInfo" :key="k">{{ k }} : {{ v }}</p>
+                <span slot="extra"><img src="@/assets/img/jvm.png" width="32"/></span>
+                <a-row align="top" justify="center" type="flex" v-if="Object.keys(jvmInfo).length>0">
+                    <a-col :span="12">
+                        <p class="height-100">
+                            smqtt: {{ jvmInfo.smqtt }}
+                        </p>
+                        <p class="height-100">
+                            jdk_home: {{ jvmInfo.jdk_home }}
+                        </p>
+                        <p class="height-100">
+                            jdk_version: {{ jvmInfo.jdk_version }}
+                        </p>
+                        <p class="height-100">
+                            start_time: {{ jvmInfo.start_time }}
+                        </p>
+                        <p class="height-100">
+                            thread.count: {{ jvmInfo["thread.count"] }}
+                        </p>
+                    </a-col>
+                    <a-col :span="12">
+                        <p class="height-100">
+                            heap-max: {{ jvmInfo["heap-max"] }}
+                        </p>
+                        <p class="height-100">
+                            heap-init: {{ jvmInfo["heap-init"] }}
+                        </p>
+                        <p class="height-100">
+                            heap-used: {{ jvmInfo["heap-used"] }}
+                        </p>
+                        <p class="height-100">
+                            heap-commit: {{ jvmInfo["heap-commit"]}}
+                        </p>
+                        <p class="height-100">
+                            no_heap-max: {{ jvmInfo["no_heap-max"] }}
+                        </p>
+                        <p class="height-100">
+                            no_heap-init: {{ jvmInfo["no_heap-init"] }}
+                        </p>
+                        <p class="height-100">
+                            no_heap-used: {{ jvmInfo["no_heap-used"] }}
+                        </p>
+                        <p class="height-100">
+                            no_heap-commit: {{ jvmInfo["no_heap-commit"] }}
+                        </p>
+                    </a-col>
+                </a-row>
             </a-card>
             <a-card title="CPU 信息" size="small" :bordered="false" style="margin-top: 15px;margin-left:10px;width: 50%">
                 <span slot="extra"><img width="32" src="@/assets/img/cpu.png" /></span>
@@ -156,11 +200,6 @@ export default {
                 this.dataSource = res.data
                 // 设置默认的展示节点数据
                 this.optionsList =[...res.data]
-
-                //
-                // this.dataSource = [...res.data,{"alias":"aaaa","host":"localhost"},{"alias":"bbbb","host":"1.1.2.1"}]
-                // this.optionsList =[...res.data,{"alias":"aaaa","host":"localhost"},{"alias":"bbbb","host":"1.1.2.1"}]
-
                 this.defaultNode = this.optionsList.length===0 ? undefined : this.optionsList[0]['host']
                 this.nodeInfo = res.data.slice(0,1) || []
 
@@ -186,50 +225,21 @@ export default {
         },
         getConsoleInfo(host){
             // console.log(host)
-            let jvm =`http://${host}:60000/smqtt/monitor/jvm`
-            let cpu =`http://${host}:60000/smqtt/monitor/cpu`
-            let counter =`http://${host}:60000/smqtt/monitor/counter`
+            let jvm = `http://${host}:60000/smqtt/monitor/jvm`
+            let cpu = `http://${host}:60000/smqtt/monitor/cpu`
+            let counter = `http://${host}:60000/smqtt/monitor/counter`
             let options = {
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
             }
-            axios.get(jvm,options).then(res=>{
+            axios.get(jvm, options).then(res => {
                 this.jvmInfo = res.data
             })
-            // this.jvmInfo = {
-            //     "jdk_home": "C:\\Program Files\\Java\\jdk1.8.0_261\\jre",
-            //     "thread.count": 19,
-            //     "jdk_version": "1.8.0_261",
-            //     "heap-used": "47.72MB",
-            //     "no_heap-commit": "35.44MB",
-            //     "no_heap-used": "33.81MB",
-            //     "smqtt": "1.0.5",
-            //     "start_time": "Thu Jul 08 20:01:04 CST 2021",
-            //     "heap-commit": "197MB",
-            //     "heap-max": "3.47GB",
-            //     "no_heap-max": "-0KB",
-            //     "no_heap-init": "2.44MB",
-            //     "heap-init": "250MB"
-            // }
             axios.get(cpu,options).then(res=>{
                 this.cpuInfo = res.data
             })
-            // this.cpuInfo = {
-            //     "cSys": "1.83%",
-            //     "idle": "80.1%",
-            //     "iowait": "0%",
-            //     "user": "78.27%",
-            //     "cpuNum": 8
-            // }
             axios.get(counter,options).then(res=>{
                 this.counterInfo = new Array(res.data)
             })
-            // this.counterInfo = new Array({
-            //     "connect_size": 0,
-            //     "write_size": "0KB",
-            //     "write_hour_size": "0KB",
-            //     "read_size": "0KB",
-            //     "read_hour_size": "0KB"
-            // })
             if (this.timer) {
                 clearTimeout(this.timer)
             }
@@ -237,8 +247,6 @@ export default {
                 this.getConsoleInfo(host)
             }, 3000)
         }
-
-
     }
 }
 </script>
