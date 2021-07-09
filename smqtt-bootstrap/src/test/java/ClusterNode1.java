@@ -17,6 +17,7 @@ public class ClusterNode1 {
                 }) //netty childOptions设置
                 .highWaterMark(1000000)
                 .reactivePasswordAuth((U, P) -> true)
+
                 .lowWaterMark(1000)
                 .ssl(false)
                 .sslContext(new SslContext("crt", "key"))
