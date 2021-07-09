@@ -1,8 +1,15 @@
 <template>
     <div>
         <div style="margin-top: 15px; display: flex; justify-content: space-between">
-            <div style="font-size: 25px">控制台</div>
-            <div>
+            <div style="display: flex; flex-wrap: wrap">
+                <div style="margin-top: 5px"><img src="@/assets/img/cluster.png" width="30"/></div>
+
+                <div style="font-size: 25px;margin-left: 10px;" v-if="isCluster">控制台 [ 集群 ] </div>
+                <div style="font-size: 25px;margin-left: 10px;" v-else>控制台 [ 单机 ] </div>
+            </div>
+
+
+            <div v-if="isCluster">
                 <a-select
                     allowClear
                     show-search
@@ -22,57 +29,95 @@
         </div>
         <div style="margin-top: 30px;font-size: medium">系统信息</div>
         <div style="display: flex">
-            <a-card title="JVM 信息" size="small" :bordered="false" style="margin-top: 15px;width:50%">
+            <a-card title="JVM 信息" size="small" :bordered="false" style="margin-top: 15px;width:50%;height: 100%">
                 <span slot="extra"><img src="@/assets/img/jvm.png" width="32"/></span>
                 <a-row align="top" justify="center" type="flex" v-if="Object.keys(jvmInfo).length>0">
+                    <a-col :span="24">
+                        <p class="height-100">
+                            SMQTT 版本： {{ jvmInfo.smqtt }}
+                        </p>
+                        <p class="height-100">
+                            JDK 路径： {{ jvmInfo.jdk_home }}
+                        </p>
+                        <p class="height-100">
+                            JDK 版本： {{ jvmInfo.jdk_version }}
+                        </p>
+                        <p class="height-100">
+                            开始时间： {{ jvmInfo.start_time }}
+                        </p>
+                        <p class="height-100">
+                            线程数： {{ jvmInfo["thread.count"] }}
+                        </p>
+                    </a-col>
+
+                </a-row>
+                <a-row>
                     <a-col :span="12">
                         <p class="height-100">
-                            smqtt: {{ jvmInfo.smqtt }}
+                            最大可用堆内存： {{ jvmInfo["heap-max"] }}
                         </p>
                         <p class="height-100">
-                            jdk_home: {{ jvmInfo.jdk_home }}
+                            初始化堆内存：{{ jvmInfo["heap-init"] }}
                         </p>
                         <p class="height-100">
-                            jdk_version: {{ jvmInfo.jdk_version }}
+                            已用堆内存： {{ jvmInfo["heap-used"] }}
                         </p>
                         <p class="height-100">
-                            start_time: {{ jvmInfo.start_time }}
-                        </p>
-                        <p class="height-100">
-                            thread.count: {{ jvmInfo["thread.count"] }}
+                            已提交堆内存： {{ jvmInfo["heap-commit"]}}
                         </p>
                     </a-col>
                     <a-col :span="12">
                         <p class="height-100">
-                            heap-max: {{ jvmInfo["heap-max"] }}
+                            最大可用非堆内存： {{ jvmInfo["no_heap-max"] }}
                         </p>
                         <p class="height-100">
-                            heap-init: {{ jvmInfo["heap-init"] }}
+                            初始化非堆内存： {{ jvmInfo["no_heap-init"] }}
                         </p>
                         <p class="height-100">
-                            heap-used: {{ jvmInfo["heap-used"] }}
+                            已用非堆内存： {{ jvmInfo["no_heap-used"] }}
                         </p>
                         <p class="height-100">
-                            heap-commit: {{ jvmInfo["heap-commit"]}}
-                        </p>
-                        <p class="height-100">
-                            no_heap-max: {{ jvmInfo["no_heap-max"] }}
-                        </p>
-                        <p class="height-100">
-                            no_heap-init: {{ jvmInfo["no_heap-init"] }}
-                        </p>
-                        <p class="height-100">
-                            no_heap-used: {{ jvmInfo["no_heap-used"] }}
-                        </p>
-                        <p class="height-100">
-                            no_heap-commit: {{ jvmInfo["no_heap-commit"] }}
+                            已提交非堆内存： {{ jvmInfo["no_heap-commit"] }}
                         </p>
                     </a-col>
                 </a-row>
+                <a-row>
+                    <a-col :span="24">
+                    </a-col>
+                </a-row>
             </a-card>
-            <a-card title="CPU 信息" size="small" :bordered="false" style="margin-top: 15px;margin-left:10px;width: 50%">
+            <a-card size="small" :bordered="false" style="margin-top: 15px;margin-left:10px;width: 50%;height: 100%">
+                <div slot="title">CPU 信息（{{cpuInfo["cpuNum"] || "-"}} 核）</div>
                 <span slot="extra"><img width="32" src="@/assets/img/cpu.png" /></span>
-                <p v-for="(v,k) in cpuInfo" :key="k">{{ k }} : {{ v }}</p>
+                <a-row style="height: 50%" v-if="Object.keys(cpuInfo).length>0">
+                    <a-col :span="12">
+                        <p >
+                            <img width="40" src="@/assets/img/csys.png" />
+                            系统使用率： {{ cpuInfo["cSys"] }}
+                        </p>
+
+                    </a-col>
+                    <a-col :span="12">
+                        <p>
+                            <img width="40" src="@/assets/img/user.png" />
+                            用户使用率： {{ cpuInfo["user"] }}
+                        </p>
+                    </a-col>
+                </a-row>
+                <a-row v-if="Object.keys(cpuInfo).length>0">
+                    <a-col :span="12" >
+                        <p >
+                            <img width="40" src="@/assets/img/idle.png" />
+                            当前使用率： {{ cpuInfo["idle"] }}
+                        </p>
+                    </a-col>
+                    <a-col :span="12">
+                        <p >
+                            <img width="40" src="@/assets/img/iowait.png" />
+                            当前等待率： {{ cpuInfo["iowait"] }}
+                        </p>
+                    </a-col>
+                </a-row>
             </a-card>
         </div>
 
@@ -97,7 +142,7 @@
 </template>
 
 <script>
-import {clusters} from '@/services/smqtt'
+import {clusters,isCluster} from '@/services/smqtt'
 import StandardTable from '@/components/table/StandardTable'
 import axios from "axios";
 
@@ -164,6 +209,7 @@ export default {
         return {
             columns: columns,
             counterColumns: counterColumns,
+            isCluster:false,
             dataSource: [],
             optionsList: [],
             defaultNode: undefined,
@@ -174,6 +220,9 @@ export default {
         }
     },
     mounted() {
+        isCluster().then(res=>{
+            this.isCluster = res
+        })
         this.getClusters()
     },
     beforeDestroy() {
@@ -224,7 +273,7 @@ export default {
             }
         },
         getConsoleInfo(host){
-            // console.log(host)
+            !this.isCluster?host="localhost":null
             let jvm = `http://${host}:60000/smqtt/monitor/jvm`
             let cpu = `http://${host}:60000/smqtt/monitor/cpu`
             let counter = `http://${host}:60000/smqtt/monitor/counter`

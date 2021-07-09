@@ -1,4 +1,4 @@
-import {CLUSTERS,CONNECTIONS,SUBSCRIBES} from '@/services/api'
+import {CLUSTERS,CONNECTIONS,SUBSCRIBES,ISCLUESTER} from '@/services/api'
 import {request, METHOD} from '@/utils/request'
 
 /**
@@ -20,4 +20,11 @@ export async function clusters() {
  */
 export async function subscribes() {
     return request(SUBSCRIBES, METHOD.POST, {})
+}
+
+/**
+ * 是否是集群
+ */
+export async function isCluster() {
+    return request(ISCLUESTER, METHOD.GET, {})
 }
