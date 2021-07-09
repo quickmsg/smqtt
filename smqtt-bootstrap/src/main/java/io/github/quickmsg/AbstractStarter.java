@@ -179,15 +179,16 @@ public abstract class AbstractStarter {
      * @param bootstrap 启动类
      */
     public static void printUiUrl(Bootstrap bootstrap) {
+        String start = "\n-------------------------------------------------------------\n\t";
+        start += String.format("Smqtt mqtt connect url %s:%s \n\t", IPUtils.getIP(), bootstrap.getPort());
         if (bootstrap.getHttpOptions().getEnableAdmin()) {
             Integer port = bootstrap.getHttpOptions().getHttpPort();
-            log.info("\n-------------------------------------------------------------\n\t" +
-                            "Application UI is running AccessURLs:\n\t" +
-                            "Http Local url:    http://localhost:{}/smqtt/admin" + "\n\t" +
-                            "Http External url: http://{}:{}/smqtt/admin" + "\n" +
-                            "-------------------------------------------------------------"
-                    , port, IPUtils.getIP(), port);
+            start += String.format("Smqtt-Admin UI is running AccessURLs:\n\t" +
+                    "Http Local url:    http://localhost:%s/smqtt/admin" + "\n\t" +
+                    "Http External url: http://%s:%s/smqtt/admin" + "\n" +
+                    "-------------------------------------------------------------", port, IPUtils.getIP(), port);
         }
+        log.info(start);
     }
 
 }
