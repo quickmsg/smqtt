@@ -68,6 +68,11 @@ const options = {
               path: 'subscribes',
               name: '订阅信息',
               component: () => import('@/pages/dashboard/subscribes'),
+            },
+            {
+              path: 'publish',
+              name: '推送信息',
+              component: () => import('@/pages/dashboard/publish'),
             }
           ]
         },

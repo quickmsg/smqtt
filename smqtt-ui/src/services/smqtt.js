@@ -1,4 +1,4 @@
-import {CLUSTERS,CONNECTIONS,SUBSCRIBES,ISCLUESTER} from '@/services/api'
+import {CLUSTERS, CONNECTIONS, SUBSCRIBES, ISCLUESTER, PUBLISH} from '@/services/api'
 import {request, METHOD} from '@/utils/request'
 
 /**
@@ -27,4 +27,11 @@ export async function subscribes() {
  */
 export async function isCluster() {
     return request(ISCLUESTER, METHOD.GET, {})
+}
+
+/**
+ * 推送mqtt消息
+ */
+export async function publish(){
+    return request(PUBLISH,METHOD.POST,{})
 }
