@@ -32,6 +32,6 @@ export async function isCluster() {
 /**
  * 推送mqtt消息
  */
-export async function publish(){
-    return request(PUBLISH,METHOD.POST,{})
+export async function publish(params){
+    return request(PUBLISH,METHOD.POST,params)
 }
