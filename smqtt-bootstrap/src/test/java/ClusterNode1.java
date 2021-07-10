@@ -35,7 +35,7 @@ public class ClusterNode1 {
                 .build()
                 .start().block();
         assert bootstrap != null;
-        Thread.sleep(1000000);
+        Thread.sleep(10000000);
     }
 
 }

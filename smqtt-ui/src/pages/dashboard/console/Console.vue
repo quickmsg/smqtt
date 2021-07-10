@@ -29,64 +29,40 @@
         </div>
         <div style="margin-top: 30px;font-size: medium">系统信息</div>
         <div style="display: flex">
-            <a-card title="JVM 信息" size="small" :bordered="false" style="margin-top: 15px;width:50%;height: 100%">
+            <a-card size="small" :bordered="false" style="margin-top: 15px;width:50%;height: 100%">
+                <div slot="title">SMQTT 信息（Ver {{jvmInfo["smqtt"] || "-"}}）</div>
                 <span slot="extra"><img src="@/assets/img/jvm.png" width="32"/></span>
-                <a-row align="top" justify="center" type="flex" v-if="Object.keys(jvmInfo).length>0">
-                    <a-col :span="24">
-                        <p class="height-100">
-                            SMQTT 版本： {{ jvmInfo.smqtt }}
-                        </p>
-                        <p class="height-100">
-                            JDK 路径： {{ jvmInfo.jdk_home }}
-                        </p>
-                        <p class="height-100">
-                            JDK 版本： {{ jvmInfo.jdk_version }}
-                        </p>
-                        <p class="height-100">
-                            开始时间： {{ jvmInfo.start_time }}
-                        </p>
-                        <p class="height-100">
-                            线程数： {{ jvmInfo["thread.count"] }}
-                        </p>
-                    </a-col>
+              <a-row style="height: 50%" v-if="Object.keys(jvmInfo).length>0">
+                <a-col :span="12">
+                  <p >
+                    <img width="40" src="@/assets/img/version.png" />
+                    JDK 版本： {{ jvmInfo.jdk_version }}
+                  </p>
 
-                </a-row>
-                <a-row>
-                    <a-col :span="12">
-                        <p class="height-100">
-                            最大可用堆内存： {{ jvmInfo["heap-max"] }}
-                        </p>
-                        <p class="height-100">
-                            初始化堆内存：{{ jvmInfo["heap-init"] }}
-                        </p>
-                        <p class="height-100">
-                            已用堆内存： {{ jvmInfo["heap-used"] }}
-                        </p>
-                        <p class="height-100">
-                            已提交堆内存： {{ jvmInfo["heap-commit"]}}
-                        </p>
-                    </a-col>
-                    <a-col :span="12">
-                        <p class="height-100">
-                            最大可用非堆内存： {{ jvmInfo["no_heap-max"] }}
-                        </p>
-                        <p class="height-100">
-                            初始化非堆内存： {{ jvmInfo["no_heap-init"] }}
-                        </p>
-                        <p class="height-100">
-                            已用非堆内存： {{ jvmInfo["no_heap-used"] }}
-                        </p>
-                        <p class="height-100">
-                            已提交非堆内存： {{ jvmInfo["no_heap-commit"] }}
-                        </p>
-                    </a-col>
-                </a-row>
-                <a-row>
-                    <a-col :span="24">
-                    </a-col>
-                </a-row>
+                </a-col>
+                <a-col :span="12">
+                  <p>
+                    <img width="40" src="@/assets/img/path.png" />
+                    JDK 路径： {{ jvmInfo.jdk_home }}
+                  </p>
+                </a-col>
+              </a-row>
+              <a-row v-if="Object.keys(cpuInfo).length>0">
+                <a-col :span="12" >
+                  <p >
+                    <img width="40" src="@/assets/img/starttime.png" />
+                    开始时间： {{ jvmInfo.start_time }}
+                  </p>
+                </a-col>
+                <a-col :span="12">
+                  <p >
+                    <img width="40" src="@/assets/img/threadcount.png" />
+                    线程数： {{ jvmInfo["thread.count"] }}
+                  </p>
+                </a-col>
+              </a-row>
             </a-card>
-            <a-card size="small" :bordered="false" style="margin-top: 15px;margin-left:10px;width: 50%;height: 100%">
+            <a-card size="small" :bordered="false" style="margin-top: 15px;margin-left:10px;width: 50%">
                 <div slot="title">CPU 信息（{{cpuInfo["cpuNum"] || "-"}} 核）</div>
                 <span slot="extra"><img width="32" src="@/assets/img/cpu.png" /></span>
                 <a-row style="height: 50%" v-if="Object.keys(cpuInfo).length>0">
@@ -121,6 +97,14 @@
             </a-card>
         </div>
 
+        <standard-table
+            :columns="heapColumns"
+            :dataSource="heapInfo"
+            :row-key="(r,i)=>{i.toString()}"
+            :pagination=false
+        >
+        </standard-table>
+
         <div style="margin-top: 30px;font-size: medium">节点信息</div>
         <standard-table
             :columns="columns"
@@ -148,11 +132,6 @@ import axios from "axios";
 
 const columns = [
     {
-        title: 'ID',
-        width: '100px',
-        customRender: (text, record, index) => index + 1
-    },
-    {
         title: 'Node名称',
         dataIndex: 'alias',
         key: 'alias',
@@ -173,13 +152,7 @@ const columns = [
         key: 'namespace',
     },
 ]
-
 const counterColumns = [
-    {
-        title: 'ID',
-        width: '100px',
-        customRender: (text, record, index) => index + 1
-    },
     {
         title: '连接数',
         dataIndex: 'connect_size',
@@ -202,6 +175,48 @@ const counterColumns = [
     }
 
 ]
+const heapColumns = [
+  {
+    title: '最大可用堆内存',
+    dataIndex: 'heap-max',
+    key: 'heap-max',
+  },
+  {
+    title: '初始化堆内存',
+    dataIndex: 'heap-init',
+    key: 'heap-init',
+  },
+  {
+    title: '已用堆内存',
+    dataIndex: 'heap-used',
+    key: 'heap-used',
+  },
+  {
+    title: '已提交堆内存',
+    dataIndex: 'heap-commit',
+    key: 'heap-commit',
+  },
+  {
+    title: '最大可用非堆内存',
+    dataIndex: 'no_heap-max',
+    key: 'no_heap-max',
+  },
+  {
+    title: '初始化非堆内存',
+    dataIndex: 'no_heap-init',
+    key: 'no_heap-init',
+  },
+  {
+    title: '已用非堆内存',
+    dataIndex: 'no_heap-used',
+    key: 'no_heap-used',
+  },
+  {
+    title: '已提交非堆内存',
+    dataIndex: 'no_heap-commit',
+    key: 'no_heap-commit',
+  },
+]
 export default {
     name: "Console",
     components: {StandardTable},
@@ -209,6 +224,7 @@ export default {
         return {
             columns: columns,
             counterColumns: counterColumns,
+            heapColumns:heapColumns,
             isCluster:false,
             dataSource: [],
             optionsList: [],
@@ -216,7 +232,8 @@ export default {
             nodeInfo:[],
             jvmInfo:{},
             cpuInfo:{},
-            counterInfo:[]
+            counterInfo:[],
+            heapInfo:[]
         }
     },
     mounted() {
@@ -282,6 +299,7 @@ export default {
             }
             axios.get(jvm, options).then(res => {
                 this.jvmInfo = res.data
+                this.heapInfo = [res.data]
             })
             axios.get(cpu,options).then(res=>{
                 this.cpuInfo = res.data
