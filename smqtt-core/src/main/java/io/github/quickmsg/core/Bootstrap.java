@@ -191,7 +191,6 @@ public class Bootstrap {
         @Builder.Default
         private Boolean ssl = false;
 
-
         private SslContext sslContext;
 
         @Builder.Default
