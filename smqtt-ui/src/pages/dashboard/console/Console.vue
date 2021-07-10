@@ -102,6 +102,7 @@
             :dataSource="heapInfo"
             :row-key="(r,i)=>{i.toString()}"
             :pagination=false
+            :loading="jvmInfoLoading"
         >
         </standard-table>
 
@@ -120,6 +121,7 @@
             :dataSource="counterInfo"
             :row-key="(r,i)=>{i.toString()}"
             :pagination=false
+            :loading="counterInfoLoading"
         >
         </standard-table>
     </div>
@@ -233,7 +235,10 @@ export default {
             jvmInfo:{},
             cpuInfo:{},
             counterInfo:[],
-            heapInfo:[]
+            heapInfo:[],
+            jvmInfoLoading:false,
+            counterInfoLoading:false,
+            clusterInfoLoading:false
         }
     },
     mounted() {
@@ -261,6 +266,7 @@ export default {
     },
     methods: {
         getClusters() {
+            this.counterInfoLoading=true
             clusters().then(res => {
                 // 存储原始数据
                 this.dataSource = res.data
@@ -268,6 +274,7 @@ export default {
                 this.optionsList =[...res.data]
                 this.defaultNode = this.optionsList.length===0 ? undefined : this.optionsList[0]['host']
                 this.nodeInfo = res.data.slice(0,1) || []
+                this.counterInfoLoading=false
 
             })
         },
@@ -290,6 +297,8 @@ export default {
             }
         },
         getConsoleInfo(host){
+            this.jvmInfoLoading=true
+            this.counterInfoLoading=true
             !this.isCluster?host="localhost":null
             let jvm = `http://${host}:60000/smqtt/monitor/jvm`
             let cpu = `http://${host}:60000/smqtt/monitor/cpu`
@@ -300,12 +309,14 @@ export default {
             axios.get(jvm, options).then(res => {
                 this.jvmInfo = res.data
                 this.heapInfo = [res.data]
+                this.jvmInfoLoading=false
             })
             axios.get(cpu,options).then(res=>{
                 this.cpuInfo = res.data
             })
             axios.get(counter,options).then(res=>{
                 this.counterInfo = new Array(res.data)
+                this.counterInfoLoading=false
             })
             if (this.timer) {
                 clearTimeout(this.timer)
