@@ -7,10 +7,10 @@
     <parent>
         <artifactId>smqtt-registry</artifactId>
         <groupId>io.github.quickmsg</groupId>
-        <version>1.0.5</version>
+        <version>1.0.6</version>
     </parent>
     <artifactId>smqtt-registry-akka</artifactId>
-    <version>1.0.5</version>
+    <version>1.0.6</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
