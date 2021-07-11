@@ -25,13 +25,6 @@ public class ClusterNode1 {
                 .sslContext(new SslContext("crt", "key"))
                 .isWebsocket(true)
                 .httpOptions(Bootstrap.HttpOptions.builder().enableAdmin(true).ssl(false).accessLog(true).build())
-                .clusterConfig(
-                        ClusterConfig.builder()
-                                .clustered(true)
-                                .port(7773)
-                                .nodeName("node-2")
-                                .clusterUrl("127.0.0.1:7771,127.0.0.1:7772")
-                                .build())
                 .build()
                 .start().block();
         assert bootstrap != null;
