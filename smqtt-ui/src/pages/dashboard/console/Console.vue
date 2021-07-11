@@ -308,7 +308,7 @@ export default {
             let cpu = `http://${host}:60000/smqtt/monitor/cpu`
             let counter = `http://${host}:60000/smqtt/monitor/counter`
             let options = {
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'},
             }
             axios.get(jvm, options).then(res => {
                 this.jvmInfo = res.data
