@@ -35,7 +35,7 @@ public abstract class AbstractStarter {
     public static void start(Function<String, String> function, String path) {
         path = path == null ? DEFAULT_PROPERTIES_LOAD_CONFIG_PATH : path;
         EnvContext params = PropertiesLoader.loadProperties(path);
-
+        log.info("environments {} ", params.getEnvironments());
         Integer port = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_PORT, function.apply(BootstrapKey.BOOTSTRAP_PORT)))
                 .map(Integer::parseInt).orElse(DEFAULT_MQTT_PORT);
 
@@ -181,7 +181,7 @@ public abstract class AbstractStarter {
     public static void printUiUrl(Bootstrap bootstrap) {
         String start = "\n-------------------------------------------------------------\n\t";
         start += String.format("Smqtt mqtt connect url %s:%s \n\t", IPUtils.getIP(), bootstrap.getPort());
-        if (bootstrap.getHttpOptions().getEnableAdmin()) {
+        if (bootstrap.getHttpOptions() != null && bootstrap.getHttpOptions().getEnableAdmin()) {
             Integer port = bootstrap.getHttpOptions().getHttpPort();
             start += String.format("Smqtt-Admin UI is running AccessURLs:\n\t" +
                     "Http Local url:    http://localhost:%s/smqtt/admin" + "\n\t" +
