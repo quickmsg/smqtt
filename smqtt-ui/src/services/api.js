@@ -7,6 +7,8 @@ module.exports = {
   CLUSTERS: `${BASE_URL}/smqtt/cluster`,
   CONNECTIONS: `${BASE_URL}/smqtt/connection`,
   SUBSCRIBES:`${BASE_URL}/smqtt/subscribe`,
+  ISCLUESTER:`${BASE_URL}/smqtt/is/cluster`,
+  PUBLISH:`${BASE_URL}/smqtt/publish`,
   ROUTES: `${BASE_URL}/routes`,
   GOODS: `${BASE_URL}/goods`,
   GOODS_COLUMNS: `${BASE_URL}/columns`,

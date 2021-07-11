@@ -69,7 +69,7 @@
           <a-icon class="icon" type="alipay-circle" />
           <a-icon class="icon" type="taobao-circle" />
           <a-icon class="icon" type="weibo-circle" />
-          <router-link style="float: right" to="/dashboard/workplace" >注册账户</router-link>
+          <router-link style="float: right" to="/dashboard/console" >注册账户</router-link>
         </div> -->
       </a-form>
     </div>
@@ -109,7 +109,14 @@ export default {
           const name = this.form.getFieldValue('name')
           const password = this.form.getFieldValue('password')
           this.userName=name
-          login(name, password).then(this.afterLogin)
+          login(name, password).then(res=>{
+            if(res.data.success){
+              this.afterLogin(res)
+            }else {
+              this.logging=false
+              this.$message.warn("登录失败，请检查后输入后重试", 3)
+            }
+          })
         }
       })
     },
@@ -118,14 +125,14 @@ export default {
       const loginRes = res.data
       this.setUser({
         name: this.userName,
-        avatar: '',
+        avatar: 'https://cdn1.iconfinder.com/data/icons/website-internet/48/website_-_male_user-512.png',
         address: '',
         position: ''
       })
       this.setPermissions([{id: 'queryForm', operation: ['add', 'edit']}])
       this.setRoles([{id: 'admin', operation: ['add', 'edit', 'delete']}])
       setAuthorization({token: loginRes.data.access_token, expireAt: new Date(loginRes.data.expires_in)})
-      this.$router.push('/dashboard/connections')
+      this.$router.push('/dashboard/console')
       this.$message.success(`${this.userName}，欢迎回来`, 3)
       // // 获取路由配置
       // getRoutesConfig().then(result => {

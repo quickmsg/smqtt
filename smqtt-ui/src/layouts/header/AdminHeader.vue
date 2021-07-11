@@ -18,6 +18,10 @@
             </a>
           </a-tooltip> -->
           <!-- <header-notice class="header-item"/> -->
+        <div>
+          <a href="https://github.com/quickmsg/smqtt" target="_blank"><img src="https://img.shields.io/github/stars/quickmsg/smqtt"></a>
+          <a href="https://github.com/quickmsg/smqtt" target="_blank"><img style="margin-left: 10px" src="https://img.shields.io/github/forks/quickmsg/smqtt"></a>
+        </div>
           <header-avatar class="header-item"/>
 <!--          <a-dropdown class="lang header-item">-->
 <!--            <div>-->

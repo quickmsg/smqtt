@@ -1,6 +1,6 @@
 package io.github.quickmsg.common.cluster;
 
-import io.github.quickmsg.common.enums.ClusterEvent;
+import io.github.quickmsg.common.enums.ClusterStatus;
 import io.github.quickmsg.common.spi.DynamicLoader;
 import io.github.quickmsg.common.utils.MessageUtils;
 import io.netty.handler.codec.mqtt.MqttFixedHeader;
@@ -39,9 +39,9 @@ public interface ClusterRegistry {
     /**
      * 开始订阅Node事件
      *
-     * @return {@link Flux<ClusterEvent>}
+     * @return {@link Flux< ClusterStatus >}
      */
-    Flux<ClusterEvent> clusterEvent();
+    Flux<ClusterStatus> clusterEvent();
 
 
     /**

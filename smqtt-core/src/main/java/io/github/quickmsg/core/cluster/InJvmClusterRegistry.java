@@ -4,7 +4,7 @@ import io.github.quickmsg.common.cluster.ClusterConfig;
 import io.github.quickmsg.common.cluster.ClusterMessage;
 import io.github.quickmsg.common.cluster.ClusterNode;
 import io.github.quickmsg.common.cluster.ClusterRegistry;
-import io.github.quickmsg.common.enums.ClusterEvent;
+import io.github.quickmsg.common.enums.ClusterStatus;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -28,7 +28,7 @@ public class InJvmClusterRegistry implements ClusterRegistry {
     }
 
     @Override
-    public Flux<ClusterEvent> clusterEvent() {
+    public Flux<ClusterStatus> clusterEvent() {
         return Flux.empty();
     }
 

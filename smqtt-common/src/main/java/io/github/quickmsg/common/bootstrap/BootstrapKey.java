@@ -36,8 +36,6 @@ public class BootstrapKey {
 
     public final static String BOOTSTRAP_HTTP_ENABLE = "smqtt.http.enable";
 
-    public final static String BOOTSTRAP_HTTP_PORT = "smqtt.http.port";
-
     public final static String BOOTSTRAP_HTTP_ACCESS_LOG = "smqtt.http.accesslog";
 
     public final static String BOOTSTRAP_HTTP_SSL_ENABLE = "smqtt.http.ssl.enable";
@@ -46,10 +44,11 @@ public class BootstrapKey {
 
     public final static String BOOTSTRAP_HTTP_SSL_KEY = "smqtt.http.ssl.key";
 
-    public final static String BOOTSTRAP_HTTP_USERNAME = "smqtt.http.username";
+    public final static String BOOTSTRAP_HTTP_ADMIN_ENABLE = "smqtt.http.admin.enable";
 
-    public final static String BOOTSTRAP_HTTP_PASSWORD = "smqtt.http.password";
+    public final static String BOOTSTRAP_HTTP_ADMIN_USERNAME = "smqtt.http.admin.username";
 
+    public final static String BOOTSTRAP_HTTP_ADMIN_PASSWORD = "smqtt.http.admin.password";
 
     public final static String BOOTSTRAP_CLUSTER_ENABLE = "smqtt.cluster.enable";
 
@@ -57,7 +56,22 @@ public class BootstrapKey {
 
     public final static String BOOTSTRAP_CLUSTER_PORT = "smqtt.cluster.port";
 
+    /**
+     * 实际集群的ip
+     */
     public final static String BOOTSTRAP_CLUSTER_NODE = "smqtt.cluster.node";
+
+    /**
+     * 映射容器下的ip
+     */
+    public final static String BOOTSTRAP_CLUSTER_EXTERNAL_HOST = "smqtt.cluster.external.host";
+
+    /**
+     * 映射容器下的端口
+     */
+    public final static String BOOTSTRAP_CLUSTER_EXTERNAL_PORT = "smqtt.cluster.external.port";
+
+
     /*数据库配置参数前缀*/
     public final static String DB_PREFIX = "db.";
 
@@ -124,5 +138,4 @@ public class BootstrapKey {
 
         public static final String MASTER_SLAVE = "MASTER_SLAVE";
     }
-
 }

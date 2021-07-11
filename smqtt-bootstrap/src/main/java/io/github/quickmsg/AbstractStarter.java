@@ -6,7 +6,6 @@ import io.github.quickmsg.common.cluster.ClusterConfig;
 import io.github.quickmsg.common.config.SslContext;
 import io.github.quickmsg.common.environment.EnvContext;
 import io.github.quickmsg.common.utils.IPUtils;
-import io.github.quickmsg.common.utils.LoggerLevel;
 import io.github.quickmsg.common.utils.PropertiesLoader;
 import io.github.quickmsg.core.Bootstrap;
 import io.netty.channel.WriteBufferWaterMark;
@@ -30,21 +29,13 @@ public abstract class AbstractStarter {
 
     private static final Integer DEFAULT_CLUSTER_PORT = 4333;
 
-
-    private static final Integer DEFAULT_HTTP_PORT = 12000;
-
-
     private static final String DEFAULT_AUTH_USERNAME_PASSWORD = "smqtt";
-
-    public static void start(Function<String, String> function) {
-        start(function, null);
-    }
 
 
     public static void start(Function<String, String> function, String path) {
         path = path == null ? DEFAULT_PROPERTIES_LOAD_CONFIG_PATH : path;
         EnvContext params = PropertiesLoader.loadProperties(path);
-
+        log.info("environments {} ", params.getEnvironments());
         Integer port = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_PORT, function.apply(BootstrapKey.BOOTSTRAP_PORT)))
                 .map(Integer::parseInt).orElse(DEFAULT_MQTT_PORT);
 
@@ -83,12 +74,8 @@ public abstract class AbstractStarter {
                 .map(Boolean::parseBoolean).orElse(false);
 
 
-        String loggerLevel = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_LOGGER_LEVEL, function.apply(BootstrapKey.BOOTSTRAP_LOGGER_LEVEL)))
-                .map(String::valueOf).orElse(null);
-
-        if (loggerLevel != null) {
-            LoggerLevel.root(Level.toLevel(loggerLevel));
-        }
+        Level loggerLevel = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_LOGGER_LEVEL, function.apply(BootstrapKey.BOOTSTRAP_LOGGER_LEVEL)))
+                .map(Level::toLevel).orElse(null);
 
         Bootstrap.BootstrapBuilder builder = Bootstrap.builder();
         builder.port(port)
@@ -100,11 +87,15 @@ public abstract class AbstractStarter {
                 .lowWaterMark(lowWaterMark)
                 .envContext(params)
                 .highWaterMark(highWaterMark);
-
+        if (loggerLevel != null) {
+            builder.rootLevel(loggerLevel);
+        }
         if (ssl) {
-            String sslCrt = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_SSL_CRT, function.apply(BootstrapKey.BOOTSTRAP_SSL_CRT)))
+            String sslCrt = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_SSL_CRT,
+                    function.apply(BootstrapKey.BOOTSTRAP_SSL_CRT)))
                     .map(String::valueOf).orElse(null);
-            String sslKey = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_SSL_KEY, function.apply(BootstrapKey.BOOTSTRAP_SSL_KEY)))
+            String sslKey = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_SSL_KEY,
+                    function.apply(BootstrapKey.BOOTSTRAP_SSL_KEY)))
                     .map(String::valueOf).orElse(null);
             if (sslCrt == null || sslKey == null) {
                 builder.sslContext(null);
@@ -113,23 +104,35 @@ public abstract class AbstractStarter {
             }
         }
         if (clusterEnable) {
-            Integer clusterPort = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_CLUSTER_PORT, function.apply(BootstrapKey.BOOTSTRAP_CLUSTER_PORT)))
+            Integer clusterPort = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_CLUSTER_PORT,
+                    function.apply(BootstrapKey.BOOTSTRAP_CLUSTER_PORT)))
                     .map(Integer::parseInt).orElse(DEFAULT_CLUSTER_PORT);
-            String clusterUrl = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_CLUSTER_URL, function.apply(BootstrapKey.BOOTSTRAP_CLUSTER_URL)))
+            String clusterUrl = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_CLUSTER_URL,
+                    function.apply(BootstrapKey.BOOTSTRAP_CLUSTER_URL)))
                     .map(String::valueOf).orElse(null);
-            String clusterNode = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_CLUSTER_NODE, function.apply(BootstrapKey.BOOTSTRAP_CLUSTER_NODE)))
+            String clusterExternalHost = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_CLUSTER_EXTERNAL_HOST,
+                    function.apply(BootstrapKey.BOOTSTRAP_CLUSTER_EXTERNAL_HOST)))
+                    .map(String::valueOf).orElse(null);
+            Integer clusterExternalPort = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_CLUSTER_EXTERNAL_PORT,
+                    function.apply(BootstrapKey.BOOTSTRAP_CLUSTER_EXTERNAL_PORT)))
+                    .map(Integer::valueOf).orElse(null);
+            String clusterNode = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_CLUSTER_NODE,
+                    function.apply(BootstrapKey.BOOTSTRAP_CLUSTER_NODE)))
                     .map(String::valueOf).orElse(UUID.randomUUID().toString().replaceAll("-", ""));
             ClusterConfig clusterConfig =
                     ClusterConfig.builder()
                             .port(clusterPort)
                             .clusterUrl(clusterUrl)
                             .nodeName(clusterNode)
+                            .externalPort(clusterExternalPort)
+                            .externalHost(clusterExternalHost)
                             .clustered(true)
                             .build();
             builder.clusterConfig(clusterConfig);
         }
         if (isWebsocket) {
-            Integer websocketPort = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_WEB_SOCKET_PORT, function.apply(BootstrapKey.BOOTSTRAP_WEB_SOCKET_PORT)))
+            Integer websocketPort = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_WEB_SOCKET_PORT,
+                    function.apply(BootstrapKey.BOOTSTRAP_WEB_SOCKET_PORT)))
                     .map(Integer::parseInt).orElse(DEFAULT_WEBSOCKET_MQTT_PORT);
             builder.isWebsocket(true)
                     .websocketPort(websocketPort);
@@ -137,17 +140,29 @@ public abstract class AbstractStarter {
         if (httpEnable) {
             Bootstrap.HttpOptions.HttpOptionsBuilder optionsBuilder = Bootstrap.HttpOptions.builder();
 
-            Boolean accessLog = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_HTTP_ACCESS_LOG, function.apply(BootstrapKey.BOOTSTRAP_HTTP_ACCESS_LOG)))
+            Boolean accessLog = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_HTTP_ACCESS_LOG,
+                    function.apply(BootstrapKey.BOOTSTRAP_HTTP_ACCESS_LOG)))
                     .map(Boolean::parseBoolean).orElse(false);
 
-
-            Boolean httpSsl = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_HTTP_SSL_ENABLE, function.apply(BootstrapKey.BOOTSTRAP_HTTP_SSL_ENABLE)))
+            Boolean httpSsl = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_HTTP_SSL_ENABLE,
+                    function.apply(BootstrapKey.BOOTSTRAP_HTTP_SSL_ENABLE)))
                     .map(Boolean::parseBoolean).orElse(false);
-
+            Boolean adminEnable = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_HTTP_ADMIN_ENABLE,
+                    function.apply(BootstrapKey.BOOTSTRAP_HTTP_ADMIN_ENABLE))).map(Boolean::parseBoolean).orElse(false);
+            optionsBuilder.enableAdmin(adminEnable);
+            if (adminEnable) {
+                String httpAdminUsername = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_HTTP_ADMIN_USERNAME,
+                        function.apply(BootstrapKey.BOOTSTRAP_HTTP_ADMIN_USERNAME))).orElse(null);
+                String httpAdminPassword = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_HTTP_ADMIN_PASSWORD,
+                        function.apply(BootstrapKey.BOOTSTRAP_HTTP_ADMIN_PASSWORD))).orElse(null);
+                optionsBuilder.username(httpAdminUsername).password(httpAdminPassword);
+            }
             if (httpSsl) {
-                String httpSslCrt = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_HTTP_SSL_CRT, function.apply(BootstrapKey.BOOTSTRAP_HTTP_SSL_CRT)))
+                String httpSslCrt = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_HTTP_SSL_CRT,
+                        function.apply(BootstrapKey.BOOTSTRAP_HTTP_SSL_CRT)))
                         .map(String::valueOf).orElse(null);
-                String httpSslKey = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_HTTP_SSL_KEY, function.apply(BootstrapKey.BOOTSTRAP_HTTP_SSL_KEY)))
+                String httpSslKey = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_HTTP_SSL_KEY,
+                        function.apply(BootstrapKey.BOOTSTRAP_HTTP_SSL_KEY)))
                         .map(String::valueOf).orElse(null);
                 if (httpSslKey == null || httpSslCrt == null) {
                     optionsBuilder.sslContext(null);
@@ -163,21 +178,25 @@ public abstract class AbstractStarter {
 
         }
         Bootstrap bootstrap = builder.build();
-        bootstrap.doOnStarted(bt -> printUIUrl(bootstrap.getHttpOptions().getHttpPort())).startAwait();
+        bootstrap.doOnStarted(AbstractStarter::printUiUrl).startAwait();
     }
 
     /**
      * 打印前端访问地址
      *
-     * @param httpPort http端口
+     * @param bootstrap 启动类
      */
-    public static void printUIUrl(Integer httpPort) {
-        log.info("\n-------------------------------------------------------------\n\t" +
-                        "Application UI is running AccessURLs:\n\t" +
-                        "Http Local url:    http://localhost:{}/smqtt/admin" + "\n\t" +
-                        "Http External url: http://{}:{}/smqtt/admin" + "\n" +
-                        "-------------------------------------------------------------"
-                , httpPort, IPUtils.getIP(), httpPort);
+    public static void printUiUrl(Bootstrap bootstrap) {
+        String start = "\n-------------------------------------------------------------\n\t";
+        start += String.format("Smqtt mqtt connect url %s:%s \n\t", IPUtils.getIP(), bootstrap.getPort());
+        if (bootstrap.getHttpOptions() != null && bootstrap.getHttpOptions().getEnableAdmin()) {
+            Integer port = bootstrap.getHttpOptions().getHttpPort();
+            start += String.format("Smqtt-Admin UI is running AccessURLs:\n\t" +
+                    "Http Local url:    http://localhost:%s/smqtt/admin" + "\n\t" +
+                    "Http External url: http://%s:%s/smqtt/admin" + "\n" +
+                    "-------------------------------------------------------------", port, IPUtils.getIP(), port);
+        }
+        log.info(start);
     }
 
 }

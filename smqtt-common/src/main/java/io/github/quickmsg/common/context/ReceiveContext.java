@@ -5,6 +5,7 @@ import io.github.quickmsg.common.channel.MqttChannel;
 import io.github.quickmsg.common.cluster.ClusterRegistry;
 import io.github.quickmsg.common.config.Configuration;
 import io.github.quickmsg.common.message.MessageRegistry;
+import io.github.quickmsg.common.message.RecipientRegistry;
 import io.github.quickmsg.common.protocol.ProtocolAdaptor;
 import io.github.quickmsg.common.topic.TopicRegistry;
 import io.netty.handler.codec.mqtt.MqttMessage;
@@ -55,6 +56,15 @@ public interface ReceiveContext<T extends Configuration> extends BiConsumer<Mqtt
      * @return {@link ClusterRegistry}
      */
     ClusterRegistry getClusterRegistry();
+
+
+
+    /**
+     * 消息感知/设备感知
+     *
+     * @return {@link RecipientRegistry}
+     */
+    RecipientRegistry getRecipientRegistry();
 
 
     /**

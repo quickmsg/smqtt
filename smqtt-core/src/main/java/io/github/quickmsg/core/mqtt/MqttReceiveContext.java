@@ -7,11 +7,7 @@ import io.github.quickmsg.core.cluster.ClusterSender;
 import io.netty.handler.codec.mqtt.MqttMessage;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
-import reactor.netty.Connection;
-
-import java.time.Duration;
 
 /**
  * @author luxurong
@@ -27,7 +23,7 @@ public class MqttReceiveContext extends AbstractReceiveContext<MqttConfiguration
 
     public MqttReceiveContext(MqttConfiguration configuration, Transport<MqttConfiguration> transport) {
         super(configuration, transport);
-        this.clusterSender = new ClusterSender(Schedulers.newParallel("cluster-transport"), this);
+        this.clusterSender = new ClusterSender(Schedulers.newParallel("cluster-transport"), this,this.getRecipientRegistry());
         this.clusterReceiver = new ClusterReceiver(this);
         clusterReceiver.registry();
     }
@@ -38,10 +34,12 @@ public class MqttReceiveContext extends AbstractReceiveContext<MqttConfiguration
                 .inbound()
                 .receiveObject()
                 .cast(MqttMessage.class)
-                .map(clusterSender)
+                .map(message -> clusterSender.apply(mqttChannel,message))
                 .subscribe(mqttMessage -> this.accept(mqttChannel, mqttMessage));
 
     }
+
+
 
 
     @Override

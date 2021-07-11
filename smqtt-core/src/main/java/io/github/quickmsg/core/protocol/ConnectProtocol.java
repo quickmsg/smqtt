@@ -7,8 +7,10 @@ import io.github.quickmsg.common.context.ReceiveContext;
 import io.github.quickmsg.common.enums.ChannelStatus;
 import io.github.quickmsg.common.message.MessageRegistry;
 import io.github.quickmsg.common.message.MqttMessageBuilder;
+import io.github.quickmsg.common.message.RecipientRegistry;
 import io.github.quickmsg.common.protocol.Protocol;
 import io.github.quickmsg.common.topic.TopicRegistry;
+import io.github.quickmsg.metric.counter.WindowMetric;
 import io.github.quickmsg.core.mqtt.MqttReceiveContext;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.mqtt.*;
@@ -37,9 +39,14 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
         MESSAGE_TYPE_LIST.add(MqttMessageType.CONNECT);
     }
 
+    private static void accept(MqttChannel mqttChannel1) {
+        WindowMetric.WINDOW_METRIC_INSTANCE.recordConnect(-1);
+    }
+
     @Override
     public Mono<Void> parseProtocol(MqttConnectMessage message, MqttChannel mqttChannel, ContextView contextView) {
         MqttReceiveContext mqttReceiveContext = (MqttReceiveContext) contextView.get(ReceiveContext.class);
+        RecipientRegistry recipientRegistry = mqttReceiveContext.getRecipientRegistry();
         MqttConnectVariableHeader mqttConnectVariableHeader = message.variableHeader();
         MqttConnectPayload mqttConnectPayload = message.payload();
         String clientIdentifier = mqttConnectPayload.clientIdentifier();
@@ -107,8 +114,14 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
 
             channelRegistry.registry(clientIdentifier, mqttChannel);
 
-            return mqttChannel.write(MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_ACCEPTED), false);
+            WindowMetric.WINDOW_METRIC_INSTANCE.recordConnect(1);
 
+            mqttChannel.registryClose(ConnectProtocol::accept);
+
+            recipientRegistry.channelStatus(mqttChannel, mqttChannel.getStatus());
+            mqttChannel.registryClose(mqttChannel1 -> recipientRegistry.channelStatus(mqttChannel1, ChannelStatus.OFFLINE));
+
+            return mqttChannel.write(MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_ACCEPTED), false);
         } else {
             return mqttChannel.write(
                     MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_BAD_USER_NAME_OR_PASSWORD),

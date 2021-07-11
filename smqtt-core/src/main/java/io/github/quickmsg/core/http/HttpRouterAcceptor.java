@@ -1,9 +1,11 @@
 package io.github.quickmsg.core.http;
 
+import io.github.quickmsg.common.annotation.AllowCors;
 import io.github.quickmsg.common.annotation.Header;
 import io.github.quickmsg.common.annotation.Headers;
 import io.github.quickmsg.common.annotation.Router;
 import io.github.quickmsg.common.http.HttpActor;
+import io.netty.handler.codec.http.HttpHeaderNames;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
@@ -47,6 +49,10 @@ public class HttpRouterAcceptor implements Consumer<HttpServerRoutes> {
                     httpServerRoutes
                             .delete(router.value(), handler);
                     break;
+                case OPTIONS:
+                    httpServerRoutes
+                            .options(router.value(), handler);
+                    break;
                 case GET:
                 default:
                     httpServerRoutes
@@ -59,14 +65,20 @@ public class HttpRouterAcceptor implements Consumer<HttpServerRoutes> {
     private Publisher<Void> doRequest(HttpServerRequest httpServerRequest, HttpServerResponse httpServerResponse, HttpActor httpActor, Router router) {
         Header header = httpActor.getClass().getAnnotation(Header.class);
         Headers headers = httpActor.getClass().getAnnotation(Headers.class);
+        AllowCors allowCors = httpActor.getClass().getAnnotation(AllowCors.class);
         if (router.resource() && !httpConfiguration.getEnableAdmin()) {
             return Mono.empty();
-        }
-        else{
+        } else {
             Optional.ofNullable(header)
                     .ifPresent(hd -> httpServerResponse.addHeader(hd.key(), hd.value()));
             Optional.ofNullable(headers)
                     .ifPresent(hds -> Arrays.stream(hds.headers()).forEach(hd -> httpServerResponse.addHeader(hd.key(), hd.value())));
+            Optional.ofNullable(allowCors)
+                    .ifPresent(cors -> {
+                        httpServerResponse.addHeader(HttpHeaderNames.ACCESS_CONTROL_ALLOW_HEADERS, "*");
+                        httpServerResponse.addHeader(HttpHeaderNames.ACCESS_CONTROL_ALLOW_METHODS, "*");
+                        httpServerResponse.addHeader(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
+                    });
             return httpActor.doRequest(httpServerRequest, httpServerResponse, httpConfiguration);
         }
     }
