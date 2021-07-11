@@ -146,7 +146,7 @@ sort: 1
     <dependency>
       <groupId>io.github.quickmsg</groupId>
       <artifactId>smqtt-core</artifactId>
-      <version>1.0.5</version>
+      <version>1.0.6</version>
     </dependency>
     ```
 
