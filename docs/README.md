@@ -1,7 +1,8 @@
 # ![image](../icon/logo.png) SMQTT文档
 
 SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署，支持容器化部署，具备低延迟，高吞吐量，支持百万TCP连接，同时支持多种协议交互，是一款非常优秀的消息中间件！
-[![quickmsg/mqtt-cluster](https://gitee.com/quickmsg/mqtt-cluster/widgets/widget_card.svg?colors=edf0f2,171017,2b152b,161f26,666666,ede1ed)](https://gitee.com/quickmsg/mqtt-cluster)
+[![quickmsg/mqtt-cluster](https://gitee.com/quickmsg/mqtt-cluster/widgets/widget_card.svg?colors=ffffff,1e252b,323d47,455059,d7deea,99a0ae)](https://gitee.com/quickmsg/mqtt-cluster)
+
 ## smqtt目前拥有的功能如下：
 
 1.  消息质量等级实现(支持qos0，qos1，qos2)
