@@ -17,6 +17,7 @@ import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
 
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -34,7 +35,7 @@ public class LoginResourceActor implements HttpActor {
     public Publisher<Void> doRequest(HttpServerRequest request, HttpServerResponse response, Configuration httpConfiguration) {
         return request
                 .receive()
-                .asString()
+                .asString(StandardCharsets.UTF_8)
                 .map(this.toJson(LoginDo.class))
                 .doOnNext(loginDo -> {
                     Map<String, Object> res = new HashMap<>(2);
