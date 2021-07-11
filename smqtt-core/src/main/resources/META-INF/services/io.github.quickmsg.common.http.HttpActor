@@ -10,3 +10,4 @@ io.github.quickmsg.core.http.actors.CounterHttpActor
 io.github.quickmsg.core.http.actors.CpuHttpActor
 io.github.quickmsg.core.http.actors.IsClusterActor
 io.github.quickmsg.core.http.actors.AllowCorsHttpActor
+io.github.quickmsg.core.http.actors.resource.FaviconResourceActor
