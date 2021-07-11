@@ -140,12 +140,6 @@ sort: 1
        
 ## main启动
 
----
-sort: 1
----
-
-# main方式启动
-
 
 1.  引入依赖
     ```markdown
