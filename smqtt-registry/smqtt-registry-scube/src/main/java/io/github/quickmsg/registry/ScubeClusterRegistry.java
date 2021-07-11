@@ -39,14 +39,10 @@ public class ScubeClusterRegistry implements ClusterRegistry {
     @Override
     public void registry(ClusterConfig clusterConfig) {
         this.cluster = new ClusterImpl()
-                .config(opts -> {
-                    opts.memberAlias(clusterConfig.getNodeName());
-                    Optional.ofNullable(clusterConfig.getHost())
-                            .ifPresent(opts::externalHost);
-                    Optional.ofNullable(clusterConfig.getPort())
-                            .ifPresent(opts::externalPort);
-                    return opts;
-                })
+                .config(opts -> opts.memberAlias(clusterConfig.getNodeName())
+                        .externalHost(clusterConfig.getExternalHost())
+                        .externalPort(clusterConfig.getExternalPort())
+                )
                 .transport(transportConfig -> transportConfig.port(clusterConfig.getPort()))
                 .membership(opts -> opts.seedMembers(Arrays.stream(clusterConfig
                         .getClusterUrl()
