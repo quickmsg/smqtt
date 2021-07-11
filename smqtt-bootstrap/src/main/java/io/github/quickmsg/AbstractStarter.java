@@ -110,6 +110,12 @@ public abstract class AbstractStarter {
             String clusterUrl = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_CLUSTER_URL,
                     function.apply(BootstrapKey.BOOTSTRAP_CLUSTER_URL)))
                     .map(String::valueOf).orElse(null);
+            String clusterExternalHost = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_CLUSTER_EXTERNAL_HOST,
+                    function.apply(BootstrapKey.BOOTSTRAP_CLUSTER_EXTERNAL_HOST)))
+                    .map(String::valueOf).orElse(null);
+            Integer clusterExternalPort = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_CLUSTER_EXTERNAL_PORT,
+                    function.apply(BootstrapKey.BOOTSTRAP_CLUSTER_EXTERNAL_PORT)))
+                    .map(Integer::valueOf).orElse(null);
             String clusterNode = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_CLUSTER_NODE,
                     function.apply(BootstrapKey.BOOTSTRAP_CLUSTER_NODE)))
                     .map(String::valueOf).orElse(UUID.randomUUID().toString().replaceAll("-", ""));
@@ -118,6 +124,8 @@ public abstract class AbstractStarter {
                             .port(clusterPort)
                             .clusterUrl(clusterUrl)
                             .nodeName(clusterNode)
+                            .externalPort(clusterExternalPort)
+                            .externalHost(clusterExternalHost)
                             .clustered(true)
                             .build();
             builder.clusterConfig(clusterConfig);

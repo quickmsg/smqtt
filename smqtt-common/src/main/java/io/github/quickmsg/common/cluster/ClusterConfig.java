@@ -20,6 +20,11 @@ public class ClusterConfig {
 
     private String clusterUrl;
 
+    private String externalHost;
+
+    private Integer externalPort;
+
+
     @Builder.Default
     private String namespace = "smqtt";
 

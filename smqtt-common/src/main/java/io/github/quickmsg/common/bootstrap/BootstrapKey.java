@@ -56,7 +56,22 @@ public class BootstrapKey {
 
     public final static String BOOTSTRAP_CLUSTER_PORT = "smqtt.cluster.port";
 
+    /**
+     * 实际集群的ip
+     */
     public final static String BOOTSTRAP_CLUSTER_NODE = "smqtt.cluster.node";
+
+    /**
+     * 映射容器下的ip
+     */
+    public final static String BOOTSTRAP_CLUSTER_EXTERNAL_HOST = "smqtt.cluster.external.host";
+
+    /**
+     * 映射容器下的端口
+     */
+    public final static String BOOTSTRAP_CLUSTER_EXTERNAL_PORT = "smqtt.cluster.external.port";
+
+
     /*数据库配置参数前缀*/
     public final static String DB_PREFIX = "db.";
 
@@ -123,4 +138,4 @@ public class BootstrapKey {
 
         public static final String MASTER_SLAVE = "MASTER_SLAVE";
     }
- }
+}
