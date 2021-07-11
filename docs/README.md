@@ -1,8 +1,7 @@
-# SMQTT文档
+# ![image](../icon/logo.png) SMQTT文档
 
 SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署，支持容器化部署，具备低延迟，高吞吐量，支持百万TCP连接，同时支持多种协议交互，是一款非常优秀的消息中间件！
-[项目地址](https://github.com/quickmsg/smqtt)
-
+[![quickmsg/mqtt-cluster](https://gitee.com/quickmsg/mqtt-cluster/widgets/widget_card.svg?colors=edf0f2,171017,2b152b,161f26,666666,ede1ed)](https://gitee.com/quickmsg/mqtt-cluster)
 ## smqtt目前拥有的功能如下：
 
 1.  消息质量等级实现(支持qos0，qos1，qos2)
@@ -18,21 +17,20 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
     - 通道管理接口 (管理系统的客户端连接)
     - 认证接口 （用于自定义外部认证）
     - 拦截器  （用户自定义拦截消息）
+    - 持久化消息
+    - 外部消息桥接
+10. 管理页面支持
 10. 集群支持（gossip协议实现）
 11. 容器化支持 
 
 
-## 后面规划项目
-   
-- 规则引擎
-- Web管理系统
-- 监控系统
-- 协议桥接agent（用户其他协议与broker之间交互）
+## 商业合作
 
+> 添加微信号`Lemon877164954`
 
 
 ## 麻烦关注下公众号！
 ![image](icon/icon.jpg)
 
-- 添加微信号`Lemon877164954`，拉入smqtt官方交流群
+- 添加微信号`Lemon877164954`拉入smqtt官方交流群
 - 加入qq群 `700152283` 
