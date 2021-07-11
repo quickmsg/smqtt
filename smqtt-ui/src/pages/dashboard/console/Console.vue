@@ -243,7 +243,7 @@ export default {
     },
     mounted() {
         isCluster().then(res=>{
-            this.isCluster = res
+            this.isCluster = res.data
         })
         this.getClusters()
     },

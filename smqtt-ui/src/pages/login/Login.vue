@@ -109,7 +109,14 @@ export default {
           const name = this.form.getFieldValue('name')
           const password = this.form.getFieldValue('password')
           this.userName=name
-          login(name, password).then(this.afterLogin)
+          login(name, password).then(res=>{
+            if(res.data.success){
+              this.afterLogin(res)
+            }else {
+              this.logging=false
+              this.$message.warn("登录失败，请检查后输入后重试", 3)
+            }
+          })
         }
       })
     },

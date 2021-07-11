@@ -78,12 +78,6 @@ export default {
         })
       },
       reset(){
-        // this.params={
-        //   topic:"",
-        //   qos:0,
-        //   retain:true,
-        //   message:""
-        // }
         this.$refs.ruleForm.resetFields();
       }
     }
