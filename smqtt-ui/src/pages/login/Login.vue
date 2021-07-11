@@ -125,7 +125,7 @@ export default {
       const loginRes = res.data
       this.setUser({
         name: this.userName,
-        avatar: '',
+        avatar: 'https://cdn1.iconfinder.com/data/icons/website-internet/48/website_-_male_user-512.png',
         address: '',
         position: ''
       })
