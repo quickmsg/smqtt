@@ -160,6 +160,11 @@ smqtt.cluster.url=127.0.0.1:7771,127.0.0.1:7772
 smqtt.cluster.port=7771
 # 节点名称
 smqtt.cluster.node=node-1
+# 容器集群映射主机
+# smqtt.cluster.external.host = localhost
+# 容器集群映射port
+# smqtt.cluster.external.port
+
 # 数据库配置(选配)
 db.driverClassName=com.mysql.jdbc.Driver
 db.url=jdbc:mysql://127.0.0.1:3306/smqtt?characterEncoding=utf-8&useSSL=false&useInformationSchema=true&serverTimezone=UTC
