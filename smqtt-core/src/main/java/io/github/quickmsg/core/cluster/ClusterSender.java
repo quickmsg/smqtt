@@ -24,8 +24,10 @@ public class ClusterSender implements Function<MqttMessage, MqttMessage> {
     @Override
     public MqttMessage apply(MqttMessage mqttMessage) {
         if (mqttMessage instanceof MqttPublishMessage) {
-            mqttReceiveContext.getClusterRegistry().spreadPublishMessage(((MqttPublishMessage) mqttMessage).copy()).subscribeOn(scheduler).subscribe();
             ((MqttPublishMessage) mqttMessage).retain();
+            if (mqttReceiveContext.getConfiguration().getClusterConfig().getClustered()) {
+                mqttReceiveContext.getClusterRegistry().spreadPublishMessage(((MqttPublishMessage) mqttMessage).copy()).subscribeOn(scheduler).subscribe();
+            }
         }
         return mqttMessage;
     }

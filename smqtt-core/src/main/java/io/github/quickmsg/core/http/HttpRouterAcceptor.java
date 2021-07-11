@@ -1,10 +1,11 @@
 package io.github.quickmsg.core.http;
 
-import io.github.quickmsg.common.http.HttpActor;
 import io.github.quickmsg.common.annotation.Header;
 import io.github.quickmsg.common.annotation.Headers;
 import io.github.quickmsg.common.annotation.Router;
+import io.github.quickmsg.common.http.HttpActor;
 import org.reactivestreams.Publisher;
+import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
 import reactor.netty.http.server.HttpServerRoutes;
@@ -19,6 +20,12 @@ import java.util.function.Consumer;
  */
 public class HttpRouterAcceptor implements Consumer<HttpServerRoutes> {
 
+    private final HttpConfiguration httpConfiguration;
+
+    public HttpRouterAcceptor(HttpConfiguration httpConfiguration) {
+        this.httpConfiguration = httpConfiguration;
+    }
+
     @Override
     public void accept(HttpServerRoutes httpServerRoutes) {
         HttpActor.INSTANCE.forEach(httpActor -> {
@@ -26,7 +33,7 @@ public class HttpRouterAcceptor implements Consumer<HttpServerRoutes> {
             Router router = classt.getAnnotation(Router.class);
             BiFunction<? super HttpServerRequest, ? super HttpServerResponse, ? extends Publisher<Void>>
                     handler = (httpServerRequest, httpServerResponse) ->
-                    this.doRequest(httpServerRequest, httpServerResponse, httpActor);
+                    this.doRequest(httpServerRequest, httpServerResponse, httpActor, router);
             switch (router.type()) {
                 case PUT:
                     httpServerRoutes
@@ -49,15 +56,19 @@ public class HttpRouterAcceptor implements Consumer<HttpServerRoutes> {
         });
     }
 
-    private Publisher<Void> doRequest(HttpServerRequest httpServerRequest, HttpServerResponse httpServerResponse, HttpActor httpActor) {
+    private Publisher<Void> doRequest(HttpServerRequest httpServerRequest, HttpServerResponse httpServerResponse, HttpActor httpActor, Router router) {
         Header header = httpActor.getClass().getAnnotation(Header.class);
         Headers headers = httpActor.getClass().getAnnotation(Headers.class);
-        Optional.ofNullable(header)
-                .ifPresent(hd -> httpServerResponse.addHeader(hd.key(), hd.value()));
-        Optional.ofNullable(headers)
-                .ifPresent(hds -> Arrays.stream(hds.headers()).forEach(hd -> httpServerResponse.addHeader(hd.key(), hd.value())));
-        return httpActor.doRequest(httpServerRequest, httpServerResponse);
-
+        if (router.resource() && !httpConfiguration.getEnableAdmin()) {
+            return Mono.empty();
+        }
+        else{
+            Optional.ofNullable(header)
+                    .ifPresent(hd -> httpServerResponse.addHeader(hd.key(), hd.value()));
+            Optional.ofNullable(headers)
+                    .ifPresent(hds -> Arrays.stream(hds.headers()).forEach(hd -> httpServerResponse.addHeader(hd.key(), hd.value())));
+            return httpActor.doRequest(httpServerRequest, httpServerResponse, httpConfiguration);
+        }
     }
 
 

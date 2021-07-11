@@ -13,6 +13,7 @@
         <module>smqtt-registry</module>
         <module>smqtt-persistent</module>
         <module>smqtt-rule</module>
+        <module>smqtt-ui</module>
     </modules>
     <packaging>pom</packaging>
 

@@ -5,10 +5,12 @@ import io.github.quickmsg.common.bootstrap.BootstrapKey;
 import io.github.quickmsg.common.cluster.ClusterConfig;
 import io.github.quickmsg.common.config.SslContext;
 import io.github.quickmsg.common.environment.EnvContext;
+import io.github.quickmsg.common.utils.IPUtils;
 import io.github.quickmsg.common.utils.LoggerLevel;
 import io.github.quickmsg.common.utils.PropertiesLoader;
 import io.github.quickmsg.core.Bootstrap;
 import io.netty.channel.WriteBufferWaterMark;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -17,6 +19,7 @@ import java.util.function.Function;
 /**
  * @author luxurong
  */
+@Slf4j
 public abstract class AbstractStarter {
 
     private static final String DEFAULT_PROPERTIES_LOAD_CONFIG_PATH = "/conf/config.properties";
@@ -134,8 +137,6 @@ public abstract class AbstractStarter {
         if (httpEnable) {
             Bootstrap.HttpOptions.HttpOptionsBuilder optionsBuilder = Bootstrap.HttpOptions.builder();
 
-            Integer httpPort = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_HTTP_PORT, function.apply(BootstrapKey.BOOTSTRAP_HTTP_PORT)))
-                    .map(Integer::parseInt).orElse(DEFAULT_HTTP_PORT);
             Boolean accessLog = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_HTTP_ACCESS_LOG, function.apply(BootstrapKey.BOOTSTRAP_HTTP_ACCESS_LOG)))
                     .map(Boolean::parseBoolean).orElse(false);
 
@@ -154,13 +155,29 @@ public abstract class AbstractStarter {
                     optionsBuilder.sslContext(new SslContext(httpSslCrt, httpSslKey));
                 }
             }
-            optionsBuilder.httpPort(httpPort)
+            optionsBuilder
                     .accessLog(accessLog)
                     .ssl(httpSsl);
             Bootstrap.HttpOptions options = optionsBuilder.build();
             builder.httpOptions(options);
+
         }
-        builder.build().startAwait();
+        Bootstrap bootstrap = builder.build();
+        bootstrap.doOnStarted(bt -> printUIUrl(bootstrap.getHttpOptions().getHttpPort())).startAwait();
+    }
+
+    /**
+     * 打印前端访问地址
+     *
+     * @param httpPort http端口
+     */
+    public static void printUIUrl(Integer httpPort) {
+        log.info("\n-------------------------------------------------------------\n\t" +
+                        "Application UI is running AccessURLs:\n\t" +
+                        "Http Local url:    http://localhost:{}/smqtt/admin" + "\n\t" +
+                        "Http External url: http://{}:{}/smqtt/admin" + "\n" +
+                        "-------------------------------------------------------------"
+                , httpPort, IPUtils.getIP(), httpPort);
     }
 
 }

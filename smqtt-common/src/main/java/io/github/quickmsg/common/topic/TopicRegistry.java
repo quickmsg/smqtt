@@ -65,4 +65,13 @@ public interface TopicRegistry {
      * @return  {@link MqttChannel}
      */
     Map<String, CopyOnWriteArraySet<MqttChannel>> getAllTopics();
+
+
+    /**
+     * 获取总数
+     *
+     * @return  counts
+     */
+    Integer counts();
+
 }

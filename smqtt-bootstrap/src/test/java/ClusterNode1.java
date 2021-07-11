@@ -4,8 +4,6 @@ import io.github.quickmsg.core.Bootstrap;
 
 /**
  * @author luxurong
- * @date 2021/5/6 19:25
- * @description
  */
 public class ClusterNode1 {
 
@@ -13,16 +11,18 @@ public class ClusterNode1 {
         Bootstrap bootstrap = Bootstrap.builder()
                 .port(8555)
                 .websocketPort(8999)
-                .options(channelOptionMap -> {})//netty options设置
-                .childOptions(channelOptionMap ->{}) //netty childOptions设置
+                .options(channelOptionMap -> {
+                })//netty options设置
+                .childOptions(channelOptionMap -> {
+                }) //netty childOptions设置
                 .highWaterMark(1000000)
-                .reactivePasswordAuth((U,P)->true)
+                .reactivePasswordAuth((U, P) -> true)
                 .lowWaterMark(1000)
                 .ssl(false)
-                .sslContext(new SslContext("crt","key"))
+                .sslContext(new SslContext("crt", "key"))
                 .isWebsocket(true)
-                .wiretap(true)
-                .httpOptions(Bootstrap.HttpOptions.builder().ssl(false).httpPort(60000).accessLog(true).build())
+                .wiretap(false)
+                .httpOptions(Bootstrap.HttpOptions.builder().ssl(false).accessLog(true).build())
                 .clusterConfig(
                         ClusterConfig.builder()
                                 .clustered(false)

@@ -16,6 +16,8 @@ public @interface Router {
 
     String value();
 
+    boolean resource() default false;
+
     HttpType type() default HttpType.GET;
 
 }

@@ -19,14 +19,9 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
     - 拦截器  （用户自定义拦截消息）
 10. 集群支持（gossip协议实现）
 11. 容器化支持 
+12. 持久化支持（session 保留消息）
 
 
-## 后面规划项目
-
-1. 规则引擎
-2. Web管理系统
-3. 监控系统
-4. 协议桥接agent（用户其他协议与broker之间交互）
 
 
 ## main方式启动
@@ -54,7 +49,7 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
        .sslContext(new SslContext("crt","key"))
        .isWebsocket(true)
        .wiretap(false)
-       .httpOptions(Bootstrap.HttpOptions.builder().ssl(false).httpPort(62212).accessLog(true).build())
+       .httpOptions(Bootstrap.HttpOptions.builder().ssl(false).accessLog(true).build())
        .build()
        .startAwait();
 
@@ -74,7 +69,7 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
        .sslContext(new SslContext("crt","key"))
        .isWebsocket(true)
        .wiretap(false)
-       .httpOptions(Bootstrap.HttpOptions.builder().ssl(false).httpPort(62212).accessLog(true).build())
+       .httpOptions(Bootstrap.HttpOptions.builder().ssl(false).accessLog(true).build())
        .build()
        .start().block();
 

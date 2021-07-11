@@ -3,6 +3,5 @@ io.github.quickmsg.core.http.actors.ConnectionActor
 io.github.quickmsg.core.http.actors.ClusterActor
 io.github.quickmsg.core.http.actors.SubscribeActor
 io.github.quickmsg.core.http.actors.resource.IndexResourceActor
-io.github.quickmsg.core.http.actors.resource.OneResourceActor
-io.github.quickmsg.core.http.actors.resource.TwoResourceActor
-io.github.quickmsg.core.http.actors.LoginActor
+io.github.quickmsg.core.http.actors.resource.StaticResourceActor
+io.github.quickmsg.core.http.actors.resource.LoginResourceActor

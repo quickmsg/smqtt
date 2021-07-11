@@ -12,7 +12,6 @@ import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
 import reactor.netty.Connection;
 
-import java.beans.Transient;
 import java.time.Duration;
 import java.util.Map;
 import java.util.Optional;
@@ -20,6 +19,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 /**
  * @author luxurong
@@ -44,24 +44,26 @@ public class MqttChannel {
 
     private long keepalive;
 
+    private String username;
+
     private Set<String> topics;
 
-    @JSONField(serialize=false)
+    @JSONField(serialize = false)
     private Boolean isMock = false;
 
-    @JSONField(serialize=false)
+    @JSONField(serialize = false)
     private transient AtomicInteger atomicInteger;
 
-    @JSONField(serialize=false)
+    @JSONField(serialize = false)
     private transient MqttMessageSink mqttMessageSink;
 
-    @JSONField(serialize=false)
+    @JSONField(serialize = false)
     private transient Map<Integer, MqttPublishMessage> qos2MsgCache;
 
-    @JSONField(serialize=false)
+    @JSONField(serialize = false)
     private Map<MqttMessageType, Map<Integer, Disposable>> replyMqttMessageMap;
 
-    @JSONField(serialize=false)
+    @JSONField(serialize = false)
     private Disposable closeDisposable;
 
 
@@ -93,19 +95,30 @@ public class MqttChannel {
 
     public Mono<Void> close() {
         return Mono.fromRunnable(() -> {
-            this.clear();
+            this.clearReplyMessage();
             this.qos2MsgCache.clear();
-            topics.clear();
+            if (!this.sessionPersistent) {
+                this.topics.clear();
+            }
             if (!this.connection.isDisposed()) {
                 this.connection.dispose();
             }
         });
     }
 
-
-    public MqttChannel onClose(Disposable disposable) {
-        this.connection.onDispose(disposable);
+    public MqttChannel registryDelayTcpClose() {
+        // registry tcp close event
+        Connection connection = this.getConnection();
+        this.setCloseDisposable(Mono.fromRunnable(() -> {
+            if (!connection.isDisposed()) {
+                connection.dispose();
+            }
+        }).delaySubscription(Duration.ofSeconds(2)).subscribe());
         return this;
+    }
+
+    public void registryClose(Consumer<MqttChannel> consumer) {
+        this.connection.onDispose(() -> consumer.accept(this));
     }
 
 
@@ -150,7 +163,7 @@ public class MqttChannel {
      * 写入消息
      *
      * @param mqttMessage 消息体
-     * @param retry 是否重试
+     * @param retry       是否重试
      * @return 空操作符
      */
     public Mono<Void> write(MqttMessage mqttMessage, boolean retry) {
@@ -202,7 +215,7 @@ public class MqttChannel {
     }
 
 
-    private void clear() {
+    private void clearReplyMessage() {
         replyMqttMessageMap.values().forEach(maps -> maps.values().forEach(Disposable::dispose));
         replyMqttMessageMap.clear();
     }

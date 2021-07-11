@@ -2,8 +2,8 @@ package io.github.quickmsg.common.interceptor;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
@@ -11,6 +11,7 @@ import java.lang.reflect.Method;
  */
 @AllArgsConstructor
 @Getter
+@Slf4j
 public class Invocation {
 
     private Method method;
@@ -19,8 +20,13 @@ public class Invocation {
 
     private Object[] args;
 
-    public Object proceed() throws InvocationTargetException, IllegalAccessException {
-        return method.invoke(target, args);
+    public Object proceed() {
+        try {
+            return method.invoke(target, args);
+        } catch (Exception e) {
+            log.error("invocation {} proceed error", this, e);
+            return null;
+        }
     }
 
 

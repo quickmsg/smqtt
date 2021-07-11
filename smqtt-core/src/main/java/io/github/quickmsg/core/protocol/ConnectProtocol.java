@@ -73,39 +73,40 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
             mqttChannel.setKeepalive(mqttConnectVariableHeader.keepAliveTimeSeconds());
             mqttChannel.setSessionPersistent(!mqttConnectVariableHeader.isCleanSession());
             mqttChannel.setStatus(ChannelStatus.ONLINE);
+            mqttChannel.setUsername(mqttConnectPayload.userName());
             /*registry unread event close channel */
 
             mqttChannel.getConnection()
                     .onReadIdle(mqttConnectVariableHeader.keepAliveTimeSeconds() * MILLI_SECOND_PERIOD << 1,
-                            () -> {
-                                channelRegistry.close(mqttChannel);
-                                topicRegistry.clear(mqttChannel);
-                            });
+                            () -> close(mqttChannel, mqttReceiveContext));
+
             /*registry will message send */
-            mqttChannel
-                    .getConnection()
-                    .onDispose(() ->
-                            Optional.ofNullable(mqttChannel.getWill())
-                                    .ifPresent(will ->
-                                            topicRegistry.getChannelListByTopic(will.getWillTopic())
-                                                    .forEach(mqttChannel1 -> {
-                                                        mqttChannel1.write(
-                                                                MqttMessageBuilder
-                                                                        .buildPub(false,
-                                                                                will.getMqttQoS(),
-                                                                                will.getMqttQoS() == MqttQoS.AT_MOST_ONCE
-                                                                                        ? 0 : mqttChannel1.generateMessageId(),
-                                                                                will.getWillTopic(),
-                                                                                Unpooled.wrappedBuffer(will.getWillMessage())
-                                                                        ), will.getMqttQoS().value() > 0
-                                                        ).subscribe();
-                                                    })));
+            mqttChannel.registryClose(channel -> Optional.ofNullable(mqttChannel.getWill())
+                    .ifPresent(will ->
+                            topicRegistry.getChannelListByTopic(will.getWillTopic())
+                                    .forEach(mqttChannel1 -> {
+                                        mqttChannel1.write(
+                                                MqttMessageBuilder
+                                                        .buildPub(false,
+                                                                will.getMqttQoS(),
+                                                                will.getMqttQoS() == MqttQoS.AT_MOST_ONCE
+                                                                        ? 0 : mqttChannel1.generateMessageId(),
+                                                                will.getWillTopic(),
+                                                                Unpooled.wrappedBuffer(will.getWillMessage())
+                                                        ), will.getMqttQoS().value() > 0
+                                        ).subscribe();
+                                    })));
 
             Optional.ofNullable(channelRegistry.get(clientIdentifier))
                     .ifPresent(sessionChannel -> {
                         doSession(sessionChannel, mqttChannel, channelRegistry, topicRegistry, mqttReceiveContext.getMessageRegistry());
                     });
+
+            // registry close mqtt channel event
+            mqttChannel.registryClose(channel -> this.close(mqttChannel, mqttReceiveContext));
+
             channelRegistry.registry(clientIdentifier, mqttChannel);
+
             return mqttChannel.write(MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_ACCEPTED), false);
 
         } else {
@@ -113,6 +114,17 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
                     MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_BAD_USER_NAME_OR_PASSWORD),
                     false).then(mqttChannel.close());
         }
+    }
+
+    private void close(MqttChannel mqttChannel, MqttReceiveContext mqttReceiveContext) {
+        if (mqttChannel.isSessionPersistent()) {
+            mqttChannel.setStatus(ChannelStatus.OFFLINE);
+            mqttChannel.close().subscribe();
+        } else {
+            mqttReceiveContext.getTopicRegistry().clear(mqttChannel);
+            mqttReceiveContext.getChannelRegistry().close(mqttChannel);
+        }
+
     }
 
     /**
@@ -123,7 +135,6 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
      * @param channelRegistry channel注册
      * @param topicRegistry   主题注册
      * @param messageRegistry 消息注册
-     * @return Void
      */
     private void doSession(MqttChannel sessionChannel,
                            MqttChannel mqttChannel,
@@ -135,13 +146,15 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
         topicRegistry.clear(sessionChannel);
         topics.forEach(topic -> topicRegistry.registryTopicConnection(topic, mqttChannel));
         channelRegistry.close(sessionChannel);
-        messageRegistry.getSessionMessage(mqttChannel.getClientIdentifier())
-                .forEach(sessionMessage -> {
-                    mqttChannel
-                            .write(sessionMessage.toPublishMessage(mqttChannel),
-                                    sessionMessage.getQos() > 0)
-                            .subscribeOn(Schedulers.single())
-                            .subscribe();
+        Optional.ofNullable(messageRegistry.getSessionMessage(mqttChannel.getClientIdentifier()))
+                .ifPresent(sessionMessages -> {
+                    sessionMessages.forEach(sessionMessage -> {
+                        mqttChannel
+                                .write(sessionMessage.toPublishMessage(mqttChannel),
+                                        sessionMessage.getQos() > 0)
+                                .subscribeOn(Schedulers.single())
+                                .subscribe();
+                    });
                 });
     }
 

@@ -56,7 +56,16 @@ public class ScubeClusterRegistry implements ClusterRegistry {
 
     @Override
     public List<ClusterNode> getClusterNode() {
-        return null;
+        return cluster.members().stream().map(this::clusterNode).collect(Collectors.toList());
+    }
+
+    private ClusterNode clusterNode(Member member) {
+        return ClusterNode.builder()
+                .alias(member.alias())
+                .host(member.address().host())
+                .port(member.address().port())
+                .namespace(member.namespace())
+                .build();
     }
 
     @Override
