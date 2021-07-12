@@ -21,7 +21,7 @@
                     @change="handleChange"
                     @focus="handleFocus"
                 >
-                    <a-select-option v-for="it in optionsList.slice(0,10)" :key="it.host">
+                    <a-select-option v-for="it in optionsList.slice(0,10)" :key="it.alias">
                         {{ it.alias }}
                     </a-select-option>
                 </a-select>
@@ -102,16 +102,16 @@
             :dataSource="heapInfo"
             :row-key="(r,i)=>{i.toString()}"
             :pagination=false
-            :loading="jvmInfoLoading"
         >
         </standard-table>
 
-        <div style="margin-top: 30px;font-size: medium">节点信息</div>
+        <div style="margin-top: 30px;font-size: medium" v-if="nodeInfo.length>0">节点信息</div>
         <standard-table
             :columns="columns"
             :dataSource="nodeInfo"
             :row-key="(r,i)=>{i.toString()}"
             :pagination=false
+            v-if="nodeInfo.length>0"
         >
         </standard-table>
 
@@ -121,7 +121,6 @@
             :dataSource="counterInfo"
             :row-key="(r,i)=>{i.toString()}"
             :pagination=false
-            :loading="counterInfoLoading"
         >
         </standard-table>
     </div>
@@ -236,9 +235,6 @@ export default {
             cpuInfo:{},
             counterInfo:[],
             heapInfo:[],
-            jvmInfoLoading:false,
-            counterInfoLoading:false,
-            clusterInfoLoading:false
         }
     },
     mounted() {
@@ -258,7 +254,7 @@ export default {
                 if(!newVal){
                     console.log("pass")
                 }else {
-                    this.getConsoleInfo(newVal)
+                    this.getConsoleInfo()
                 }
             },
             deep: true,
@@ -266,20 +262,17 @@ export default {
     },
     methods: {
         getClusters() {
-            this.counterInfoLoading=true
             clusters().then(res => {
                 // 存储原始数据
                 this.dataSource = res.data
                 // 设置默认的展示节点数据
                 this.optionsList =[...res.data]
-                this.defaultNode = this.optionsList.length===0 ? undefined : this.optionsList[0]['host']
-
+                this.defaultNode = this.optionsList.length===0 ? undefined : this.optionsList[0]['alias']
                 this.nodeInfo = res.data.slice(0,1) || []
                 //如果单机nodeInfo不发生变化，watch不会调用接口请求
                 if(this.nodeInfo.length===0){
-                  this.getConsoleInfo("localhost")
+                  this.getConsoleInfo()
                 }
-                this.counterInfoLoading=false
             })
         },
         filterOptions(input) {
@@ -296,14 +289,15 @@ export default {
                 console.log("pass")
             }else {
                 this.dataSource.map(item=>{
-                    item.host===this.defaultNode?this.nodeInfo = new Array(item):null
+                    item.alias===this.defaultNode?this.nodeInfo = new Array(item):null
                 })
             }
         },
-        getConsoleInfo(host){
-            this.jvmInfoLoading=true
-            this.counterInfoLoading=true
-            !this.isCluster?host="localhost":null
+        getConsoleInfo(){
+            let host = window.location.host.split(':')[0]
+            if(this.isCluster){
+               host = this.nodeInfo[0]['host']
+            }
             let jvm = `http://${host}:60000/smqtt/monitor/jvm`
             let cpu = `http://${host}:60000/smqtt/monitor/cpu`
             let counter = `http://${host}:60000/smqtt/monitor/counter`
@@ -313,14 +307,12 @@ export default {
             axios.get(jvm, options).then(res => {
                 this.jvmInfo = res.data
                 this.heapInfo = [res.data]
-                this.jvmInfoLoading=false
             })
             axios.get(cpu,options).then(res=>{
                 this.cpuInfo = res.data
             })
             axios.get(counter,options).then(res=>{
                 this.counterInfo = new Array(res.data)
-                this.counterInfoLoading=false
             })
             if (this.timer) {
                 clearTimeout(this.timer)
