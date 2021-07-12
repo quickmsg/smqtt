@@ -5,6 +5,7 @@ import io.github.quickmsg.common.channel.MqttChannel;
 import io.github.quickmsg.common.cluster.ClusterRegistry;
 import io.github.quickmsg.common.config.Configuration;
 import io.github.quickmsg.common.message.MessageRegistry;
+import io.github.quickmsg.common.message.RecipientRegistry;
 import io.github.quickmsg.common.protocol.ProtocolAdaptor;
 import io.github.quickmsg.common.topic.TopicRegistry;
 import io.netty.handler.codec.mqtt.MqttMessage;
@@ -21,14 +22,14 @@ public interface ReceiveContext<T extends Configuration> extends BiConsumer<Mqtt
     /**
      * topic注册中心
      *
-     * @return TopicRegistry
+     * @return {@link TopicRegistry}
      */
     TopicRegistry getTopicRegistry();
 
     /**
      * channel管理中心
      *
-     * @return ChannelRegistry
+     * @return {@link ChannelRegistry}
      */
     ChannelRegistry getChannelRegistry();
 
@@ -36,7 +37,7 @@ public interface ReceiveContext<T extends Configuration> extends BiConsumer<Mqtt
     /**
      * 协议转换器
      *
-     * @return ProtocolAdaptor
+     * @return {@link ProtocolAdaptor}
      */
     ProtocolAdaptor getProtocolAdaptor();
 
@@ -44,7 +45,7 @@ public interface ReceiveContext<T extends Configuration> extends BiConsumer<Mqtt
     /**
      * 持久化消息处理
      *
-     * @return ProtocolAdaptor
+     * @return {@link MessageRegistry}
      */
     MessageRegistry getMessageRegistry();
 
@@ -52,15 +53,24 @@ public interface ReceiveContext<T extends Configuration> extends BiConsumer<Mqtt
     /**
      * 集群注册器
      *
-     * @return ProtocolAdaptor
+     * @return {@link ClusterRegistry}
      */
     ClusterRegistry getClusterRegistry();
+
+
+
+    /**
+     * 消息感知/设备感知
+     *
+     * @return {@link RecipientRegistry}
+     */
+    RecipientRegistry getRecipientRegistry();
 
 
     /**
      * 获取配置文件
      *
-     * @return T
+     * @return {@link Configuration}
      */
     T getConfiguration();
 

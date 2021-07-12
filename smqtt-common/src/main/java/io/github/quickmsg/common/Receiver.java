@@ -11,7 +11,7 @@ public interface Receiver {
     /**
      * 绑定接口
      *
-     * @return DisposableServer
+     * @return  {@link DisposableServer}
      */
     Mono<DisposableServer> bind();
 

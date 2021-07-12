@@ -1,5 +1,6 @@
 package io.github.quickmsg.common.config;
 
+import io.github.quickmsg.common.auth.PasswordAuthentication;
 import io.github.quickmsg.common.cluster.ClusterConfig;
 import io.github.quickmsg.common.environment.EnvContext;
 
@@ -67,7 +68,7 @@ public interface Configuration {
     /**
      * 获取ssl加密文件
      *
-     * @return ssl配置
+     * @return {@link SslContext}
      */
     SslContext getSslContext();
 
@@ -76,7 +77,7 @@ public interface Configuration {
     /**
      * 获取集群配置
      *
-     * @return 配置config
+     * @return {@link ClusterConfig}
      */
     ClusterConfig getClusterConfig();
 

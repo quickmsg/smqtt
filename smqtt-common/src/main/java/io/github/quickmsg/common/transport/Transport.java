@@ -14,7 +14,7 @@ public interface Transport<C extends Configuration> extends Disposable {
     /**
      * 开启连接
      *
-     * @return Disposable 连接操作类
+     * @return {@link Transport}
      */
     Mono<Transport> start();
 
@@ -22,16 +22,10 @@ public interface Transport<C extends Configuration> extends Disposable {
     /**
      * 构建接受处理🥱
      *
-     * @param c 启动参数
-     * @return ReceiveContext
+     * @param c {@link Configuration}
+     * @return {@link ReceiveContext}
      */
     ReceiveContext<C> buildReceiveContext(C c);
-
-
-
-
-
-
 
 
 }

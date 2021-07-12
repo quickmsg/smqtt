@@ -4,7 +4,7 @@ import io.github.quickmsg.common.cluster.ClusterConfig;
 import io.github.quickmsg.common.cluster.ClusterMessage;
 import io.github.quickmsg.common.cluster.ClusterNode;
 import io.github.quickmsg.common.cluster.ClusterRegistry;
-import io.github.quickmsg.common.enums.ClusterEvent;
+import io.github.quickmsg.common.enums.ClusterStatus;
 import io.scalecube.cluster.Cluster;
 import io.scalecube.cluster.ClusterImpl;
 import io.scalecube.cluster.ClusterMessageHandler;
@@ -18,6 +18,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,7 +31,7 @@ public class ScubeClusterRegistry implements ClusterRegistry {
 
     private Sinks.Many<ClusterMessage> messageMany = Sinks.many().multicast().onBackpressureBuffer();
 
-    private Sinks.Many<ClusterEvent> eventMany = Sinks.many().multicast().onBackpressureBuffer();
+    private Sinks.Many<ClusterStatus> eventMany = Sinks.many().multicast().onBackpressureBuffer();
 
     private Cluster cluster;
 
@@ -38,13 +39,16 @@ public class ScubeClusterRegistry implements ClusterRegistry {
     @Override
     public void registry(ClusterConfig clusterConfig) {
         this.cluster = new ClusterImpl()
-                .config(opts -> opts.memberAlias(clusterConfig.getNodeName()))
+                .config(opts -> opts.memberAlias(clusterConfig.getNodeName())
+                        .externalHost(clusterConfig.getExternalHost())
+                        .externalPort(clusterConfig.getExternalPort())
+                )
                 .transport(transportConfig -> transportConfig.port(clusterConfig.getPort()))
                 .membership(opts -> opts.seedMembers(Arrays.stream(clusterConfig
                         .getClusterUrl()
                         .split(","))
                         .map(Address::from)
-                        .collect(Collectors.toList())))
+                        .collect(Collectors.toList())).namespace(clusterConfig.getNamespace()))
                 .handler(cluster -> new ClusterHandler())
                 .startAwait();
     }
@@ -56,14 +60,32 @@ public class ScubeClusterRegistry implements ClusterRegistry {
 
     @Override
     public List<ClusterNode> getClusterNode() {
-        return null;
+        return Optional.ofNullable(cluster)
+                .map(cs -> cs.members().stream().map(this::clusterNode).collect(Collectors.toList()))
+                .orElse(Collections.emptyList());
+    }
+
+    private ClusterNode clusterNode(Member member) {
+        return ClusterNode.builder()
+                .alias(member.alias())
+                .host(member.address().host())
+                .port(member.address().port())
+                .namespace(member.namespace())
+                .build();
     }
 
     @Override
     public Mono<Void> spreadMessage(ClusterMessage clusterMessage) {
         log.info("cluster send message {} ", clusterMessage);
-        return Optional.ofNullable(cluster)
-                .map(cs -> cs.spreadGossip(Message.withData(clusterMessage).build()).then()).orElse(Mono.empty());
+        return Mono.when(
+                cluster.otherMembers()
+                        .stream()
+                        .map(member ->
+                                Optional.ofNullable(cluster)
+                                        .map(cs ->
+                                                cs.send(member, Message.withData(clusterMessage).build()).then()
+                                        ).orElse(Mono.empty()))
+                        .collect(Collectors.toList()));
     }
 
     @Override
@@ -73,7 +95,7 @@ public class ScubeClusterRegistry implements ClusterRegistry {
     }
 
     @Override
-    public Flux<ClusterEvent> clusterEvent() {
+    public Flux<ClusterStatus> clusterEvent() {
         return eventMany.asFlux();
     }
 
@@ -98,16 +120,16 @@ public class ScubeClusterRegistry implements ClusterRegistry {
             log.info("cluster onMembershipEvent {}  {}", member, event);
             switch (event.type()) {
                 case ADDED:
-                    eventMany.tryEmitNext(ClusterEvent.ADDED);
+                    eventMany.tryEmitNext(ClusterStatus.ADDED);
                     break;
                 case LEAVING:
-                    eventMany.tryEmitNext(ClusterEvent.LEAVING);
+                    eventMany.tryEmitNext(ClusterStatus.LEAVING);
                     break;
                 case REMOVED:
-                    eventMany.tryEmitNext(ClusterEvent.REMOVED);
+                    eventMany.tryEmitNext(ClusterStatus.REMOVED);
                     break;
                 case UPDATED:
-                    eventMany.tryEmitNext(ClusterEvent.UPDATED);
+                    eventMany.tryEmitNext(ClusterStatus.UPDATED);
                     break;
                 default:
                     break;

@@ -43,9 +43,10 @@ public class CommonProtocol implements Protocol<MqttMessage> {
             case PINGREQ:
                 return mqttChannel.write(MqttMessageBuilder.buildPongMessage(), false);
             case DISCONNECT:
-                mqttChannel.setWill(null);
-                mqttChannel.getConnection().dispose();
-                return Mono.empty();
+                return Mono.fromRunnable(()->{
+                    mqttChannel.setWill(null);
+                    mqttChannel.getConnection().dispose();
+                });
             case PUBREC:
                 MqttMessageIdVariableHeader messageIdVariableHeader = (MqttMessageIdVariableHeader) message.variableHeader();
                 int messageId = messageIdVariableHeader.messageId();

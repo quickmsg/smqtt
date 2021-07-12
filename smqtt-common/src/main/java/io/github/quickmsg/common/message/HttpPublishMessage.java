@@ -5,6 +5,7 @@ import io.netty.handler.codec.mqtt.MqttPublishMessage;
 import io.netty.handler.codec.mqtt.MqttQoS;
 import lombok.Data;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 /**
@@ -31,7 +32,7 @@ public class HttpPublishMessage {
                 retain,
                 1,
                 topic,
-                PooledByteBufAllocator.DEFAULT.buffer().writeBytes(message.getBytes()));
+                PooledByteBufAllocator.DEFAULT.buffer().writeBytes(message.getBytes(StandardCharsets.UTF_8)));
     }
 
 

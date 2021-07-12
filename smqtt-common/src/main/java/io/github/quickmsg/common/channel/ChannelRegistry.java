@@ -1,6 +1,7 @@
 package io.github.quickmsg.common.channel;
 
 import io.github.quickmsg.common.StartUp;
+import io.github.quickmsg.common.cluster.ClusterMessage;
 import io.github.quickmsg.common.spi.DynamicLoader;
 
 import java.util.Collection;
@@ -17,7 +18,7 @@ public interface ChannelRegistry extends StartUp {
     /**
      * 关闭通道
      *
-     * @param mqttChannel 通道关闭
+     * @param mqttChannel {@link MqttChannel}
      */
     void close(MqttChannel mqttChannel);
 
@@ -25,7 +26,7 @@ public interface ChannelRegistry extends StartUp {
      * 注册通道
      *
      * @param clientIdentifier 客户端id
-     * @param mqttChannel      通道关闭
+     * @param mqttChannel      {@link MqttChannel}
      */
     void registry(String clientIdentifier, MqttChannel mqttChannel);
 
@@ -58,7 +59,7 @@ public interface ChannelRegistry extends StartUp {
     /**
      * 获取说有channel信息
      *
-     * @return list
+     * @return {@link Collection<MqttChannel>}
      */
     Collection<MqttChannel> getChannels();
 

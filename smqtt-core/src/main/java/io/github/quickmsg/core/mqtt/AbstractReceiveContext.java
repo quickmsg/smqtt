@@ -2,19 +2,19 @@ package io.github.quickmsg.core.mqtt;
 
 import io.github.quickmsg.common.auth.PasswordAuthentication;
 import io.github.quickmsg.common.channel.ChannelRegistry;
+import io.github.quickmsg.common.channel.MqttChannel;
 import io.github.quickmsg.common.cluster.ClusterRegistry;
 import io.github.quickmsg.common.config.AbstractConfiguration;
 import io.github.quickmsg.common.config.Configuration;
 import io.github.quickmsg.common.context.ReceiveContext;
 import io.github.quickmsg.common.message.MessageRegistry;
+import io.github.quickmsg.common.message.RecipientRegistry;
 import io.github.quickmsg.common.protocol.ProtocolAdaptor;
 import io.github.quickmsg.common.topic.TopicRegistry;
 import io.github.quickmsg.common.transport.Transport;
-import io.github.quickmsg.core.DefaultChannelRegistry;
-import io.github.quickmsg.core.DefaultMessageRegistry;
-import io.github.quickmsg.core.DefaultProtocolAdaptor;
-import io.github.quickmsg.core.DefaultTopicRegistry;
+import io.github.quickmsg.core.spi.*;
 import io.github.quickmsg.core.cluster.InJvmClusterRegistry;
+import io.netty.handler.codec.mqtt.MqttMessage;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -48,9 +48,12 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
 
     private final ClusterRegistry clusterRegistry;
 
+    private final RecipientRegistry recipientRegistry;
+
     public AbstractReceiveContext(T configuration, Transport<T> transport) {
         this.configuration = configuration;
         this.transport = transport;
+        this.recipientRegistry = recipientRegistry();
         this.protocolAdaptor = protocolAdaptor();
         this.channelRegistry = channelRegistry();
         this.topicRegistry = topicRegistry();
@@ -58,6 +61,16 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
         this.messageRegistry = messageRegistry();
         this.clusterRegistry = clusterRegistry();
         this.passwordAuthentication = basicAuthentication();
+
+        AbstractConfiguration abstractConfiguration = castConfiguration(configuration);
+        this.channelRegistry.startUp(abstractConfiguration.getEnvContext());
+        this.messageRegistry.startUp(abstractConfiguration.getEnvContext());
+    }
+
+
+    private RecipientRegistry recipientRegistry() {
+        return Optional.ofNullable(RecipientRegistry.INSTANCE)
+                .orElse(new EmptyRecipientRegistry());
     }
 
     private MessageRegistry messageRegistry() {

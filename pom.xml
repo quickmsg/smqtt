@@ -5,12 +5,16 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.quickmsg</groupId>
     <artifactId>smqtt</artifactId>
-    <version>1.0.5</version>
+    <version>1.0.6</version>
     <modules>
         <module>smqtt-common</module>
         <module>smqtt-core</module>
         <module>smqtt-bootstrap</module>
         <module>smqtt-registry</module>
+        <module>smqtt-persistent</module>
+        <module>smqtt-rule</module>
+        <module>smqtt-ui</module>
+        <module>smqtt-metric</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -114,6 +118,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <build>
+                <pluginManagement>
                 <plugins>
                     <plugin>
                         <groupId>org.sonatype.plugins</groupId>
@@ -172,6 +177,7 @@
                         </executions>
                     </plugin>
                 </plugins>
+                </pluginManagement>
             </build>
             <distributionManagement>
                 <snapshotRepository>

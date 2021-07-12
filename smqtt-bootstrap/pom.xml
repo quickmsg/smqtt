@@ -7,13 +7,12 @@
     <parent>
         <artifactId>smqtt</artifactId>
         <groupId>io.github.quickmsg</groupId>
-        <version>1.0.5</version>
+        <version>1.0.6</version>
     </parent>
     <artifactId>smqtt-bootstrap</artifactId>
-    <version>1.0.5</version>
+    <version>1.0.6</version>
 
     <name>smqtt-bootstrap</name>
-    <!-- FIXME change it to the project's website -->
     <url>http://www.example.com</url>
 
     <properties>
@@ -31,12 +30,17 @@
         <dependency>
             <groupId>io.github.quickmsg</groupId>
             <artifactId>smqtt-core</artifactId>
-            <version>1.0.5</version>
+            <version>1.0.6</version>
         </dependency>
         <dependency>
             <artifactId>smqtt-registry-scube</artifactId>
             <groupId>io.github.quickmsg</groupId>
-            <version>1.0.5</version>
+            <version>1.0.6</version>
+        </dependency>
+        <dependency>
+            <artifactId>smqtt-ui</artifactId>
+            <groupId>io.github.quickmsg</groupId>
+            <version>1.0.6</version>
         </dependency>
     </dependencies>
     <profiles>
@@ -65,7 +69,7 @@
                                 <id>make-assembly</id>
                                 <phase>package</phase>
                                 <goals>
-                                    <goal>assembly</goal>
+                                    <goal>single</goal>
                                 </goals>
                             </execution>
                         </executions>

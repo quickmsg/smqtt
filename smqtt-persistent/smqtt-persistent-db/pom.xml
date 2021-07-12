@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>smqtt-persistent</artifactId>
+        <groupId>io.github.quickmsg</groupId>
+        <version>1.0.6</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>smqtt-persistent-db</artifactId>
+    <version>1.0.6</version>
+
+    <properties>
+        <jooq.version>3.14.11</jooq.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.github.quickmsg</groupId>
+            <artifactId>smqtt-common</artifactId>
+            <version>1.0.6</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq</artifactId>
+            <version>${jooq.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq-meta</artifactId>
+            <version>${jooq.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq-codegen</artifactId>
+            <version>${jooq.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>1.2.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <version>4.3.5</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!--jooq 代码生成插件 -->
+            <plugin>
+                <groupId>org.jooq</groupId>
+                <artifactId>jooq-codegen-maven</artifactId>
+                <version>${jooq.version}</version>
+                <configuration>
+                    <!-- mysql 连接-->
+                    <jdbc>
+                        <driver>com.mysql.cj.jdbc.Driver</driver>
+                        <url>jdbc:mysql://127.0.0.1:3306/smqtt?useSSL=false&amp;serverTimezone=UTC&amp;allowPublicKeyRetrieval=true</url>
+                        <user>root</user>
+                        <password>123</password>
+                    </jdbc>
+                    <generator>
+                        <database>
+                            <!--include用于控制数据库中哪些表生成-->
+                            <includes>.*</includes>
+                            <!--exclude用于控制数据库中哪些表不生成-->
+                            <!--<excludes></excludes>-->
+                            <!--数据库名称-->
+                            <inputSchema>smqtt</inputSchema>
+                        </database>
+                        <!--生成代码文件的包名及放置目录-->
+                        <target>
+                            <packageName>io.github.quickmsg.persistent.tables</packageName>
+                            <directory>/src/main/java</directory>
+                        </target>
+                    </generator>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

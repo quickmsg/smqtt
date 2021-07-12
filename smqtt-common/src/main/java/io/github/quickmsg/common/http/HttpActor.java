@@ -1,7 +1,7 @@
 package io.github.quickmsg.common.http;
 
 import com.alibaba.fastjson.JSON;
-import io.github.quickmsg.common.protocol.ProtocolAdaptor;
+import io.github.quickmsg.common.config.Configuration;
 import io.github.quickmsg.common.spi.DynamicLoader;
 import org.reactivestreams.Publisher;
 import reactor.netty.http.server.HttpServerRequest;
@@ -25,12 +25,12 @@ public interface HttpActor {
      * 如何要处理GET请求query param reactor-netty是不支持的，需要自己去处理
      * QueryStringDecoder queryStringDecoder  = new QueryStringDecoder(request.uri());
      *
-     * @param request  请求
-     * @param response 响应
+     * @param request  {@link HttpServerRequest}
+     * @param response {@link HttpServerResponse}
+     * @param configuration {@link Configuration}
      * @return Object
      */
-    Publisher<Void> doRequest(HttpServerRequest request, HttpServerResponse response);
-
+    Publisher<Void> doRequest(HttpServerRequest request, HttpServerResponse response, Configuration configuration);
 
 
     /**
@@ -38,7 +38,7 @@ public interface HttpActor {
      *
      * @param tClass class
      * @param <T>    返回类型
-     * @return Function
+     * @return {{@link Function<String, T>}
      */
     default <T> Function<String, T> toJson(Class<T> tClass) {
         return message -> JSON.parseObject(message, tClass);

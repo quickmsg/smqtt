@@ -24,7 +24,15 @@ public class HttpConfiguration implements Configuration {
 
     private Integer workThreadSize = Runtime.getRuntime().availableProcessors();
 
-    private Boolean accessLog;
+    private Boolean accessLog = false;
+
+    private Boolean  enableAdmin = false;
+
+    private String  username;
+
+    private String  password;
+
+
 
 
     @Override

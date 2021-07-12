@@ -13,7 +13,7 @@ public interface ClusterHandler<T> {
     /**
      * 获取集群信息
      *
-     * @return List
+     * @return {@link List<ClusterNode>}
      */
     List<ClusterNode> getClusterInfo();
 
@@ -22,17 +22,16 @@ public interface ClusterHandler<T> {
      * 传播集群消息
      *
      * @param clusterMessage 集群
-     * @return List
+     * @return {@link Mono}
      */
     Mono<Void> spreadGossip(ClusterMessage clusterMessage);
-
 
 
     /**
      * 传播集群消息
      *
      * @param clusterMessage 集群
-     * @return List
+     * @return {@link Mono}
      */
     Mono<Void> send(ClusterMessage clusterMessage);
 

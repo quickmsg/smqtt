@@ -1,10 +1,12 @@
 package io.github.quickmsg.core;
 
+import ch.qos.logback.classic.Level;
 import io.github.quickmsg.common.auth.PasswordAuthentication;
 import io.github.quickmsg.common.cluster.ClusterConfig;
 import io.github.quickmsg.common.config.SslContext;
 import io.github.quickmsg.common.environment.EnvContext;
 import io.github.quickmsg.common.transport.Transport;
+import io.github.quickmsg.common.utils.LoggerLevel;
 import io.github.quickmsg.core.http.HttpConfiguration;
 import io.github.quickmsg.core.http.HttpTransportFactory;
 import io.github.quickmsg.core.mqtt.MqttConfiguration;
@@ -78,6 +80,11 @@ public class Bootstrap {
 
     private ClusterConfig clusterConfig;
 
+    private Consumer<Bootstrap> started;
+
+    @Builder.Default
+    private Level rootLevel = Level.INFO;
+
 
     private MqttConfiguration initMqttConfiguration() {
         MqttConfiguration mqttConfiguration = defaultConfiguration();
@@ -96,6 +103,9 @@ public class Bootstrap {
         Optional.ofNullable(envContext).ifPresent(mqttConfiguration::setEnvContext);
         if (isWebsocket) {
             mqttConfiguration.setWebSocketPort(websocketPort);
+        }
+        if (wiretap != null && wiretap) {
+            LoggerLevel.wiretap();
         }
         return mqttConfiguration;
     }
@@ -118,6 +128,7 @@ public class Bootstrap {
                     log.info("bootstrap server start error", err);
                     START_ONLY_MQTT.tryEmitEmpty();
                 })
+                .doOnSuccess(started)
                 .subscribe();
         START_ONLY_MQTT.asMono().block();
     }
@@ -131,6 +142,7 @@ public class Bootstrap {
     public Mono<Bootstrap> start() {
         MqttConfiguration mqttConfiguration = initMqttConfiguration();
         MqttTransportFactory mqttTransportFactory = new MqttTransportFactory();
+        LoggerLevel.root(rootLevel);
         return mqttTransportFactory.createTransport(mqttConfiguration)
                 .start()
                 .doOnError(Throwable::printStackTrace)
@@ -159,7 +171,10 @@ public class Bootstrap {
         HttpConfiguration httpConfiguration = new HttpConfiguration();
         Optional.ofNullable(this.httpOptions.accessLog).ifPresent(httpConfiguration::setAccessLog);
         Optional.ofNullable(this.httpOptions.sslContext).ifPresent(httpConfiguration::setSslContext);
-        Optional.ofNullable(this.httpOptions.httpPort).ifPresent(httpConfiguration::setPort);
+        Optional.ofNullable(this.httpOptions.enableAdmin).ifPresent(httpConfiguration::setEnableAdmin);
+        Optional.ofNullable(this.httpOptions.username).ifPresent(httpConfiguration::setUsername);
+        Optional.ofNullable(this.httpOptions.password).ifPresent(httpConfiguration::setPassword);
+        httpConfiguration.setPort(this.httpOptions.httpPort);
         return httpConfiguration;
     }
 
@@ -171,8 +186,7 @@ public class Bootstrap {
     @Builder
     public static class HttpOptions {
 
-        @Builder.Default
-        private Integer httpPort = 0;
+        private final Integer httpPort = 60000;
 
         @Builder.Default
         private Boolean ssl = false;
@@ -182,6 +196,17 @@ public class Bootstrap {
         @Builder.Default
         private Boolean accessLog = false;
 
+        private Boolean enableAdmin;
+
+        private String username;
+
+        private String password;
+
+    }
+
+    public Bootstrap doOnStarted(Consumer<Bootstrap> started) {
+        this.started = started;
+        return this;
     }
 
 

@@ -15,7 +15,7 @@ public interface AbstractConfiguration extends Configuration {
     /**
      * 获取websocket端口
      *
-     * @return 端口
+     * @return port
      */
     Integer getWebSocketPort();
 
@@ -23,7 +23,7 @@ public interface AbstractConfiguration extends Configuration {
     /**
      * 获取Tcp服务配置
      *
-     * @return 配置
+     * @return {@link Consumer<? super TcpServerConfig> }
      */
     Consumer<? super TcpServerConfig> getTcpServerConfig();
 
@@ -31,7 +31,7 @@ public interface AbstractConfiguration extends Configuration {
     /**
      * 获取服务端认证
      *
-     * @return 认证器
+     * @return {@link PasswordAuthentication}
      */
     PasswordAuthentication getReactivePasswordAuth();
 
@@ -39,7 +39,7 @@ public interface AbstractConfiguration extends Configuration {
     /**
      * 获取环境变量
      *
-     * @return 配置config
+     * @return {@link EnvContext}
      */
     EnvContext getEnvContext();
 

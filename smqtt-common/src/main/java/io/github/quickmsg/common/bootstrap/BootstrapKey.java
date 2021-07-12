@@ -6,6 +6,8 @@ package io.github.quickmsg.common.bootstrap;
 public class BootstrapKey {
 
 
+    public final static String BOOTSTRAP_LOGGER_LEVEL = " smqtt.log.level";
+
     public final static String BOOTSTRAP_PORT = "smqtt.tcp.port";
 
     public final static String BOOTSTRAP_LOW_WATERMARK = "smqtt.tcp.lowWaterMark";
@@ -34,8 +36,6 @@ public class BootstrapKey {
 
     public final static String BOOTSTRAP_HTTP_ENABLE = "smqtt.http.enable";
 
-    public final static String BOOTSTRAP_HTTP_PORT = "smqtt.http.port";
-
     public final static String BOOTSTRAP_HTTP_ACCESS_LOG = "smqtt.http.accesslog";
 
     public final static String BOOTSTRAP_HTTP_SSL_ENABLE = "smqtt.http.ssl.enable";
@@ -44,16 +44,98 @@ public class BootstrapKey {
 
     public final static String BOOTSTRAP_HTTP_SSL_KEY = "smqtt.http.ssl.key";
 
+    public final static String BOOTSTRAP_HTTP_ADMIN_ENABLE = "smqtt.http.admin.enable";
+
+    public final static String BOOTSTRAP_HTTP_ADMIN_USERNAME = "smqtt.http.admin.username";
+
+    public final static String BOOTSTRAP_HTTP_ADMIN_PASSWORD = "smqtt.http.admin.password";
+
     public final static String BOOTSTRAP_CLUSTER_ENABLE = "smqtt.cluster.enable";
 
     public final static String BOOTSTRAP_CLUSTER_URL = "smqtt.cluster.url";
 
     public final static String BOOTSTRAP_CLUSTER_PORT = "smqtt.cluster.port";
 
+    /**
+     * 实际集群的ip
+     */
     public final static String BOOTSTRAP_CLUSTER_NODE = "smqtt.cluster.node";
 
+    /**
+     * 映射容器下的ip
+     */
+    public final static String BOOTSTRAP_CLUSTER_EXTERNAL_HOST = "smqtt.cluster.external.host";
+
+    /**
+     * 映射容器下的端口
+     */
+    public final static String BOOTSTRAP_CLUSTER_EXTERNAL_PORT = "smqtt.cluster.external.port";
 
 
+    /*数据库配置参数前缀*/
+    public final static String DB_PREFIX = "db.";
 
 
+    public static class Redis {
+        /*redis前缀key*/
+        public static final String REDIS_RETAIN_MESSAGE_PREFIX_KEY = "smqtt:retain:message:";
+
+        /*redis前缀key*/
+        public static final String REDIS_SESSION_MESSAGE_PREFIX_KEY = "smqtt:session:message:";
+
+        /*模式*/
+        public static final String REDIS_MODE = "redis.mode";
+
+        /*数据库*/
+        public static final String REDIS_DATABASE = "redis.database";
+
+        /*密码*/
+        public static final String REDIS_PASSWORD = "redis.password";
+
+        /*超时时间*/
+        public static final String REDIS_TIMEOUT = "redis.timeout";
+
+        /*最小空闲数*/
+        public static final String REDIS_POOL_MIN_IDLE = "redis.pool.min.idle";
+
+        /*连接超时时间(毫秒)*/
+        public static final String REDIS_POOL_CONN_TIMEOUT = "redis.pool.conn.timeout";
+
+        /*连接池大小*/
+        public static final String REDIS_POOL_SIZE = "redis.pool.size";
+    }
+
+    public static class RedisCluster {
+        public static final String REDIS_CLUSTER_SCAN_INTERVAL = "redis.cluster.scan.interval";
+
+        public static final String REDIS_CLUSTER_NODES = "redis.cluster.nodes";
+
+        public static final String REDIS_CLUSTER_READ_MODE = "redis.cluster.read.mode";
+
+        public static final String REDIS_CLUSTER_RETRY_ATTEMPTS = "redis.cluster.retry.attempts";
+
+        public static final String REDIS_CLUSTER_SLAVE_CONNECTION_POOL_SIZE = "redis.cluster.slave.connection.pool.size";
+
+        public static final String REDIS_CLUSTER_MASTER_CONNECTION_POOL_SIZE = "redis.cluster.master.connection.pool.size";
+
+        public static final String REDIS_CLUSTER_RETRY_INTERVAL = "redis.cluster.retry.interval";
+    }
+
+    public static class RedisSentinel {
+        public static final String REDIS_SENTINEL_MASTER = "redis.sentinel.master";
+
+        public static final String REDIS_SENTINEL_NODES = "redis.sentinel.nodes";
+    }
+
+    public static class RedisSingle {
+        public static final String REDIS_SINGLE_ADDRESS = "redis.single.address";
+    }
+
+    public static class RedisReadMode {
+        public static final String SLAVE = "SLAVE";
+
+        public static final String MASTER = "MASTER";
+
+        public static final String MASTER_SLAVE = "MASTER_SLAVE";
+    }
 }
