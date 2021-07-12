@@ -10,7 +10,7 @@ public class ClusterNode1 {
 
     public static void main(String[] args) throws InterruptedException {
         Bootstrap bootstrap = Bootstrap.builder()
-                .rootLevel(Level.INFO)
+                .rootLevel(Level.DEBUG)
                 .wiretap(false)
                 .port(8555)
                 .websocketPort(8999)
@@ -29,6 +29,7 @@ public class ClusterNode1 {
                         ClusterConfig.builder()
                                 .clustered(true)
                                 .port(7773)
+                                .externalHost("10.10.1.23")
                                 .nodeName("node-1")
                                 .clusterUrl("127.0.0.1:7771,127.0.0.1:7772")
                                 .build())

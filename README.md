@@ -19,6 +19,7 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
 10. 集群支持（gossip协议实现）
 11. 容器化支持 
 12. 持久化支持（session 保留消息）
+13. 管理系统
 
 
 
@@ -30,7 +31,7 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
 <dependency>
   <groupId>io.github.quickmsg</groupId>
   <artifactId>smqtt-core</artifactId>
-  <version>1.0.5</version>
+  <version>1.0.6</version>
 </dependency>
 
 ```
@@ -165,47 +166,7 @@ smqtt.cluster.node=node-1
 # 容器集群映射port
 # smqtt.cluster.external.port
 
-# 数据库配置(选配)
-db.driverClassName=com.mysql.jdbc.Driver
-db.url=jdbc:mysql://127.0.0.1:3306/smqtt?characterEncoding=utf-8&useSSL=false&useInformationSchema=true&serverTimezone=UTC
-db.username=root
-db.password=123
-# 连接池初始化连接数
-db.initialSize=10
-# 连接池中最多支持多少个活动会话
-db.maxActive=300
-# 向连接池中请求连接时,超过maxWait的值后,认为本次请求失败
-db.maxWait=60000
-# 回收空闲连接时，将保证至少有minIdle个连接
-db.minIdle=2
-# redis配置(选配)
-# 单机模式：single 哨兵模式：sentinel 集群模式：cluster
-redis.mode=single
-# 数据库
-redis.database=0
-# 密码
-redis.password=
-# 超时时间
-redis.timeout=3000
-# 最小空闲数
-redis.pool.min.idle=8
-# 连接超时时间(毫秒)
-redis.pool.conn.timeout=3000
-# 连接池大小
-redis.pool.size=10
-# 单机配置
-redis.single.address=127.0.0.1:6379
-# 集群配置
-redis.cluster.scan.interval=1000
-redis.cluster.nodes=127.0.0.1:7000,127.0.0.1:7001,127.0.0.1:7002,127.0.0.1:7003,127.0.0.1:7004,127.0.0.1:7005
-redis.cluster.read.mode=SLAVE
-redis.cluster.retry.attempts=3
-redis.cluster.slave.connection.pool.size=64
-redis.cluster.master.connection.pool.size=64
-redis.cluster.retry.interval=1500
-# 哨兵配置
-redis.sentinel.master=mymaster
-redis.sentinel.nodes=127.0.0.1:26379,127.0.0.1:26379,127.0.0.1:26379
+
   ```
 
 3. 启动服务
