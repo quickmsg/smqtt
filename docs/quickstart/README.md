@@ -11,10 +11,19 @@ sort: 1
      git clone https://github.com/quickmsg/smqtt
     ```
 2.  打包
-    ```markdown
-     mvn compile package -Dmaven.test.skip=true -P jar,web
-    ```
-    在smqtt-bootstrap/target目录下生成jar包
+    
+    1. smqtt-ui安装前端依赖
+    
+        ```markdown
+          npm install
+        ```
+    
+    2. 打包java代码
+
+        ```markdown
+         mvn compile package -Dmaven.test.skip=true -P jar,web
+        ```
+        在smqtt-bootstrap/target目录下生成jar包
 
 3. 准备配置文件
 

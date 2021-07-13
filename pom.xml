@@ -118,7 +118,6 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <build>
-                <pluginManagement>
                 <plugins>
                     <plugin>
                         <groupId>org.sonatype.plugins</groupId>
@@ -177,7 +176,6 @@
                         </executions>
                     </plugin>
                 </plugins>
-                </pluginManagement>
             </build>
             <distributionManagement>
                 <snapshotRepository>
