@@ -29,7 +29,6 @@ public class ClusterNode1 {
                         ClusterConfig.builder()
                                 .clustered(true)
                                 .port(7773)
-                                .externalHost("10.10.1.23")
                                 .nodeName("node-1")
                                 .clusterUrl("127.0.0.1:7771,127.0.0.1:7772")
                                 .build())
