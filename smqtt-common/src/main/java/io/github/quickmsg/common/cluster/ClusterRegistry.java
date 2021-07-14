@@ -31,7 +31,7 @@ public interface ClusterRegistry {
     /**
      * 开始订阅消息
      *
-     * @return {@link Flux<ClusterMessage>}
+     * @return {@link ClusterMessage}
      */
     Flux<ClusterMessage> handlerClusterMessage();
 
@@ -39,7 +39,7 @@ public interface ClusterRegistry {
     /**
      * 开始订阅Node事件
      *
-     * @return {@link Flux< ClusterStatus >}
+     * @return {@link ClusterStatus}
      */
     Flux<ClusterStatus> clusterEvent();
 
@@ -47,7 +47,7 @@ public interface ClusterRegistry {
     /**
      * 获取集群节点信息
      *
-     * @return {@link Flux<ClusterNode>}
+     * @return {@link ClusterNode}
      */
     List<ClusterNode> getClusterNode();
 

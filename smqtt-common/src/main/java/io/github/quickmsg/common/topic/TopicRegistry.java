@@ -46,7 +46,7 @@ public interface TopicRegistry {
      * 获取topic的channels
      *
      * @param topicName topic name
-     * @return {@link Set<MqttChannel>}
+     * @return {@link MqttChannel}
      */
     Set<MqttChannel> getChannelListByTopic(String topicName);
 

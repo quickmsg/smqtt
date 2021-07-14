@@ -17,7 +17,7 @@ public interface MessageRegistry extends StartUp {
      * 获取连接下线后的session消息
      *
      * @param clientIdentifier 设备id
-     * @return {@link List<SessionMessage>}
+     * @return {@link SessionMessage}
      */
     List<SessionMessage> getSessionMessage(String clientIdentifier);
 
@@ -42,7 +42,7 @@ public interface MessageRegistry extends StartUp {
      * 保留Topic保留消息
      *
      * @param topic topic
-     * @return {@link List<RetainMessage>}
+     * @return {@link RetainMessage}
      */
     List<RetainMessage> getRetainMessage(String topic);
 

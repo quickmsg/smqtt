@@ -55,7 +55,7 @@ public class MessageUtils {
 
 
     /**
-     * 获取&释放消息字节数组
+     * 获取释放消息字节数组
      *
      * @param byteBuf 消息ByteBuf
      * @return 字节数组
@@ -70,7 +70,7 @@ public class MessageUtils {
 
 
     /**
-     * 获取&释放消息字节数组
+     * 获取释放消息字节数组
      *
      * @param byteBuf 消息ByteBuf
      * @return 字节数组

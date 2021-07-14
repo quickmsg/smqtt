@@ -13,7 +13,7 @@ public interface ClusterHandler<T> {
     /**
      * 获取集群信息
      *
-     * @return {@link List<ClusterNode>}
+     * @return {@link ClusterNode}
      */
     List<ClusterNode> getClusterInfo();
 
