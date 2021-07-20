@@ -69,7 +69,8 @@ public class CommonProtocol implements Protocol<MqttMessage> {
                             return Mono.when(
                                     subscribeTopics.stream()
                                             .map(subscribeTopic -> subscribeTopic.getMqttChannel()
-                                                    .write(MessageUtils.wrapPublishMessage(msg, subscribeTopic.getMqttChannel().generateMessageId()), true)
+                                                    .write(MessageUtils.wrapPublishMessage(msg, subscribeTopic.getQoS(),
+                                                            subscribeTopic.getMqttChannel().generateMessageId()), true)
                                             ).collect(Collectors.toList()))
                                     .then(mqttChannel.cancelRetry(MqttMessageType.PUBREC, id))
                                     .then(mqttChannel.write(MqttMessageBuilder.buildPublishComp(id), false));

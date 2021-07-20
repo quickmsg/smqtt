@@ -48,7 +48,8 @@ public class PublishProtocol implements Protocol<MqttPublishMessage> {
             TopicRegistry topicRegistry = receiveContext.getTopicRegistry();
             MqttPublishVariableHeader variableHeader = message.variableHeader();
             MessageRegistry messageRegistry = receiveContext.getMessageRegistry();
-            Set<SubscribeTopic> mqttChannels = topicRegistry.getSubscribesByTopic(variableHeader.topicName(), message.fixedHeader().qosLevel());
+            Set<SubscribeTopic> mqttChannels = topicRegistry.getSubscribesByTopic(variableHeader.topicName(),
+                    message.fixedHeader().qosLevel());
             // http mock
             if (mqttChannel.getIsMock()) {
                 return send(mqttChannels, message, messageRegistry, filterRetainMessage(message, messageRegistry));
@@ -63,7 +64,8 @@ public class PublishProtocol implements Protocol<MqttPublishMessage> {
                 case EXACTLY_ONCE:
                     if (!mqttChannel.existQos2Msg(variableHeader.packetId())) {
                         return mqttChannel
-                                .cacheQos2Msg(variableHeader.packetId(), MessageUtils.wrapPublishMessage(message, 0))
+                                .cacheQos2Msg(variableHeader.packetId(),
+                                        MessageUtils.wrapPublishMessage(message, message.fixedHeader().qosLevel(), 0))
                                 .then(mqttChannel.write(MqttMessageBuilder.buildPublishRec(variableHeader.packetId()), true));
                     }
                 default:
@@ -91,6 +93,7 @@ public class PublishProtocol implements Protocol<MqttPublishMessage> {
                         .filter(subscribeTopic -> filterOfflineSession(subscribeTopic.getMqttChannel(), messageRegistry, message))
                         .map(subscribeTopic ->
                                 subscribeTopic.getMqttChannel().write(MessageUtils.wrapPublishMessage(message,
+                                        subscribeTopic.getQoS(),
                                         subscribeTopic.getMqttChannel().generateMessageId()),
                                         subscribeTopic.getQoS().value() > 0)
                         )

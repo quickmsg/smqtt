@@ -1,10 +1,7 @@
 package io.github.quickmsg.common.utils;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.handler.codec.mqtt.MqttFixedHeader;
-import io.netty.handler.codec.mqtt.MqttMessage;
-import io.netty.handler.codec.mqtt.MqttPublishMessage;
-import io.netty.handler.codec.mqtt.MqttPublishVariableHeader;
+import io.netty.handler.codec.mqtt.*;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -41,13 +38,14 @@ public class MessageUtils {
      * 生成发布消息
      *
      * @param messageId 消息id
-     * @param message   消息
-     * @return MqttPublishMessage
+     * @param message   {@link MqttPublishMessage}
+     * @param mqttQoS  {@link MqttQoS}
+     * @return {@link MqttPublishMessage}
      */
-    public static MqttPublishMessage wrapPublishMessage(MqttPublishMessage message, int messageId) {
+    public static MqttPublishMessage wrapPublishMessage(MqttPublishMessage message, MqttQoS mqttQoS, int messageId) {
         MqttPublishVariableHeader mqttPublishVariableHeader = message.variableHeader();
         MqttFixedHeader mqttFixedHeader = message.fixedHeader();
-        MqttFixedHeader newFixedHeader = new MqttFixedHeader(mqttFixedHeader.messageType(), false, mqttFixedHeader.qosLevel(), false, mqttFixedHeader.remainingLength());
+        MqttFixedHeader newFixedHeader = new MqttFixedHeader(mqttFixedHeader.messageType(), false, mqttQoS, false, mqttFixedHeader.remainingLength());
         MqttPublishVariableHeader newHeader = new MqttPublishVariableHeader(mqttPublishVariableHeader.topicName(), messageId);
         return new MqttPublishMessage(newFixedHeader, newHeader, message.payload().copy());
 
