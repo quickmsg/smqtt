@@ -16,23 +16,15 @@ import io.github.quickmsg.persistent.tables.tables.SmqttSession;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
 
-    /**
-     * The table <code>smqtt.databasechangelog</code>.
-     */
+
     public static final Databasechangelog DATABASECHANGELOG = Databasechangelog.DATABASECHANGELOG;
 
-    /**
-     * The table <code>smqtt.databasechangeloglock</code>.
-     */
+
     public static final Databasechangeloglock DATABASECHANGELOGLOCK = Databasechangeloglock.DATABASECHANGELOGLOCK;
 
-    /**
-     * The table <code>smqtt.smqtt_retain</code>.
-     */
+
     public static final SmqttRetain SMQTT_RETAIN = SmqttRetain.SMQTT_RETAIN;
 
-    /**
-     * The table <code>smqtt.smqtt_session</code>.
-     */
+
     public static final SmqttSession SMQTT_SESSION = SmqttSession.SMQTT_SESSION;
 }

@@ -23,7 +23,7 @@ public interface AbstractConfiguration extends Configuration {
     /**
      * 获取Tcp服务配置
      *
-     * @return {@link Consumer<? super TcpServerConfig> }
+     * @return {@link Consumer }
      */
     Consumer<? super TcpServerConfig> getTcpServerConfig();
 

@@ -23,58 +23,42 @@ public class DatabasechangeloglockRecord extends UpdatableRecordImpl<Databasecha
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * Setter for <code>smqtt.databasechangeloglock.ID</code>.
-     */
+
     public void setId(Integer value) {
         set(0, value);
     }
 
-    /**
-     * Getter for <code>smqtt.databasechangeloglock.ID</code>.
-     */
+
     public Integer getId() {
         return (Integer) get(0);
     }
 
-    /**
-     * Setter for <code>smqtt.databasechangeloglock.LOCKED</code>.
-     */
+
     public void setLocked(Boolean value) {
         set(1, value);
     }
 
-    /**
-     * Getter for <code>smqtt.databasechangeloglock.LOCKED</code>.
-     */
+
     public Boolean getLocked() {
         return (Boolean) get(1);
     }
 
-    /**
-     * Setter for <code>smqtt.databasechangeloglock.LOCKGRANTED</code>.
-     */
+
     public void setLockgranted(LocalDateTime value) {
         set(2, value);
     }
 
-    /**
-     * Getter for <code>smqtt.databasechangeloglock.LOCKGRANTED</code>.
-     */
+
     public LocalDateTime getLockgranted() {
         return (LocalDateTime) get(2);
     }
 
-    /**
-     * Setter for <code>smqtt.databasechangeloglock.LOCKEDBY</code>.
-     */
+
     public void setLockedby(String value) {
         set(3, value);
     }
 
-    /**
-     * Getter for <code>smqtt.databasechangeloglock.LOCKEDBY</code>.
-     */
+
     public String getLockedby() {
         return (String) get(3);
     }
@@ -199,16 +183,12 @@ public class DatabasechangeloglockRecord extends UpdatableRecordImpl<Databasecha
     // Constructors
     // -------------------------------------------------------------------------
 
-    /**
-     * Create a detached DatabasechangeloglockRecord
-     */
+
     public DatabasechangeloglockRecord() {
         super(Databasechangeloglock.DATABASECHANGELOGLOCK);
     }
 
-    /**
-     * Create a detached, initialised DatabasechangeloglockRecord
-     */
+
     public DatabasechangeloglockRecord(Integer id, Boolean locked, LocalDateTime lockgranted, String lockedby) {
         super(Databasechangeloglock.DATABASECHANGELOGLOCK);
 

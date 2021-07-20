@@ -22,86 +22,62 @@ public class SmqttSessionRecord extends TableRecordImpl<SmqttSessionRecord> impl
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * Setter for <code>smqtt.smqtt_session.topic</code>. 话题
-     */
+
     public void setTopic(String value) {
         set(0, value);
     }
 
-    /**
-     * Getter for <code>smqtt.smqtt_session.topic</code>. 话题
-     */
+
     public String getTopic() {
         return (String) get(0);
     }
 
-    /**
-     * Setter for <code>smqtt.smqtt_session.client_id</code>. 客户端ID
-     */
+
     public void setClientId(String value) {
         set(1, value);
     }
 
-    /**
-     * Getter for <code>smqtt.smqtt_session.client_id</code>. 客户端ID
-     */
+
     public String getClientId() {
         return (String) get(1);
     }
 
-    /**
-     * Setter for <code>smqtt.smqtt_session.qos</code>. qos
-     */
+
     public void setQos(Integer value) {
         set(2, value);
     }
 
-    /**
-     * Getter for <code>smqtt.smqtt_session.qos</code>. qos
-     */
+
     public Integer getQos() {
         return (Integer) get(2);
     }
 
-    /**
-     * Setter for <code>smqtt.smqtt_session.retain</code>. retain
-     */
+
     public void setRetain(Boolean value) {
         set(3, value);
     }
 
-    /**
-     * Getter for <code>smqtt.smqtt_session.retain</code>. retain
-     */
+
     public Boolean getRetain() {
         return (Boolean) get(3);
     }
 
-    /**
-     * Setter for <code>smqtt.smqtt_session.body</code>. 消息内容
-     */
+
     public void setBody(String value) {
         set(4, value);
     }
 
-    /**
-     * Getter for <code>smqtt.smqtt_session.body</code>. 消息内容
-     */
+
     public String getBody() {
         return (String) get(4);
     }
 
-    /**
-     * Setter for <code>smqtt.smqtt_session.create_time</code>. 记录保存时间
-     */
+
     public void setCreateTime(LocalDateTime value) {
         set(5, value);
     }
 
-    /**
-     * Getter for <code>smqtt.smqtt_session.create_time</code>. 记录保存时间
-     */
+
     public LocalDateTime getCreateTime() {
         return (LocalDateTime) get(5);
     }
@@ -261,16 +237,12 @@ public class SmqttSessionRecord extends TableRecordImpl<SmqttSessionRecord> impl
     // Constructors
     // -------------------------------------------------------------------------
 
-    /**
-     * Create a detached SmqttSessionRecord
-     */
+
     public SmqttSessionRecord() {
         super(SmqttSession.SMQTT_SESSION);
     }
 
-    /**
-     * Create a detached, initialised SmqttSessionRecord
-     */
+
     public SmqttSessionRecord(String topic, String clientId, Integer qos, Boolean retain, String body, LocalDateTime createTime) {
         super(SmqttSession.SMQTT_SESSION);
 
