@@ -6,8 +6,7 @@ import io.github.quickmsg.common.topic.SubscribeTopic;
 import io.github.quickmsg.common.utils.MessageUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.mqtt.*;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
@@ -25,7 +24,9 @@ import java.util.function.Consumer;
 /**
  * @author luxurong
  */
-@Data
+@Getter
+@Setter
+@ToString
 @Slf4j
 public class MqttChannel {
 
