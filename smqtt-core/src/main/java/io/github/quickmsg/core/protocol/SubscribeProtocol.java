@@ -4,8 +4,8 @@ import io.github.quickmsg.common.channel.MqttChannel;
 import io.github.quickmsg.common.context.ReceiveContext;
 import io.github.quickmsg.common.message.MessageRegistry;
 import io.github.quickmsg.common.message.MqttMessageBuilder;
-import io.github.quickmsg.common.message.SubscribeChannelContext;
 import io.github.quickmsg.common.protocol.Protocol;
+import io.github.quickmsg.common.topic.SubscribeTopic;
 import io.github.quickmsg.common.topic.TopicRegistry;
 import io.netty.handler.codec.mqtt.MqttMessageType;
 import io.netty.handler.codec.mqtt.MqttSubscribeMessage;
@@ -14,6 +14,7 @@ import reactor.util.context.ContextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -30,17 +31,14 @@ public class SubscribeProtocol implements Protocol<MqttSubscribeMessage> {
             ReceiveContext<?> receiveContext = contextView.get(ReceiveContext.class);
             TopicRegistry topicRegistry = receiveContext.getTopicRegistry();
             MessageRegistry messageRegistry = receiveContext.getMessageRegistry();
-            List<SubscribeChannelContext> mqttTopicSubscriptions =
+            Set<SubscribeTopic> mqttTopicSubscriptions =
                     message.payload().topicSubscriptions()
                             .stream()
                             .peek(mqttTopicSubscription -> this.loadRetainMessage(messageRegistry, mqttChannel, mqttTopicSubscription.topicName()))
                             .map(mqttTopicSubscription ->
-                                    SubscribeChannelContext.builder()
-                                            .mqttChannel(mqttChannel)
-                                            .mqttQoS(mqttTopicSubscription.qualityOfService())
-                                            .topic(mqttTopicSubscription.topicName()).build())
-                            .collect(Collectors.toList());
-            topicRegistry.registryTopicConnection(mqttTopicSubscriptions);
+                                    new SubscribeTopic(mqttTopicSubscription.topicName(), mqttTopicSubscription.qualityOfService(), mqttChannel))
+                            .collect(Collectors.toSet());
+            topicRegistry.registrySubscribesTopic(mqttTopicSubscriptions);
         }).then(mqttChannel.write(
                 MqttMessageBuilder.buildSubAck(
                         message.variableHeader().messageId(),

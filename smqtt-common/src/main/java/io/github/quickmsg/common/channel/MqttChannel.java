@@ -2,6 +2,7 @@ package io.github.quickmsg.common.channel;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import io.github.quickmsg.common.enums.ChannelStatus;
+import io.github.quickmsg.common.topic.SubscribeTopic;
 import io.github.quickmsg.common.utils.MessageUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.mqtt.*;
@@ -46,7 +47,8 @@ public class MqttChannel {
 
     private String username;
 
-    private Set<String> topics;
+    @JSONField(serialize = false)
+    private Set<SubscribeTopic> topics;
 
     @JSONField(serialize = false)
     private Boolean isMock = false;
