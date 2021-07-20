@@ -59,7 +59,7 @@ public interface ChannelRegistry extends StartUp {
     /**
      * 获取说有channel信息
      *
-     * @return {@link Collection<MqttChannel>}
+     * @return {@link Collection}
      */
     Collection<MqttChannel> getChannels();
 

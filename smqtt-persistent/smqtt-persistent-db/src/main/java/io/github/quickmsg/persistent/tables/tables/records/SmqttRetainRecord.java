@@ -22,72 +22,49 @@ public class SmqttRetainRecord extends TableRecordImpl<SmqttRetainRecord> implem
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * Setter for <code>smqtt.smqtt_retain.topic</code>. 话题
-     */
     public void setTopic(String value) {
         set(0, value);
     }
 
-    /**
-     * Getter for <code>smqtt.smqtt_retain.topic</code>. 话题
-     */
+
     public String getTopic() {
         return (String) get(0);
     }
 
-    /**
-     * Setter for <code>smqtt.smqtt_retain.qos</code>. qos
-     */
+
     public void setQos(Integer value) {
         set(1, value);
     }
 
-    /**
-     * Getter for <code>smqtt.smqtt_retain.qos</code>. qos
-     */
+
     public Integer getQos() {
         return (Integer) get(1);
     }
 
-    /**
-     * Setter for <code>smqtt.smqtt_retain.body</code>. 消息内容
-     */
+
     public void setBody(String value) {
         set(2, value);
     }
 
-    /**
-     * Getter for <code>smqtt.smqtt_retain.body</code>. 消息内容
-     */
+
     public String getBody() {
         return (String) get(2);
     }
 
-    /**
-     * Setter for <code>smqtt.smqtt_retain.create_time</code>. 记录保存时间
-     */
     public void setCreateTime(LocalDateTime value) {
         set(3, value);
     }
 
-    /**
-     * Getter for <code>smqtt.smqtt_retain.create_time</code>. 记录保存时间
-     */
     public LocalDateTime getCreateTime() {
         return (LocalDateTime) get(3);
     }
 
-    /**
-     * Setter for <code>smqtt.smqtt_retain.update_time</code>. 记录更新时间
-     */
+
     public void setUpdateTime(LocalDateTime value) {
         set(4, value);
     }
 
-    /**
-     * Getter for <code>smqtt.smqtt_retain.update_time</code>. 记录更新时间
-     */
+
     public LocalDateTime getUpdateTime() {
         return (LocalDateTime) get(4);
     }
@@ -225,16 +202,12 @@ public class SmqttRetainRecord extends TableRecordImpl<SmqttRetainRecord> implem
     // Constructors
     // -------------------------------------------------------------------------
 
-    /**
-     * Create a detached SmqttRetainRecord
-     */
+
     public SmqttRetainRecord() {
         super(SmqttRetain.SMQTT_RETAIN);
     }
 
-    /**
-     * Create a detached, initialised SmqttRetainRecord
-     */
+
     public SmqttRetainRecord(String topic, Integer qos, String body, LocalDateTime createTime, LocalDateTime updateTime) {
         super(SmqttRetain.SMQTT_RETAIN);
 

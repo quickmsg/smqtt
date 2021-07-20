@@ -31,87 +31,55 @@ public class Databasechangelog extends TableImpl<DatabasechangelogRecord> {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * The reference instance of <code>smqtt.databasechangelog</code>
-     */
+
     public static final Databasechangelog DATABASECHANGELOG = new Databasechangelog();
 
-    /**
-     * The class holding records for this type
-     */
+
     @Override
     public Class<DatabasechangelogRecord> getRecordType() {
         return DatabasechangelogRecord.class;
     }
 
-    /**
-     * The column <code>smqtt.databasechangelog.ID</code>.
-     */
+
     public final TableField<DatabasechangelogRecord, String> ID = createField(DSL.name("ID"), SQLDataType.VARCHAR(255).nullable(false), this, "");
 
-    /**
-     * The column <code>smqtt.databasechangelog.AUTHOR</code>.
-     */
+
     public final TableField<DatabasechangelogRecord, String> AUTHOR = createField(DSL.name("AUTHOR"), SQLDataType.VARCHAR(255).nullable(false), this, "");
 
-    /**
-     * The column <code>smqtt.databasechangelog.FILENAME</code>.
-     */
+
     public final TableField<DatabasechangelogRecord, String> FILENAME = createField(DSL.name("FILENAME"), SQLDataType.VARCHAR(255).nullable(false), this, "");
 
-    /**
-     * The column <code>smqtt.databasechangelog.DATEEXECUTED</code>.
-     */
+
     public final TableField<DatabasechangelogRecord, LocalDateTime> DATEEXECUTED = createField(DSL.name("DATEEXECUTED"), SQLDataType.LOCALDATETIME(0).nullable(false), this, "");
 
-    /**
-     * The column <code>smqtt.databasechangelog.ORDEREXECUTED</code>.
-     */
+
     public final TableField<DatabasechangelogRecord, Integer> ORDEREXECUTED = createField(DSL.name("ORDEREXECUTED"), SQLDataType.INTEGER.nullable(false), this, "");
 
-    /**
-     * The column <code>smqtt.databasechangelog.EXECTYPE</code>.
-     */
+
     public final TableField<DatabasechangelogRecord, String> EXECTYPE = createField(DSL.name("EXECTYPE"), SQLDataType.VARCHAR(10).nullable(false), this, "");
 
-    /**
-     * The column <code>smqtt.databasechangelog.MD5SUM</code>.
-     */
+
     public final TableField<DatabasechangelogRecord, String> MD5SUM = createField(DSL.name("MD5SUM"), SQLDataType.VARCHAR(35).defaultValue(DSL.inline("NULL", SQLDataType.VARCHAR)), this, "");
 
-    /**
-     * The column <code>smqtt.databasechangelog.DESCRIPTION</code>.
-     */
+
     public final TableField<DatabasechangelogRecord, String> DESCRIPTION = createField(DSL.name("DESCRIPTION"), SQLDataType.VARCHAR(255).defaultValue(DSL.inline("NULL", SQLDataType.VARCHAR)), this, "");
 
-    /**
-     * The column <code>smqtt.databasechangelog.COMMENTS</code>.
-     */
+
     public final TableField<DatabasechangelogRecord, String> COMMENTS = createField(DSL.name("COMMENTS"), SQLDataType.VARCHAR(255).defaultValue(DSL.inline("NULL", SQLDataType.VARCHAR)), this, "");
 
-    /**
-     * The column <code>smqtt.databasechangelog.TAG</code>.
-     */
+
     public final TableField<DatabasechangelogRecord, String> TAG = createField(DSL.name("TAG"), SQLDataType.VARCHAR(255).defaultValue(DSL.inline("NULL", SQLDataType.VARCHAR)), this, "");
 
-    /**
-     * The column <code>smqtt.databasechangelog.LIQUIBASE</code>.
-     */
+
     public final TableField<DatabasechangelogRecord, String> LIQUIBASE = createField(DSL.name("LIQUIBASE"), SQLDataType.VARCHAR(20).defaultValue(DSL.inline("NULL", SQLDataType.VARCHAR)), this, "");
 
-    /**
-     * The column <code>smqtt.databasechangelog.CONTEXTS</code>.
-     */
+
     public final TableField<DatabasechangelogRecord, String> CONTEXTS = createField(DSL.name("CONTEXTS"), SQLDataType.VARCHAR(255).defaultValue(DSL.inline("NULL", SQLDataType.VARCHAR)), this, "");
 
-    /**
-     * The column <code>smqtt.databasechangelog.LABELS</code>.
-     */
+
     public final TableField<DatabasechangelogRecord, String> LABELS = createField(DSL.name("LABELS"), SQLDataType.VARCHAR(255).defaultValue(DSL.inline("NULL", SQLDataType.VARCHAR)), this, "");
 
-    /**
-     * The column <code>smqtt.databasechangelog.DEPLOYMENT_ID</code>.
-     */
+
     public final TableField<DatabasechangelogRecord, String> DEPLOYMENT_ID = createField(DSL.name("DEPLOYMENT_ID"), SQLDataType.VARCHAR(10).defaultValue(DSL.inline("NULL", SQLDataType.VARCHAR)), this, "");
 
     private Databasechangelog(Name alias, Table<DatabasechangelogRecord> aliased) {
@@ -122,23 +90,17 @@ public class Databasechangelog extends TableImpl<DatabasechangelogRecord> {
         super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
-    /**
-     * Create an aliased <code>smqtt.databasechangelog</code> table reference
-     */
+
     public Databasechangelog(String alias) {
         this(DSL.name(alias), DATABASECHANGELOG);
     }
 
-    /**
-     * Create an aliased <code>smqtt.databasechangelog</code> table reference
-     */
+
     public Databasechangelog(Name alias) {
         this(alias, DATABASECHANGELOG);
     }
 
-    /**
-     * Create a <code>smqtt.databasechangelog</code> table reference
-     */
+
     public Databasechangelog() {
         this(DSL.name("databasechangelog"), null);
     }
@@ -162,17 +124,13 @@ public class Databasechangelog extends TableImpl<DatabasechangelogRecord> {
         return new Databasechangelog(alias, this);
     }
 
-    /**
-     * Rename this table
-     */
+
     @Override
     public Databasechangelog rename(String name) {
         return new Databasechangelog(DSL.name(name), null);
     }
 
-    /**
-     * Rename this table
-     */
+
     @Override
     public Databasechangelog rename(Name name) {
         return new Databasechangelog(name, null);

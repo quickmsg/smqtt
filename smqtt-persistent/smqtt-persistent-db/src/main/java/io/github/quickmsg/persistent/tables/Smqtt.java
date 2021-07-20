@@ -25,34 +25,21 @@ public class Smqtt extends SchemaImpl {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * The reference instance of <code>smqtt</code>
-     */
+
     public static final Smqtt SMQTT = new Smqtt();
 
-    /**
-     * The table <code>smqtt.databasechangelog</code>.
-     */
     public final Databasechangelog DATABASECHANGELOG = Databasechangelog.DATABASECHANGELOG;
 
-    /**
-     * The table <code>smqtt.databasechangeloglock</code>.
-     */
+
     public final Databasechangeloglock DATABASECHANGELOGLOCK = Databasechangeloglock.DATABASECHANGELOGLOCK;
 
-    /**
-     * The table <code>smqtt.smqtt_retain</code>.
-     */
+
     public final SmqttRetain SMQTT_RETAIN = SmqttRetain.SMQTT_RETAIN;
 
-    /**
-     * The table <code>smqtt.smqtt_session</code>.
-     */
+
     public final SmqttSession SMQTT_SESSION = SmqttSession.SMQTT_SESSION;
 
-    /**
-     * No further instances allowed
-     */
+
     private Smqtt() {
         super("smqtt", null);
     }
