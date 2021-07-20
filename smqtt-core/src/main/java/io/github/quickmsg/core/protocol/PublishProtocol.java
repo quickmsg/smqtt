@@ -105,9 +105,9 @@ public class PublishProtocol implements Protocol<MqttPublishMessage> {
     /**
      * 过滤离线会话消息
      *
-     * @param mqttChannel     topic匹配的channel
-     * @param messageRegistry 消息注册中心
-     * @param mqttMessage     消息
+     * @param mqttChannel     {@link MqttChannel}
+     * @param messageRegistry {@link MessageRegistry}
+     * @param mqttMessage     {@link MqttPublishMessage}
      * @return boolean
      */
     private boolean filterOfflineSession(MqttChannel mqttChannel, MessageRegistry messageRegistry, MqttPublishMessage mqttMessage) {
@@ -124,8 +124,8 @@ public class PublishProtocol implements Protocol<MqttPublishMessage> {
     /**
      * 过滤保留消息
      *
-     * @param message         消息体
-     * @param messageRegistry 消息中心
+     * @param message         {@link MqttPublishMessage}
+     * @param messageRegistry {@link MessageRegistry}
      * @return Mono
      */
     private Mono<Void> filterRetainMessage(MqttPublishMessage message, MessageRegistry messageRegistry) {

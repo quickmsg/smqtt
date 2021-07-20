@@ -92,9 +92,9 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
             /*registry will message send */
             mqttChannel.registryClose(channel -> Optional.ofNullable(mqttChannel.getWill())
                     .ifPresent(will ->
-                            topicRegistry.getSubscribesByTopic(will.getWillTopic(),will.getMqttQoS())
+                            topicRegistry.getSubscribesByTopic(will.getWillTopic(), will.getMqttQoS())
                                     .forEach(subscribeTopic -> {
-                                        MqttChannel subscribeChannel=subscribeTopic.getMqttChannel();
+                                        MqttChannel subscribeChannel = subscribeTopic.getMqttChannel();
                                         subscribeChannel.write(
                                                 MqttMessageBuilder
                                                         .buildPub(false,
@@ -146,11 +146,11 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
     /**
      * 处理session消息
      *
-     * @param sessionChannel  session channel
-     * @param mqttChannel     new channel
-     * @param channelRegistry channel注册
-     * @param topicRegistry   主题注册
-     * @param messageRegistry 消息注册
+     * @param sessionChannel  session链接 {@link MqttChannel}
+     * @param mqttChannel     新链接      {@link MqttChannel}
+     * @param channelRegistry {@link ChannelRegistry}
+     * @param topicRegistry   {@link TopicRegistry}
+     * @param messageRegistry {@link MessageRegistry}
      */
     private void doSession(MqttChannel sessionChannel,
                            MqttChannel mqttChannel,

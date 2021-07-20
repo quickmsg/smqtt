@@ -16,9 +16,9 @@ public interface Protocol<T> {
     /**
      * 解析协议添加上下文
      *
-     * @param message     消息类型
-     * @param mqttChannel 通道
-     * @return 空操作符
+     * @param message     {@link io.netty.handler.codec.mqtt.MqttMessage}
+     * @param mqttChannel {@link MqttChannel}
+     * @return Mono
      */
     default Mono<Void> doParseProtocol(T message, MqttChannel mqttChannel) {
         return Mono.deferContextual(contextView -> this.parseProtocol(message, mqttChannel, contextView));
@@ -28,10 +28,10 @@ public interface Protocol<T> {
     /**
      * 处理协议
      *
-     * @param message     消息
-     * @param mqttChannel 通道
-     * @param contextView 上下文视图
-     * @return 空操作符
+     * @param message     {@link io.netty.handler.codec.mqtt.MqttMessage}
+     * @param mqttChannel {@link MqttChannel}
+     * @param contextView {@link ContextView}
+     * @return Mono
      */
     Mono<Void> parseProtocol(T message, MqttChannel mqttChannel, ContextView contextView);
 
@@ -39,7 +39,7 @@ public interface Protocol<T> {
     /**
      * 获取此协议支持的消息类型
      *
-     * @return List
+     * @return {@link MqttMessageType}
      */
     List<MqttMessageType> getMqttMessageTypes();
 
