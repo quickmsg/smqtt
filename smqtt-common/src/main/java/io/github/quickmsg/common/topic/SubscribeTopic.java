@@ -14,7 +14,6 @@ import java.util.Objects;
 
 @Getter
 @Setter
-@ToString
 public class SubscribeTopic {
 
     private final String topicFilter;
@@ -54,5 +53,13 @@ public class SubscribeTopic {
 
     public void unLinkSubscribe() {
         mqttChannel.getTopics().remove(this);
+    }
+
+    @Override
+    public String toString() {
+        return "SubscribeTopic{" +
+                "qoS=" + qoS +
+                ", mqttChannel=" + mqttChannel +
+                '}';
     }
 }

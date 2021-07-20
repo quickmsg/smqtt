@@ -26,7 +26,6 @@ import java.util.function.Consumer;
  */
 @Getter
 @Setter
-@ToString
 @Slf4j
 public class MqttChannel {
 
@@ -308,5 +307,18 @@ public class MqttChannel {
 
     }
 
-
+    @Override
+    public String toString() {
+        return "MqttChannel{" +
+                "connection=" + connection +
+                ", clientIdentifier='" + clientIdentifier + '\'' +
+                ", status=" + status +
+                ", activeTime=" + activeTime +
+                ", authTime=" + authTime +
+                ", sessionPersistent=" + sessionPersistent +
+                ", will=" + will +
+                ", keepalive=" + keepalive +
+                ", username='" + username + '\'' +
+                '}';
+    }
 }
