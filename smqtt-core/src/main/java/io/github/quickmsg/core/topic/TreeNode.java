@@ -1,8 +1,6 @@
 package io.github.quickmsg.core.topic;
 
-import io.github.quickmsg.common.channel.MqttChannel;
 import io.github.quickmsg.common.topic.SubscribeTopic;
-import io.netty.handler.codec.mqtt.MqttQoS;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,7 +24,7 @@ public class TreeNode {
     private int subscribeTopicNumber;
 
 
-    private CopyOnWriteArraySet<SubscribeTopic> subscribes = new CopyOnWriteArraySet<>();
+    private Set<SubscribeTopic> subscribes = new CopyOnWriteArraySet<>();
 
     private Map<String, TreeNode> childNodes = new ConcurrentHashMap<>();
 
@@ -81,14 +79,14 @@ public class TreeNode {
         if (index == topics.length - 1) {
             TreeNode localTreeNode = treeNode.getChildNodes().get(lastTopic);
             if (localTreeNode != null) {
-                CopyOnWriteArraySet<SubscribeTopic> subscribes = localTreeNode.getSubscribes();
+                Set<SubscribeTopic> subscribes = localTreeNode.getSubscribes();
                 if (subscribes != null && subscribes.size() > 0) {
                     subscribeTopics.addAll(subscribes);
                 }
             }
             localTreeNode = treeNode.getChildNodes().get(ONE_SYMBOL);
             if (localTreeNode != null) {
-                CopyOnWriteArraySet<SubscribeTopic> subscribes = localTreeNode.getSubscribes();
+                Set<SubscribeTopic> subscribes = localTreeNode.getSubscribes();
                 if (subscribes != null && subscribes.size() > 0) {
                     subscribeTopics.addAll(subscribes);
                 }
@@ -116,7 +114,7 @@ public class TreeNode {
             }
         }
         if (node != null) {
-            CopyOnWriteArraySet<SubscribeTopic> subscribeTopics = node.getSubscribes();
+            Set<SubscribeTopic> subscribeTopics = node.getSubscribes();
             if (subscribeTopics != null) {
                 return subscribeTopics.remove(subscribeTopic);
             }
@@ -129,7 +127,7 @@ public class TreeNode {
     }
 
     private Set<SubscribeTopic> getTreeSubscribesTopic(TreeNode node) {
-        CopyOnWriteArraySet<SubscribeTopic> subscribeTopics = node.getSubscribes();
+        Set<SubscribeTopic> subscribeTopics = node.getSubscribes();
         subscribeTopics.addAll(node.getChildNodes()
                 .values()
                 .stream()
