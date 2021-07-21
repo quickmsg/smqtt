@@ -5,13 +5,27 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
 ![架构图](icon/component.png)
 
 1.  消息质量等级实现(支持qos0，qos1，qos2)
+2.  topicFilter支持
+    - topic分级（test/test）
+    - +支持（单层匹配）
+    - #支持（多层匹配）
 2.  会话消息
+    - 默认内存存储
+    - 支持持久化（redis/db）
 3.  保留消息
+     - 默认内存存储
+     - 支持持久化（redis/db）
 4.  遗嘱消息
+     > 设备掉线时候触发
 5.  客户端认证
+     - 支持spi注入外部认证
 6.  tls加密
+     - 支持tls加密（mqtt端口/http端口）
 7.  websocket协议支持
+     > 使用websocket协议包装mqtt协议
 8.  http协议交互
+    - 支持http接口推送消息
+    - 支持spi扩展http接口
 9.  SPI接口扩展支持
     - 消息管理接口（会话消息/保留消息管理）
     - 通道管理接口 (管理系统的客户端连接)
@@ -21,6 +35,7 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
 11. 容器化支持 
 12. 持久化支持（session 保留消息）
 13. 管理系统
+   
 
 
 
