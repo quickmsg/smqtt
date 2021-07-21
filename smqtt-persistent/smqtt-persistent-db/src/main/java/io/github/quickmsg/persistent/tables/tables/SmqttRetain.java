@@ -35,42 +35,26 @@ public class SmqttRetain extends TableImpl<SmqttRetainRecord> {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * The reference instance of <code>smqtt.smqtt_retain</code>
-     */
+
     public static final SmqttRetain SMQTT_RETAIN = new SmqttRetain();
 
-    /**
-     * The class holding records for this type
-     */
+
     @Override
     public Class<SmqttRetainRecord> getRecordType() {
         return SmqttRetainRecord.class;
     }
 
-    /**
-     * The column <code>smqtt.smqtt_retain.topic</code>. 话题
-     */
     public final TableField<SmqttRetainRecord, String> TOPIC = createField(DSL.name("topic"), SQLDataType.VARCHAR(255).defaultValue(DSL.inline("NULL", SQLDataType.VARCHAR)), this, "话题");
 
-    /**
-     * The column <code>smqtt.smqtt_retain.qos</code>. qos
-     */
     public final TableField<SmqttRetainRecord, Integer> QOS = createField(DSL.name("qos"), SQLDataType.INTEGER.defaultValue(DSL.inline("NULL", SQLDataType.INTEGER)), this, "qos");
 
-    /**
-     * The column <code>smqtt.smqtt_retain.body</code>. 消息内容
-     */
+
     public final TableField<SmqttRetainRecord, String> BODY = createField(DSL.name("body"), SQLDataType.VARCHAR(255).defaultValue(DSL.inline("NULL", SQLDataType.VARCHAR)), this, "消息内容");
 
-    /**
-     * The column <code>smqtt.smqtt_retain.create_time</code>. 记录保存时间
-     */
+
     public final TableField<SmqttRetainRecord, LocalDateTime> CREATE_TIME = createField(DSL.name("create_time"), SQLDataType.LOCALDATETIME(0).defaultValue(DSL.inline("NULL", SQLDataType.LOCALDATETIME)), this, "记录保存时间");
 
-    /**
-     * The column <code>smqtt.smqtt_retain.update_time</code>. 记录更新时间
-     */
+
     public final TableField<SmqttRetainRecord, LocalDateTime> UPDATE_TIME = createField(DSL.name("update_time"), SQLDataType.LOCALDATETIME(0).defaultValue(DSL.inline("NULL", SQLDataType.LOCALDATETIME)), this, "记录更新时间");
 
     private SmqttRetain(Name alias, Table<SmqttRetainRecord> aliased) {
@@ -81,23 +65,17 @@ public class SmqttRetain extends TableImpl<SmqttRetainRecord> {
         super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
-    /**
-     * Create an aliased <code>smqtt.smqtt_retain</code> table reference
-     */
+
     public SmqttRetain(String alias) {
         this(DSL.name(alias), SMQTT_RETAIN);
     }
 
-    /**
-     * Create an aliased <code>smqtt.smqtt_retain</code> table reference
-     */
+
     public SmqttRetain(Name alias) {
         this(alias, SMQTT_RETAIN);
     }
 
-    /**
-     * Create a <code>smqtt.smqtt_retain</code> table reference
-     */
+
     public SmqttRetain() {
         this(DSL.name("smqtt_retain"), null);
     }
@@ -126,17 +104,13 @@ public class SmqttRetain extends TableImpl<SmqttRetainRecord> {
         return new SmqttRetain(alias, this);
     }
 
-    /**
-     * Rename this table
-     */
+
     @Override
     public SmqttRetain rename(String name) {
         return new SmqttRetain(DSL.name(name), null);
     }
 
-    /**
-     * Rename this table
-     */
+
     @Override
     public SmqttRetain rename(Name name) {
         return new SmqttRetain(name, null);

@@ -35,37 +35,24 @@ public class Databasechangeloglock extends TableImpl<DatabasechangeloglockRecord
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * The reference instance of <code>smqtt.databasechangeloglock</code>
-     */
+
     public static final Databasechangeloglock DATABASECHANGELOGLOCK = new Databasechangeloglock();
 
-    /**
-     * The class holding records for this type
-     */
     @Override
     public Class<DatabasechangeloglockRecord> getRecordType() {
         return DatabasechangeloglockRecord.class;
     }
 
-    /**
-     * The column <code>smqtt.databasechangeloglock.ID</code>.
-     */
+
     public final TableField<DatabasechangeloglockRecord, Integer> ID = createField(DSL.name("ID"), SQLDataType.INTEGER.nullable(false), this, "");
 
-    /**
-     * The column <code>smqtt.databasechangeloglock.LOCKED</code>.
-     */
+
     public final TableField<DatabasechangeloglockRecord, Boolean> LOCKED = createField(DSL.name("LOCKED"), SQLDataType.BIT.nullable(false), this, "");
 
-    /**
-     * The column <code>smqtt.databasechangeloglock.LOCKGRANTED</code>.
-     */
+
     public final TableField<DatabasechangeloglockRecord, LocalDateTime> LOCKGRANTED = createField(DSL.name("LOCKGRANTED"), SQLDataType.LOCALDATETIME(0).defaultValue(DSL.inline("NULL", SQLDataType.LOCALDATETIME)), this, "");
 
-    /**
-     * The column <code>smqtt.databasechangeloglock.LOCKEDBY</code>.
-     */
+
     public final TableField<DatabasechangeloglockRecord, String> LOCKEDBY = createField(DSL.name("LOCKEDBY"), SQLDataType.VARCHAR(255).defaultValue(DSL.inline("NULL", SQLDataType.VARCHAR)), this, "");
 
     private Databasechangeloglock(Name alias, Table<DatabasechangeloglockRecord> aliased) {
@@ -76,23 +63,17 @@ public class Databasechangeloglock extends TableImpl<DatabasechangeloglockRecord
         super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
-    /**
-     * Create an aliased <code>smqtt.databasechangeloglock</code> table reference
-     */
+
     public Databasechangeloglock(String alias) {
         this(DSL.name(alias), DATABASECHANGELOGLOCK);
     }
 
-    /**
-     * Create an aliased <code>smqtt.databasechangeloglock</code> table reference
-     */
+
     public Databasechangeloglock(Name alias) {
         this(alias, DATABASECHANGELOGLOCK);
     }
 
-    /**
-     * Create a <code>smqtt.databasechangeloglock</code> table reference
-     */
+
     public Databasechangeloglock() {
         this(DSL.name("databasechangeloglock"), null);
     }
@@ -126,17 +107,13 @@ public class Databasechangeloglock extends TableImpl<DatabasechangeloglockRecord
         return new Databasechangeloglock(alias, this);
     }
 
-    /**
-     * Rename this table
-     */
+
     @Override
     public Databasechangeloglock rename(String name) {
         return new Databasechangeloglock(DSL.name(name), null);
     }
 
-    /**
-     * Rename this table
-     */
+
     @Override
     public Databasechangeloglock rename(Name name) {
         return new Databasechangeloglock(name, null);

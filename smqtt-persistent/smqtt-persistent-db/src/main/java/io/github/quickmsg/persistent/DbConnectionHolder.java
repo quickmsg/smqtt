@@ -19,7 +19,7 @@ public class DbConnectionHolder {
     /**
      * 获取DSLContext
      *
-     * @return {@link Mono<Connection>}
+     * @return {@link Mono}
      */
     public static Mono<Connection> getConnection() throws SQLException {
         Connection connection = DruidConnectionProvider.singleTon().getConnection();
@@ -29,7 +29,7 @@ public class DbConnectionHolder {
     /**
      * 获取DSLContext
      *
-     * @return {@link Mono<DSLContext>}
+     * @return {@link Mono}
      */
     public static Mono<DSLContext> getDslContext() throws SQLException {
         return getConnection().map(DSL::using);

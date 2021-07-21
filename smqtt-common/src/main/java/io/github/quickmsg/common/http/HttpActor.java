@@ -38,7 +38,7 @@ public interface HttpActor {
      *
      * @param tClass class
      * @param <T>    返回类型
-     * @return {{@link Function<String, T>}
+     * @return {{@link Function}
      */
     default <T> Function<String, T> toJson(Class<T> tClass) {
         return message -> JSON.parseObject(message, tClass);

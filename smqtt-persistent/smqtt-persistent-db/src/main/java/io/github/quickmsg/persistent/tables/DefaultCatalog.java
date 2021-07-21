@@ -19,19 +19,13 @@ public class DefaultCatalog extends CatalogImpl {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * The reference instance of <code>DEFAULT_CATALOG</code>
-     */
+
     public static final DefaultCatalog DEFAULT_CATALOG = new DefaultCatalog();
 
-    /**
-     * The schema <code>smqtt</code>.
-     */
+
     public final Smqtt SMQTT = Smqtt.SMQTT;
 
-    /**
-     * No further instances allowed
-     */
+
     private DefaultCatalog() {
         super("");
     }
