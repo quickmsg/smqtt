@@ -74,7 +74,7 @@ public interface TopicRegistry {
      *
      * @return {@link MqttChannel}
      */
-    Map<String, CopyOnWriteArraySet<MqttChannel>> getAllTopics();
+    Map<String, Set<MqttChannel>> getAllTopics();
 
 
     /**

@@ -55,4 +55,12 @@ public interface TopicFilter {
     int count();
 
 
+    /**
+     * 获取订所有订阅topic
+     *
+     * @return {@link SubscribeTopic}
+     */
+    Set<SubscribeTopic> getAllSubscribesTopic();
+
+
 }

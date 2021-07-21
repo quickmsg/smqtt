@@ -8,10 +8,9 @@ import io.github.quickmsg.core.topic.TopicFilter;
 import io.github.quickmsg.core.topic.TreeTopicFilter;
 import io.netty.handler.codec.mqtt.MqttQoS;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.stream.Collectors;
 
 /**
  * @author luxurong
@@ -80,8 +79,14 @@ public class DefaultTopicRegistry implements TopicRegistry {
 
 
     @Override
-    public Map<String, CopyOnWriteArraySet<MqttChannel>> getAllTopics() {
-        return Collections.emptyMap();
+    public Map<String, Set<MqttChannel>> getAllTopics() {
+        Set<SubscribeTopic> subscribeTopics = fixedTopicFilter.getAllSubscribesTopic();
+        subscribeTopics.addAll(treeTopicFilter.getAllSubscribesTopic());
+        return subscribeTopics
+                .stream()
+                .collect(Collectors.groupingBy(
+                        SubscribeTopic::getTopicFilter,
+                        Collectors.mapping(SubscribeTopic::getMqttChannel, Collectors.toSet())));
     }
 
     @Override

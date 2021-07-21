@@ -50,5 +50,10 @@ public class TreeTopicFilter implements TopicFilter {
         return (int) subscribeNumber.sum();
     }
 
+    @Override
+    public Set<SubscribeTopic> getAllSubscribesTopic() {
+        return rootTreeNode.getAllSubscribesTopic();
+    }
+
 
 }

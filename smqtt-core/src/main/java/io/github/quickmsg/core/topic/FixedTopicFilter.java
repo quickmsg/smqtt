@@ -4,7 +4,7 @@ import io.github.quickmsg.common.channel.MqttChannel;
 import io.github.quickmsg.common.topic.SubscribeTopic;
 import io.netty.handler.codec.mqtt.MqttQoS;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -54,5 +54,10 @@ public class FixedTopicFilter implements TopicFilter {
     @Override
     public int count() {
         return (int) subscribeNumber.sum();
+    }
+
+    @Override
+    public Set<SubscribeTopic> getAllSubscribesTopic() {
+        return topicChannels.values().stream().flatMap(Collection::stream).collect(Collectors.toSet());
     }
 }
