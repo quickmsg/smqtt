@@ -33,8 +33,10 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
     - 拦截器  （用户自定义拦截消息）
 10. 集群支持（gossip协议实现）
 11. 容器化支持 
+    > 默认镜像最新tag: 1ssqq1lxr/smqtt
 12. 持久化支持（session 保留消息）
-13. 管理系统
+13. 管理后台
+    > 请参考smqtt文档如何启动管理后台
    
 
 
@@ -193,8 +195,7 @@ smqtt.cluster.node=node-1
 # 容器集群映射主机
 # smqtt.cluster.external.host = localhost
 # 容器集群映射port
-# smqtt.cluster.external.port
-
+smqtt.cluster.external.port
 
   ```
 
