@@ -26,6 +26,8 @@ public class BootstrapKey {
 
     public final static String BOOTSTRAP_WORK_THREAD_SIZE = "smqtt.tcp.workThreadSize";
 
+    public final static String BOOTSTRAP_WEB_SOCKET_PATH = "smqtt.websocket.path";
+
     public final static String BOOTSTRAP_WEB_SOCKET_PORT = "smqtt.websocket.port";
 
     public final static String BOOTSTRAP_WEB_SOCKET_ENABLE = "smqtt.websocket.enable";

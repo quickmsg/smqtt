@@ -95,7 +95,6 @@ public class Bootstrap {
         Optional.ofNullable(childOptions).ifPresent(mqttConfiguration::setChildOptions);
         Optional.ofNullable(reactivePasswordAuth).ifPresent(mqttConfiguration::setReactivePasswordAuth);
         Optional.ofNullable(port).ifPresent(mqttConfiguration::setPort);
-        Optional.ofNullable(websocketPath).ifPresent(mqttConfiguration::setWebSocketPath);
         Optional.ofNullable(lowWaterMark).ifPresent(mqttConfiguration::setLowWaterMark);
         Optional.ofNullable(highWaterMark).ifPresent(mqttConfiguration::setHighWaterMark);
         Optional.ofNullable(wiretap).ifPresent(mqttConfiguration::setWiretap);
@@ -107,6 +106,7 @@ public class Bootstrap {
         Optional.ofNullable(envContext).ifPresent(mqttConfiguration::setEnvContext);
         if (isWebsocket) {
             mqttConfiguration.setWebSocketPort(websocketPort);
+            mqttConfiguration.setWebSocketPath(websocketPath);
         }
         if (wiretap != null && wiretap) {
             LoggerLevel.wiretap();

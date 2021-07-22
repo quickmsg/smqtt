@@ -27,6 +27,9 @@ public abstract class AbstractStarter {
 
     private static final Integer DEFAULT_WEBSOCKET_MQTT_PORT = 8999;
 
+    private static final String DEFAULT_WEBSOCKET_MQTT_PATH = "/";
+
+
     private static final Integer DEFAULT_CLUSTER_PORT = 4333;
 
     private static final String DEFAULT_AUTH_USERNAME_PASSWORD = "smqtt";
@@ -134,8 +137,11 @@ public abstract class AbstractStarter {
             Integer websocketPort = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_WEB_SOCKET_PORT,
                     function.apply(BootstrapKey.BOOTSTRAP_WEB_SOCKET_PORT)))
                     .map(Integer::parseInt).orElse(DEFAULT_WEBSOCKET_MQTT_PORT);
+            String websocketPath = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_WEB_SOCKET_PATH,
+                    function.apply(BootstrapKey.BOOTSTRAP_WEB_SOCKET_PATH)))
+                    .map(String::valueOf).orElse(DEFAULT_WEBSOCKET_MQTT_PATH);
             builder.isWebsocket(true)
-                    .websocketPort(websocketPort);
+                    .websocketPort(websocketPort).websocketPath(websocketPath);
         }
         if (httpEnable) {
             Bootstrap.HttpOptions.HttpOptionsBuilder optionsBuilder = Bootstrap.HttpOptions.builder();
