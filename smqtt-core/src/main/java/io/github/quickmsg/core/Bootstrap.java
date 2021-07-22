@@ -48,6 +48,9 @@ public class Bootstrap {
     private Integer websocketPort = 0;
 
     @Builder.Default
+    private String websocketPath = "/";
+
+    @Builder.Default
     private EnvContext envContext = EnvContext.empty();
 
     private final List<Transport<?>> transports = new ArrayList<>();
@@ -92,6 +95,7 @@ public class Bootstrap {
         Optional.ofNullable(childOptions).ifPresent(mqttConfiguration::setChildOptions);
         Optional.ofNullable(reactivePasswordAuth).ifPresent(mqttConfiguration::setReactivePasswordAuth);
         Optional.ofNullable(port).ifPresent(mqttConfiguration::setPort);
+        Optional.ofNullable(websocketPath).ifPresent(mqttConfiguration::setWebSocketPath);
         Optional.ofNullable(lowWaterMark).ifPresent(mqttConfiguration::setLowWaterMark);
         Optional.ofNullable(highWaterMark).ifPresent(mqttConfiguration::setHighWaterMark);
         Optional.ofNullable(wiretap).ifPresent(mqttConfiguration::setWiretap);
