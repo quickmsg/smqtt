@@ -81,12 +81,6 @@
         {
             title: '心跳时间',
             dataIndex: 'keepalive',
-        },
-        {
-            title: '订阅Topic',
-            dataIndex: 'topics',
-            scopedSlots: {customRender: 'topics'},
-            width: "100px"
         }
     ]
     export default {
