@@ -58,7 +58,8 @@ public class SubscribeTopic {
     @Override
     public String toString() {
         return "SubscribeTopic{" +
-                "qoS=" + qoS +
+                "topicFilter='" + topicFilter + '\'' +
+                ", qoS=" + qoS +
                 ", mqttChannel=" + mqttChannel +
                 '}';
     }

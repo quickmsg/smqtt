@@ -41,7 +41,6 @@ public class TreeTopicFilter implements TopicFilter {
         if (rootTreeNode.removeSubscribeTopic(subscribeTopic)) {
             subscribeNumber.add(-1);
             subscribeTopic.unLinkSubscribe();
-
         }
     }
 

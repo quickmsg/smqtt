@@ -7,6 +7,7 @@ import io.github.quickmsg.core.topic.FixedTopicFilter;
 import io.github.quickmsg.core.topic.TopicFilter;
 import io.github.quickmsg.core.topic.TreeTopicFilter;
 import io.netty.handler.codec.mqtt.MqttQoS;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 import java.util.Set;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 /**
  * @author luxurong
  */
+@Slf4j
 public class DefaultTopicRegistry implements TopicRegistry {
 
 
@@ -51,6 +53,7 @@ public class DefaultTopicRegistry implements TopicRegistry {
     @Override
     public void clear(MqttChannel mqttChannel) {
         Set<SubscribeTopic> topics = mqttChannel.getTopics();
+        log.info("mqttChannel channel {} clear topics {}",mqttChannel,topics);
         topics.forEach(this::removeSubscribeTopic);
     }
 

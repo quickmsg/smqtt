@@ -4,10 +4,7 @@ import io.github.quickmsg.common.topic.SubscribeTopic;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.stream.Collectors;
@@ -127,13 +124,14 @@ public class TreeNode {
     }
 
     private Set<SubscribeTopic> getTreeSubscribesTopic(TreeNode node) {
-        Set<SubscribeTopic> subscribeTopics = node.getSubscribes();
-        subscribeTopics.addAll(node.getChildNodes()
+        Set<SubscribeTopic> allSubscribeTopics = new HashSet<>();
+        allSubscribeTopics.addAll(node.getSubscribes());
+        allSubscribeTopics.addAll(node.getChildNodes()
                 .values()
                 .stream()
                 .flatMap(treeNode -> treeNode.getTreeSubscribesTopic(treeNode).stream())
                 .collect(Collectors.toSet()));
-        return subscribeTopics;
+        return allSubscribeTopics;
     }
 
 }
