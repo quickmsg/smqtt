@@ -83,7 +83,8 @@ public class Bootstrap {
 
     private ClusterConfig clusterConfig;
 
-    private Consumer<Bootstrap> started;
+    @Builder.Default
+    private Consumer<Bootstrap> started = bootstrap -> {};
 
     @Builder.Default
     private Level rootLevel = Level.INFO;

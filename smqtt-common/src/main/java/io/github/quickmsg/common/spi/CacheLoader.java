@@ -23,9 +23,9 @@ public class CacheLoader {
         return (T) beans.get(type);
     }
 
-    private static Map<String, Object> loadAll(Class<?> aClass) {
-        ServiceLoader<?> load = ServiceLoader.load(aClass);
-        Map<String, Object> map = new HashMap<>(16);
+    private static <T> Map<String, T> loadAll(Class<T> aClass) {
+        ServiceLoader<T> load = ServiceLoader.load(aClass);
+        Map<String, T> map = new HashMap<>(16);
         StreamSupport.stream(load.spliterator(), false)
                 .forEach(b -> {
                     Spi spi = b.getClass().getAnnotation(Spi.class);
