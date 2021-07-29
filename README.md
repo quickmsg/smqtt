@@ -134,6 +134,7 @@ Bootstrap bootstrap = Bootstrap.builder()
                                 .clusterUrl("127.0.0.1:7771,127.0.0.1:7772")
                                 .build()
            )
+           .started(bootstrap->{})
            .build()
            .start().block();
 
