@@ -15,7 +15,7 @@ import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
 import reactor.netty.Connection;
 
-import java.lang.reflect.Field;
+import java.lang.reflect.Constructor;
 import java.time.Duration;
 import java.util.Map;
 import java.util.Optional;
@@ -249,8 +249,6 @@ public class MqttChannel {
             } else {
                 return mqttChannel.write(Mono.just(mqttMessage));
             }
-        }
-
         private int getMessageId(MqttMessage mqttMessage) {
             Object object = mqttMessage.variableHeader();
             if (object instanceof MqttPublishVariableHeader) {
@@ -266,7 +264,7 @@ public class MqttChannel {
         /**
          * Set resend flag
          *
-         * @param mqttMessage mqttMessage
+         * @param mqttMessage {@link MqttMessage}
          * @return 消息体
          */
         private MqttMessage getDupMessage(MqttMessage mqttMessage) {
@@ -279,14 +277,16 @@ public class MqttChannel {
                     oldFixedHeader.remainingLength());
             Object payload = mqttMessage.payload();
             if (payload instanceof ByteBuf) {
-                ((ByteBuf) payload).copy().retain(Integer.MAX_VALUE >> 2);
+                payload = ((ByteBuf) payload).copy().retain(Integer.MAX_VALUE >> 2);
             }
             try {
-                Field field = MqttMessage.class.getDeclaredField("mqttFixedHeader");
-                field.setAccessible(true); // 为true时可以访问私有类型变量
-                field.set(mqttMessage, fixedHeader); // 将i的值设置为111
-                return mqttMessage;
-
+                Constructor<?> constructor = mqttMessage.getClass().getDeclaredConstructors()[0];
+                constructor.setAccessible(true);
+                if (constructor.getParameterCount() == 2) {
+                    return (MqttMessage) constructor.newInstance(fixedHeader, mqttMessage.variableHeader());
+                } else {
+                    return (MqttMessage) constructor.newInstance(fixedHeader, mqttMessage.variableHeader(), payload);
+                }
             } catch (Exception e) {
                 return mqttMessage;
             }
@@ -297,8 +297,8 @@ public class MqttChannel {
         /**
          * Set resend action
          *
-         * @param message             mqttMessage
-         * @param mqttChannel         connection
+         * @param message             {@link MqttMessage}
+         * @param mqttChannel         {@link MqttChannel}
          * @param messageId           messageId
          * @param replyMqttMessageMap 重试缓存
          * @return 空操作符
