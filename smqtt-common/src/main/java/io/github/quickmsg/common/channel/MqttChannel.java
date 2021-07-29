@@ -6,12 +6,16 @@ import io.github.quickmsg.common.topic.SubscribeTopic;
 import io.github.quickmsg.common.utils.MessageUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.mqtt.*;
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
 import reactor.netty.Connection;
 
+import java.lang.reflect.Field;
 import java.time.Duration;
 import java.util.Map;
 import java.util.Optional;
@@ -277,7 +281,16 @@ public class MqttChannel {
             if (payload instanceof ByteBuf) {
                 ((ByteBuf) payload).copy().retain(Integer.MAX_VALUE >> 2);
             }
-            return new MqttMessage(fixedHeader, mqttMessage.variableHeader(), payload);
+            try {
+                Field field = MqttMessage.class.getDeclaredField("mqttFixedHeader");
+                field.setAccessible(true); // 为true时可以访问私有类型变量
+                field.set(mqttMessage, fixedHeader); // 将i的值设置为111
+                return mqttMessage;
+
+            } catch (Exception e) {
+                return mqttMessage;
+            }
+
         }
 
 
@@ -291,7 +304,6 @@ public class MqttChannel {
          * @return 空操作符
          */
         public Mono<Void> offerReply(MqttMessage message, final MqttChannel mqttChannel, final int messageId, Map<MqttMessageType, Map<Integer, Disposable>> replyMqttMessageMap) {
-
             return Mono.fromRunnable(() ->
                     replyMqttMessageMap.computeIfAbsent(message.fixedHeader().messageType(), mqttMessageType -> new ConcurrentHashMap<>(8)).put(messageId,
                             mqttChannel.write(Mono.just(message))

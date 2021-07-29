@@ -74,7 +74,7 @@ public class CommonProtocol implements Protocol<MqttMessage> {
                                             ).collect(Collectors.toList()))
                                     .then(mqttChannel.cancelRetry(MqttMessageType.PUBREC, id))
                                     .then(mqttChannel.write(MqttMessageBuilder.buildPublishComp(id), false));
-                        }).orElse(mqttChannel.write(MqttMessageBuilder.buildPublishComp(id), false));
+                        }).orElseGet(() -> mqttChannel.write(MqttMessageBuilder.buildPublishComp(id), false));
 
             case PUBCOMP:
                 MqttMessageIdVariableHeader messageIdVariableHeader1 = (MqttMessageIdVariableHeader) message.variableHeader();

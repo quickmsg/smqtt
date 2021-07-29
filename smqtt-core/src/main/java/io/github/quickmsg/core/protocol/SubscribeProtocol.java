@@ -48,8 +48,7 @@ public class SubscribeProtocol implements Protocol<MqttSubscribeMessage> {
                                 .map(mqttTopicSubscription ->
                                         mqttTopicSubscription.qualityOfService()
                                                 .value())
-                                .collect(Collectors.toList())),
-                false));
+                                .collect(Collectors.toList())), false));
     }
 
     private void loadRetainMessage(MessageRegistry messageRegistry, MqttChannel mqttChannel, String topicName) {
