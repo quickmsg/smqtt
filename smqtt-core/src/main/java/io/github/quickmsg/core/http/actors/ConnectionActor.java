@@ -1,6 +1,7 @@
 package io.github.quickmsg.core.http.actors;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import io.github.quickmsg.common.annotation.AllowCors;
 import io.github.quickmsg.common.annotation.Header;
 import io.github.quickmsg.common.annotation.Router;
@@ -29,7 +30,7 @@ public class ConnectionActor extends AbstractHttpActor {
         return request
                 .receive()
                 .then(response
-                        .sendString(Mono.just(JSON.toJSONString(DefaultTransport.receiveContext.getChannelRegistry().getChannels())))
+                        .sendString(Mono.just(JSON.toJSONString(DefaultTransport.receiveContext.getChannelRegistry().getChannels(), SerializerFeature.DisableCircularReferenceDetect)))
                         .then());
     }
 
