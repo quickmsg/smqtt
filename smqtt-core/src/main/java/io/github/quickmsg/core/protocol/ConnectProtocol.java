@@ -55,8 +55,7 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
         ChannelRegistry channelRegistry = mqttReceiveContext.getChannelRegistry();
         TopicRegistry topicRegistry = mqttReceiveContext.getTopicRegistry();
         PasswordAuthentication passwordAuthentication = mqttReceiveContext.getPasswordAuthentication();
-        if (channelRegistry.exists(clientIdentifier)
-                && channelRegistry.get(clientIdentifier).getStatus() == ChannelStatus.OFFLINE) {
+        if (channelRegistry.exists(clientIdentifier)){
             return mqttChannel.write(
                     MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_IDENTIFIER_REJECTED),
                     false).then(mqttChannel.close());
