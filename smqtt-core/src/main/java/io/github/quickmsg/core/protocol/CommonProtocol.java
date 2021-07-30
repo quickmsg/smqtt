@@ -70,7 +70,7 @@ public class CommonProtocol implements Protocol<MqttMessage> {
                                     subscribeTopics.stream()
                                             .map(subscribeTopic -> subscribeTopic.getMqttChannel()
                                                     .write(MessageUtils.wrapPublishMessage(msg, subscribeTopic.getQoS(),
-                                                            subscribeTopic.getMqttChannel().generateMessageId()), true)
+                                                            subscribeTopic.getMqttChannel().generateMessageId()), subscribeTopic.getQoS().value() > 0)
                                             ).collect(Collectors.toList()))
                                     .then(mqttChannel.cancelRetry(MqttMessageType.PUBREC, id))
                                     .then(mqttChannel.write(MqttMessageBuilder.buildPublishComp(id), false));

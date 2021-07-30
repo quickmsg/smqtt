@@ -249,6 +249,7 @@ public class MqttChannel {
             } else {
                 return mqttChannel.write(Mono.just(mqttMessage));
             }
+        }
         private int getMessageId(MqttMessage mqttMessage) {
             Object object = mqttMessage.variableHeader();
             if (object instanceof MqttPublishVariableHeader) {
