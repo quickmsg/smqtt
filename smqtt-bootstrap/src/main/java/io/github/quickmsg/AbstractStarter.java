@@ -11,6 +11,7 @@ import io.github.quickmsg.core.Bootstrap;
 import io.netty.channel.WriteBufferWaterMark;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
@@ -82,7 +83,8 @@ public abstract class AbstractStarter {
 
         Bootstrap.BootstrapBuilder builder = Bootstrap.builder();
         builder.port(port)
-                .reactivePasswordAuth(((userName, passwordInBytes) -> userName.equals(username) && password.equals(new String(passwordInBytes))))
+                .reactivePasswordAuth(((userName, passwordInBytes) ->
+                        !Objects.isNull(userName) && !Objects.isNull(passwordInBytes) && (userName.equals(username) && password.equals(new String(passwordInBytes)))))
                 .bossThreadSize(bossThreadSize)
                 .wiretap(wiretap)
                 .ssl(ssl)
