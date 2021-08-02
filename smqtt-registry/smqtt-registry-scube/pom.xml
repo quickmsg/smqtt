@@ -45,6 +45,7 @@
             <groupId>io.github.quickmsg</groupId>
             <artifactId>smqtt-common</artifactId>
             <version>1.0.6</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
