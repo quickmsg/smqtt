@@ -24,6 +24,8 @@ public class MqttConfiguration extends AbstractSslHandler implements AbstractCon
 
     private Integer webSocketPort = 0;
 
+    private String webSocketPath = "/";
+
     private Integer lowWaterMark;
 
     private Integer highWaterMark;

@@ -4,6 +4,7 @@ import io.github.quickmsg.common.channel.MqttChannel;
 import io.github.quickmsg.common.context.ReceiveContext;
 import io.github.quickmsg.common.message.MqttMessageBuilder;
 import io.github.quickmsg.common.protocol.Protocol;
+import io.github.quickmsg.common.topic.SubscribeTopic;
 import io.github.quickmsg.common.topic.TopicRegistry;
 import io.github.quickmsg.common.utils.MessageUtils;
 import io.netty.handler.codec.mqtt.MqttMessage;
@@ -43,7 +44,7 @@ public class CommonProtocol implements Protocol<MqttMessage> {
             case PINGREQ:
                 return mqttChannel.write(MqttMessageBuilder.buildPongMessage(), false);
             case DISCONNECT:
-                return Mono.fromRunnable(()->{
+                return Mono.fromRunnable(() -> {
                     mqttChannel.setWill(null);
                     mqttChannel.getConnection().dispose();
                 });
@@ -64,14 +65,16 @@ public class CommonProtocol implements Protocol<MqttMessage> {
                         .map(msg -> {
                             ReceiveContext<?> receiveContext = contextView.get(ReceiveContext.class);
                             TopicRegistry topicRegistry = receiveContext.getTopicRegistry();
-                            Set<MqttChannel> mqttChannels = topicRegistry.getChannelListByTopic(msg.variableHeader().topicName());
+                            Set<SubscribeTopic> subscribeTopics = topicRegistry.getSubscribesByTopic(msg.variableHeader().topicName(), msg.fixedHeader().qosLevel());
                             return Mono.when(
-                                    mqttChannels.stream()
-                                            .map(channel -> channel.write(MessageUtils.wrapPublishMessage(msg, channel.generateMessageId()), true))
-                                            .collect(Collectors.toList()))
+                                    subscribeTopics.stream()
+                                            .map(subscribeTopic -> subscribeTopic.getMqttChannel()
+                                                    .write(MessageUtils.wrapPublishMessage(msg, subscribeTopic.getQoS(),
+                                                            subscribeTopic.getMqttChannel().generateMessageId()), subscribeTopic.getQoS().value() > 0)
+                                            ).collect(Collectors.toList()))
                                     .then(mqttChannel.cancelRetry(MqttMessageType.PUBREC, id))
                                     .then(mqttChannel.write(MqttMessageBuilder.buildPublishComp(id), false));
-                        }).orElse(mqttChannel.write(MqttMessageBuilder.buildPublishComp(id), false));
+                        }).orElseGet(() -> mqttChannel.write(MqttMessageBuilder.buildPublishComp(id), false));
 
             case PUBCOMP:
                 MqttMessageIdVariableHeader messageIdVariableHeader1 = (MqttMessageIdVariableHeader) message.variableHeader();

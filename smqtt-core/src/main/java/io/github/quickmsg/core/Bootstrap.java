@@ -48,6 +48,9 @@ public class Bootstrap {
     private Integer websocketPort = 0;
 
     @Builder.Default
+    private String websocketPath = "/";
+
+    @Builder.Default
     private EnvContext envContext = EnvContext.empty();
 
     private final List<Transport<?>> transports = new ArrayList<>();
@@ -80,7 +83,8 @@ public class Bootstrap {
 
     private ClusterConfig clusterConfig;
 
-    private Consumer<Bootstrap> started;
+    @Builder.Default
+    private Consumer<Bootstrap> started = bootstrap -> {};
 
     @Builder.Default
     private Level rootLevel = Level.INFO;
@@ -103,6 +107,7 @@ public class Bootstrap {
         Optional.ofNullable(envContext).ifPresent(mqttConfiguration::setEnvContext);
         if (isWebsocket) {
             mqttConfiguration.setWebSocketPort(websocketPort);
+            mqttConfiguration.setWebSocketPath(websocketPath);
         }
         if (wiretap != null && wiretap) {
             LoggerLevel.wiretap();

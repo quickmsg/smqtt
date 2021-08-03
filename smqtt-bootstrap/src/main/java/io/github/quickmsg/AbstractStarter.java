@@ -11,6 +11,7 @@ import io.github.quickmsg.core.Bootstrap;
 import io.netty.channel.WriteBufferWaterMark;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
@@ -26,6 +27,9 @@ public abstract class AbstractStarter {
     private static final Integer DEFAULT_MQTT_PORT = 1883;
 
     private static final Integer DEFAULT_WEBSOCKET_MQTT_PORT = 8999;
+
+    private static final String DEFAULT_WEBSOCKET_MQTT_PATH = "/";
+
 
     private static final Integer DEFAULT_CLUSTER_PORT = 4333;
 
@@ -79,7 +83,8 @@ public abstract class AbstractStarter {
 
         Bootstrap.BootstrapBuilder builder = Bootstrap.builder();
         builder.port(port)
-                .reactivePasswordAuth(((userName, passwordInBytes) -> userName.equals(username) && password.equals(new String(passwordInBytes))))
+                .reactivePasswordAuth(((userName, passwordInBytes) ->
+                        !Objects.isNull(userName) && !Objects.isNull(passwordInBytes) && (userName.equals(username) && password.equals(new String(passwordInBytes)))))
                 .bossThreadSize(bossThreadSize)
                 .wiretap(wiretap)
                 .ssl(ssl)
@@ -134,8 +139,11 @@ public abstract class AbstractStarter {
             Integer websocketPort = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_WEB_SOCKET_PORT,
                     function.apply(BootstrapKey.BOOTSTRAP_WEB_SOCKET_PORT)))
                     .map(Integer::parseInt).orElse(DEFAULT_WEBSOCKET_MQTT_PORT);
+            String websocketPath = Optional.ofNullable(params.obtainKeyOrDefault(BootstrapKey.BOOTSTRAP_WEB_SOCKET_PATH,
+                    function.apply(BootstrapKey.BOOTSTRAP_WEB_SOCKET_PATH)))
+                    .map(String::valueOf).orElse(DEFAULT_WEBSOCKET_MQTT_PATH);
             builder.isWebsocket(true)
-                    .websocketPort(websocketPort);
+                    .websocketPort(websocketPort).websocketPath(websocketPath);
         }
         if (httpEnable) {
             Bootstrap.HttpOptions.HttpOptionsBuilder optionsBuilder = Bootstrap.HttpOptions.builder();

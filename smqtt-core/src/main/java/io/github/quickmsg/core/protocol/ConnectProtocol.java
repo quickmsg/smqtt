@@ -9,9 +9,10 @@ import io.github.quickmsg.common.message.MessageRegistry;
 import io.github.quickmsg.common.message.MqttMessageBuilder;
 import io.github.quickmsg.common.message.RecipientRegistry;
 import io.github.quickmsg.common.protocol.Protocol;
+import io.github.quickmsg.common.topic.SubscribeTopic;
 import io.github.quickmsg.common.topic.TopicRegistry;
-import io.github.quickmsg.metric.counter.WindowMetric;
 import io.github.quickmsg.core.mqtt.MqttReceiveContext;
+import io.github.quickmsg.metric.counter.WindowMetric;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.mqtt.*;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author luxurong
@@ -53,8 +55,7 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
         ChannelRegistry channelRegistry = mqttReceiveContext.getChannelRegistry();
         TopicRegistry topicRegistry = mqttReceiveContext.getTopicRegistry();
         PasswordAuthentication passwordAuthentication = mqttReceiveContext.getPasswordAuthentication();
-        if (channelRegistry.exists(clientIdentifier)
-                && channelRegistry.get(clientIdentifier).getStatus() == ChannelStatus.OFFLINE) {
+        if (channelRegistry.exists(clientIdentifier)){
             return mqttChannel.write(
                     MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_IDENTIFIER_REJECTED),
                     false).then(mqttChannel.close());
@@ -90,17 +91,18 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
             /*registry will message send */
             mqttChannel.registryClose(channel -> Optional.ofNullable(mqttChannel.getWill())
                     .ifPresent(will ->
-                            topicRegistry.getChannelListByTopic(will.getWillTopic())
-                                    .forEach(mqttChannel1 -> {
-                                        mqttChannel1.write(
+                            topicRegistry.getSubscribesByTopic(will.getWillTopic(), will.getMqttQoS())
+                                    .forEach(subscribeTopic -> {
+                                        MqttChannel subscribeChannel = subscribeTopic.getMqttChannel();
+                                        subscribeChannel.write(
                                                 MqttMessageBuilder
                                                         .buildPub(false,
-                                                                will.getMqttQoS(),
-                                                                will.getMqttQoS() == MqttQoS.AT_MOST_ONCE
-                                                                        ? 0 : mqttChannel1.generateMessageId(),
+                                                                subscribeTopic.getQoS(),
+                                                                subscribeTopic.getQoS() == MqttQoS.AT_MOST_ONCE
+                                                                        ? 0 : subscribeChannel.generateMessageId(),
                                                                 will.getWillTopic(),
                                                                 Unpooled.wrappedBuffer(will.getWillMessage())
-                                                        ), will.getMqttQoS().value() > 0
+                                                        ), subscribeTopic.getQoS().value() > 0
                                         ).subscribe();
                                     })));
 
@@ -143,21 +145,25 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
     /**
      * 处理session消息
      *
-     * @param sessionChannel  session channel
-     * @param mqttChannel     new channel
-     * @param channelRegistry channel注册
-     * @param topicRegistry   主题注册
-     * @param messageRegistry 消息注册
+     * @param sessionChannel  session链接 {@link MqttChannel}
+     * @param mqttChannel     新链接      {@link MqttChannel}
+     * @param channelRegistry {@link ChannelRegistry}
+     * @param topicRegistry   {@link TopicRegistry}
+     * @param messageRegistry {@link MessageRegistry}
      */
     private void doSession(MqttChannel sessionChannel,
                            MqttChannel mqttChannel,
                            ChannelRegistry channelRegistry,
                            TopicRegistry topicRegistry,
                            MessageRegistry messageRegistry) {
-        Set<String> topics = sessionChannel.getTopics();
-        mqttChannel.setTopics(topics);
+        Set<SubscribeTopic> topics = sessionChannel.getTopics().stream().peek(subscribeTopic ->
+                new SubscribeTopic(
+                        subscribeTopic.getTopicFilter(),
+                        subscribeTopic.getQoS(),
+                        subscribeTopic.getMqttChannel()))
+                .collect(Collectors.toSet());
         topicRegistry.clear(sessionChannel);
-        topics.forEach(topic -> topicRegistry.registryTopicConnection(topic, mqttChannel));
+        topics.forEach(topic -> topicRegistry.registrySubscribesTopic(topics));
         channelRegistry.close(sessionChannel);
         Optional.ofNullable(messageRegistry.getSessionMessage(mqttChannel.getClientIdentifier()))
                 .ifPresent(sessionMessages -> {

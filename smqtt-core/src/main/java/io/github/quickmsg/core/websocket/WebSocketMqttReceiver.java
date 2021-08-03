@@ -50,14 +50,14 @@ public class WebSocketMqttReceiver extends AbstractSslHandler implements Receive
                 .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
                 .runOn(receiveContext.getLoopResources())
                 .doOnConnection(connection -> {
-                    connection.addHandler(new HttpServerCodec())
-                            .addHandler(new HttpObjectAggregator(65536))
-                            .addHandler(new WebSocketServerProtocolHandler("/", "mqtt, mqttv3.1, mqttv3.1.1"))
-                            .addHandler(new WebSocketFrameToByteBufDecoder())
-                            .addHandler(new ByteBufToWebSocketFrameEncoder())
-                            .addHandler(MqttEncoder.INSTANCE)
-                            .addHandler(new MetricChannelHandler())
-                            .addHandler(new MqttDecoder());
+                    connection.addHandlerLast(new MetricChannelHandler())
+                            .addHandlerLast(new HttpServerCodec())
+                            .addHandlerLast(new HttpObjectAggregator(65536))
+                            .addHandlerLast(new WebSocketServerProtocolHandler(mqttConfiguration.getWebSocketPath(), "mqtt, mqttv3.1, mqttv3.1.1"))
+                            .addHandlerLast(new WebSocketFrameToByteBufDecoder())
+                            .addHandlerLast(new ByteBufToWebSocketFrameEncoder())
+                            .addHandlerLast(new MqttDecoder())
+                            .addHandlerLast(MqttEncoder.INSTANCE);
                     receiveContext.apply(MqttChannel.init(connection));
                 });
     }

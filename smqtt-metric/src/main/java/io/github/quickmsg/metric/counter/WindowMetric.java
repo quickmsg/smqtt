@@ -28,6 +28,8 @@ public class WindowMetric implements MetricsGetter {
 
     private WindowCounter connectCounter = new SimpleWindowCounter();
 
+    private WindowCounter subscribeCounter = new SimpleWindowCounter();
+
     public void recordDataSend(Integer bufferSize) {
         writeAllBufferSize.apply(bufferSize);
     }
@@ -38,6 +40,10 @@ public class WindowMetric implements MetricsGetter {
 
     public void recordConnect(Integer size) {
         connectCounter.apply(size);
+    }
+
+    public void recordSubscribe(Integer size) {
+        subscribeCounter.apply(size);
     }
 
 

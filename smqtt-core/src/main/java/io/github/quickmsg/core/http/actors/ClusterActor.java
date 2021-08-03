@@ -1,6 +1,7 @@
 package io.github.quickmsg.core.http.actors;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import io.github.quickmsg.common.annotation.AllowCors;
 import io.github.quickmsg.common.annotation.Header;
 import io.github.quickmsg.common.annotation.Router;
@@ -29,6 +30,6 @@ public class ClusterActor implements HttpActor {
     public Publisher<Void> doRequest(HttpServerRequest request, HttpServerResponse response, Configuration httpConfiguration) {
         return request
                 .receive()
-                .then(response.sendString(Mono.just(JSON.toJSONString(DefaultTransport.receiveContext.getClusterRegistry().getClusterNode()))).then());
+                .then(response.sendString(Mono.just(JSON.toJSONString(DefaultTransport.receiveContext.getClusterRegistry().getClusterNode(), SerializerFeature.DisableCircularReferenceDetect))).then());
     }
 }

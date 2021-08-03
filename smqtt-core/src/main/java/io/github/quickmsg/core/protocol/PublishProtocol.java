@@ -8,6 +8,7 @@ import io.github.quickmsg.common.message.MqttMessageBuilder;
 import io.github.quickmsg.common.message.RetainMessage;
 import io.github.quickmsg.common.message.SessionMessage;
 import io.github.quickmsg.common.protocol.Protocol;
+import io.github.quickmsg.common.topic.SubscribeTopic;
 import io.github.quickmsg.common.topic.TopicRegistry;
 import io.github.quickmsg.common.utils.MessageUtils;
 import io.netty.handler.codec.mqtt.MqttMessageType;
@@ -47,7 +48,8 @@ public class PublishProtocol implements Protocol<MqttPublishMessage> {
             TopicRegistry topicRegistry = receiveContext.getTopicRegistry();
             MqttPublishVariableHeader variableHeader = message.variableHeader();
             MessageRegistry messageRegistry = receiveContext.getMessageRegistry();
-            Set<MqttChannel> mqttChannels = topicRegistry.getChannelListByTopic(variableHeader.topicName());
+            Set<SubscribeTopic> mqttChannels = topicRegistry.getSubscribesByTopic(variableHeader.topicName(),
+                    message.fixedHeader().qosLevel());
             // http mock
             if (mqttChannel.getIsMock()) {
                 return send(mqttChannels, message, messageRegistry, filterRetainMessage(message, messageRegistry));
@@ -62,7 +64,8 @@ public class PublishProtocol implements Protocol<MqttPublishMessage> {
                 case EXACTLY_ONCE:
                     if (!mqttChannel.existQos2Msg(variableHeader.packetId())) {
                         return mqttChannel
-                                .cacheQos2Msg(variableHeader.packetId(), MessageUtils.wrapPublishMessage(message, 0))
+                                .cacheQos2Msg(variableHeader.packetId(),
+                                        MessageUtils.wrapPublishMessage(message, message.fixedHeader().qosLevel(), 0))
                                 .then(mqttChannel.write(MqttMessageBuilder.buildPublishRec(variableHeader.packetId()), true));
                     }
                 default:
@@ -78,20 +81,21 @@ public class PublishProtocol implements Protocol<MqttPublishMessage> {
     /**
      * 通用发送消息
      *
-     * @param mqttChannels    topic 匹配channels
-     * @param message         消息体
-     * @param messageRegistry 消息中心
-     * @param other           其他操作
+     * @param subscribeTopics {@link SubscribeTopic}
+     * @param message         {@link MqttPublishMessage}
+     * @param messageRegistry {@link MessageRegistry}
+     * @param other           {@link Mono}
      * @return Mono
      */
-    private Mono<Void> send(Set<MqttChannel> mqttChannels, MqttPublishMessage message, MessageRegistry messageRegistry, Mono<Void> other) {
+    private Mono<Void> send(Set<SubscribeTopic> subscribeTopics, MqttPublishMessage message, MessageRegistry messageRegistry, Mono<Void> other) {
         return Mono.when(
-                mqttChannels.stream()
-                        .filter(channel -> filterOfflineSession(channel, messageRegistry, message))
-                        .map(channel ->
-                                channel.write(MessageUtils.wrapPublishMessage(message,
-                                        channel.generateMessageId()),
-                                        message.fixedHeader().qosLevel().value() > 0)
+                subscribeTopics.stream()
+                        .filter(subscribeTopic -> filterOfflineSession(subscribeTopic.getMqttChannel(), messageRegistry, message))
+                        .map(subscribeTopic ->
+                                subscribeTopic.getMqttChannel().write(MessageUtils.wrapPublishMessage(message,
+                                        subscribeTopic.getQoS(),
+                                        subscribeTopic.getMqttChannel().generateMessageId()),
+                                        subscribeTopic.getQoS().value() > 0)
                         )
                         .collect(Collectors.toList())).then(other);
 
@@ -101,9 +105,9 @@ public class PublishProtocol implements Protocol<MqttPublishMessage> {
     /**
      * 过滤离线会话消息
      *
-     * @param mqttChannel     topic匹配的channel
-     * @param messageRegistry 消息注册中心
-     * @param mqttMessage     消息
+     * @param mqttChannel     {@link MqttChannel}
+     * @param messageRegistry {@link MessageRegistry}
+     * @param mqttMessage     {@link MqttPublishMessage}
      * @return boolean
      */
     private boolean filterOfflineSession(MqttChannel mqttChannel, MessageRegistry messageRegistry, MqttPublishMessage mqttMessage) {
@@ -120,8 +124,8 @@ public class PublishProtocol implements Protocol<MqttPublishMessage> {
     /**
      * 过滤保留消息
      *
-     * @param message         消息体
-     * @param messageRegistry 消息中心
+     * @param message         {@link MqttPublishMessage}
+     * @param messageRegistry {@link MessageRegistry}
      * @return Mono
      */
     private Mono<Void> filterRetainMessage(MqttPublishMessage message, MessageRegistry messageRegistry) {

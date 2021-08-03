@@ -2,16 +2,20 @@ package io.github.quickmsg.common.channel;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import io.github.quickmsg.common.enums.ChannelStatus;
+import io.github.quickmsg.common.topic.SubscribeTopic;
 import io.github.quickmsg.common.utils.MessageUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.mqtt.*;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
 import reactor.netty.Connection;
 
+import java.lang.reflect.Constructor;
 import java.time.Duration;
 import java.util.Map;
 import java.util.Optional;
@@ -24,7 +28,8 @@ import java.util.function.Consumer;
 /**
  * @author luxurong
  */
-@Data
+@Getter
+@Setter
 @Slf4j
 public class MqttChannel {
 
@@ -46,7 +51,8 @@ public class MqttChannel {
 
     private String username;
 
-    private Set<String> topics;
+    @JSONField(serialize = false)
+    private Set<SubscribeTopic> topics;
 
     @JSONField(serialize = false)
     private Boolean isMock = false;
@@ -244,7 +250,6 @@ public class MqttChannel {
                 return mqttChannel.write(Mono.just(mqttMessage));
             }
         }
-
         private int getMessageId(MqttMessage mqttMessage) {
             Object object = mqttMessage.variableHeader();
             if (object instanceof MqttPublishVariableHeader) {
@@ -260,7 +265,7 @@ public class MqttChannel {
         /**
          * Set resend flag
          *
-         * @param mqttMessage mqttMessage
+         * @param mqttMessage {@link MqttMessage}
          * @return 消息体
          */
         private MqttMessage getDupMessage(MqttMessage mqttMessage) {
@@ -273,23 +278,33 @@ public class MqttChannel {
                     oldFixedHeader.remainingLength());
             Object payload = mqttMessage.payload();
             if (payload instanceof ByteBuf) {
-                ((ByteBuf) payload).copy().retain(Integer.MAX_VALUE >> 2);
+                payload = ((ByteBuf) payload).copy().retain(Integer.MAX_VALUE >> 2);
             }
-            return new MqttMessage(fixedHeader, mqttMessage.variableHeader(), payload);
+            try {
+                Constructor<?> constructor = mqttMessage.getClass().getDeclaredConstructors()[0];
+                constructor.setAccessible(true);
+                if (constructor.getParameterCount() == 2) {
+                    return (MqttMessage) constructor.newInstance(fixedHeader, mqttMessage.variableHeader());
+                } else {
+                    return (MqttMessage) constructor.newInstance(fixedHeader, mqttMessage.variableHeader(), payload);
+                }
+            } catch (Exception e) {
+                return mqttMessage;
+            }
+
         }
 
 
         /**
          * Set resend action
          *
-         * @param message             mqttMessage
-         * @param mqttChannel         connection
+         * @param message             {@link MqttMessage}
+         * @param mqttChannel         {@link MqttChannel}
          * @param messageId           messageId
          * @param replyMqttMessageMap 重试缓存
          * @return 空操作符
          */
         public Mono<Void> offerReply(MqttMessage message, final MqttChannel mqttChannel, final int messageId, Map<MqttMessageType, Map<Integer, Disposable>> replyMqttMessageMap) {
-
             return Mono.fromRunnable(() ->
                     replyMqttMessageMap.computeIfAbsent(message.fixedHeader().messageType(), mqttMessageType -> new ConcurrentHashMap<>(8)).put(messageId,
                             mqttChannel.write(Mono.just(message))
@@ -305,5 +320,18 @@ public class MqttChannel {
 
     }
 
-
+    @Override
+    public String toString() {
+        return "MqttChannel{" +
+                "connection=" + connection +
+                ", clientIdentifier='" + clientIdentifier + '\'' +
+                ", status=" + status +
+                ", activeTime=" + activeTime +
+                ", authTime=" + authTime +
+                ", sessionPersistent=" + sessionPersistent +
+                ", will=" + will +
+                ", keepalive=" + keepalive +
+                ", username='" + username + '\'' +
+                '}';
+    }
 }

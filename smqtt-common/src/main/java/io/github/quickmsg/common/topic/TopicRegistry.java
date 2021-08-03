@@ -1,10 +1,9 @@
 package io.github.quickmsg.common.topic;
 
 import io.github.quickmsg.common.channel.MqttChannel;
-import io.github.quickmsg.common.message.SubscribeChannelContext;
 import io.github.quickmsg.common.spi.DynamicLoader;
+import io.netty.handler.codec.mqtt.MqttQoS;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -20,10 +19,19 @@ public interface TopicRegistry {
     /**
      * 绑定主题跟channel关系
      *
-     * @param topic       订阅主题
+     * @param topicFilter 订阅主题
      * @param mqttChannel {@link MqttChannel}
+     * @param qos         {@link MqttQoS}
      */
-    void registryTopicConnection(String topic, MqttChannel mqttChannel);
+    void registrySubscribeTopic(String topicFilter, MqttChannel mqttChannel, MqttQoS qos);
+
+
+    /**
+     * 绑定主题跟channel关系
+     *
+     * @param subscribeTopic {@link SubscribeTopic}
+     */
+    void registrySubscribeTopic(SubscribeTopic subscribeTopic);
 
 
     /**
@@ -35,42 +43,44 @@ public interface TopicRegistry {
 
 
     /**
-     * 清除订阅消息
+     * registryTopicConnection
+     * 取消订阅关系
      *
-     * @param topics topics
-     * @param mqttChannel {@link MqttChannel}
+     * @param subscribeTopic {@link SubscribeTopic}
      */
-    void clear(Set<String> topics, MqttChannel mqttChannel);
+    void removeSubscribeTopic(SubscribeTopic subscribeTopic);
+
 
     /**
      * 获取topic的channels
      *
      * @param topicName topic name
-     * @return {@link MqttChannel}
+     * @param qos       {@link MqttQoS}
+     * @return {@link SubscribeTopic}
      */
-    Set<MqttChannel> getChannelListByTopic(String topicName);
+    Set<SubscribeTopic> getSubscribesByTopic(String topicName, MqttQoS qos);
 
 
     /**
-     * 绑定主题跟channel关系
+     * 绑定订阅关系
      *
-     * @param mqttTopicSubscriptions {@link SubscribeChannelContext}
+     * @param subscribeTopics {@link SubscribeTopic}
      */
-    void registryTopicConnection(List<SubscribeChannelContext> mqttTopicSubscriptions);
+    void registrySubscribesTopic(Set<SubscribeTopic> subscribeTopics);
 
 
     /**
      * 获取所有topic信息
      *
-     * @return  {@link MqttChannel}
+     * @return {@link MqttChannel}
      */
-    Map<String, CopyOnWriteArraySet<MqttChannel>> getAllTopics();
+    Map<String, Set<MqttChannel>> getAllTopics();
 
 
     /**
      * 获取总数
      *
-     * @return  counts
+     * @return counts
      */
     Integer counts();
 

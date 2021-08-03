@@ -37,19 +37,22 @@ public class DefaultProtocolAdaptor implements ProtocolAdaptor {
 
     @Override
     public <C extends Configuration> void chooseProtocol(MqttChannel mqttChannel, MqttMessage mqttMessage, ReceiveContext<C> receiveContext) {
-        if(log.isDebugEnabled()){
-            log.debug("chooseProtocol channel {} chooseProtocol:", mqttChannel);
+        if (mqttMessage != null && mqttMessage.decoderResult() != null && (mqttMessage.decoderResult().isSuccess())) {
+            log.info("chooseProtocol channel {} chooseProtocol message {}", mqttChannel, mqttMessage);
+            Optional.ofNullable(types.get(mqttMessage.fixedHeader().messageType()))
+                    .ifPresent(protocol -> protocol
+                            .doParseProtocol(mqttMessage, mqttChannel)
+                            .contextWrite(context -> context.putNonNull(ReceiveContext.class, receiveContext))
+                            .subscribeOn(Schedulers.parallel())
+                            .subscribe(aVoid -> {
+                            }, error -> {
+                                log.error("channel {} chooseProtocol:", mqttChannel, error);
+                                MessageUtils.safeRelease(mqttMessage);
+                            }, () -> MessageUtils.safeRelease(mqttMessage)));
+        } else {
+            log.warn("chooseProtocol {} error mqttMessage {} ", mqttChannel, mqttMessage);
         }
-        Optional.ofNullable(types.get(mqttMessage.fixedHeader().messageType()))
-                .ifPresent(protocol -> protocol
-                        .doParseProtocol(mqttMessage, mqttChannel)
-                        .contextWrite(context -> context.putNonNull(ReceiveContext.class, receiveContext))
-                        .subscribeOn(Schedulers.parallel())
-                        .subscribe(aVoid -> {
-                        }, error -> {
-                            log.error("channel {} chooseProtocol:", mqttChannel, error);
-                            MessageUtils.safeRelease(mqttMessage);
-                        }, () -> MessageUtils.safeRelease(mqttMessage)));
+
     }
 
 
