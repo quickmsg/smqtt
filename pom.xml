@@ -56,7 +56,6 @@
     </developers>
     <dependencyManagement>
         <dependencies>
-
             <!-- Jackson -->
             <dependency>
                 <groupId>com.fasterxml.jackson</groupId>
@@ -80,7 +79,7 @@
             <dependency>
                 <groupId>io.netty</groupId>
                 <artifactId>netty-codec-mqtt</artifactId>
-                <version>4.1.60.Final</version>
+                <version>4.1.63.Final</version>
             </dependency>
             <dependency>
                 <groupId>com.alibaba</groupId>
