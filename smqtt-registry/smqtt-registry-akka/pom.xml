@@ -7,10 +7,10 @@
     <parent>
         <artifactId>smqtt-registry</artifactId>
         <groupId>io.github.quickmsg</groupId>
-        <version>1.0.6</version>
+        <version>1.0.7</version>
     </parent>
     <artifactId>smqtt-registry-akka</artifactId>
-    <version>1.0.6</version>
+    <version>1.0.7</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -47,5 +47,16 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.7</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
