@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.quickmsg</groupId>
     <artifactId>smqtt</artifactId>
-    <version>1.0.6</version>
+    <version>1.0.7</version>
     <modules>
         <module>smqtt-common</module>
         <module>smqtt-core</module>
@@ -26,7 +26,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <io.projectreactor.netty>1.0.5</io.projectreactor.netty>
         <lombok>1.18.6</lombok>
         <reactor.version>2020.0.6</reactor.version>
         <slf4j.version>1.7.30</slf4j.version>
