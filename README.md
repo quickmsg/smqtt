@@ -15,6 +15,7 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
 3.  保留消息
      - 默认内存存储
      - 支持持久化（redis/db）
+     > 需要下载源码自行打包
 4.  遗嘱消息
      > 设备掉线时候触发
 5.  客户端认证
@@ -58,19 +59,19 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
 <dependency>
   <groupId>io.github.quickmsg</groupId>
   <artifactId>smqtt-core</artifactId>
-  <version>1.0.6</version>
+  <version>${Latest version}</version>
 </dependency>
 <!--集群依赖 -->
 <dependency>
    <artifactId>smqtt-registry-scube</artifactId>
    <groupId>io.github.quickmsg</groupId>
-   <version>1.0.6</version>
+   <version>${Latest version}</version>
 </dependency>
 <!--管理ui依赖 -->
 <dependency>
    <artifactId>smqtt-ui</artifactId>
    <groupId>io.github.quickmsg</groupId>
-   <version>1.0.6</version> 
+   <version>${Latest version}</version>
 </dependency>
 
 ```
@@ -288,6 +289,7 @@ curl -H "Content-Type: application/json" -X POST -d '{"topic": "test/teus", "qos
     smqtt.http.admin.password=smqtt  
     ```
 
+
 ### 页面预览
 
 ![image](icon/admin.png)
@@ -300,6 +302,10 @@ curl -H "Content-Type: application/json" -X POST -d '{"topic": "test/teus", "qos
 集群类配置参考文档:
 
 [smqtt文档](https://quickmsg.github.io/smqtt)
+
+## 注意事项
+
+> 如果你引入了 spring-boot-starter-parent 依赖 请确保 版本>2.4.5
 
 
 ## License
