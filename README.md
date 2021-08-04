@@ -305,9 +305,21 @@ curl -H "Content-Type: application/json" -X POST -d '{"topic": "test/teus", "qos
 
 ## 注意事项
 
-> 如果你引入了 spring-boot-starter-parent 依赖 请确保 版本>2.4.5
+> 如果你引入了 spring-boot-starter-parent 依赖 请确保 版本>2.4.5 ，如果无法修改版本请手动添加以下以来
 
+```markdown
+  <dependency>
+            <groupId>io.projectreactor.netty</groupId>
+            <artifactId>reactor-netty</artifactId>
+            <version>1.0.6</version>
+        </dependency>
+  <dependency>
+            <groupId>io.projectreactor</groupId>
+            <artifactId>reactor-core</artifactId>
+            <version>3.4.5</version>
+  </dependency>
 
+```
 ## License
 
 [Apache License, Version 2.0](https://github.com/quickmsg/smqtt/blob/main/LICENSE)
