@@ -15,7 +15,6 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
 3.  保留消息
      - 默认内存存储
      - 支持持久化（redis/db）
-     > 需要下载源码自行打包
 4.  遗嘱消息
      > 设备掉线时候触发
 5.  客户端认证
@@ -59,19 +58,19 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
 <dependency>
   <groupId>io.github.quickmsg</groupId>
   <artifactId>smqtt-core</artifactId>
-  <version>${Latest version}</version>
+  <version>1.0.6</version>
 </dependency>
 <!--集群依赖 -->
 <dependency>
    <artifactId>smqtt-registry-scube</artifactId>
    <groupId>io.github.quickmsg</groupId>
-   <version>${Latest version}</version>
+   <version>1.0.6</version>
 </dependency>
 <!--管理ui依赖 -->
 <dependency>
    <artifactId>smqtt-ui</artifactId>
    <groupId>io.github.quickmsg</groupId>
-   <version>${Latest version}</version>
+   <version>1.0.6</version> 
 </dependency>
 
 ```
@@ -159,19 +158,19 @@ Bootstrap bootstrap = Bootstrap.builder()
 smqtt.log.level=INFO
 # 开启tcp端口
 smqtt.tcp.port=1883
-# 高水位
-smqtt.tcp.lowWaterMark=4000000
 # 低水位
-smqtt.tcp.highWaterMark=80000000
+# smqtt.tcp.lowWaterMark=
+# 高水位
+# smqtt.tcp.highWaterMark=
 # 开启ssl加密
 smqtt.tcp.ssl=false
 # 证书crt smqtt.tcp.ssl.crt =
 # 证书key smqtt.tcp.ssl.key =
 # 开启日志
 smqtt.tcp.wiretap=false
-# boss线程
-smqtt.tcp.bossThreadSize=4
-# work线程
+# boss线程 默认cpu*2
+# smqtt.tcp.bossThreadSize=4
+# work线程 默认cpu*2
 smqtt.tcp.workThreadSize=8
 # websocket端口
 smqtt.websocket.port=8999
@@ -289,7 +288,6 @@ curl -H "Content-Type: application/json" -X POST -d '{"topic": "test/teus", "qos
     smqtt.http.admin.password=smqtt  
     ```
 
-
 ### 页面预览
 
 ![image](icon/admin.png)
@@ -303,23 +301,7 @@ curl -H "Content-Type: application/json" -X POST -d '{"topic": "test/teus", "qos
 
 [smqtt文档](https://quickmsg.github.io/smqtt)
 
-## 注意事项
 
-> 如果你引入了 spring-boot-starter-parent 依赖 请确保 版本>2.4.5 ，如果无法修改版本请手动添加以下以来
-
-```markdown
-  <dependency>
-            <groupId>io.projectreactor.netty</groupId>
-            <artifactId>reactor-netty</artifactId>
-            <version>1.0.6</version>
-        </dependency>
-  <dependency>
-            <groupId>io.projectreactor</groupId>
-            <artifactId>reactor-core</artifactId>
-            <version>3.4.5</version>
-  </dependency>
-
-```
 ## License
 
 [Apache License, Version 2.0](https://github.com/quickmsg/smqtt/blob/main/LICENSE)
