@@ -51,6 +51,8 @@ public class MqttChannel {
 
     private String username;
 
+    private String address;
+
     @JSONField(serialize = false)
     private Set<SubscribeTopic> topics;
 
@@ -250,6 +252,7 @@ public class MqttChannel {
                 return mqttChannel.write(Mono.just(mqttMessage));
             }
         }
+
         private int getMessageId(MqttMessage mqttMessage) {
             Object object = mqttMessage.variableHeader();
             if (object instanceof MqttPublishVariableHeader) {

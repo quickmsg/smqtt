@@ -12,6 +12,7 @@ import java.util.function.BiFunction;
 /**
  * @author luxurong
  */
+@Deprecated
 public class ClusterSender implements BiFunction<MqttChannel, MqttMessage, MqttMessage> {
 
     private final MqttReceiveContext mqttReceiveContext;

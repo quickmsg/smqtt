@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
  */
 public class MessageProxy {
 
+    private SpreadInterceptor spreadInterceptor = new SpreadInterceptor();
+
     private List<Interceptor> interceptors = DynamicLoader.findAll(Interceptor.class)
             .sorted(Comparator.comparing(Interceptor::sort))
             .collect(Collectors.toList());
@@ -22,7 +24,7 @@ public class MessageProxy {
                 protocolAdaptor = interceptor.proxyProtocol(protocolAdaptor);
             }
         }
-        return protocolAdaptor;
+        return spreadInterceptor.proxyProtocol(protocolAdaptor);
     }
 
 
