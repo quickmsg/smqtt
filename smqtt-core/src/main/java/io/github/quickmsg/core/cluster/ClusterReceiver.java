@@ -57,7 +57,7 @@ public class ClusterReceiver {
                         MqttQoS.valueOf(clusterMessage.getQos()),
                         0,
                         clusterMessage.getTopic(),
-                        PooledByteBufAllocator.DEFAULT.buffer().writeBytes(clusterMessage.getMessage())), true);
+                        PooledByteBufAllocator.DEFAULT.buffer().writeBytes(clusterMessage.getMessage())), Boolean.TRUE);
     }
 
 }

@@ -20,7 +20,7 @@ public class SpreadInterceptor implements Interceptor {
         SmqttMessage<MqttMessage> smqttMessage = (SmqttMessage<MqttMessage>) invocation.getArgs()[1];
         ReceiveContext<Configuration> mqttReceiveContext = (ReceiveContext<Configuration>) invocation.getArgs()[2];
         MqttMessage message = smqttMessage.getMessage();
-        if (message instanceof MqttPublishMessage) {
+        if (!smqttMessage.getIsCluster() && message instanceof MqttPublishMessage) {
             MqttPublishMessage publishMessage = (MqttPublishMessage) message;
             publishMessage.retain();
             if (mqttReceiveContext.getConfiguration().getClusterConfig().getClustered()) {

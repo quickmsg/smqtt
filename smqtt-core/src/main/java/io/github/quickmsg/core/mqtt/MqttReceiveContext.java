@@ -30,7 +30,7 @@ public class MqttReceiveContext extends AbstractReceiveContext<MqttConfiguration
                 .inbound()
                 .receiveObject()
                 .cast(MqttMessage.class)
-                .subscribe(mqttMessage -> this.accept(mqttChannel, new SmqttMessage<>(mqttMessage, false)));
+                .subscribe(mqttMessage -> this.accept(mqttChannel, new SmqttMessage<>(mqttMessage, Boolean.FALSE)));
 
     }
 
