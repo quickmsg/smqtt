@@ -3,6 +3,7 @@ package io.github.quickmsg.core.protocol;
 import io.github.quickmsg.common.channel.MqttChannel;
 import io.github.quickmsg.common.context.ReceiveContext;
 import io.github.quickmsg.common.message.MqttMessageBuilder;
+import io.github.quickmsg.common.message.SmqttMessage;
 import io.github.quickmsg.common.protocol.Protocol;
 import io.github.quickmsg.common.topic.SubscribeTopic;
 import io.github.quickmsg.common.topic.TopicRegistry;
@@ -39,7 +40,8 @@ public class CommonProtocol implements Protocol<MqttMessage> {
 
 
     @Override
-    public Mono<Void> parseProtocol(MqttMessage message, MqttChannel mqttChannel, ContextView contextView) {
+    public Mono<Void> parseProtocol(SmqttMessage<MqttMessage> smqttMessage, MqttChannel mqttChannel, ContextView contextView) {
+        MqttMessage message = smqttMessage.getMessage();
         switch (message.fixedHeader().messageType()) {
             case PINGREQ:
                 return mqttChannel.write(MqttMessageBuilder.buildPongMessage(), false);

@@ -1,6 +1,7 @@
 package io.github.quickmsg.core.protocol;
 
 import io.github.quickmsg.common.channel.MqttChannel;
+import io.github.quickmsg.common.message.SmqttMessage;
 import io.github.quickmsg.common.protocol.Protocol;
 import io.netty.handler.codec.mqtt.MqttMessageType;
 import io.netty.handler.codec.mqtt.MqttUnsubAckMessage;
@@ -22,8 +23,9 @@ public class UnSubscribeAckProtocol implements Protocol<MqttUnsubAckMessage> {
     }
 
     @Override
-    public Mono<Void> parseProtocol(MqttUnsubAckMessage message, MqttChannel mqttChannel, ContextView contextView) {
-        return mqttChannel.cancelRetry(MqttMessageType.UNSUBSCRIBE,message.variableHeader().messageId());
+    public Mono<Void> parseProtocol(SmqttMessage<MqttUnsubAckMessage> smqttMessage, MqttChannel mqttChannel, ContextView contextView) {
+        MqttUnsubAckMessage message = smqttMessage.getMessage();
+        return mqttChannel.cancelRetry(MqttMessageType.UNSUBSCRIBE, message.variableHeader().messageId());
     }
 
     @Override

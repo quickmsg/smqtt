@@ -6,6 +6,7 @@ import io.github.quickmsg.common.cluster.ClusterRegistry;
 import io.github.quickmsg.common.config.Configuration;
 import io.github.quickmsg.common.message.MessageRegistry;
 import io.github.quickmsg.common.message.RecipientRegistry;
+import io.github.quickmsg.common.message.SmqttMessage;
 import io.github.quickmsg.common.protocol.ProtocolAdaptor;
 import io.github.quickmsg.common.topic.TopicRegistry;
 import io.netty.handler.codec.mqtt.MqttMessage;
@@ -16,7 +17,7 @@ import java.util.function.BiConsumer;
  * @author luxurong
  */
 
-public interface ReceiveContext<T extends Configuration> extends BiConsumer<MqttChannel, MqttMessage> {
+public interface ReceiveContext<T extends Configuration> extends BiConsumer<MqttChannel, SmqttMessage<MqttMessage>> {
 
 
     /**

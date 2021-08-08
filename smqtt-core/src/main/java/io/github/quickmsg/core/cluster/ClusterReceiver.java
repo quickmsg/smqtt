@@ -5,10 +5,11 @@ import io.github.quickmsg.common.cluster.ClusterConfig;
 import io.github.quickmsg.common.cluster.ClusterMessage;
 import io.github.quickmsg.common.cluster.ClusterRegistry;
 import io.github.quickmsg.common.message.MqttMessageBuilder;
+import io.github.quickmsg.common.message.SmqttMessage;
 import io.github.quickmsg.common.protocol.ProtocolAdaptor;
 import io.github.quickmsg.core.mqtt.MqttReceiveContext;
 import io.netty.buffer.PooledByteBufAllocator;
-import io.netty.handler.codec.mqtt.MqttPublishMessage;
+import io.netty.handler.codec.mqtt.MqttMessage;
 import io.netty.handler.codec.mqtt.MqttQoS;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
@@ -50,13 +51,13 @@ public class ClusterReceiver {
         }
     }
 
-    private MqttPublishMessage getMqttMessage(ClusterMessage clusterMessage) {
-        return MqttMessageBuilder
+    private SmqttMessage<MqttMessage> getMqttMessage(ClusterMessage clusterMessage) {
+        return new SmqttMessage<>(MqttMessageBuilder
                 .buildPub(false,
                         MqttQoS.valueOf(clusterMessage.getQos()),
                         0,
                         clusterMessage.getTopic(),
-                        PooledByteBufAllocator.DEFAULT.buffer().writeBytes(clusterMessage.getMessage()));
+                        PooledByteBufAllocator.DEFAULT.buffer().writeBytes(clusterMessage.getMessage())), true);
     }
 
 }

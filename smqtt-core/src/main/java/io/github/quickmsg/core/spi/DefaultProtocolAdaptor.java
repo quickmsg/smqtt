@@ -3,6 +3,7 @@ package io.github.quickmsg.core.spi;
 import io.github.quickmsg.common.channel.MqttChannel;
 import io.github.quickmsg.common.config.Configuration;
 import io.github.quickmsg.common.context.ReceiveContext;
+import io.github.quickmsg.common.message.SmqttMessage;
 import io.github.quickmsg.common.protocol.Protocol;
 import io.github.quickmsg.common.protocol.ProtocolAdaptor;
 import io.github.quickmsg.common.spi.DynamicLoader;
@@ -36,14 +37,15 @@ public class DefaultProtocolAdaptor implements ProtocolAdaptor {
     }
 
     @Override
-    public <C extends Configuration> void chooseProtocol(MqttChannel mqttChannel, MqttMessage mqttMessage, ReceiveContext<C> receiveContext) {
+    public <C extends Configuration> void chooseProtocol(MqttChannel mqttChannel, SmqttMessage<MqttMessage> smqttMessage, ReceiveContext<C> receiveContext) {
+        MqttMessage mqttMessage = smqttMessage.getMessage();
         if (mqttMessage != null && mqttMessage.decoderResult() != null && (mqttMessage.decoderResult().isSuccess())) {
             log.info("chooseProtocol channel {} chooseProtocol message {}", mqttChannel, mqttMessage);
             Optional.ofNullable(types.get(mqttMessage.fixedHeader().messageType()))
                     .ifPresent(protocol -> protocol
-                            .doParseProtocol(mqttMessage, mqttChannel)
+                            .doParseProtocol(smqttMessage, mqttChannel)
                             .contextWrite(context -> context.putNonNull(ReceiveContext.class, receiveContext))
-                            .subscribeOn(Schedulers.parallel())
+                            .subscribeOn(Schedulers.boundedElastic())
                             .subscribe(aVoid -> {
                             }, error -> {
                                 log.error("channel {} chooseProtocol:", mqttChannel, error);

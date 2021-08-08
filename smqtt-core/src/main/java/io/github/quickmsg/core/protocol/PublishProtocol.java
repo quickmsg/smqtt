@@ -3,15 +3,13 @@ package io.github.quickmsg.core.protocol;
 import io.github.quickmsg.common.channel.MqttChannel;
 import io.github.quickmsg.common.context.ReceiveContext;
 import io.github.quickmsg.common.enums.ChannelStatus;
-import io.github.quickmsg.common.message.MessageRegistry;
-import io.github.quickmsg.common.message.MqttMessageBuilder;
-import io.github.quickmsg.common.message.RetainMessage;
-import io.github.quickmsg.common.message.SessionMessage;
+import io.github.quickmsg.common.message.*;
 import io.github.quickmsg.common.protocol.Protocol;
 import io.github.quickmsg.common.topic.SubscribeTopic;
 import io.github.quickmsg.common.topic.TopicRegistry;
 import io.github.quickmsg.common.utils.MessageUtils;
 import io.netty.handler.codec.mqtt.MqttMessageType;
+import io.netty.handler.codec.mqtt.MqttPubAckMessage;
 import io.netty.handler.codec.mqtt.MqttPublishMessage;
 import io.netty.handler.codec.mqtt.MqttPublishVariableHeader;
 import lombok.extern.slf4j.Slf4j;
@@ -42,8 +40,9 @@ public class PublishProtocol implements Protocol<MqttPublishMessage> {
 
 
     @Override
-    public Mono<Void> parseProtocol(MqttPublishMessage message, MqttChannel mqttChannel, ContextView contextView) {
+    public Mono<Void> parseProtocol(SmqttMessage<MqttPublishMessage> smqttMessage , MqttChannel mqttChannel, ContextView contextView) {
         try {
+            MqttPublishMessage message = smqttMessage.getMessage();
             ReceiveContext<?> receiveContext = contextView.get(ReceiveContext.class);
             TopicRegistry topicRegistry = receiveContext.getTopicRegistry();
             MqttPublishVariableHeader variableHeader = message.variableHeader();

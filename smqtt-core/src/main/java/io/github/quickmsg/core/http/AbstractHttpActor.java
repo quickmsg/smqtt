@@ -1,6 +1,7 @@
 package io.github.quickmsg.core.http;
 
 import io.github.quickmsg.common.channel.MockMqttChannel;
+import io.github.quickmsg.common.message.SmqttMessage;
 import io.github.quickmsg.common.protocol.ProtocolAdaptorWrapper;
 import io.github.quickmsg.common.http.HttpActor;
 import io.github.quickmsg.common.protocol.ProtocolAdaptor;
@@ -20,7 +21,7 @@ public abstract class AbstractHttpActor implements HttpActor {
      * @param mqttPublishMessage publish消息
      */
     public void sendMqttMessage(MqttPublishMessage mqttPublishMessage) {
-        getProtocolAdaptor().chooseProtocol(MockMqttChannel.DEFAULT_MOCK_CHANNEL, mqttPublishMessage, DefaultTransport.receiveContext);
+        getProtocolAdaptor().chooseProtocol(MockMqttChannel.DEFAULT_MOCK_CHANNEL, new SmqttMessage<>(mqttPublishMessage,true), DefaultTransport.receiveContext);
     }
 
     public ProtocolAdaptor getProtocolAdaptor() {

@@ -8,6 +8,7 @@ import io.github.quickmsg.common.enums.ChannelStatus;
 import io.github.quickmsg.common.message.MessageRegistry;
 import io.github.quickmsg.common.message.MqttMessageBuilder;
 import io.github.quickmsg.common.message.RecipientRegistry;
+import io.github.quickmsg.common.message.SmqttMessage;
 import io.github.quickmsg.common.protocol.Protocol;
 import io.github.quickmsg.common.topic.SubscribeTopic;
 import io.github.quickmsg.common.topic.TopicRegistry;
@@ -46,7 +47,8 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
     }
 
     @Override
-    public Mono<Void> parseProtocol(MqttConnectMessage message, MqttChannel mqttChannel, ContextView contextView) {
+    public Mono<Void> parseProtocol(SmqttMessage<MqttConnectMessage> smqttMessage, MqttChannel mqttChannel, ContextView contextView) {
+        MqttConnectMessage message = smqttMessage.getMessage();
         MqttReceiveContext mqttReceiveContext = (MqttReceiveContext) contextView.get(ReceiveContext.class);
         RecipientRegistry recipientRegistry = mqttReceiveContext.getRecipientRegistry();
         MqttConnectVariableHeader mqttConnectVariableHeader = message.variableHeader();

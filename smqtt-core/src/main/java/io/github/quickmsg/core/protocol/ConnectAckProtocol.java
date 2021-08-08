@@ -1,8 +1,10 @@
 package io.github.quickmsg.core.protocol;
 
 import io.github.quickmsg.common.channel.MqttChannel;
+import io.github.quickmsg.common.message.SmqttMessage;
 import io.github.quickmsg.common.protocol.Protocol;
 import io.netty.handler.codec.mqtt.MqttConnAckMessage;
+import io.netty.handler.codec.mqtt.MqttMessage;
 import io.netty.handler.codec.mqtt.MqttMessageType;
 import reactor.core.publisher.Mono;
 import reactor.util.context.ContextView;
@@ -24,7 +26,8 @@ public class ConnectAckProtocol implements Protocol<MqttConnAckMessage> {
 
 
     @Override
-    public Mono<Void> parseProtocol(MqttConnAckMessage message, MqttChannel mqttChannel, ContextView contextView) {
+    public Mono<Void> parseProtocol(SmqttMessage<MqttConnAckMessage> smqttMessage, MqttChannel mqttChannel, ContextView contextView) {
+        MqttMessage message = smqttMessage.getMessage();
         return mqttChannel.cancelRetry(MqttMessageType.CONNECT,-1);
     }
 

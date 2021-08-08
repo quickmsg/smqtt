@@ -1,6 +1,7 @@
 package io.github.quickmsg.core.mqtt;
 
 import io.github.quickmsg.common.channel.MqttChannel;
+import io.github.quickmsg.common.message.SmqttMessage;
 import io.github.quickmsg.common.transport.Transport;
 import io.github.quickmsg.core.cluster.ClusterReceiver;
 import io.github.quickmsg.core.cluster.ClusterSender;
@@ -23,7 +24,7 @@ public class MqttReceiveContext extends AbstractReceiveContext<MqttConfiguration
 
     public MqttReceiveContext(MqttConfiguration configuration, Transport<MqttConfiguration> transport) {
         super(configuration, transport);
-        this.clusterSender = new ClusterSender(Schedulers.newParallel("cluster-transport"), this,this.getRecipientRegistry());
+        this.clusterSender = new ClusterSender(Schedulers.newParallel("cluster-transport"), this, this.getRecipientRegistry());
         this.clusterReceiver = new ClusterReceiver(this);
         clusterReceiver.registry();
     }
@@ -34,16 +35,14 @@ public class MqttReceiveContext extends AbstractReceiveContext<MqttConfiguration
                 .inbound()
                 .receiveObject()
                 .cast(MqttMessage.class)
-                .map(message -> clusterSender.apply(mqttChannel,message))
-                .subscribe(mqttMessage -> this.accept(mqttChannel, mqttMessage));
+                .map(message -> clusterSender.apply(mqttChannel, message))
+                .subscribe(mqttMessage -> this.accept(mqttChannel, new SmqttMessage<>(mqttMessage, false)));
 
     }
 
 
-
-
     @Override
-    public void accept(MqttChannel mqttChannel, MqttMessage mqttMessage) {
+    public void accept(MqttChannel mqttChannel, SmqttMessage<MqttMessage> mqttMessage) {
         log.info("accept channel] {} message {}", mqttChannel.getConnection(), mqttMessage);
         this.getProtocolAdaptor().chooseProtocol(mqttChannel, mqttMessage, this);
     }
