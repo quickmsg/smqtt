@@ -85,6 +85,7 @@ public class MqttChannel {
         mqttChannel.setActiveTime(System.currentTimeMillis());
         mqttChannel.setConnection(connection);
         mqttChannel.setStatus(ChannelStatus.INIT);
+        mqttChannel.setAddress(connection.address().toString());
         return mqttChannel;
     }
 

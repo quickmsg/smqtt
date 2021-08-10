@@ -1,12 +1,13 @@
 package io.github.quickmsg.common.spi;
 
-import io.github.quickmsg.common.annotation.Spi;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
@@ -15,27 +16,26 @@ import java.util.stream.StreamSupport;
 @Slf4j
 public class CacheLoader {
 
-    public static Map<Class<?>, Map<String, ?>> cacheBean = new ConcurrentHashMap<>();
+    public Map<Class<?>, Map<String, ?>> cacheBean = new ConcurrentHashMap<>();
 
     @SuppressWarnings("unchecked")
-    public static <T> T loadSpiByType(String type, Class<T> tClass) {
-        Map<String, ?> beans = cacheBean.computeIfAbsent(tClass, CacheLoader::loadAll);
+    public <T> T getBeanByType(String type, Class<T> tClass) {
+        Map<String, ?> beans = cacheBean.computeIfAbsent(tClass, this::loadAll);
         return (T) beans.get(type);
     }
 
-    private static <T> Map<String, T> loadAll(Class<T> aClass) {
+    private <T> Map<String, T> loadAll(Class<T> aClass) {
         ServiceLoader<T> load = ServiceLoader.load(aClass);
-        Map<String, T> map = new HashMap<>(16);
-        StreamSupport.stream(load.spliterator(), false)
-                .forEach(b -> {
-                    Spi spi = b.getClass().getAnnotation(Spi.class);
-                    if (spi == null) {
-                        log.warn("class {} not contain spi annotation ", b);
-                    } else {
-                        map.put(spi.type(), b);
-                    }
-                });
-        return map;
+        return StreamSupport.stream(load.spliterator(), false)
+                .collect(Collectors.toMap(this::getKey, Function.identity()));
+    }
+
+    private <T> String getKey(T t) {
+        Spi spi = t.getClass().getAnnotation(Spi.class);
+        if (spi == null) {
+            log.warn("class {} not contain spi annotation ", t);
+        }
+        return spi == null ? "default" : spi.type();
     }
 
 

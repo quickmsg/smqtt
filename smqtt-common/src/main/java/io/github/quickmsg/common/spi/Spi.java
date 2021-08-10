@@ -1,4 +1,4 @@
-package io.github.quickmsg.common.annotation;
+package io.github.quickmsg.common.spi;
 
 import java.lang.annotation.*;
 
@@ -12,6 +12,5 @@ import java.lang.annotation.*;
 public @interface Spi {
 
     String type();
-
 
 }
