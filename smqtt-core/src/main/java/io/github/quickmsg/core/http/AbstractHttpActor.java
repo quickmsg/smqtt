@@ -17,6 +17,6 @@ public abstract class AbstractHttpActor implements HttpActor {
      * @param mqttPublishMessage publish消息
      */
     public void sendMqttMessage(MqttPublishMessage mqttPublishMessage) {
-        DefaultTransport.receiveContext.getProtocolAdaptor().chooseProtocol(MockMqttChannel.DEFAULT_MOCK_CHANNEL, new SmqttMessage<>(mqttPublishMessage,Boolean.FALSE), DefaultTransport.receiveContext);
+        DefaultTransport.receiveContext.getProtocolAdaptor().chooseProtocol(MockMqttChannel.DEFAULT_MOCK_CHANNEL, new SmqttMessage<>(mqttPublishMessage,System.currentTimeMillis(),Boolean.FALSE), DefaultTransport.receiveContext);
     }
 }

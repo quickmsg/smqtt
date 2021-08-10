@@ -17,6 +17,8 @@ public class SmqttMessage<T extends MqttMessage> {
 
     private T message;
 
+    private long timestamp;
+
     private Boolean isCluster;
 
 }
