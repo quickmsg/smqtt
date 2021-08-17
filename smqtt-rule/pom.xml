@@ -12,6 +12,7 @@
     <artifactId>smqtt-rule</artifactId>
     <modules>
         <module>smqtt-rule-dsl</module>
+        <module>smqtt-rule-engine</module>
     </modules>
     <packaging>pom</packaging>
     <name>smqtt-rule</name>
