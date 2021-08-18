@@ -13,6 +13,7 @@ import io.netty.handler.codec.mqtt.MqttMessageIdVariableHeader;
 import io.netty.handler.codec.mqtt.MqttMessageType;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
+import reactor.netty.Connection;
 import reactor.util.context.ContextView;
 
 import java.util.ArrayList;
@@ -48,7 +49,10 @@ public class CommonProtocol implements Protocol<MqttMessage> {
             case DISCONNECT:
                 return Mono.fromRunnable(() -> {
                     mqttChannel.setWill(null);
-                    mqttChannel.getConnection().dispose();
+                    Connection connection;
+                    if (!(connection = mqttChannel.getConnection()).isDisposed()) {
+                        connection.dispose();
+                    }
                 });
             case PUBREC:
                 MqttMessageIdVariableHeader messageIdVariableHeader = (MqttMessageIdVariableHeader) message.variableHeader();

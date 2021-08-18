@@ -123,6 +123,7 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
             mqttChannel.registryClose(ConnectProtocol::accept);
 
             recipientRegistry.channelStatus(mqttChannel, mqttChannel.getStatus());
+
             mqttChannel.registryClose(mqttChannel1 -> recipientRegistry.channelStatus(mqttChannel1, ChannelStatus.OFFLINE));
 
             return mqttChannel.write(MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_ACCEPTED), false);
