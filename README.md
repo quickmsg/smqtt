@@ -58,19 +58,19 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
 <dependency>
   <groupId>io.github.quickmsg</groupId>
   <artifactId>smqtt-core</artifactId>
-  <version>1.0.6</version>
+  <version>${Latest version}</version>
 </dependency>
 <!--集群依赖 -->
 <dependency>
    <artifactId>smqtt-registry-scube</artifactId>
    <groupId>io.github.quickmsg</groupId>
-   <version>1.0.6</version>
+   <version>${Latest version}</version>
 </dependency>
 <!--管理ui依赖 -->
 <dependency>
    <artifactId>smqtt-ui</artifactId>
    <groupId>io.github.quickmsg</groupId>
-   <version>1.0.6</version> 
+   <version>${Latest version}</version>
 </dependency>
 
 ```
