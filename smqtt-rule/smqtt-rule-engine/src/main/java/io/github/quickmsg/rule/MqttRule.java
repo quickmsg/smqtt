@@ -8,5 +8,12 @@ import lombok.Data;
 @Data
 public class MqttRule {
 
+    private RuleType ruleType;
+
+    private String expression;
+
+    private RuleAction ruleAction;
+
+
 
 }
