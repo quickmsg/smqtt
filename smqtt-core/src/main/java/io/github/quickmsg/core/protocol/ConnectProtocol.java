@@ -137,12 +137,11 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
     private void close(MqttChannel mqttChannel, MqttReceiveContext mqttReceiveContext) {
         if (mqttChannel.isSessionPersistent()) {
             mqttChannel.setStatus(ChannelStatus.OFFLINE);
-            mqttChannel.close().subscribe();
         } else {
             mqttReceiveContext.getTopicRegistry().clear(mqttChannel);
             mqttReceiveContext.getChannelRegistry().close(mqttChannel);
         }
-
+        mqttChannel.close().subscribe();
     }
 
     /**
@@ -159,15 +158,18 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
                            ChannelRegistry channelRegistry,
                            TopicRegistry topicRegistry,
                            MessageRegistry messageRegistry) {
-        Set<SubscribeTopic> topics = sessionChannel.getTopics().stream().peek(subscribeTopic ->
+        Set<SubscribeTopic> topics = sessionChannel.getTopics().stream().map(subscribeTopic ->
                 new SubscribeTopic(
                         subscribeTopic.getTopicFilter(),
                         subscribeTopic.getQoS(),
-                        subscribeTopic.getMqttChannel()))
+                        mqttChannel))
                 .collect(Collectors.toSet());
-        topicRegistry.clear(sessionChannel);
-        topics.forEach(topic -> topicRegistry.registrySubscribesTopic(topics));
+        // 注册新的匹配树
+        topicRegistry.registrySubscribesTopic(topics);
+        // 移除session会话
         channelRegistry.close(sessionChannel);
+        topicRegistry.clear(sessionChannel);
+        // 获取session消息
         Optional.ofNullable(messageRegistry.getSessionMessage(mqttChannel.getClientIdentifier()))
                 .ifPresent(sessionMessages -> {
                     sessionMessages.forEach(sessionMessage -> {
