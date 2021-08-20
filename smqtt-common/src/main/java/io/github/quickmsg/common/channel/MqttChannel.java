@@ -1,6 +1,7 @@
 package io.github.quickmsg.common.channel;
 
-import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.quickmsg.common.enums.ChannelStatus;
 import io.github.quickmsg.common.topic.SubscribeTopic;
 import io.github.quickmsg.common.utils.MessageUtils;
@@ -53,25 +54,25 @@ public class MqttChannel {
 
     private String address;
 
-    @JSONField(serialize = false)
+    @JsonIgnore
     private Set<SubscribeTopic> topics;
 
-    @JSONField(serialize = false)
+    @JsonIgnore
     private Boolean isMock = false;
 
-    @JSONField(serialize = false)
+    @JsonIgnore
     private transient AtomicInteger atomicInteger;
 
-    @JSONField(serialize = false)
+    @JsonIgnore
     private transient MqttMessageSink mqttMessageSink;
 
-    @JSONField(serialize = false)
+    @JsonIgnore
     private transient Map<Integer, MqttPublishMessage> qos2MsgCache;
 
-    @JSONField(serialize = false)
+    @JsonIgnore
     private Map<MqttMessageType, Map<Integer, Disposable>> replyMqttMessageMap;
 
-    @JSONField(serialize = false)
+    @JsonIgnore
     private Disposable closeDisposable;
 
 

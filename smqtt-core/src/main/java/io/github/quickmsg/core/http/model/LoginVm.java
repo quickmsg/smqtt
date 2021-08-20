@@ -1,6 +1,6 @@
 package io.github.quickmsg.core.http.model;
 
-import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**
@@ -9,10 +9,10 @@ import lombok.Data;
 @Data
 public class LoginVm {
 
-    @JSONField(name = "access_token")
+    @JsonProperty("access_token")
     private String accessToken;
 
-    @JSONField(name = "expires_in")
+    @JsonProperty("expires_in")
     private long expiresIn;
 
 

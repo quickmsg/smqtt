@@ -1,6 +1,6 @@
 package io.github.quickmsg.persistent.message;
 
-import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Data;
 
@@ -26,6 +26,6 @@ public class SessionMessageEntity implements Serializable {
     private Boolean retain;
 
     private byte[] body;
-    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 }

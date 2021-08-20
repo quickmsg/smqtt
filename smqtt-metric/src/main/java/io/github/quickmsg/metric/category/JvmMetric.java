@@ -1,6 +1,7 @@
 package io.github.quickmsg.metric.category;
 
-import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.github.quickmsg.metric.MetricsGetter;
 import io.github.quickmsg.metric.utils.FormatUtils;
 
@@ -28,9 +29,11 @@ public class JvmMetric implements MetricsGetter {
 
 
     @Override
-    public JSONObject metrics() {
+    public ObjectNode metrics() {
         Properties props = System.getProperties();
-        JSONObject jvm = new JSONObject();
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode jvm = objectMapper.createObjectNode();
+
         MemoryMXBean mxb = ManagementFactory.getMemoryMXBean();
         ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
         RuntimeMXBean runtimeBean = ManagementFactory.getRuntimeMXBean();

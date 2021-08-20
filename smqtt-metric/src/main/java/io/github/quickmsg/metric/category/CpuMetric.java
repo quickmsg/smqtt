@@ -1,6 +1,7 @@
 package io.github.quickmsg.metric.category;
 
-import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.github.quickmsg.metric.MetricsGetter;
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
@@ -31,8 +32,10 @@ public class CpuMetric implements MetricsGetter {
 
 
     @Override
-    public JSONObject metrics() {
-        JSONObject cpuInfo = new JSONObject();
+    public ObjectNode metrics() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode cpuInfo = objectMapper.createObjectNode();
+
         CentralProcessor processor = hardware.getProcessor();
         // CPU信息
         long[] prevTicks = processor.getSystemCpuLoadTicks();

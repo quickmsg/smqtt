@@ -1,8 +1,9 @@
 package io.github.quickmsg.common.http;
 
-import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.quickmsg.common.config.Configuration;
 import io.github.quickmsg.common.spi.DynamicLoader;
+import io.github.quickmsg.common.utils.JacksonUtil;
 import org.reactivestreams.Publisher;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
@@ -41,7 +42,7 @@ public interface HttpActor {
      * @return {{@link Function}
      */
     default <T> Function<String, T> toJson(Class<T> tClass) {
-        return message -> JSON.parseObject(message, tClass);
+        return message -> JacksonUtil.json2Bean(message, tClass);
     }
 
 

@@ -1,6 +1,10 @@
 package io.github.quickmsg.metric.counter;
 
-import com.alibaba.fastjson.JSONObject;
+
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.github.quickmsg.metric.MetricsGetter;
 import io.github.quickmsg.metric.utils.FormatUtils;
 import lombok.Getter;
@@ -48,8 +52,9 @@ public class WindowMetric implements MetricsGetter {
 
 
     @Override
-    public JSONObject metrics() {
-        JSONObject window = new JSONObject();
+    public ObjectNode metrics() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode window = objectMapper.createObjectNode();
         long readHour = readAllBufferSize.intervalCount();
         long writeHour = writeAllBufferSize.intervalCount();
         window.put("read_size", FormatUtils.formatByte(readAllBufferSize.allCount() + readHour));
