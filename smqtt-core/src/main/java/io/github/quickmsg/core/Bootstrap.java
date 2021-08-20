@@ -3,8 +3,8 @@ package io.github.quickmsg.core;
 import ch.qos.logback.classic.Level;
 import io.github.quickmsg.common.auth.PasswordAuthentication;
 import io.github.quickmsg.common.cluster.ClusterConfig;
+import io.github.quickmsg.common.config.BootstrapConfig;
 import io.github.quickmsg.common.config.SslContext;
-import io.github.quickmsg.common.environment.EnvContext;
 import io.github.quickmsg.common.transport.Transport;
 import io.github.quickmsg.common.utils.LoggerLevel;
 import io.github.quickmsg.core.http.HttpConfiguration;
@@ -50,8 +50,7 @@ public class Bootstrap {
     @Builder.Default
     private String websocketPath = "/";
 
-    @Builder.Default
-    private EnvContext envContext = EnvContext.empty();
+    private BootstrapConfig bootstrapConfig;
 
     private final List<Transport<?>> transports = new ArrayList<>();
 
@@ -84,7 +83,8 @@ public class Bootstrap {
     private ClusterConfig clusterConfig;
 
     @Builder.Default
-    private Consumer<Bootstrap> started = bootstrap -> {};
+    private Consumer<Bootstrap> started = bootstrap -> {
+    };
 
     @Builder.Default
     private Level rootLevel = Level.INFO;
@@ -104,7 +104,7 @@ public class Bootstrap {
         Optional.ofNullable(ssl).ifPresent(mqttConfiguration::setSsl);
         Optional.ofNullable(sslContext).ifPresent(mqttConfiguration::setSslContext);
         Optional.ofNullable(clusterConfig).ifPresent(mqttConfiguration::setClusterConfig);
-        Optional.ofNullable(envContext).ifPresent(mqttConfiguration::setEnvContext);
+        Optional.ofNullable(bootstrapConfig).ifPresent(mqttConfiguration::setBootstrapConfig);
         if (isWebsocket) {
             mqttConfiguration.setWebSocketPort(websocketPort);
             mqttConfiguration.setWebSocketPath(websocketPath);

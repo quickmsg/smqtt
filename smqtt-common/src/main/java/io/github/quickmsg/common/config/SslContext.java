@@ -1,12 +1,10 @@
 package io.github.quickmsg.common.config;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
  * @author luxurong
  */
-@AllArgsConstructor
 @Getter
 public class SslContext {
 
@@ -14,5 +12,17 @@ public class SslContext {
 
     private String key;
 
+    private Boolean enable;
 
+
+    public SslContext(String crt, String key) {
+        this.crt = crt;
+        this.key = key;
+    }
+
+    public SslContext(String crt, String key, Boolean enable) {
+        this.crt = crt;
+        this.key = key;
+        this.enable = enable;
+    }
 }

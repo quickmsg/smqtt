@@ -1,0 +1,2 @@
+smqtt:
+  logLevel: DEBUG

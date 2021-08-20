@@ -37,11 +37,11 @@ public interface AbstractConfiguration extends Configuration {
 
 
     /**
-     * 获取环境变量
+     * 获取启动设置参数
      *
-     * @return {@link EnvContext}
+     * @return {@link BootstrapConfig}
      */
-    EnvContext getEnvContext();
-
+    BootstrapConfig getBootstrapConfig();
 
 }
+

@@ -3,6 +3,7 @@ package io.github.quickmsg.core.mqtt;
 import io.github.quickmsg.common.auth.PasswordAuthentication;
 import io.github.quickmsg.common.cluster.ClusterConfig;
 import io.github.quickmsg.common.config.AbstractConfiguration;
+import io.github.quickmsg.common.config.BootstrapConfig;
 import io.github.quickmsg.common.config.SslContext;
 import io.github.quickmsg.common.environment.EnvContext;
 import io.github.quickmsg.core.ssl.AbstractSslHandler;
@@ -48,7 +49,7 @@ public class MqttConfiguration extends AbstractSslHandler implements AbstractCon
 
     private ClusterConfig clusterConfig = ClusterConfig.defaultClusterConfig();
 
-    private EnvContext envContext;
+    private BootstrapConfig bootstrapConfig;
 
     @Override
     public Consumer<? super TcpServerConfig> getTcpServerConfig() {
