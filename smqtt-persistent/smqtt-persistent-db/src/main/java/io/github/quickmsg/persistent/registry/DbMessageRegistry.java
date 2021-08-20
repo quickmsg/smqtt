@@ -1,5 +1,6 @@
 package io.github.quickmsg.persistent.registry;
 
+import io.github.quickmsg.common.config.BootstrapConfig;
 import io.github.quickmsg.common.environment.EnvContext;
 import io.github.quickmsg.common.message.MessageRegistry;
 import io.github.quickmsg.common.message.RetainMessage;
@@ -41,15 +42,20 @@ public class DbMessageRegistry implements MessageRegistry {
 
 
     @Override
-    public void startUp(EnvContext envContext) {
-        Map<String, String> environments = envContext.getEnvironments();
+    public void startUp(BootstrapConfig bootstrapConfig) {
+        BootstrapConfig.DBConfig dbConfig = bootstrapConfig.getDbConfig();
+
         Properties properties = new Properties();
-        for (String key : environments.keySet()) {
-            // 过滤以db.开头的数据库参数配置
-            if (key.startsWith(DB_PREFIX)) {
-                properties.put(key.replaceAll(DB_PREFIX, ""), environments.get(key));
-            }
-        }
+        properties.put("driverClassName", dbConfig.getDriverClassName());
+        properties.put("url", dbConfig.getUrl());
+        properties.put("username", dbConfig.getUsername());
+        properties.put("password", dbConfig.getPassword());
+        properties.put("initialSize", dbConfig.getInitialSize());
+        properties.put("maxActive", dbConfig.getMaxActive());
+        properties.put("maxWait", dbConfig.getMaxWait());
+        properties.put("minIdle", dbConfig.getMinIdle());
+        // to add more
+
         DruidConnectionProvider
                 .singleTon()
                 .init(properties);

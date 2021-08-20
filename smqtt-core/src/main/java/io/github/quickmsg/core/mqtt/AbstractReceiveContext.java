@@ -63,8 +63,8 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
         this.passwordAuthentication = basicAuthentication();
 
         AbstractConfiguration abstractConfiguration = castConfiguration(configuration);
-//        this.channelRegistry.startUp(abstractConfiguration.getEnvContext());
-//        this.messageRegistry.startUp(abstractConfiguration.getEnvContext());
+        this.channelRegistry.startUp(abstractConfiguration.getBootstrapConfig());
+        this.messageRegistry.startUp(abstractConfiguration.getBootstrapConfig());
     }
 
 

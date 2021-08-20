@@ -1,6 +1,7 @@
 package io.github.quickmsg.persistent.strategy;
 
 import io.github.quickmsg.common.bootstrap.BootstrapKey;
+import io.github.quickmsg.common.config.BootstrapConfig;
 import io.github.quickmsg.persistent.message.SessionMessageEntity;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.Redisson;
@@ -22,10 +23,10 @@ public class SentinelClientStrategy implements ClientStrategy {
 
 
     @Override
-    public RedissonClient getRedissonClient(Map<String, String> environments) {
+    public RedissonClient getRedissonClient(BootstrapConfig.RedisConfig redisConfig) {
         Config config = new Config();
 
-        String[] nodes = environments.get(BootstrapKey.RedisSentinel.REDIS_SENTINEL_NODES).split(",");
+        String[] nodes = redisConfig.getRedisSentinel().getNodes().split(",");
         List<String> newNodes = new ArrayList(nodes.length);
 
         Arrays.stream(nodes).forEach((index) -> newNodes.add(
@@ -33,14 +34,14 @@ public class SentinelClientStrategy implements ClientStrategy {
 
         SentinelServersConfig serverConfig = config.useSentinelServers()
                 .addSentinelAddress(newNodes.toArray(new String[0]))
-                .setDatabase(Integer.parseInt(environments.get(BootstrapKey.Redis.REDIS_DATABASE)))
-                .setTimeout(Integer.parseInt(environments.get(BootstrapKey.Redis.REDIS_TIMEOUT)))
-                .setConnectTimeout(Integer.parseInt(environments.get(BootstrapKey.Redis.REDIS_POOL_CONN_TIMEOUT)))
-                .setMasterName(environments.get(BootstrapKey.RedisSentinel.REDIS_SENTINEL_MASTER))
-                .setTimeout(Integer.parseInt(environments.get(BootstrapKey.Redis.REDIS_TIMEOUT)));
+                .setDatabase(redisConfig.getDatabase())
+                .setTimeout(redisConfig.getTimeout())
+                .setConnectTimeout(redisConfig.getPoolConnTimeout())
+                .setMasterName(redisConfig.getRedisSentinel().getMaster())
+                .setTimeout(redisConfig.getTimeout());
 
-        if (StringUtils.isNotBlank(environments.get(BootstrapKey.Redis.REDIS_PASSWORD))) {
-            serverConfig.setPassword(environments.get(BootstrapKey.Redis.REDIS_PASSWORD));
+        if (StringUtils.isNotBlank(redisConfig.getPassword())) {
+            serverConfig.setPassword(redisConfig.getPassword());
         }
 
         return Redisson.create(config);

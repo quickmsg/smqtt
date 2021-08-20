@@ -1,6 +1,7 @@
 package io.github.quickmsg.persistent.strategy;
 
 import io.github.quickmsg.common.bootstrap.BootstrapKey;
+import io.github.quickmsg.common.config.BootstrapConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
@@ -21,25 +22,25 @@ import java.util.Map;
 public class ClusterClientStrategy implements ClientStrategy {
 
     @Override
-    public RedissonClient getRedissonClient(Map<String, String> environments) {
+    public RedissonClient getRedissonClient(BootstrapConfig.RedisConfig redisConfig) {
         Config config = new Config();
-        String[] nodes = environments.get(BootstrapKey.RedisCluster.REDIS_CLUSTER_NODES).split(",");
+        String[] nodes = redisConfig.getRedisCluster().getNodes().split(",");
         List<String> newNodes = new ArrayList(nodes.length);
         Arrays.stream(nodes).forEach((index) -> newNodes.add(index.startsWith("redis://") ? index : "redis://" + index));
 
         ClusterServersConfig serverConfig = config.useClusterServers()
                 .addNodeAddress(newNodes.toArray(new String[0]))
-                .setTimeout(Integer.parseInt(environments.get(BootstrapKey.Redis.REDIS_TIMEOUT)))
-                .setConnectTimeout(Integer.parseInt(environments.get(BootstrapKey.Redis.REDIS_POOL_CONN_TIMEOUT)))
-                .setScanInterval(Integer.parseInt(environments.get(BootstrapKey.RedisCluster.REDIS_CLUSTER_SCAN_INTERVAL)))
-                .setReadMode(getReadMode(environments.get(BootstrapKey.RedisCluster.REDIS_CLUSTER_READ_MODE)))
-                .setRetryAttempts(Integer.parseInt(environments.get(BootstrapKey.RedisCluster.REDIS_CLUSTER_RETRY_ATTEMPTS)))
-                .setMasterConnectionPoolSize(Integer.parseInt(environments.get(BootstrapKey.RedisCluster.REDIS_CLUSTER_MASTER_CONNECTION_POOL_SIZE)))
-                .setSlaveConnectionPoolSize(Integer.parseInt(environments.get(BootstrapKey.RedisCluster.REDIS_CLUSTER_SLAVE_CONNECTION_POOL_SIZE)))
-                .setRetryInterval(Integer.parseInt(environments.get(BootstrapKey.RedisCluster.REDIS_CLUSTER_RETRY_INTERVAL)));
+                .setTimeout(redisConfig.getTimeout())
+                .setConnectTimeout(redisConfig.getPoolConnTimeout())
+                .setScanInterval(redisConfig.getRedisCluster().getScanInterval())
+                .setReadMode(getReadMode(redisConfig.getRedisCluster().getReadMode()))
+                .setRetryAttempts(redisConfig.getRedisCluster().getRetryAttempts())
+                .setMasterConnectionPoolSize(redisConfig.getRedisCluster().getMasterConnectionPoolSize())
+                .setSlaveConnectionPoolSize(redisConfig.getRedisCluster().getSlaveConnectionPoolSize())
+                .setRetryInterval(redisConfig.getRedisCluster().getRetryInterval());
 
-        if (StringUtils.isNotBlank(environments.get(BootstrapKey.Redis.REDIS_PASSWORD))) {
-            serverConfig.setPassword(environments.get(BootstrapKey.Redis.REDIS_PASSWORD));
+        if (StringUtils.isNotBlank(redisConfig.getPassword())) {
+            serverConfig.setPassword(redisConfig.getPassword());
         }
         return Redisson.create(config);
     }

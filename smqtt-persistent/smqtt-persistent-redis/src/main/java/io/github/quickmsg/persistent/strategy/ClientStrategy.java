@@ -1,5 +1,6 @@
 package io.github.quickmsg.persistent.strategy;
 
+import io.github.quickmsg.common.config.BootstrapConfig;
 import org.redisson.api.RedissonClient;
 
 import java.util.Map;
@@ -15,8 +16,8 @@ public interface ClientStrategy {
     /**
      * 获取redisson客户端
      *
-     * @param environments 參數map
+     * @param redisConfig
      * @return {@link RedissonClient}
      */
-    RedissonClient getRedissonClient(Map<String, String> environments);
+    RedissonClient getRedissonClient(BootstrapConfig.RedisConfig redisConfig);
 }

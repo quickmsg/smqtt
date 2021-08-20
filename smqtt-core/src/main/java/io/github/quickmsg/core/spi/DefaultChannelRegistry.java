@@ -2,6 +2,7 @@ package io.github.quickmsg.core.spi;
 
 import io.github.quickmsg.common.channel.ChannelRegistry;
 import io.github.quickmsg.common.channel.MqttChannel;
+import io.github.quickmsg.common.config.BootstrapConfig;
 import io.github.quickmsg.common.enums.ChannelStatus;
 import io.github.quickmsg.common.environment.EnvContext;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +27,7 @@ public class DefaultChannelRegistry implements ChannelRegistry {
     }
 
     @Override
-    public void startUp(EnvContext envContext) {
+    public void startUp(BootstrapConfig bootstrapConfig) {
 
     }
 

@@ -218,19 +218,19 @@ public class BootstrapConfig {
         /**
          * 连接池初始化连接数
          */
-        private Integer initialSize;
+        private String initialSize;
         /**
          * 连接池中最多支持多少个活动会话
          */
-        private Integer maxActive;
+        private String maxActive;
         /**
          * 向连接池中请求连接时,超过maxWait的值后,认为本次请求失败
          */
-        private Integer maxWait;
+        private String maxWait;
         /**
          * 回收空闲连接时，将保证至少有minIdle个连接
          */
-        private Integer minIdle;
+        private String minIdle;
     }
 
     @Data

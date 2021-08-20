@@ -1,6 +1,7 @@
 package io.github.quickmsg.persistent.registry;
 
 import io.github.quickmsg.common.bootstrap.BootstrapKey;
+import io.github.quickmsg.common.config.BootstrapConfig;
 import io.github.quickmsg.common.environment.EnvContext;
 import io.github.quickmsg.common.message.MessageRegistry;
 import io.github.quickmsg.common.message.RetainMessage;
@@ -36,13 +37,13 @@ public class RedisMessageRegistry implements MessageRegistry {
     private RedissonClient redissonClient = null;
 
     @Override
-    public void startUp(EnvContext envContext) {
+    public void startUp(BootstrapConfig bootstrapConfig) {
         try {
-            Map<String, String> environments = envContext.getEnvironments();
+            BootstrapConfig.RedisConfig redisConfig = bootstrapConfig.getRedisConfig();
             // 获取客户端策略
-            ClientStrategy clientStrategy = ClientFactory.getClientStrategy(environments.get(BootstrapKey.Redis.REDIS_MODE));
+            ClientStrategy clientStrategy = ClientFactory.getClientStrategy(redisConfig.getMode());
             // 获取redisson客户端
-            redissonClient = clientStrategy.getRedissonClient(environments);
+            redissonClient = clientStrategy.getRedissonClient(redisConfig);
         } catch (Exception e) {
             log.error("startUp error message", e);
         }

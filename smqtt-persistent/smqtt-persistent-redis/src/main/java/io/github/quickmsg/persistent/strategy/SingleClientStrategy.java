@@ -1,6 +1,7 @@
 package io.github.quickmsg.persistent.strategy;
 
 import io.github.quickmsg.common.bootstrap.BootstrapKey;
+import io.github.quickmsg.common.config.BootstrapConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
@@ -19,19 +20,19 @@ public class SingleClientStrategy implements ClientStrategy {
 
 
     @Override
-    public RedissonClient getRedissonClient(Map<String, String> environments) {
+    public RedissonClient getRedissonClient(BootstrapConfig.RedisConfig redisConfig) {
         Config config = new Config();
-        String node = environments.get(BootstrapKey.RedisSingle.REDIS_SINGLE_ADDRESS);
+        String node = redisConfig.getRedisSingle().getAddress();
         node = node.startsWith("redis://") ? node : "redis://" + node;
         SingleServerConfig serverConfig = config.useSingleServer()
                 .setAddress(node)
-                .setDatabase(Integer.parseInt(environments.get(BootstrapKey.Redis.REDIS_DATABASE)))
-                .setTimeout(Integer.parseInt(environments.get(BootstrapKey.Redis.REDIS_TIMEOUT)))
-                .setConnectionMinimumIdleSize(Integer.parseInt(environments.get(BootstrapKey.Redis.REDIS_POOL_MIN_IDLE)))
-                .setConnectTimeout(Integer.parseInt(environments.get(BootstrapKey.Redis.REDIS_POOL_CONN_TIMEOUT)))
-                .setConnectionPoolSize(Integer.parseInt(environments.get(BootstrapKey.Redis.REDIS_POOL_SIZE)));
-        if (StringUtils.isNotBlank(environments.get(BootstrapKey.Redis.REDIS_PASSWORD))) {
-            serverConfig.setPassword(environments.get(BootstrapKey.Redis.REDIS_PASSWORD));
+                .setDatabase(redisConfig.getDatabase())
+                .setTimeout(redisConfig.getTimeout())
+                .setConnectionMinimumIdleSize(redisConfig.getPoolMinIdle())
+                .setConnectTimeout(redisConfig.getPoolConnTimeout())
+                .setConnectionPoolSize(redisConfig.getPoolSize());
+        if (StringUtils.isNotBlank(redisConfig.getPassword())) {
+            serverConfig.setPassword(redisConfig.getPassword());
         }
         return Redisson.create(config);
     }
