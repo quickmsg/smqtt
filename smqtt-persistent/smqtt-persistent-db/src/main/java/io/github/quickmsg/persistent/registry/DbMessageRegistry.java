@@ -1,6 +1,5 @@
 package io.github.quickmsg.persistent.registry;
 
-import io.github.quickmsg.common.bootstrap.BootstrapKey;
 import io.github.quickmsg.common.environment.EnvContext;
 import io.github.quickmsg.common.message.MessageRegistry;
 import io.github.quickmsg.common.message.RetainMessage;
@@ -38,6 +37,8 @@ public class DbMessageRegistry implements MessageRegistry {
 
     private static final String DEFAULT_LIQUIBASE_PATH = "classpath:liquibase/smqtt_db.xml";
 
+    public final static String DB_PREFIX = "db.";
+
 
     @Override
     public void startUp(EnvContext envContext) {
@@ -45,8 +46,8 @@ public class DbMessageRegistry implements MessageRegistry {
         Properties properties = new Properties();
         for (String key : environments.keySet()) {
             // 过滤以db.开头的数据库参数配置
-            if (key.startsWith(BootstrapKey.DB_PREFIX)) {
-                properties.put(key.replaceAll(BootstrapKey.DB_PREFIX, ""), environments.get(key));
+            if (key.startsWith(DB_PREFIX)) {
+                properties.put(key.replaceAll(DB_PREFIX, ""), environments.get(key));
             }
         }
         DruidConnectionProvider

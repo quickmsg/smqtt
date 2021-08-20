@@ -1,11 +1,13 @@
 package io.github.quickmsg.common.config;
 
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author luxurong
  */
-@Getter
+@Data
+@NoArgsConstructor
 public class SslContext {
 
     private String crt;

@@ -10,9 +10,18 @@ import lombok.Data;
 @Data
 public class BootstrapConfig {
 
-
     @JsonProperty("smqtt")
     private SmqttConfig smqttConfig;
+    /**
+     * 数据库配置
+     */
+    @JsonProperty("db")
+    private DBConfig dbConfig;
+    /**
+     * redis配置
+     */
+    @JsonProperty("redis")
+    private RedisConfig redisConfig;
 
     public static BootstrapConfig defaultConfig() {
         return new BootstrapConfig();
@@ -20,7 +29,6 @@ public class BootstrapConfig {
 
     @Data
     public static class SmqttConfig {
-
         /**
          * sfl4j日志级别
          *
@@ -28,13 +36,11 @@ public class BootstrapConfig {
          */
         private String logLevel;
 
-
         /**
          * tcp配置
          */
         @JsonProperty("tcp")
         private TcpConfig tcpConfig;
-
 
         /**
          * http配置
@@ -53,12 +59,10 @@ public class BootstrapConfig {
          */
         @JsonProperty("cluster")
         private ClusterConfig clusterConfig;
-
     }
 
     @Data
     public static class TcpConfig {
-
         /**
          * 端口
          */
@@ -68,68 +72,52 @@ public class BootstrapConfig {
          * 用户名
          */
         private String username;
-
-
-        /**
-         * 二进制日志（需要开启root 为debug）
-         */
-        private Boolean wiretap;
-
-
         /**
          * 密码
          */
         private String password;
-
+        /**
+         * 二进制日志（需要开启root 为debug）
+         */
+        private Boolean wiretap;
         /**
          * 核心线程数
          */
         private Integer bossThreadSize;
-
         /**
          * 工作线程数
          */
         private Integer workThreadSize;
-
         /**
          * 高水位
          */
         private Integer lowWaterMark;
-
         /**
          * 低水位
          */
         private Integer highWaterMark;
-
         /**
          * ssl配置
          */
         @JsonProperty("ssl")
         private SslContext sslContext;
-
-
     }
 
     @Data
     public static class HttpConfig {
-
         /**
          * 开启http
          */
         private boolean enable;
-
         /**
          * http日志
          */
         private boolean accessLog;
-
         /**
          * ssl配置
          */
         @JsonProperty("ssl")
         private SslContext sslContext;
-
-
         /**
          * 管理页面配置
          */
@@ -140,7 +128,6 @@ public class BootstrapConfig {
 
     @Data
     public static class WebsocketConfig {
-
         /**
          * 端口
          */
@@ -150,7 +137,6 @@ public class BootstrapConfig {
          * mqtt.js 需要设置 /mqtt
          */
         private String path;
-
         /**
          * 开启ws
          */
@@ -163,25 +149,18 @@ public class BootstrapConfig {
          * 开启集群
          */
         private boolean enable;
-
         /**
          * 集群url
          */
         private String url;
-
-
         /**
          * 集群启动本地端口
          */
         private Integer port;
-
-
         /**
          * 集群名称 需要唯一
          */
         private String node;
-
-
         /**
          * 集群额外配置（主要用于容器映射）
          */
@@ -191,18 +170,14 @@ public class BootstrapConfig {
 
     @Data
     public static class HttpAdmin {
-
         /**
          * 开启http管理页面
          */
         private boolean enable;
-
         /**
          * 用户名
          */
         private String username;
-
-
         /**
          * 密码
          */
@@ -211,8 +186,6 @@ public class BootstrapConfig {
 
     @Data
     public static class ClusterExternal {
-
-
         /**
          * 本地曝光host
          */
@@ -223,5 +196,128 @@ public class BootstrapConfig {
          */
         private Integer port;
     }
+
+    @Data
+    public static class DBConfig {
+        /**
+         * 数据库驱动
+         */
+        private String driverClassName;
+        /**
+         * 数据库连接
+         */
+        private String url;
+        /**
+         * 数据库用户名
+         */
+        private String username;
+        /**
+         * 数据库密码
+         */
+        private String password;
+        /**
+         * 连接池初始化连接数
+         */
+        private Integer initialSize;
+        /**
+         * 连接池中最多支持多少个活动会话
+         */
+        private Integer maxActive;
+        /**
+         * 向连接池中请求连接时,超过maxWait的值后,认为本次请求失败
+         */
+        private Integer maxWait;
+        /**
+         * 回收空闲连接时，将保证至少有minIdle个连接
+         */
+        private Integer minIdle;
+    }
+
+    @Data
+    public static class RedisConfig {
+
+        /**
+         * 单机模式：single 哨兵模式：sentinel 集群模式：cluster
+         */
+        private String mode;
+        /**
+         * 数据库
+         */
+        private Integer database;
+        /**
+         * 密码
+         */
+        private String password;
+        /**
+         * 超时时间
+         */
+        private Integer timeout;
+        /**
+         * 最小空闲数
+         */
+        private Integer poolMinIdle;
+        /**
+         * 连接超时时间(毫秒)
+         */
+        private Integer poolConnTimeout;
+        /**
+         * 连接池大小
+         */
+        private Integer poolSize;
+
+        /**
+         * redis单机配置
+         */
+        @JsonProperty("single")
+        private RedisSingle redisSingle;
+
+        /**
+         * redis集群模式配置
+         */
+        @JsonProperty("cluster")
+        private RedisCluster redisCluster;
+
+        /**
+         * redis哨兵模式配置
+         */
+        @JsonProperty("sentinel")
+        private RedisSentinel redisSentinel;
+
+    }
+
+    /**
+     * redis单机配置
+     */
+    @Data
+    public static class RedisSingle {
+        /**
+         * 地址
+         */
+        private String address;
+    }
+
+    /**
+     * redis集群模式配置
+     */
+    @Data
+    public static class RedisCluster {
+        private Integer scanInterval;
+        private String nodes;
+        private String readMode;
+        private Integer retryAttempts;
+        private Integer slaveConnectionPoolSize;
+        private Integer masterConnectionPoolSize;
+        private Integer retryInterval;
+    }
+
+    /**
+     * redis哨兵模式配置
+     */
+    @Data
+    public static class RedisSentinel {
+        private String master;
+        private String nodes;
+    }
+
 
 }
