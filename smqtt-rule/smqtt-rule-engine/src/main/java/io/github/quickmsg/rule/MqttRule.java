@@ -2,6 +2,8 @@ package io.github.quickmsg.rule;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @author luxurong
  */
@@ -10,10 +12,9 @@ public class MqttRule {
 
     private RuleType ruleType;
 
-    private String expression;
+    private String condition;
 
-    private RuleAction ruleAction;
-
+    private List<RuleAction> ruleAction;
 
 
 }

@@ -5,14 +5,19 @@ package io.github.quickmsg.rule;
  */
 public enum RuleType {
 
-    /**
-     * 默认表达式
-     */
-    DEFAULT,
 
     /**
      * spel表达式
      */
     SPEL,
 
+    /**
+     * mvel表达式
+     */
+    MVEL,
+
+    /**
+     * jexl表达式
+     */
+    JEXL,
 }

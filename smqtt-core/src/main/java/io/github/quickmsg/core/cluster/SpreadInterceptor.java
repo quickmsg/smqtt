@@ -1,7 +1,9 @@
-package io.github.quickmsg.common.interceptor;
+package io.github.quickmsg.core.cluster;
 
 import io.github.quickmsg.common.config.Configuration;
 import io.github.quickmsg.common.context.ReceiveContext;
+import io.github.quickmsg.common.interceptor.Interceptor;
+import io.github.quickmsg.common.interceptor.Invocation;
 import io.github.quickmsg.common.message.SmqttMessage;
 import io.netty.handler.codec.mqtt.MqttMessage;
 import io.netty.handler.codec.mqtt.MqttPublishMessage;
@@ -32,6 +34,6 @@ public class SpreadInterceptor implements Interceptor {
 
     @Override
     public int sort() {
-        return 0;
+        return 9999;
     }
 }

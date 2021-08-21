@@ -23,7 +23,7 @@ import java.util.function.Function;
 @Slf4j
 public abstract class AbstractStarter {
 
-    public static void start(Function<String, String> function, String path) {
+    public static void start(String path) {
         BootstrapConfig config = null;
         if (path != null) {
             if (path.endsWith(".properties")) {
@@ -127,9 +127,4 @@ public abstract class AbstractStarter {
         }
         log.info(start);
     }
-
-    public static void main(String[] args) {
-        start(str->str,"/Users/luxurong/IdeaProjects/smqtt/config.properties");
-    }
-
 }

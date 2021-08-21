@@ -10,6 +10,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>smqtt-rule-dsl</artifactId>
+
+    <dependencies>
+        <dependency>
+            <artifactId>smqtt-rule-engine</artifactId>
+            <groupId>io.github.quickmsg</groupId>
+            <version>1.0.7</version>
+        </dependency>
+    </dependencies>
     <build>
         <plugins>
             <plugin>

@@ -1,10 +1,15 @@
 package io.github.quickmsg.rule;
 
 /**
- *  @author luxurong
+ * @author luxurong
  */
-public class RuleAction {
+public interface RuleAction {
 
-
+    /**
+     * 执行
+     *
+     * @param param 参数
+     */
+    void execute(Object param);
 
 }

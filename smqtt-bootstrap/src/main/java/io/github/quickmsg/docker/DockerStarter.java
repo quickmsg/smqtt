@@ -12,7 +12,7 @@ public class DockerStarter extends AbstractStarter {
 
     public static void main(String[] args) {
         log.info("DockerStarter start args {}", String.join(",", args));
-        start(System::getenv, null);
+        start(null);
     }
 
 
