@@ -27,7 +27,7 @@ public class RuleInterceptor implements Interceptor {
         if(message.fixedHeader().messageType() == MqttMessageType.PUBLISH && message instanceof MqttPublishMessage){
 
         }
-        return invocation.proceed(;
+        return invocation.proceed();
     }
 
     @Override

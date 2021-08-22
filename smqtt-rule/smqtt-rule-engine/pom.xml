@@ -36,9 +36,9 @@
       <version>4.1.0</version>
     </dependency>
     <dependency>
-      <groupId>org.jeasy</groupId>
-      <artifactId>easy-rules-mvel</artifactId>
-      <version>4.1.0</version>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-jexl</artifactId>
+      <version>2.1.1</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
