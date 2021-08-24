@@ -150,69 +150,83 @@ Bootstrap bootstrap = Bootstrap.builder()
   在smqtt-bootstrap/target目录下生成jar
 ```
 
-2. 准备配置文件 config.properties
+2. 准备配置文件 config.yaml
 
 ```markdown
-    
-# 日志级别 ALL｜TRACE｜DEBUG｜INFO｜WARN｜ERROR｜OFF
-smqtt.log.level=INFO
-# 开启tcp端口
-smqtt.tcp.port=1883
-# 低水位
-# smqtt.tcp.lowWaterMark=
-# 高水位
-# smqtt.tcp.highWaterMark=
-# 开启ssl加密
-smqtt.tcp.ssl=false
-# 证书crt smqtt.tcp.ssl.crt =
-# 证书key smqtt.tcp.ssl.key =
-# 开启日志
-smqtt.tcp.wiretap=false
-# boss线程 默认cpu*2
-# smqtt.tcp.bossThreadSize=4
-# work线程 默认cpu*2
-smqtt.tcp.workThreadSize=8
-# websocket端口
-smqtt.websocket.port=8999
-# websocket开启
-smqtt.websocket.enable=true
-# smqtt用户
-smqtt.tcp.username=smqtt
-# smqtt密码
-smqtt.tcp.password=smqtt
-# 开启http
-smqtt.http.enable=true
-# 开启http日志
-smqtt.http.accesslog=true
-# 开启ssl
-smqtt.http.ssl.enable=false
-# smqtt.http.ssl.crt =
-# smqtt.http.ssl.key =
-# 开启管理后台（必须开启http）
-smqtt.http.admin.enable=true
-# 管理后台登录用户
-smqtt.http.admin.username=smqtt
-# 管理后台登录密码
-smqtt.http.admin.password=smqtt
-# 开启集群
-smqtt.cluster.enable=false
-# 集群节点地址
-smqtt.cluster.url=127.0.0.1:7771,127.0.0.1:7772
-# 节点端口
-smqtt.cluster.port=7771
-# 节点名称
-smqtt.cluster.node=node-1
-# 容器集群映射主机
-# smqtt.cluster.external.host = localhost
-# 容器集群映射port
-smqtt.cluster.external.port
 
+smqtt:
+  logLevel: DEBUG # 系统日志
+  tcp: # tcp配置
+    port: 1883 # mqtt端口号
+    username: smqtt # mqtt连接默认用户名  生产环境建议spi去注入PasswordAuthentication接口
+    password: smqtt  # mqtt连接默认密码 生产环境建议spi去注入PasswordAuthentication接口
+    wiretap: true  # 二进制日志 前提是 smqtt.logLevel = DEBUG
+    bossThreadSize: 4  # boss线程
+    workThreadSize: 8  # work线程
+    lowWaterMark: 4000000 # 不建议配置 默认 32768
+    highWaterMark: 80000000 # 不建议配置 默认 65536
+    ssl: # ssl配置
+      enable: false # 开关
+      key: /user/server.key # 指定ssl文件 默认系统生成
+      crt: /user/server.crt # 指定ssl文件 默认系统生成
+  http: # http相关配置 端口固定60000
+    enable: true # 开关
+    accessLog: true # http访问日志
+    ssl: # ssl配置
+      enable: false
+    admin: # 后台管理配置
+      enable: true  # 开关
+      username: smqtt # 访问用户名
+      password: smqtt # 访问密码
+  ws: # websocket配置
+    enable: true # 开关
+    port: 8999 # 端口
+    path: /mqtt # ws 的访问path mqtt.js请设置此选项
+  cluster: # 集群配置
+    enable: false # 集群开关
+    url: 127.0.0.1:7771,127.0.0.1:7772 # 启动节点
+    port: 7771  # 端口
+    node: node-1 # 集群节点名称 唯一
+    external:
+      host: localhost # 用于映射容器ip 请不要随意设置，如果不需要请移除此选项
+      port: 7777 # 用于映射容器端口 请不要随意设置，如果不需要请移除此选项
+db: # 数据库相关设置 请参考 https://doc.smqtt.cc/%E5%85%B6%E4%BB%96/1.store.html 【如果没有引入相关依赖请移除此配置】
+  driverClassName: com.mysql.jdbc.Driver
+  url: jdbc:mysql://127.0.0.1:3306/smqtt?characterEncoding=utf-8&useSSL=false&useInformationSchema=true&serverTimezone=UTC
+  username: root
+  password: 123
+  initialSize: 10
+  maxActive: 300
+  maxWait: 60000
+  minIdle: 2
+redis: # redis 请参考 https://doc.smqtt.cc/%E5%85%B6%E4%BB%96/1.store.html 【如果没有引入相关依赖请移除此配置】
+  mode: single
+  database: 0
+  password:
+  timeout: 3000
+  poolMinIdle: 8
+  poolConnTimeout: 3000
+  poolSize: 10
+  single:
+    address: 127.0.0.1:6379
+  cluster:
+    scanInterval: 1000
+    nodes: 127.0.0.1:7000,127.0.0.1:7001,127.0.0.1:7002,127.0.0.1:7003,127.0.0.1:7004,127.0.0.1:7005
+    readMode: SLAVE
+    retryAttempts: 3
+    slaveConnectionPoolSize: 64
+    masterConnectionPoolSize: 64
+    retryInterval: 1500
+  sentinel:
+    master: mymaster
+    nodes: 127.0.0.1:26379,127.0.0.1:26379,127.0.0.1:26379
+ 
   ```
 
 3. 启动服务
 
 ```markdown
-  java -jar smqtt-bootstrap-1.0.1-SNAPSHOT.jar <conf.properties路径>
+  java -jar smqtt-bootstrap-1.0.1-SNAPSHOT.jar <config.yaml路径>
 ```
 
 
@@ -269,23 +283,19 @@ curl -H "Content-Type: application/json" -X POST -d '{"topic": "test/teus", "qos
     ```
 - jar / docker 启动
     
-   设置config.properties
+   设置config.yaml
    
     ``` 
-    # 开启http
-    smqtt.http.enable=true
-    # 开启http日志
-    smqtt.http.accesslog=true
-    # 开启ssl
-    smqtt.http.ssl.enable=false
-    # smqtt.http.ssl.crt =
-    # smqtt.http.ssl.key =
-    # 开启管理后台（必须开启http）
-    smqtt.http.admin.enable=true
-    # 管理后台登录用户
-    smqtt.http.admin.username=smqtt
-    # 管理后台登录密码
-    smqtt.http.admin.password=smqtt  
+    smqtt:
+      http: # http相关配置 端口固定60000
+        enable: true # 开关
+        accessLog: true # http访问日志
+        ssl: # ssl配置
+          enable: false
+        admin: # 后台管理配置
+          enable: true  # 开关
+          username: smqtt # 访问用户名
+          password: smqtt # 访问密码
     ```
 
 ### 页面预览

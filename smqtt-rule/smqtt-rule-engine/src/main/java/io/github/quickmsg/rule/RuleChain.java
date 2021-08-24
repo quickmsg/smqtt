@@ -10,8 +10,12 @@ import java.util.List;
  */
 public class RuleChain {
 
+
     private List<RuleNode> ruleNodeList = new LinkedList<>();
 
+    public String say(){
+        return "sajhbd";
+    }
 
 
 
