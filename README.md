@@ -72,13 +72,11 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
    <groupId>io.github.quickmsg</groupId>
    <version>${Latest version}</version>
 </dependency>
-
 ```
 
 阻塞式启动服务：
 
 ```markdown
-
 Bootstrap.builder()
           .rootLevel(Level.INFO)
           .wiretap(false)
@@ -104,14 +102,11 @@ Bootstrap.builder()
            .started(bootstrap->{})
            .build()
            .startAwait();
-
 ```
 
 非阻塞式启动服务：
 
 ```markdown
-
- 
 Bootstrap bootstrap = Bootstrap.builder()
           .rootLevel(Level.INFO)
           .wiretap(false)
@@ -137,12 +132,9 @@ Bootstrap bootstrap = Bootstrap.builder()
            .started(bootstrap->{})
            .build()
            .start().block();
-
 ```
 
-
 ## jar方式
-
 
 1. 下载源码 mvn compile package -Dmaven.test.skip=true -P jar,web
 
@@ -153,7 +145,6 @@ Bootstrap bootstrap = Bootstrap.builder()
 2. 准备配置文件 config.yaml
 
 ```markdown
-
 smqtt:
   logLevel: DEBUG # 系统日志
   tcp: # tcp配置
@@ -220,7 +211,6 @@ redis: # redis 请参考 https://doc.smqtt.cc/%E5%85%B6%E4%BB%96/1.store.html �
   sentinel:
     master: mymaster
     nodes: 127.0.0.1:26379,127.0.0.1:26379,127.0.0.1:26379
- 
   ```
 
 3. 启动服务
@@ -248,7 +238,7 @@ docker pull 1ssqq1lxr/smqtt:latest
 docker run -it  -p 1883:1883 1ssqq1lxr/smqtt
 ```
 
-启动镜像使用自定义配置（同上准备配置文件conf.properties）
+启动镜像使用自定义配置（同上准备配置文件config.yaml）
 
 
 ``` 
