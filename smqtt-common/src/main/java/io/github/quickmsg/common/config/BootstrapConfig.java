@@ -88,6 +88,16 @@ public class BootstrapConfig {
          * 工作线程数
          */
         private Integer workThreadSize;
+
+        /**
+         * 业务线程数
+         */
+        private Integer businessThreadSize;
+
+        /**
+         * 业务队列
+         */
+        private Integer businessQueueSize;
         /**
          * 高水位
          */

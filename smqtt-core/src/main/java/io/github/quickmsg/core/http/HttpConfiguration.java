@@ -26,14 +26,22 @@ public class HttpConfiguration implements Configuration {
 
     private Boolean accessLog = false;
 
-    private Boolean  enableAdmin = false;
+    private Boolean enableAdmin = false;
 
-    private String  username;
+    private String username;
 
-    private String  password;
+    private String password;
 
 
+    @Override
+    public Integer getBusinessThreadSize() {
+        return 0;
+    }
 
+    @Override
+    public Integer getBusinessQueueSize() {
+        return 0;
+    }
 
     @Override
     public Integer getLowWaterMark() {

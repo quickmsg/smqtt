@@ -1,8 +1,6 @@
 package io.github.quickmsg.common.config;
 
-import io.github.quickmsg.common.auth.PasswordAuthentication;
 import io.github.quickmsg.common.cluster.ClusterConfig;
-import io.github.quickmsg.common.environment.EnvContext;
 
 /**
  * @author luxurong
@@ -24,6 +22,22 @@ public interface Configuration {
      * @return work线程数
      */
     Integer getWorkThreadSize();
+
+
+    /**
+     * 业务线程数
+     *
+     * @return 业务线程数
+     */
+    Integer getBusinessThreadSize();
+
+
+    /**
+     * 工作队列数
+     *
+     * @return 工作队列数
+     */
+    Integer getBusinessQueueSize();
 
 
     /**
@@ -71,7 +85,6 @@ public interface Configuration {
      * @return {@link SslContext}
      */
     SslContext getSslContext();
-
 
 
     /**

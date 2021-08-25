@@ -5,7 +5,6 @@ import io.github.quickmsg.common.cluster.ClusterConfig;
 import io.github.quickmsg.common.config.AbstractConfiguration;
 import io.github.quickmsg.common.config.BootstrapConfig;
 import io.github.quickmsg.common.config.SslContext;
-import io.github.quickmsg.common.environment.EnvContext;
 import io.github.quickmsg.core.ssl.AbstractSslHandler;
 import io.netty.channel.ChannelOption;
 import lombok.Data;
@@ -41,7 +40,12 @@ public class MqttConfiguration extends AbstractSslHandler implements AbstractCon
 
     private Integer bossThreadSize = Runtime.getRuntime().availableProcessors();
 
-    private Integer workThreadSize = Runtime.getRuntime().availableProcessors();
+    private Integer workThreadSize = Runtime.getRuntime().availableProcessors() * 2;
+
+    private Integer businessThreadSize = Runtime.getRuntime().availableProcessors() * 4;
+
+    private Integer businessQueueSize = 100000;
+
 
     private Consumer<Map<ChannelOption<?>, ?>> options;
 

@@ -11,6 +11,7 @@ import io.github.quickmsg.common.utils.MessageUtils;
 import io.netty.handler.codec.mqtt.MqttMessage;
 import io.netty.handler.codec.mqtt.MqttMessageType;
 import lombok.extern.slf4j.Slf4j;
+import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 
 import java.util.HashMap;
@@ -25,8 +26,13 @@ public class DefaultProtocolAdaptor implements ProtocolAdaptor {
 
     private Map<MqttMessageType, Protocol<MqttMessage>> types = new HashMap<>();
 
+
+    private final Scheduler scheduler;
+
+
     @SuppressWarnings("unchecked")
-    public DefaultProtocolAdaptor() {
+    public DefaultProtocolAdaptor(Scheduler scheduler) {
+        this.scheduler = Optional.ofNullable(scheduler).orElse(Schedulers.boundedElastic());
         DynamicLoader.findAll(Protocol.class)
                 .forEach(protocol ->
                         protocol.getMqttMessageTypes().forEach(type -> {
@@ -45,7 +51,7 @@ public class DefaultProtocolAdaptor implements ProtocolAdaptor {
                     .ifPresent(protocol -> protocol
                             .doParseProtocol(smqttMessage, mqttChannel)
                             .contextWrite(context -> context.putNonNull(ReceiveContext.class, receiveContext))
-                            .subscribeOn(Schedulers.boundedElastic())
+                            .subscribeOn(scheduler)
                             .subscribe(aVoid -> {
                             }, error -> {
                                 log.error("channel {} chooseProtocol:", mqttChannel, error);

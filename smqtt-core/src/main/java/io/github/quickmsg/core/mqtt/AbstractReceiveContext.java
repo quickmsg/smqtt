@@ -18,6 +18,7 @@ import io.netty.handler.codec.mqtt.MqttMessage;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import reactor.core.scheduler.Schedulers;
 import reactor.netty.resources.LoopResources;
 
 import java.util.Optional;
@@ -49,6 +50,7 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
     private final ClusterRegistry clusterRegistry;
 
     private final RecipientRegistry recipientRegistry;
+
 
     public AbstractReceiveContext(T configuration, Transport<T> transport) {
         this.configuration = configuration;
@@ -96,7 +98,7 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
 
     private ProtocolAdaptor protocolAdaptor() {
         return Optional.ofNullable(ProtocolAdaptor.INSTANCE)
-                .orElse(new DefaultProtocolAdaptor())
+                .orElse(new DefaultProtocolAdaptor(Schedulers.newBoundedElastic(configuration.getBusinessThreadSize(),configuration.getBusinessQueueSize(),"business-io")))
                 .proxy();
     }
 
