@@ -15,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.File;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
 
 /**
  * @author luxurong
@@ -23,17 +22,25 @@ import java.util.function.Function;
 @Slf4j
 public abstract class AbstractStarter {
 
+
+    private static final String PROPERTIES_SYMBOL = ".properties";
+
+    private static final String YAML_SYMBOL_1 = ".yaml";
+
+    private static final String YAML_SYMBOL_2 = ".yml";
+
+
     public static void start(String path) {
         BootstrapConfig config = null;
         if (path != null) {
-            if (path.endsWith(".properties")) {
+            if (path.endsWith(PROPERTIES_SYMBOL)) {
                 ObjectMapper mapper = new ObjectMapper(new JavaPropsFactory());
                 try {
                     config = mapper.readValue(new File(path), BootstrapConfig.class);
                 } catch (Exception e) {
                     log.error("properties read error", e);
                 }
-            } else if (path.endsWith(".yaml") || path.endsWith(".yml")) {
+            } else if (path.endsWith(YAML_SYMBOL_1) || path.endsWith(YAML_SYMBOL_2)) {
                 ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
                 try {
                     config = mapper.readValue(new File(path), BootstrapConfig.class);

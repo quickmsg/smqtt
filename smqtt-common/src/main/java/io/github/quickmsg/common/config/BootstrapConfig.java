@@ -24,7 +24,14 @@ public class BootstrapConfig {
     private RedisConfig redisConfig;
 
     public static BootstrapConfig defaultConfig() {
-        return new BootstrapConfig();
+        BootstrapConfig bootstrapConfig = new BootstrapConfig();
+        SmqttConfig smqttConfig = new SmqttConfig();
+        TcpConfig tcpConfig = new TcpConfig();
+        tcpConfig.setPort(1883);
+        smqttConfig.setTcpConfig(tcpConfig);
+        smqttConfig.setLogLevel("INFO");
+        bootstrapConfig.setSmqttConfig(smqttConfig);
+        return bootstrapConfig;
     }
 
     @Data
