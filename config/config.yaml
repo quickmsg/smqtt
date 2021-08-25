@@ -1,38 +1,40 @@
 smqtt:
-  logLevel: DEBUG
-  tcp:
-    port: 1883
-    username: smqtt
-    password: smqtt
-    wiretap: true
-    bossThreadSize: 4
-    workThreadSize: 8
-    lowWaterMark: 4000000
-    highWaterMark: 80000000
-    ssl:
+  logLevel: DEBUG # 系统日志
+  tcp: # tcp配置
+    port: 1883 # mqtt端口号
+    username: smqtt # mqtt连接默认用户名  生产环境建议spi去注入PasswordAuthentication接口
+    password: smqtt  # mqtt连接默认密码 生产环境建议spi去注入PasswordAuthentication接口
+    wiretap: true  # 二进制日志 前提是 smqtt.logLevel = DEBUG
+    bossThreadSize: 4  # boss线程
+    workThreadSize: 8  # work线程
+    lowWaterMark: 4000000 # 不建议配置 默认 32768
+    highWaterMark: 80000000 # 不建议配置 默认 65536
+    ssl: # ssl配置
+      enable: false # 开关
+      key: /user/server.key # 指定ssl文件 默认系统生成
+      crt: /user/server.crt # 指定ssl文件 默认系统生成
+  http: # http相关配置 端口固定60000
+    enable: true # 开关
+    accessLog: true # http访问日志
+    ssl: # ssl配置
       enable: false
-  http:
-    enable: true
-    accessLog: true
-    ssl:
-      enable: false
-    admin:
-      enable: true
-      username: smqtt
-      password: smqtt
-  ws:
-    enable: true
-    port: 8999
-    path:
-  cluster:
-    enable: false
-    url: 127.0.0.1:7771,127.0.0.1:7772
-    port: 7771
-    node: node-1
+    admin: # 后台管理配置
+      enable: true  # 开关
+      username: smqtt # 访问用户名
+      password: smqtt # 访问密码
+  ws: # websocket配置
+    enable: true # 开关
+    port: 8999 # 端口
+    path: /mqtt # ws 的访问path mqtt.js请设置此选项
+  cluster: # 集群配置
+    enable: false # 集群开关
+    url: 127.0.0.1:7771,127.0.0.1:7772 # 启动节点
+    port: 7771  # 端口
+    node: node-1 # 集群节点名称 唯一
     external:
-      host: localhost
-      port: 7777
-db:
+      host: localhost # 用于映射容器ip 请不要随意设置，如果不需要请移除此选项
+      port: 7777 # 用于映射容器端口 请不要随意设置，如果不需要请移除此选项
+db: # 数据库相关设置 请参考 https://doc.smqtt.cc/%E5%85%B6%E4%BB%96/1.store.html 【如果没有引入相关依赖请移除此配置】
   driverClassName: com.mysql.jdbc.Driver
   url: jdbc:mysql://127.0.0.1:3306/smqtt?characterEncoding=utf-8&useSSL=false&useInformationSchema=true&serverTimezone=UTC
   username: root
@@ -41,7 +43,7 @@ db:
   maxActive: 300
   maxWait: 60000
   minIdle: 2
-redis:
+redis: # redis 请参考 https://doc.smqtt.cc/%E5%85%B6%E4%BB%96/1.store.html 【如果没有引入相关依赖请移除此配置】
   mode: single
   database: 0
   password:

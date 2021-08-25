@@ -1,11 +1,15 @@
 package io.github.quickmsg.rule;
 
 /**
- * Created by  lxr.
- * User: luxurong
- * Date: 2021/8/22
+ * @author luxurong
  */
-public interface RuleNode {
+public interface RuleNode extends RuleExecute {
 
+    /***
+     * 获取下一个RuleNode
+     * @param  success 前置节点filter
+     * @return {@link RuleNode}
+     */
+    RuleNode getNextRuleNode(Boolean success);
 
 }

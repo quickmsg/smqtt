@@ -1,59 +1,59 @@
 smqtt:
-  logLevel: DEBUG   # 日志级别 ALL｜TRACE｜DEBUG｜INFO｜WARN｜ERROR｜OFF
-  tcp:
-    port: 1883        # 开启tcp端口
-    username: smqtt   # 用户名
-    password: smqtt   # 密码
-    wiretap: true     # 二进制日志（需要开启root 为debug）
-    bossThreadSize: 4     # 核心线程数
-    workThreadSize: 8     # 工作线程数
-    lowWaterMark: 4000000     # 高水位
-    highWaterMark: 80000000   # 低水位
-    ssl:
-      enable: false   # ssl配置
-  http:
-    enable: true      # 开启http
-    accessLog: true   # http日志
-    ssl:
-      enable: false   # ssl配置
-    admin:
-      enable: true      # 管理页面配置,开启管理后台（必须开启http）
-      username: smqtt   # 管理后台登录用户
-      password: smqtt   # 管理后台登录密码
-  ws:
-    enable: true    # 开启websocket
-    port: 8999      # websocket端口
-    path:           # websocket path,mqtt.js 需要设置 /mqtt
-  cluster:
-    enable: false   # 开启集群
-    url: 127.0.0.1:7771,127.0.0.1:7772    # 集群url
-    port: 7771      # 集群启动本地端口
-    node: node-1    # 集群名称 需要唯一
+  logLevel: DEBUG # 系统日志
+  tcp: # tcp配置
+    port: 1883 # mqtt端口号
+    username: smqtt # mqtt连接默认用户名  生产环境建议spi去注入PasswordAuthentication接口
+    password: smqtt  # mqtt连接默认密码 生产环境建议spi去注入PasswordAuthentication接口
+    wiretap: true  # 二进制日志 前提是 smqtt.logLevel = DEBUG
+    bossThreadSize: 4  # boss线程
+    workThreadSize: 8  # work线程
+    lowWaterMark: 4000000 # 不建议配置 默认 32768
+    highWaterMark: 80000000 # 不建议配置 默认 65536
+    ssl: # ssl配置
+      enable: false # 开关
+      key: /user/server.key # 指定ssl文件 默认系统生成
+      crt: /user/server.crt # 指定ssl文件 默认系统生成
+  http: # http相关配置 端口固定60000
+    enable: true # 开关
+    accessLog: true # http访问日志
+    ssl: # ssl配置
+      enable: false
+    admin: # 后台管理配置
+      enable: true  # 开关
+      username: smqtt # 访问用户名
+      password: smqtt # 访问密码
+  ws: # websocket配置
+    enable: true # 开关
+    port: 8999 # 端口
+    path: /mqtt # ws 的访问path mqtt.js请设置此选项
+  cluster: # 集群配置
+    enable: false # 集群开关
+    url: 127.0.0.1:7771,127.0.0.1:7772 # 启动节点
+    port: 7771  # 端口
+    node: node-1 # 集群节点名称 唯一
     external:
-      host: localhost   # 集群额外配置(主要用于容器映射), 本地曝光host
-      port: 7777        # 集群额外配置(主要用于容器映射), 本地曝光port
-
-db:   # 数据库配置(选配)
+      host: localhost # 用于映射容器ip 请不要随意设置，如果不需要请移除此选项
+      port: 7777 # 用于映射容器端口 请不要随意设置，如果不需要请移除此选项
+db: # 数据库相关设置 请参考 https://doc.smqtt.cc/%E5%85%B6%E4%BB%96/1.store.html 【如果没有引入相关依赖请移除此配置】
   driverClassName: com.mysql.jdbc.Driver
   url: jdbc:mysql://127.0.0.1:3306/smqtt?characterEncoding=utf-8&useSSL=false&useInformationSchema=true&serverTimezone=UTC
   username: root
   password: 123
-  initialSize: 10   # 连接池初始化连接数
-  maxActive: 300    # 连接池中最多支持多少个活动会话
-  maxWait: 60000    # 向连接池中请求连接时,超过maxWait的值后,认为本次请求失败
-  minIdle: 2        # 回收空闲连接时，将保证至少有minIdle个连接
-
-redis:    # redis配置(选配)
-  mode: single    # 单机模式：single 哨兵模式：sentinel 集群模式：cluster
-  database: 0     # 数据库
-  password:       # 密码
-  timeout: 3000   # 超时时间
-  poolMinIdle: 8  # 最小空闲数
-  poolConnTimeout: 3000   # 连接超时时间(毫秒)
-  poolSize: 10    # 连接池大小
-  single:   # 单机配置
+  initialSize: 10
+  maxActive: 300
+  maxWait: 60000
+  minIdle: 2
+redis: # redis 请参考 https://doc.smqtt.cc/%E5%85%B6%E4%BB%96/1.store.html 【如果没有引入相关依赖请移除此配置】
+  mode: single
+  database: 0
+  password:
+  timeout: 3000
+  poolMinIdle: 8
+  poolConnTimeout: 3000
+  poolSize: 10
+  single:
     address: 127.0.0.1:6379
-  cluster:  # 集群配置
+  cluster:
     scanInterval: 1000
     nodes: 127.0.0.1:7000,127.0.0.1:7001,127.0.0.1:7002,127.0.0.1:7003,127.0.0.1:7004,127.0.0.1:7005
     readMode: SLAVE
@@ -61,6 +61,6 @@ redis:    # redis配置(选配)
     slaveConnectionPoolSize: 64
     masterConnectionPoolSize: 64
     retryInterval: 1500
-  sentinel:   # 哨兵配置
+  sentinel:
     master: mymaster
     nodes: 127.0.0.1:26379,127.0.0.1:26379,127.0.0.1:26379
