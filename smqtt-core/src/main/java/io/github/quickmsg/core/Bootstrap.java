@@ -72,6 +72,8 @@ public class Bootstrap {
 
     private Integer businessThreadSize;
 
+    private Integer businessQueueSize;
+
     private HttpOptions httpOptions;
 
     private String host;
@@ -104,6 +106,7 @@ public class Bootstrap {
         Optional.ofNullable(bossThreadSize).ifPresent(mqttConfiguration::setBossThreadSize);
         Optional.ofNullable(workThreadSize).ifPresent(mqttConfiguration::setWorkThreadSize);
         Optional.ofNullable(businessThreadSize).ifPresent(mqttConfiguration::setBusinessThreadSize);
+        Optional.ofNullable(businessQueueSize).ifPresent(mqttConfiguration::setBusinessQueueSize);
         Optional.ofNullable(ssl).ifPresent(mqttConfiguration::setSsl);
         Optional.ofNullable(sslContext).ifPresent(mqttConfiguration::setSslContext);
         Optional.ofNullable(clusterConfig).ifPresent(mqttConfiguration::setClusterConfig);
