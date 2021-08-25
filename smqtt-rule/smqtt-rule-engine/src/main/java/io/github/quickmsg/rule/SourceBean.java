@@ -7,6 +7,6 @@ package io.github.quickmsg.rule;
  */
 public interface SourceBean {
 
-    void  transmit(Object object);
+    Object  transmit(Object object);
 
 }
