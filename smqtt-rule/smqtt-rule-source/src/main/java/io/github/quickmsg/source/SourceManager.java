@@ -1,6 +1,5 @@
-package io.github.quickmsg.rule;
+package io.github.quickmsg.source;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 

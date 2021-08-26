@@ -13,6 +13,7 @@
     <modules>
         <module>smqtt-rule-dsl</module>
         <module>smqtt-rule-engine</module>
+        <module>smqtt-rule-source</module>
     </modules>
     <packaging>pom</packaging>
     <name>smqtt-rule</name>

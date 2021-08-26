@@ -1,4 +1,4 @@
-package io.github.quickmsg.rule;
+package io.github.quickmsg.source;
 
 /**
  * @author luxurong
@@ -12,9 +12,6 @@ public class SourceLoader {
     public SourceLoader(Source source) {
         this.source = source;
     }
-
-
-
 
 
 

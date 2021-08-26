@@ -1,19 +1,15 @@
 package io.github.quickmsg.rule.node;
 
-import io.github.quickmsg.rule.RuleExecute;
 import io.github.quickmsg.rule.RuleNode;
-import io.github.quickmsg.rule.Source;
-import io.github.quickmsg.rule.SourceManager;
-import org.apache.commons.jexl3.MapContext;
-
-import java.util.function.Consumer;
+import io.github.quickmsg.source.Source;
+import io.github.quickmsg.source.SourceManager;
 
 /**
  * 转发节点
  *
  * @author luxurong
  */
-public class TransmitRuleNode implements RuleExecute {
+public class TransmitRuleNode implements RuleNode {
 
     private final Source source;
 
@@ -25,9 +21,13 @@ public class TransmitRuleNode implements RuleExecute {
         this.ruleNode = ruleNode;
     }
 
-
     @Override
     public Object execute(Object param) {
         return SourceManager.getSourceBean(source).transmit(param);
+    }
+
+    @Override
+    public RuleNode getNextRuleNode(Boolean success) {
+        return this.ruleNode;
     }
 }

@@ -22,20 +22,14 @@
       <version>1.0.7</version>
     </dependency>
     <dependency>
+      <groupId>io.github.quickmsg</groupId>
+      <artifactId>smqtt-rule-source</artifactId>
+      <version>1.0.7</version>
+    </dependency>
+    <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.jeasy</groupId>
-      <artifactId>easy-rules-spel</artifactId>
-      <version>4.1.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.jeasy</groupId>
-      <artifactId>easy-rules-mvel</artifactId>
-      <version>4.1.0</version>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-jexl3 -->
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-jexl3</artifactId>

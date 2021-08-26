@@ -1,4 +1,4 @@
-package io.github.quickmsg.rule;
+package io.github.quickmsg.source;
 
 /**
  * @author luxurong
