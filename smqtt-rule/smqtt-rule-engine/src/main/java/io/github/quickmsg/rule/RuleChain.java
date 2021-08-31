@@ -8,13 +8,10 @@ import java.util.List;
  */
 public class RuleChain {
 
-    private List<RuleNode> ruleNodeList = new LinkedList<>();
-
+    private LinkedList<RuleNode> ruleNodeList = new LinkedList<>();
 
     public void addRule(RuleDefinition definition) {
-
-
+        ruleNodeList.addLast(definition.parseNode());
     }
-
 
 }

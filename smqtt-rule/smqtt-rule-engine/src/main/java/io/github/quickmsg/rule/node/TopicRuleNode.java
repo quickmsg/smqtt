@@ -1,7 +1,6 @@
 package io.github.quickmsg.rule.node;
 
 import io.github.quickmsg.common.channel.MockMqttChannel;
-import io.github.quickmsg.common.config.Configuration;
 import io.github.quickmsg.common.context.ReceiveContext;
 import io.github.quickmsg.common.message.SmqttMessage;
 import io.github.quickmsg.common.protocol.ProtocolAdaptor;
