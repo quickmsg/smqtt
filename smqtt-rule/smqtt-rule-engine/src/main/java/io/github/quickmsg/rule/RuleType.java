@@ -5,19 +5,26 @@ package io.github.quickmsg.rule;
  */
 public enum RuleType {
 
+    /**
+     * 过滤器
+     */
+    FILTER,
 
     /**
-     * spel表达式
+     * topic转发器
      */
-    SPEL,
-
+    TOPIC,
     /**
-     * mvel表达式
+     * log转发器
      */
-    MVEL,
-
+    LOG,
     /**
-     * jexl表达式
+     * kafka转发器
      */
-    JEXL,
-}
+    KAFKA,
+    /**
+     * rocketmq转发器
+     */
+    ROCKET_MQ,
+
+    }

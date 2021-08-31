@@ -7,8 +7,8 @@ smqtt:
     wiretap: true  # 二进制日志 前提是 smqtt.logLevel = DEBUG
     bossThreadSize: 4  # boss线程 默认=cpu核心数
     workThreadSize: 8  # work线程 默认=cpu核心数*2
-    businessThreadSize: 16 # 默认=cpu核心数*4
-    businessQueueSize: 100000 # 默认=100000
+    businessThreadSize: 16 # 业务线程数 默认=cpu核心数*10
+    businessQueueSize: 100000 #业务队列 默认=100000
     lowWaterMark: 4000000 # 不建议配置 默认 32768
     highWaterMark: 80000000 # 不建议配置 默认 65536
     ssl: # ssl配置

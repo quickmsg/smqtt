@@ -21,7 +21,7 @@ public interface RuleExecute {
      * @param param   参数
      * @return Object
      */
-    Object execute(Object param);
+    Object execute(Object[] param);
 
 
     default Object triggerScript(String script, Object param, Consumer<MapContext> mapContextConsumer) {

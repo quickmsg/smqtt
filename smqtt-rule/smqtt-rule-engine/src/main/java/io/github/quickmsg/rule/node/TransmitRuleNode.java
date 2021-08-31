@@ -22,7 +22,7 @@ public class TransmitRuleNode implements RuleNode {
     }
 
     @Override
-    public Object execute(Object param) {
+    public Object execute(Object[] param) {
         return SourceManager.getSourceBean(source).transmit(param);
     }
 
@@ -30,4 +30,6 @@ public class TransmitRuleNode implements RuleNode {
     public RuleNode getNextRuleNode(Boolean success) {
         return this.ruleNode;
     }
+
+
 }

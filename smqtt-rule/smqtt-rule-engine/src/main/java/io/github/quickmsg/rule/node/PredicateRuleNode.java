@@ -7,7 +7,7 @@ import io.github.quickmsg.rule.RuleNode;
  * @date 2021/8/23 19:34
  * @description
  */
-public class PredicateRuleNode implements RuleNode {
+public class  PredicateRuleNode implements RuleNode {
 
     private final String script;
 
@@ -28,8 +28,7 @@ public class PredicateRuleNode implements RuleNode {
     }
 
     @Override
-    public Object execute(Object param) {
-        return triggerScript(script, param, context -> {
-        });
+    public Object execute(Object[] param) {
+        return triggerScript(script, param, context -> {});
     }
 }

@@ -54,7 +54,7 @@ public class DefaultProtocolAdaptor implements ProtocolAdaptor {
                             .subscribeOn(scheduler)
                             .subscribe(aVoid -> {
                             }, error -> {
-                                log.error("channel {} chooseProtocol:", mqttChannel, error);
+                                log.error("channel {} chooseProtocol: {} error {}", mqttChannel, mqttMessage,error);
                                 MessageUtils.safeRelease(mqttMessage);
                             }, () -> MessageUtils.safeRelease(mqttMessage)));
         } else {
