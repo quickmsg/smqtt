@@ -7,9 +7,15 @@ public interface RuleNode extends RuleExecute {
 
     /***
      * 获取下一个RuleNode
-     * @param  success 前置节点filter
      * @return {@link RuleNode}
      */
-    RuleNode getNextRuleNode(Boolean success);
+    RuleNode getNextRuleNode();
+
+
+    /***
+     * 设置下一个RuleNode
+     * @param ruleNode {@link RuleNode}
+     */
+    void setNextRuleNode(RuleNode ruleNode);
 
 }

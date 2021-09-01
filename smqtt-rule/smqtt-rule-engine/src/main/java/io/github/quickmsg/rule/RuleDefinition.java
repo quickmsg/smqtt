@@ -15,6 +15,8 @@ public class RuleDefinition {
 
     private Object param;
 
+    private RuleDefinition nextDefinition;
+
 
     public RuleNode parseNode(){
         switch (ruleType){

@@ -32,6 +32,7 @@ public interface ProtocolAdaptor {
     <C extends Configuration> void chooseProtocol(MqttChannel mqttChannel, SmqttMessage<MqttMessage> mqttMessage, ReceiveContext<C> receiveContext);
 
 
+
     /**
      * 代理类  用来注入 filter monitor
      *

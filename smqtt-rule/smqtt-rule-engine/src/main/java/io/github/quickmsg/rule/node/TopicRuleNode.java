@@ -23,8 +23,13 @@ public class TopicRuleNode implements RuleNode {
     }
 
     @Override
-    public RuleNode getNextRuleNode(Boolean success) {
+    public RuleNode getNextRuleNode() {
         return this.ruleNode;
+    }
+
+    @Override
+    public void setNextRuleNode(RuleNode ruleNode) {
+        this.ruleNode = ruleNode;
     }
 
     @Override

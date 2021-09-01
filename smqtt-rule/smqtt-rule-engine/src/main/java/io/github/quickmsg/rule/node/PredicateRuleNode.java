@@ -11,20 +11,22 @@ public class  PredicateRuleNode implements RuleNode {
 
     private final String script;
 
-    private final RuleNode trueRuleNode;
-
-    private final RuleNode falseRuleNode;
+    private  RuleNode ruleNode;
 
 
-    public PredicateRuleNode(String script, RuleNode trueRuleNode, RuleNode falseRuleNode) {
+    public PredicateRuleNode(String script) {
         this.script = script;
-        this.trueRuleNode = trueRuleNode;
-        this.falseRuleNode = falseRuleNode;
     }
 
     @Override
-    public RuleNode getNextRuleNode(Boolean success) {
-        return success ? trueRuleNode : falseRuleNode;
+    public RuleNode getNextRuleNode() {
+        return this.ruleNode;
+    }
+
+
+    @Override
+    public void setNextRuleNode(RuleNode ruleNode) {
+        this.ruleNode = ruleNode;
     }
 
     @Override

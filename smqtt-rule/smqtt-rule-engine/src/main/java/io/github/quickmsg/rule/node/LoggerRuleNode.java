@@ -13,7 +13,7 @@ public class LoggerRuleNode implements RuleNode {
 
 
     @Override
-    public RuleNode getNextRuleNode(Boolean success) {
+    public RuleNode getNextRuleNode() {
         return this.ruleNode;
     }
 
@@ -21,5 +21,11 @@ public class LoggerRuleNode implements RuleNode {
     public Object execute(Object[] param) {
         log.info("logger rule print  {}  {}", param[0],param[1]);
         return param[0];
+    }
+
+
+    @Override
+    public void setNextRuleNode(RuleNode ruleNode) {
+        this.ruleNode = ruleNode;
     }
 }
