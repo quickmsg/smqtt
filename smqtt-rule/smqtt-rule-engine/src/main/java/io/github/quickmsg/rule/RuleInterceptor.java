@@ -17,6 +17,7 @@ import io.netty.handler.codec.mqtt.MqttPublishMessage;
 
 public class RuleInterceptor implements Interceptor {
 
+    RuleChain ruleChain;
 
     @Override
     @SuppressWarnings("unchecked")
@@ -24,9 +25,6 @@ public class RuleInterceptor implements Interceptor {
         SmqttMessage<MqttMessage> smqttMessage = (SmqttMessage<MqttMessage>) invocation.getArgs()[1];
         ReceiveContext<Configuration> mqttReceiveContext = (ReceiveContext<Configuration>) invocation.getArgs()[2];
         MqttMessage message = smqttMessage.getMessage();
-        if(message.fixedHeader().messageType() == MqttMessageType.PUBLISH && message instanceof MqttPublishMessage){
-
-        }
         return invocation.proceed();
     }
 

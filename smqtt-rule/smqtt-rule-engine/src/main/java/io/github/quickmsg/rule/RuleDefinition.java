@@ -2,6 +2,7 @@ package io.github.quickmsg.rule;
 
 import io.github.quickmsg.rule.node.LoggerRuleNode;
 import io.github.quickmsg.rule.node.TopicRuleNode;
+import io.github.quickmsg.rule.node.TransmitRuleNode;
 import lombok.Data;
 
 /**
@@ -24,14 +25,13 @@ public class RuleDefinition {
                 return new LoggerRuleNode();
             case TOPIC:
                 return new TopicRuleNode(param.toString());
-
             case FILTER:
             case KAFKA:
                 //todo 待实现
             case ROCKET_MQ:
                 //todo 待实现
             default:
-                return null;
+                return new TransmitRuleNode(null);
         }
     }
 

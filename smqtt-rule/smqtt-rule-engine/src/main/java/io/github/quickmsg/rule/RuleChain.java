@@ -7,6 +7,9 @@ import java.util.LinkedList;
  */
 public class RuleChain {
 
+    //todo source : redis db kafka
+    //todo source : redis db kafka
+
     private LinkedList<RuleNode> ruleNodeList = new LinkedList<>();
 
     public void addRule(RuleDefinition definition) {
@@ -21,5 +24,7 @@ public class RuleChain {
         }
         ruleNodeList.addLast(rootNode);
     }
+
+
 
 }
