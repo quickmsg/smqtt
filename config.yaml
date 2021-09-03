@@ -66,3 +66,10 @@ redis: # redis 请参考 https://doc.smqtt.cc/%E5%85%B6%E4%BB%96/1.store.html �
   sentinel:
     master: mymaster
     nodes: 127.0.0.1:26379,127.0.0.1:26379,127.0.0.1:26379
+
+rules:
+  - ruleType: TOPIC # 规则类型
+    param: aaaaaaaaaaaaaaaaaa # 参数
+
+
+

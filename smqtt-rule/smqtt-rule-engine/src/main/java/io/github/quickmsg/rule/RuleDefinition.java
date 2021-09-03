@@ -1,15 +1,23 @@
 package io.github.quickmsg.rule;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.github.quickmsg.common.enums.RuleType;
 import io.github.quickmsg.rule.node.LoggerRuleNode;
 import io.github.quickmsg.rule.node.TopicRuleNode;
 import io.github.quickmsg.rule.node.TransmitRuleNode;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author luxurong
  */
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class RuleDefinition {
 
     private RuleType ruleType;

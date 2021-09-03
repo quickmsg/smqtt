@@ -1,6 +1,6 @@
 package io.github.quickmsg.dsl;
 
-import io.github.quickmsg.rule.RuleType;
+import io.github.quickmsg.common.enums.RuleType;
 import lombok.Data; 
 
 import java.util.List;

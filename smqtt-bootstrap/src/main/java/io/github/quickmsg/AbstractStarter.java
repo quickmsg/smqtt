@@ -10,9 +10,12 @@ import io.github.quickmsg.common.config.SslContext;
 import io.github.quickmsg.common.utils.IPUtils;
 import io.github.quickmsg.core.Bootstrap;
 import io.github.quickmsg.exception.NotSupportConfigException;
+import io.github.quickmsg.rule.RuleChain;
+import io.github.quickmsg.rule.RuleDefinition;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -113,6 +116,32 @@ public abstract class AbstractStarter {
                 builder.httpOptions(options);
             }
         }
+
+        // 规则设置
+        // 规则设置
+        List<BootstrapConfig.RuleConfig> rules = config.getRules();
+        if (rules != null) {
+            rules.forEach(rule->{
+                RuleDefinition ruleDefinition = RuleDefinition.builder()
+                        .ruleType(rule.getRuleType())
+                        .param(rule.getParam())
+                        .build();
+
+                RuleDefinition nextRuleDefinition = ruleDefinition;
+                while (rule.getNextRule() != null) {
+                    RuleDefinition build = RuleDefinition.builder()
+                            .ruleType(rule.getNextRule().getRuleType())
+                            .param(rule.getNextRule().getParam())
+                            .build();
+                    nextRuleDefinition.setNextDefinition(build);
+                    nextRuleDefinition = nextRuleDefinition.getNextDefinition();
+                    rule = rule.getNextRule();
+                }
+
+                RuleChain.getSingleton().addRule(ruleDefinition);
+            });
+        }
+
         Bootstrap bootstrap = builder.build();
         bootstrap.doOnStarted(AbstractStarter::printUiUrl).startAwait();
     }

@@ -2,7 +2,10 @@ package io.github.quickmsg.common.config;
 
 import ch.qos.logback.classic.Level;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.github.quickmsg.common.enums.RuleType;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * @author luxurong
@@ -22,6 +25,11 @@ public class BootstrapConfig {
      */
     @JsonProperty("redis")
     private RedisConfig redisConfig;
+    /**
+     * 规则定义
+     */
+    @JsonProperty("rules")
+    private List<RuleConfig> rules;
 
     public static BootstrapConfig defaultConfig() {
         BootstrapConfig bootstrapConfig = new BootstrapConfig();
@@ -334,6 +342,28 @@ public class BootstrapConfig {
     public static class RedisSentinel {
         private String master;
         private String nodes;
+    }
+
+    /**
+     * 规则配置
+     *
+     * @author zhaopeng
+     * @date 2021/09/03
+     */
+    @Data
+    public static class RuleConfig {
+        /**
+         * 规则类型
+         */
+        private RuleType ruleType;
+        /**
+         * 参数
+         */
+        private String param;
+        /**
+         * 子规则
+         */
+        private RuleConfig nextRule;
     }
 
 
