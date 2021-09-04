@@ -9,6 +9,8 @@ import io.netty.handler.codec.mqtt.MqttMessage;
 import io.netty.handler.codec.mqtt.MqttMessageType;
 import io.netty.handler.codec.mqtt.MqttPublishMessage;
 
+import java.util.LinkedList;
+
 /**
  * 规则引擎拦截器
  *
@@ -17,6 +19,7 @@ import io.netty.handler.codec.mqtt.MqttPublishMessage;
 
 public class RuleInterceptor implements Interceptor {
 
+    private RuleChain ruleChain = RuleChain.getSingleton();
 
     @Override
     @SuppressWarnings("unchecked")
@@ -24,9 +27,11 @@ public class RuleInterceptor implements Interceptor {
         SmqttMessage<MqttMessage> smqttMessage = (SmqttMessage<MqttMessage>) invocation.getArgs()[1];
         ReceiveContext<Configuration> mqttReceiveContext = (ReceiveContext<Configuration>) invocation.getArgs()[2];
         MqttMessage message = smqttMessage.getMessage();
-        if(message.fixedHeader().messageType() == MqttMessageType.PUBLISH && message instanceof MqttPublishMessage){
 
-        }
+        ruleChain.getRuleNodeList().forEach(ruleNode -> {
+
+        });
+
         return invocation.proceed();
     }
 

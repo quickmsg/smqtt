@@ -31,6 +31,7 @@
         <slf4j.version>1.7.30</slf4j.version>
         <jackson.version>2.11.0</jackson.version>
         <jackson.dataform.version>2.12.4</jackson.dataform.version>
+        <jackson.core.version>2.12.4</jackson.core.version>
     </properties>
 
     <licenses>
@@ -66,6 +67,12 @@
                 <groupId>com.fasterxml.jackson.dataformat</groupId>
                 <artifactId>jackson-dataformat-properties</artifactId>
                 <version>${jackson.dataform.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson.core.version}</version>
             </dependency>
 
             <dependency>

@@ -1,11 +1,20 @@
 package io.github.quickmsg.rule;
 
+import lombok.Data;
+import lombok.Getter;
+
 import java.util.LinkedList;
 
 /**
  * @author luxurong
  */
+@Getter
 public class RuleChain {
+
+    private static volatile RuleChain ruleChain;
+
+    //todo source : redis db kafka
+    //todo source : redis db kafka
 
     private LinkedList<RuleNode> ruleNodeList = new LinkedList<>();
 
@@ -21,5 +30,17 @@ public class RuleChain {
         }
         ruleNodeList.addLast(rootNode);
     }
+
+    public static RuleChain getSingleton() {
+        if (ruleChain == null) {
+            synchronized (RuleChain.class) {
+                if (ruleChain == null) {
+                    ruleChain = new RuleChain();
+                }
+            }
+        }
+        return ruleChain;
+    }
+
 
 }
