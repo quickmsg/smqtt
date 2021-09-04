@@ -57,6 +57,11 @@
             <groupId>io.github.quickmsg</groupId>
             <version>1.0.7</version>
         </dependency>
+        <dependency>
+            <groupId>io.github.quickmsg</groupId>
+            <artifactId>smqtt-rule-engine</artifactId>
+            <version>1.0.7</version>
+        </dependency>
     </dependencies>
     <profiles>
         <profile>
