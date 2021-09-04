@@ -31,11 +31,16 @@ public class BootstrapConfig {
         smqttConfig.setTcpConfig(tcpConfig);
         smqttConfig.setLogLevel("INFO");
         bootstrapConfig.setSmqttConfig(smqttConfig);
+
         return bootstrapConfig;
+
+
     }
+
 
     @Data
     public static class SmqttConfig {
+
         /**
          * sfl4j日志级别
          *
