@@ -36,7 +36,7 @@ public class MqttConfiguration extends AbstractSslHandler implements AbstractCon
 
     private SslContext sslContext;
 
-    private PasswordAuthentication reactivePasswordAuth = (u, p) -> true;
+    private PasswordAuthentication reactivePasswordAuth = (u, p, c) -> true;
 
     private Integer bossThreadSize = Runtime.getRuntime().availableProcessors();
 

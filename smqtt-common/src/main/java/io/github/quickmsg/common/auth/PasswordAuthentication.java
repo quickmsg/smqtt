@@ -15,8 +15,9 @@ public interface PasswordAuthentication extends StartUp {
      *
      * @param userName        用户名称
      * @param passwordInBytes 密钥
+     * @param clientIdentifier 设备标志
      * @return 布尔
      */
-    boolean auth(String userName, byte[] passwordInBytes);
+    boolean auth(String userName, byte[] passwordInBytes, String clientIdentifier);
 
 }

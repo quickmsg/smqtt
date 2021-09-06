@@ -67,7 +67,7 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
                     MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_UNACCEPTABLE_PROTOCOL_VERSION),
                     false).then(mqttChannel.close());
         }
-        if (passwordAuthentication.auth(mqttConnectPayload.userName(), mqttConnectPayload.passwordInBytes())) {
+        if (passwordAuthentication.auth(mqttConnectPayload.userName(), mqttConnectPayload.passwordInBytes(), clientIdentifier)) {
             /*cancel  defer close not authenticate channel */
             mqttChannel.getCloseDisposable().dispose();
             mqttChannel.setClientIdentifier(mqttConnectPayload.clientIdentifier());

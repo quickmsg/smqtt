@@ -59,7 +59,7 @@ public abstract class AbstractStarter {
         // mqtt设置
         BootstrapConfig.TcpConfig tcpConfig = config.getSmqttConfig().getTcpConfig();
         builder.port(tcpConfig.getPort())
-                .reactivePasswordAuth(((userName, passwordInBytes) ->
+                .reactivePasswordAuth(((userName, passwordInBytes, clientIdentifier) ->
                         !Objects.isNull(userName) && !Objects.isNull(passwordInBytes) && (userName.equals(tcpConfig.getUsername()) && tcpConfig.getPassword().equals(new String(passwordInBytes)))))
                 .bossThreadSize(tcpConfig.getBossThreadSize())
                 .wiretap(tcpConfig.getWiretap())
