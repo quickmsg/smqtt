@@ -6,9 +6,9 @@ package io.github.quickmsg.common.enums;
 public enum RuleType {
 
     /**
-     * 过滤器
+     * 条件过滤器
      */
-    FILTER,
+    PREDICATE,
 
     /**
      * topic转发器

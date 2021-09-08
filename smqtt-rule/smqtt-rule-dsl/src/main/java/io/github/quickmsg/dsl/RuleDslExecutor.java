@@ -1,13 +1,12 @@
 package io.github.quickmsg.dsl;
 
 import io.github.quickmsg.rule.RuleChain;
-import io.github.quickmsg.rule.RuleExecute;
 
 /**
  * @author luxurong
  */
 
-public class RuleDslExecutor implements RuleExecute {
+public class RuleDslExecutor {
 
     private final RuleChain ruleChain;
 
@@ -15,8 +14,7 @@ public class RuleDslExecutor implements RuleExecute {
         this.ruleChain = ruleChain;
     }
 
-    @Override
-    public Object execute(Object[] param) {
-        return ruleChain.getRuleNodeList().;
+    public void executeRule(Object object) {
+        ruleChain.executeRule(object);
     }
 }

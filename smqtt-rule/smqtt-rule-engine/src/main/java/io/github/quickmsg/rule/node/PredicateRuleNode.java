@@ -1,17 +1,18 @@
 package io.github.quickmsg.rule.node;
 
 import io.github.quickmsg.rule.RuleNode;
+import reactor.util.context.ContextView;
 
 /**
  * @author luxurong
  * @date 2021/8/23 19:34
  * @description
  */
-public class  PredicateRuleNode implements RuleNode {
+public class PredicateRuleNode implements RuleNode {
 
     private final String script;
 
-    private  RuleNode ruleNode;
+    private RuleNode ruleNode;
 
 
     public PredicateRuleNode(String script) {
@@ -30,7 +31,8 @@ public class  PredicateRuleNode implements RuleNode {
     }
 
     @Override
-    public Object execute(Object[] param) {
-        return triggerScript(script, param, context -> {});
+    public Boolean execute(ContextView contextView) {
+        return (Boolean) triggerScript(script, new Object(), context -> {
+        });
     }
 }

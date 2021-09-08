@@ -4,6 +4,7 @@ import org.apache.commons.jexl3.JexlBuilder;
 import org.apache.commons.jexl3.JexlEngine;
 import org.apache.commons.jexl3.JexlExpression;
 import org.apache.commons.jexl3.MapContext;
+import reactor.util.context.ContextView;
 
 import java.util.function.Consumer;
 
@@ -18,10 +19,10 @@ public interface RuleExecute {
     /**
      * 执行
      *
-     * @param param   参数
-     * @return Object
+     * @param context 上下文容器
+     * @return Boolean 是否往下走
      */
-    Object execute(Object[] param);
+    Boolean execute(ContextView context);
 
 
     default Object triggerScript(String script, Object param, Consumer<MapContext> mapContextConsumer) {

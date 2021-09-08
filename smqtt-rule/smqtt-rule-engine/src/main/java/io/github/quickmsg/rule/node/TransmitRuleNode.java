@@ -2,7 +2,7 @@ package io.github.quickmsg.rule.node;
 
 import io.github.quickmsg.rule.RuleNode;
 import io.github.quickmsg.source.Source;
-import io.github.quickmsg.source.SourceManager;
+import reactor.util.context.ContextView;
 
 /**
  * 转发节点
@@ -13,7 +13,7 @@ public class TransmitRuleNode implements RuleNode {
 
     private final Source source;
 
-    private  RuleNode ruleNode;
+    private RuleNode ruleNode;
 
 
     public TransmitRuleNode(Source source) {
@@ -21,8 +21,9 @@ public class TransmitRuleNode implements RuleNode {
     }
 
     @Override
-    public Object execute(Object[] param) {
-        return SourceManager.getSourceBean(source).transmit(param);
+    public Boolean execute(ContextView contextView) {
+//        return SourceManager.getSourceBean(source).transmit(param);
+        return false;
     }
 
     @Override
