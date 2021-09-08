@@ -6,6 +6,7 @@ import io.github.quickmsg.rule.node.LoggerRuleNode;
 import io.github.quickmsg.rule.node.PredicateRuleNode;
 import io.github.quickmsg.rule.node.TopicRuleNode;
 import lombok.Getter;
+import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
@@ -56,11 +57,10 @@ public class RuleChain {
     }
 
 
-    public Object executeRule(Object object) {
-        Mono.deferContextual(contextView -> Mono.fromRunnable(() -> {
+    public Disposable executeRule(Object object) {
+        return Mono.deferContextual(contextView -> Mono.fromRunnable(() -> {
             ruleNodeList.forEach(ruleNode -> ruleNode.execute(contextView));
         })).contextWrite(context -> context.put("msg", object)).subscribeOn(Schedulers.parallel()).subscribe();
-        return true;
     }
 
 }
