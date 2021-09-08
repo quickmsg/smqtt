@@ -1,6 +1,6 @@
 package io.github.quickmsg.rule;
 
-import lombok.Data;
+import io.github.quickmsg.common.rule.RuleDefinition;
 import lombok.Getter;
 
 import java.util.LinkedList;
@@ -11,36 +11,29 @@ import java.util.LinkedList;
 @Getter
 public class RuleChain {
 
-    private static volatile RuleChain ruleChain;
+    private RuleChain() {
+    }
 
-    //todo source : redis db kafka
-    //todo source : redis db kafka
+    public final static RuleChain INSTANCE = new RuleChain();
 
     private LinkedList<RuleNode> ruleNodeList = new LinkedList<>();
 
-    public void addRule(RuleDefinition definition) {
+    public RuleChain addRule(RuleDefinition definition) {
         RuleDefinition root = definition;
-        RuleNode rootNode = definition.parseNode();
+        RuleNode rootNode = this.parseNode(definition);
         RuleNode preNode = rootNode;
         while (root != null) {
-            RuleNode node = root.parseNode();
+            RuleNode node = this.parseNode(definition);
             preNode.setNextRuleNode(node);
             preNode = node;
             root = root.getNextDefinition();
         }
         ruleNodeList.addLast(rootNode);
+        return this;
     }
 
-    public static RuleChain getSingleton() {
-        if (ruleChain == null) {
-            synchronized (RuleChain.class) {
-                if (ruleChain == null) {
-                    ruleChain = new RuleChain();
-                }
-            }
-        }
-        return ruleChain;
+    private RuleNode parseNode(RuleDefinition definition) {
+        return null;
     }
-
 
 }

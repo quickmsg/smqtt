@@ -314,7 +314,7 @@ public class MqttChannel {
                     replyMqttMessageMap.computeIfAbsent(message.fixedHeader().messageType(), mqttMessageType -> new ConcurrentHashMap<>(8)).put(messageId,
                             mqttChannel.write(Mono.just(message))
                                     .delaySubscription(Duration.ofSeconds(5))
-                                    .repeat()
+                                    .repeat(10)
                                     .doOnError(error -> {
                                         MessageUtils.safeRelease(message);
                                         log.error("offerReply", error);

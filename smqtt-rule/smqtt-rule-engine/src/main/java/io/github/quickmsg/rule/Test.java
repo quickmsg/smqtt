@@ -1,10 +1,9 @@
 package io.github.quickmsg.rule;
 
-import org.apache.commons.jexl3.JexlBuilder;
-import org.apache.commons.jexl3.JexlContext;
-import org.apache.commons.jexl3.JexlEngine;
-import org.apache.commons.jexl3.JexlExpression;
-import org.apache.commons.jexl3.MapContext;
+import org.apache.commons.jexl3.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by  lxr.
@@ -14,20 +13,35 @@ import org.apache.commons.jexl3.MapContext;
 public class Test {
 
     public static void main(String[] args) {
-        String expressionStr = "1+7,8+2";
+        testTemplate();
+    }
 
-
+    public static void testMethod(){
+        String expressionStr = "test";
         // Create a JexlEngine (could reuse one instead)
         JexlEngine jexl = new JexlBuilder().create();
         // Create an expression object equivalent to 'car.getEngine().checkStatus()':
-        String jexlExp = "car.engine.checkStatus();";
         JexlExpression e = jexl.createExpression(expressionStr);
         JexlContext context1 = new MapContext();
-        context1.set("$", RuleChain.class);
+        context1.set("test", "难受啊");
         // Now evaluate the expression, getting the result
-        Object o = e.evaluate(context1);
+        Object o = e.evaluate(context1).toString();
         System.out.println(o);
+    }
 
+
+    public static void testTemplate(){
+
+
+        JexlContext context1 = new MapContext();
+        Map<String,String> msp = new HashMap<>();
+        msp.put("hah","sddd");
+        context1.set("test", msp);
+        JexlEngine jexl2 = new JexlBuilder().create();
+        JxltEngine jxlt = jexl2.createJxltEngine();
+        JxltEngine.Expression expr = jxlt.createExpression("Hello ${test.hah}");
+        String hello = expr.evaluate(context1).toString();
+        System.out.println(hello);
     }
 
 }

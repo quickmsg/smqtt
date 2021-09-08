@@ -21,7 +21,7 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
      - 支持spi注入外部认证
 6.  tls加密
      - 支持tls加密（mqtt端口/http端口）
-7.  websocket协议支持
+7.  websocket协议支持x
      > 使用websocket协议包装mqtt协议
 8.  http协议交互
     - 支持http接口推送消息
@@ -287,6 +287,8 @@ curl -H "Content-Type: application/json" -X POST -d '{"topic": "test/teus", "qos
           username: smqtt # 访问用户名
           password: smqtt # 访问密码
     ```
+  
+> 访问路径  http是://127.0.0.1:60000/smqtt/admin
 
 ### 页面预览
 

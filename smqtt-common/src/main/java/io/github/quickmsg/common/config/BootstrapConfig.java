@@ -3,9 +3,13 @@ package io.github.quickmsg.common.config;
 import ch.qos.logback.classic.Level;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.quickmsg.common.enums.RuleType;
+import io.github.quickmsg.common.rule.RuleDefinition;
+import io.github.quickmsg.common.rule.SourceDefinition;
 import lombok.Data;
 
+import javax.xml.transform.Source;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author luxurong
@@ -15,21 +19,6 @@ public class BootstrapConfig {
 
     @JsonProperty("smqtt")
     private SmqttConfig smqttConfig;
-    /**
-     * 数据库配置
-     */
-    @JsonProperty("db")
-    private DBConfig dbConfig;
-    /**
-     * redis配置
-     */
-    @JsonProperty("redis")
-    private RedisConfig redisConfig;
-    /**
-     * 规则定义
-     */
-    @JsonProperty("rules")
-    private List<RuleConfig> rules;
 
     public static BootstrapConfig defaultConfig() {
         BootstrapConfig bootstrapConfig = new BootstrapConfig();
@@ -79,6 +68,29 @@ public class BootstrapConfig {
          */
         @JsonProperty("cluster")
         private ClusterConfig clusterConfig;
+
+
+        /**
+         * 数据库配置
+         */
+        @JsonProperty("db")
+        private DBConfig dbConfig;
+        /**
+         * redis配置
+         */
+        @JsonProperty("redis")
+        private RedisConfig redisConfig;
+        /**
+         * 规则定义
+         */
+        @JsonProperty("rules")
+        private List<RuleDefinition> rules;
+
+        /**
+         * 规则定义
+         */
+        @JsonProperty("sources")
+        private List<SourceDefinition> sources;
     }
 
     @Data
@@ -348,28 +360,5 @@ public class BootstrapConfig {
         private String master;
         private String nodes;
     }
-
-    /**
-     * 规则配置
-     *
-     * @author zhaopeng
-     * @date 2021/09/03
-     */
-    @Data
-    public static class RuleConfig {
-        /**
-         * 规则类型
-         */
-        private RuleType ruleType;
-        /**
-         * 参数
-         */
-        private String param;
-        /**
-         * 子规则
-         */
-        private RuleConfig nextRule;
-    }
-
 
 }

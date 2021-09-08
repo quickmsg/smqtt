@@ -27,4 +27,10 @@ public enum RuleType {
      */
     ROCKET_MQ,
 
+    /**
+     * web
+     */
+    WEB_HOOK,
+
+
     }
