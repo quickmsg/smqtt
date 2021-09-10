@@ -3,9 +3,8 @@ package io.github.quickmsg.rule;
 import io.github.quickmsg.common.rule.RuleDefinition;
 import io.github.quickmsg.rule.node.*;
 import lombok.Getter;
-import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
+import reactor.util.context.ContextView;
 
 import java.util.LinkedList;
 
@@ -54,10 +53,8 @@ public class RuleChain {
     }
 
 
-    public Disposable executeRule(Object object) {
-        return Mono.deferContextual(contextView -> Mono.fromRunnable(() -> {
-            ruleNodeList.forEach(ruleNode -> ruleNode.execute(contextView));
-        })).contextWrite(context -> context.put("msg", object)).subscribeOn(Schedulers.parallel()).subscribe();
+    public Mono<Void> executeRule(ContextView contextView) {
+        return Mono.fromRunnable(() -> ruleNodeList.forEach(ruleNode -> ruleNode.execute(contextView)));
     }
 
 }
