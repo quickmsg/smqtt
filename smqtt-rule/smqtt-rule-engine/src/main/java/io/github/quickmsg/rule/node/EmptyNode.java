@@ -20,7 +20,6 @@ public class EmptyNode implements RuleNode {
     }
 
     @Override
-    public Boolean execute(ContextView contextView) {
-        return false;
+    public void execute(ContextView contextView) {
     }
 }

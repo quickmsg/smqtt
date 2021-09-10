@@ -1,5 +1,9 @@
 package io.github.quickmsg.rule;
 
+import reactor.util.context.ContextView;
+
+import java.util.Optional;
+
 /**
  * @author luxurong
  */
@@ -17,5 +21,17 @@ public interface RuleNode extends RuleExecute {
      * @param ruleNode {@link RuleNode}
      */
     void setNextRuleNode(RuleNode ruleNode);
+
+
+    /**
+     * 执行下个Node
+     *
+     * @param context {@link ContextView}
+     */
+    default void executeNext(ContextView context) {
+        Optional.ofNullable(getNextRuleNode())
+                .ifPresent(ruleNode -> ruleNode.execute(context));
+    }
+
 
 }
