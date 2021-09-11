@@ -2,6 +2,7 @@ package io.github.quickmsg.rule.node;
 
 import io.github.quickmsg.rule.RuleNode;
 import io.github.quickmsg.source.Source;
+import io.github.quickmsg.source.SourceManager;
 import reactor.util.context.ContextView;
 
 /**
@@ -21,9 +22,9 @@ public class TransmitRuleNode implements RuleNode {
     }
 
     @Override
-    public Boolean execute(ContextView contextView) {
-//        return SourceManager.getSourceBean(source).transmit(param);
-        return false;
+    public void execute(ContextView contextView) {
+        SourceManager.getSourceBean(source).transmit(contextView);
+        executeNext(contextView);
     }
 
     @Override

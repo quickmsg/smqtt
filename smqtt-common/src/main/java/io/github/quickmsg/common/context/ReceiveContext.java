@@ -68,6 +68,15 @@ public interface ReceiveContext<T extends Configuration> extends BiConsumer<Mqtt
     RecipientRegistry getRecipientRegistry();
 
 
+
+    /**
+     * 集群注册器
+     *
+     * @return {@link ClusterRegistry}
+     */
+    RuleDslExe getClusterRegistry();
+
+
     /**
      * 获取配置文件
      *

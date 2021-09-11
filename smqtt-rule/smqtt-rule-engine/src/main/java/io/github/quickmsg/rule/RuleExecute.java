@@ -22,7 +22,7 @@ public interface RuleExecute {
      * @param context 上下文容器
      * @return Boolean 是否往下走
      */
-    Boolean execute(ContextView context);
+    void execute(ContextView context);
 
 
     default Object triggerScript(String script, Object param, Consumer<MapContext> mapContextConsumer) {

@@ -1,14 +1,10 @@
 package io.github.quickmsg.rule;
 
 import io.github.quickmsg.common.rule.RuleDefinition;
-import io.github.quickmsg.rule.node.EmptyNode;
-import io.github.quickmsg.rule.node.LoggerRuleNode;
-import io.github.quickmsg.rule.node.PredicateRuleNode;
-import io.github.quickmsg.rule.node.TopicRuleNode;
+import io.github.quickmsg.rule.node.*;
 import lombok.Getter;
-import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
+import reactor.util.context.ContextView;
 
 import java.util.LinkedList;
 
@@ -42,8 +38,7 @@ public class RuleChain {
     private RuleNode parseNode(RuleDefinition definition) {
         switch (definition.getRuleType()) {
             case WEB_HOOK:
-                // 待实现
-            case ROCKET_MQ:
+                return new WebHookNode();
             case PREDICATE:
                 return new PredicateRuleNode(definition.getScript());
             case KAFKA:
@@ -51,16 +46,15 @@ public class RuleChain {
                 return new TopicRuleNode(String.valueOf(definition.getParam()));
             case LOG:
                 return new LoggerRuleNode();
+            case ROCKET_MQ: //todo 待实现
             default:
                 return new EmptyNode();
         }
     }
 
 
-    public Disposable executeRule(Object object) {
-        return Mono.deferContextual(contextView -> Mono.fromRunnable(() -> {
-            ruleNodeList.forEach(ruleNode -> ruleNode.execute(contextView));
-        })).contextWrite(context -> context.put("msg", object)).subscribeOn(Schedulers.parallel()).subscribe();
+    public Mono<Void> executeRule(ContextView contextView) {
+        return Mono.fromRunnable(() -> ruleNodeList.forEach(ruleNode -> ruleNode.execute(contextView)));
     }
 
 }

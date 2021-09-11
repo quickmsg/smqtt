@@ -31,8 +31,10 @@ public class PredicateRuleNode implements RuleNode {
     }
 
     @Override
-    public Boolean execute(ContextView contextView) {
-        return (Boolean) triggerScript(script, new Object(), context -> {
-        });
+    public void execute(ContextView contextView) {
+        if ((Boolean) triggerScript(script, new Object(), context -> {
+        })) {
+            executeNext(contextView);
+        }
     }
 }

@@ -1,12 +1,14 @@
 package io.github.quickmsg.dsl;
 
+import io.github.quickmsg.common.rule.DslExecutor;
 import io.github.quickmsg.rule.RuleChain;
+import reactor.core.publisher.Mono;
 
 /**
  * @author luxurong
  */
 
-public class RuleDslExecutor {
+public class RuleDslExecutor implements DslExecutor {
 
     private final RuleChain ruleChain;
 
@@ -14,7 +16,10 @@ public class RuleDslExecutor {
         this.ruleChain = ruleChain;
     }
 
+    @Override
     public void executeRule(Object object) {
-        ruleChain.executeRule(object);
+        Mono.deferContextual(ruleChain::executeRule)
+                .contextWrite(context -> context.put("", object))
+                .subscribe();
     }
 }

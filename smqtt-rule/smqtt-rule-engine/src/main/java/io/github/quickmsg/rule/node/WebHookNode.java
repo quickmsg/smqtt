@@ -1,14 +1,14 @@
 package io.github.quickmsg.rule.node;
 
 import io.github.quickmsg.rule.RuleNode;
-import lombok.extern.slf4j.Slf4j;
 import reactor.util.context.ContextView;
 
 /**
  * @author luxurong
+ * @date 2021/9/10 16:39
+ * @description
  */
-@Slf4j
-public class LoggerRuleNode implements RuleNode {
+public class WebHookNode implements RuleNode {
 
     private RuleNode ruleNode;
 
@@ -19,13 +19,13 @@ public class LoggerRuleNode implements RuleNode {
     }
 
     @Override
-    public void execute(ContextView contextView) {
-        executeNext(contextView);
-    }
-
-
-    @Override
     public void setNextRuleNode(RuleNode ruleNode) {
         this.ruleNode = ruleNode;
+    }
+
+    @Override
+    public void execute(ContextView context) {
+
+        executeNext(context);
     }
 }

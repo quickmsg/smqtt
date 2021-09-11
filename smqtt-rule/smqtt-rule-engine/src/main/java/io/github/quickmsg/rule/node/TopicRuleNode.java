@@ -34,12 +34,12 @@ public class TopicRuleNode implements RuleNode {
     }
 
     @Override
-    public Boolean execute(ContextView contextView) {
+    public void execute(ContextView contextView) {
 //        ReceiveContext<?> receiveContexts=(ReceiveContext)param[2];
 //        Object msg=param[0];
 //        ProtocolAdaptor protocolAdaptor=receiveContexts.getProtocolAdaptor();
 //        protocolAdaptor.chooseProtocol(MockMqttChannel.DEFAULT_MOCK_CHANNEL, (SmqttMessage<MqttMessage>) msg,receiveContexts);
-        return true;
+        executeNext(contextView);
     }
 
 }
