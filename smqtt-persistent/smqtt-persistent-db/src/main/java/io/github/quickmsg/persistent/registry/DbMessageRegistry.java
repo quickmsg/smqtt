@@ -43,7 +43,7 @@ public class DbMessageRegistry implements MessageRegistry {
 
     @Override
     public void startUp(BootstrapConfig bootstrapConfig) {
-        BootstrapConfig.DBConfig dbConfig = bootstrapConfig.getDbConfig();
+        BootstrapConfig.DBConfig dbConfig = bootstrapConfig.getSmqttConfig().getDbConfig();
 
         Properties properties = new Properties();
         properties.put("driverClassName", dbConfig.getDriverClassName());
