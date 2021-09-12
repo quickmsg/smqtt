@@ -25,11 +25,10 @@ public interface RuleExecute {
     void execute(ContextView context);
 
 
-    default Object triggerScript(String script, Object param, Consumer<MapContext> mapContextConsumer) {
+    default Object triggerScript(String script,Consumer<MapContext> mapContextConsumer) {
         JexlExpression e = JEXL_ENGINE.createExpression(script);
         MapContext context = new MapContext();
         mapContextConsumer.accept(context);
-        context.set("$", param);
         return e.evaluate(context);
     }
 

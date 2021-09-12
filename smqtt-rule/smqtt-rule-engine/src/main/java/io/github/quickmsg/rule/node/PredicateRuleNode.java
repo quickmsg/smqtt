@@ -3,6 +3,8 @@ package io.github.quickmsg.rule.node;
 import io.github.quickmsg.rule.RuleNode;
 import reactor.util.context.ContextView;
 
+import java.util.Map;
+
 /**
  * @author luxurong
  * @date 2021/8/23 19:34
@@ -31,8 +33,11 @@ public class PredicateRuleNode implements RuleNode {
     }
 
     @Override
+
     public void execute(ContextView contextView) {
-        if ((Boolean) triggerScript(script, new Object(), context -> {
+        if ((Boolean) triggerScript(script, context -> {
+            Map<String, Object> params = contextView.get(Map.class);
+            params.forEach(context::set);
         })) {
             executeNext(contextView);
         }

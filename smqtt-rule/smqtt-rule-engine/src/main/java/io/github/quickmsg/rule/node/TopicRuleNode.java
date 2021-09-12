@@ -35,10 +35,9 @@ public class TopicRuleNode implements RuleNode {
 
     @Override
     public void execute(ContextView contextView) {
-//        ReceiveContext<?> receiveContexts=(ReceiveContext)param[2];
-//        Object msg=param[0];
-//        ProtocolAdaptor protocolAdaptor=receiveContexts.getProtocolAdaptor();
-//        protocolAdaptor.chooseProtocol(MockMqttChannel.DEFAULT_MOCK_CHANNEL, (SmqttMessage<MqttMessage>) msg,receiveContexts);
+        ReceiveContext<?> receiveContext=contextView.get(ReceiveContext.class);
+        ProtocolAdaptor protocolAdaptor = receiveContext.getProtocolAdaptor();
+        protocolAdaptor.chooseProtocol(MockMqttChannel.DEFAULT_MOCK_CHANNEL, new SmqttMessage<>(),receiveContext);
         executeNext(contextView);
     }
 
