@@ -2,7 +2,6 @@ package io.github.quickmsg.core.mqtt;
 
 import io.github.quickmsg.common.auth.PasswordAuthentication;
 import io.github.quickmsg.common.channel.ChannelRegistry;
-import io.github.quickmsg.common.channel.MqttChannel;
 import io.github.quickmsg.common.cluster.ClusterRegistry;
 import io.github.quickmsg.common.config.AbstractConfiguration;
 import io.github.quickmsg.common.config.Configuration;
@@ -10,11 +9,12 @@ import io.github.quickmsg.common.context.ReceiveContext;
 import io.github.quickmsg.common.message.MessageRegistry;
 import io.github.quickmsg.common.message.RecipientRegistry;
 import io.github.quickmsg.common.protocol.ProtocolAdaptor;
+import io.github.quickmsg.common.rule.DslExecutor;
 import io.github.quickmsg.common.topic.TopicRegistry;
 import io.github.quickmsg.common.transport.Transport;
-import io.github.quickmsg.core.spi.*;
 import io.github.quickmsg.core.cluster.InJvmClusterRegistry;
-import io.netty.handler.codec.mqtt.MqttMessage;
+import io.github.quickmsg.core.spi.*;
+import io.github.quickmsg.dsl.RuleDslParser;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -51,10 +51,15 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
 
     private final RecipientRegistry recipientRegistry;
 
+    private final DslExecutor dslExecutor;
+
 
     public AbstractReceiveContext(T configuration, Transport<T> transport) {
+        AbstractConfiguration abstractConfiguration = castConfiguration(configuration);
+        RuleDslParser ruleDslParser = new RuleDslParser(abstractConfiguration.getBootstrapConfig().getSmqttConfig());
         this.configuration = configuration;
         this.transport = transport;
+        this.dslExecutor = ruleDslParser.parseRule();
         this.recipientRegistry = recipientRegistry();
         this.protocolAdaptor = protocolAdaptor();
         this.channelRegistry = channelRegistry();
@@ -63,7 +68,6 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
         this.messageRegistry = messageRegistry();
         this.clusterRegistry = clusterRegistry();
         this.passwordAuthentication = basicAuthentication();
-        AbstractConfiguration abstractConfiguration = castConfiguration(configuration);
         this.channelRegistry.startUp(abstractConfiguration.getBootstrapConfig());
         this.messageRegistry.startUp(abstractConfiguration.getBootstrapConfig());
     }
@@ -97,7 +101,7 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
 
     private ProtocolAdaptor protocolAdaptor() {
         return Optional.ofNullable(ProtocolAdaptor.INSTANCE)
-                .orElse(new DefaultProtocolAdaptor(Schedulers.newBoundedElastic(configuration.getBusinessThreadSize(),configuration.getBusinessQueueSize(),"business-io")))
+                .orElse(new DefaultProtocolAdaptor(Schedulers.newBoundedElastic(configuration.getBusinessThreadSize(), configuration.getBusinessQueueSize(), "business-io")))
                 .proxy();
     }
 

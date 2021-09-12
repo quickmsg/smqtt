@@ -19,7 +19,7 @@ public class MqttReceiveContext extends AbstractReceiveContext<MqttConfiguration
     private final ClusterReceiver clusterReceiver;
 
     public MqttReceiveContext(MqttConfiguration configuration, Transport<MqttConfiguration> transport) {
-        super(configuration, transport);
+        super(configuration, transport, dslExecutor);
         this.clusterReceiver = new ClusterReceiver(this);
         clusterReceiver.registry();
     }

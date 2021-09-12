@@ -1,6 +1,6 @@
 package io.github.quickmsg.dsl;
 
-import io.github.quickmsg.common.rule.RuleDefinition;
+import io.github.quickmsg.common.config.BootstrapConfig;
 import io.github.quickmsg.rule.RuleChain;
 
 /**
@@ -8,13 +8,19 @@ import io.github.quickmsg.rule.RuleChain;
  */
 public class RuleDslParser {
 
-   private RuleChain ruleChain = RuleChain.INSTANCE;
+    private RuleChain ruleChain = RuleChain.INSTANCE;
 
-    public RuleDslExecutor parse(RuleDefinition ruleDefinition){
-        return new RuleDslExecutor(ruleChain.addRule(ruleDefinition));
 
+    private final BootstrapConfig.SmqttConfig smqttConfig;
+
+    public RuleDslParser(BootstrapConfig.SmqttConfig smqttConfig) {
+        this.smqttConfig = smqttConfig;
     }
 
+    public RuleDslExecutor parseRule() {
+        smqttConfig.getRules().forEach(ruleChain::addRule);
+        return new RuleDslExecutor(ruleChain);
+    }
 
 
 }

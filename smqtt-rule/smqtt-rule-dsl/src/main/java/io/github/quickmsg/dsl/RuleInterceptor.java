@@ -5,6 +5,7 @@ import io.github.quickmsg.common.context.ReceiveContext;
 import io.github.quickmsg.common.interceptor.Interceptor;
 import io.github.quickmsg.common.interceptor.Invocation;
 import io.github.quickmsg.common.message.SmqttMessage;
+import io.github.quickmsg.common.rule.RuleData;
 import io.netty.handler.codec.mqtt.MqttMessage;
 
 /**
@@ -13,15 +14,13 @@ import io.netty.handler.codec.mqtt.MqttMessage;
 public class RuleInterceptor implements Interceptor {
 
 
-
-
     @Override
     @SuppressWarnings("unchecked")
     public Object intercept(Invocation invocation) {
         SmqttMessage<MqttMessage> smqttMessage = (SmqttMessage<MqttMessage>) invocation.getArgs()[1];
         ReceiveContext<Configuration> mqttReceiveContext = (ReceiveContext<Configuration>) invocation.getArgs()[2];
-        if(!smqttMessage.getIsCluster()){
-
+        if (!smqttMessage.getIsCluster()) {
+            mqttReceiveContext.getDslExecutor().executeRule(mqttReceiveContext, new RuleData().initMap());
         }
         return invocation.proceed();
     }

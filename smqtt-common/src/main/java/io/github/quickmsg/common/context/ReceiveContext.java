@@ -8,6 +8,7 @@ import io.github.quickmsg.common.message.MessageRegistry;
 import io.github.quickmsg.common.message.RecipientRegistry;
 import io.github.quickmsg.common.message.SmqttMessage;
 import io.github.quickmsg.common.protocol.ProtocolAdaptor;
+import io.github.quickmsg.common.rule.DslExecutor;
 import io.github.quickmsg.common.topic.TopicRegistry;
 import io.netty.handler.codec.mqtt.MqttMessage;
 
@@ -72,9 +73,9 @@ public interface ReceiveContext<T extends Configuration> extends BiConsumer<Mqtt
     /**
      * 集群注册器
      *
-     * @return {@link ClusterRegistry}
+     * @return {@link DslExecutor}
      */
-    RuleDslExe getClusterRegistry();
+     DslExecutor getDslExecutor();
 
 
     /**
