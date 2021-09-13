@@ -39,7 +39,7 @@ public class RedisMessageRegistry implements MessageRegistry {
     @Override
     public void startUp(BootstrapConfig bootstrapConfig) {
         try {
-            BootstrapConfig.RedisConfig redisConfig = bootstrapConfig.getRedisConfig();
+            BootstrapConfig.RedisConfig redisConfig = bootstrapConfig.getSmqttConfig().getRedisConfig();
             // 获取客户端策略
             ClientStrategy clientStrategy = ClientFactory.getClientStrategy(redisConfig.getMode());
             // 获取redisson客户端
