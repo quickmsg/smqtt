@@ -2,11 +2,10 @@ package io.github.quickmsg.dsl;
 
 import io.github.quickmsg.common.context.ReceiveContext;
 import io.github.quickmsg.common.rule.DslExecutor;
+import io.github.quickmsg.common.rule.RuleData;
 import io.github.quickmsg.rule.RuleChain;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
-
-import java.util.Map;
 
 /**
  * @author luxurong
@@ -25,8 +24,14 @@ public class RuleDslExecutor implements DslExecutor {
         Mono.deferContextual(ruleChain::executeRule)
                 .contextWrite(context -> context
                         .put(ReceiveContext.class, object[0])
-                        .put(Map.class, object[2]))
+                        .put(RuleData.class, object[1]))
                 .subscribeOn(Schedulers.parallel())
                 .subscribe();
+    }
+
+
+    @Override
+    public Boolean isExecute() {
+        return ruleChain.getRuleNodeList().size() > 0;
     }
 }

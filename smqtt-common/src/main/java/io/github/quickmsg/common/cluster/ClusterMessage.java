@@ -11,6 +11,8 @@ import lombok.*;
 @Data
 public class ClusterMessage {
 
+    private String clientIdentifier;
+
     private String topic;
 
     private int qos;

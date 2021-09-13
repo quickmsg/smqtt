@@ -11,4 +11,11 @@ public interface DslExecutor {
 =     */
     void executeRule(Object... object);
 
+
+    /**
+     * 执行
+     * @return  boolean 是否需要执行
+     */
+    Boolean isExecute();
+
 }

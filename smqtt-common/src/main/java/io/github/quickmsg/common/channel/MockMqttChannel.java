@@ -15,6 +15,13 @@ public class MockMqttChannel extends MqttChannel {
     public final static MockMqttChannel DEFAULT_MOCK_CHANNEL = new MockMqttChannel();
 
 
+    public static MockMqttChannel wrapClientIdentifier(String clientIdentifier) {
+        MockMqttChannel mockMqttChannel = new MockMqttChannel();
+        mockMqttChannel.setClientIdentifier(clientIdentifier);
+        return mockMqttChannel;
+    }
+
+
     @Override
     public Mono<Void> write(MqttMessage mqttMessage, boolean retry) {
         return Mono.empty();

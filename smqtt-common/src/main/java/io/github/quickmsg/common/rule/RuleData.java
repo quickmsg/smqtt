@@ -1,6 +1,7 @@
 package io.github.quickmsg.common.rule;
 
 import io.netty.handler.codec.mqtt.MqttMessageType;
+import lombok.Data;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.Map;
  * @author luxurong
  * @date 2021/9/11 20:55
  */
+@Data
 public class RuleData extends HashMap<String,Object> {
 
     private MqttMessageType msgType;
@@ -24,6 +26,8 @@ public class RuleData extends HashMap<String,Object> {
         this.putAll(contents);
         return this;
     }
+
+
 
 
 

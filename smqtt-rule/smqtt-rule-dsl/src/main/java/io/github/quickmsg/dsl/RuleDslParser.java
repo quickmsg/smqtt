@@ -18,7 +18,9 @@ public class RuleDslParser {
     }
 
     public RuleDslExecutor parseRule() {
-        smqttConfig.getRules().forEach(ruleChain::addRule);
+        if (smqttConfig.getRules() != null && smqttConfig.getRules().size() > 0) {
+            smqttConfig.getRules().forEach(ruleChain::addRule);
+        }
         return new RuleDslExecutor(ruleChain);
     }
 

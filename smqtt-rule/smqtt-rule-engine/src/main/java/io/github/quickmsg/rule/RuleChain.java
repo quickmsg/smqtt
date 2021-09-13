@@ -35,6 +35,7 @@ public class RuleChain {
         return this;
     }
 
+
     private RuleNode parseNode(RuleDefinition definition) {
         switch (definition.getRuleType()) {
             case WEB_HOOK:

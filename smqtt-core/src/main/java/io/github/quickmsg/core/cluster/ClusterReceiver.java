@@ -43,8 +43,7 @@ public class ClusterReceiver {
                 //begin listen cluster message
                 clusterRegistry.handlerClusterMessage()
                         .subscribe(clusterMessage -> protocolAdaptor
-                                .chooseProtocol(MockMqttChannel.
-                                                DEFAULT_MOCK_CHANNEL,
+                                .chooseProtocol(MockMqttChannel.wrapClientIdentifier(clusterMessage.getClientIdentifier()),
                                         getMqttMessage(clusterMessage),
                                         mqttReceiveContext));
             }
