@@ -1,7 +1,7 @@
 package io.github.quickmsg.core.cluster;
 
 import io.github.quickmsg.common.cluster.ClusterConfig;
-import io.github.quickmsg.common.cluster.ClusterMessage;
+import io.github.quickmsg.common.message.HeapMqttMessage;
 import io.github.quickmsg.common.cluster.ClusterNode;
 import io.github.quickmsg.common.cluster.ClusterRegistry;
 import io.github.quickmsg.common.enums.ClusterStatus;
@@ -23,7 +23,7 @@ public class InJvmClusterRegistry implements ClusterRegistry {
     }
 
     @Override
-    public Flux<ClusterMessage> handlerClusterMessage() {
+    public Flux<HeapMqttMessage> handlerClusterMessage() {
         return Flux.empty();
     }
 
@@ -38,7 +38,7 @@ public class InJvmClusterRegistry implements ClusterRegistry {
     }
 
     @Override
-    public Mono<Void> spreadMessage(ClusterMessage clusterMessage) {
+    public Mono<Void> spreadMessage(HeapMqttMessage heapMqttMessage) {
         return Mono.empty();
     }
 

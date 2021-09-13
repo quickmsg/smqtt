@@ -1,4 +1,4 @@
-package io.github.quickmsg.common.cluster;
+package io.github.quickmsg.common.message;
 
 import lombok.*;
 
@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @Data
-public class ClusterMessage {
+public class HeapMqttMessage {
 
     private String clientIdentifier;
 

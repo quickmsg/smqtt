@@ -1,5 +1,6 @@
 package io.github.quickmsg.common.cluster;
 
+import io.github.quickmsg.common.message.HeapMqttMessage;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -21,19 +22,19 @@ public interface ClusterHandler<T> {
     /**
      * 传播集群消息
      *
-     * @param clusterMessage 集群
+     * @param heapMqttMessage 集群
      * @return {@link Mono}
      */
-    Mono<Void> spreadGossip(ClusterMessage clusterMessage);
+    Mono<Void> spreadGossip(HeapMqttMessage heapMqttMessage);
 
 
     /**
      * 传播集群消息
      *
-     * @param clusterMessage 集群
+     * @param heapMqttMessage 集群
      * @return {@link Mono}
      */
-    Mono<Void> send(ClusterMessage clusterMessage);
+    Mono<Void> send(HeapMqttMessage heapMqttMessage);
 
 
 }

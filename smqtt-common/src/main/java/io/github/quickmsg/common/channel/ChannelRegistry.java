@@ -1,7 +1,6 @@
 package io.github.quickmsg.common.channel;
 
 import io.github.quickmsg.common.StartUp;
-import io.github.quickmsg.common.cluster.ClusterMessage;
 import io.github.quickmsg.common.spi.DynamicLoader;
 
 import java.util.Collection;

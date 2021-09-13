@@ -2,7 +2,7 @@ package io.github.quickmsg.core.cluster;
 
 import io.github.quickmsg.common.channel.MockMqttChannel;
 import io.github.quickmsg.common.cluster.ClusterConfig;
-import io.github.quickmsg.common.cluster.ClusterMessage;
+import io.github.quickmsg.common.message.HeapMqttMessage;
 import io.github.quickmsg.common.cluster.ClusterRegistry;
 import io.github.quickmsg.common.message.MqttMessageBuilder;
 import io.github.quickmsg.common.message.SmqttMessage;
@@ -50,13 +50,13 @@ public class ClusterReceiver {
         }
     }
 
-    private SmqttMessage<MqttMessage> getMqttMessage(ClusterMessage clusterMessage) {
+    private SmqttMessage<MqttMessage> getMqttMessage(HeapMqttMessage heapMqttMessage) {
         return new SmqttMessage<>(MqttMessageBuilder
                 .buildPub(false,
-                        MqttQoS.valueOf(clusterMessage.getQos()),
+                        MqttQoS.valueOf(heapMqttMessage.getQos()),
                         0,
-                        clusterMessage.getTopic(),
-                        PooledByteBufAllocator.DEFAULT.buffer().writeBytes(clusterMessage.getMessage())), System.currentTimeMillis(), Boolean.TRUE);
+                        heapMqttMessage.getTopic(),
+                        PooledByteBufAllocator.DEFAULT.buffer().writeBytes(heapMqttMessage.getMessage())), System.currentTimeMillis(), Boolean.TRUE);
     }
 
 }
