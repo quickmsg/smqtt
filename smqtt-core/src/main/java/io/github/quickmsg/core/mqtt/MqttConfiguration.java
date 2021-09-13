@@ -53,7 +53,7 @@ public class MqttConfiguration extends AbstractSslHandler implements AbstractCon
 
     private ClusterConfig clusterConfig = ClusterConfig.defaultClusterConfig();
 
-    private BootstrapConfig bootstrapConfig;
+    private BootstrapConfig bootstrapConfig  = BootstrapConfig.defaultConfig();
 
     @Override
     public Consumer<? super TcpServerConfig> getTcpServerConfig() {

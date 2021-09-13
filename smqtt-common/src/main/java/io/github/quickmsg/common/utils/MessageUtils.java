@@ -39,7 +39,7 @@ public class MessageUtils {
      *
      * @param messageId 消息id
      * @param message   {@link MqttPublishMessage}
-     * @param mqttQoS  {@link MqttQoS}
+     * @param mqttQoS   {@link MqttQoS}
      * @return {@link MqttPublishMessage}
      */
     public static MqttPublishMessage wrapPublishMessage(MqttPublishMessage message, MqttQoS mqttQoS, int messageId) {
@@ -62,7 +62,6 @@ public class MessageUtils {
         byte[] bytes = new byte[byteBuf.readableBytes()];
         byteBuf.readBytes(bytes);
         byteBuf.resetReaderIndex();
-        MessageUtils.safeRelease(byteBuf);
         return bytes;
     }
 
