@@ -72,9 +72,6 @@ smqtt:
       master: mymaster
       nodes: 127.0.0.1:26379,127.0.0.1:26379,127.0.0.1:26379
 
-rules:
-  - ruleType: TOPIC # 规则类型
-    param: aaaaaaaaaaaaaaaaaa # 参数
 
 
 
