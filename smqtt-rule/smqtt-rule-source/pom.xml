@@ -30,6 +30,11 @@
             <artifactId>smqtt-common</artifactId>
             <version>1.0.7</version>
         </dependency>
+        <dependency>
+            <groupId>io.github.quickmsg</groupId>
+            <artifactId>smqtt-rule-source-kafka</artifactId>
+            <version>1.0.7</version>
+        </dependency>
     </dependencies>
 
 
