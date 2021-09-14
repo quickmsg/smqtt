@@ -38,6 +38,7 @@ public class JacksonUtil {
         }
     }
 
+
     public static <T> List<T> json2List(String jsonData, Class<T> beanType) {
         try {
             JavaType javaType = mapper.getTypeFactory().constructParametricType(List.class, beanType);

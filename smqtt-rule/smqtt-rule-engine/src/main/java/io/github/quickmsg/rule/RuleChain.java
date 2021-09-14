@@ -2,6 +2,7 @@ package io.github.quickmsg.rule;
 
 import io.github.quickmsg.common.rule.RuleDefinition;
 import io.github.quickmsg.rule.node.*;
+import io.github.quickmsg.source.Source;
 import lombok.Getter;
 import reactor.core.publisher.Mono;
 import reactor.util.context.ContextView;
@@ -38,16 +39,20 @@ public class RuleChain {
 
     private RuleNode parseNode(RuleDefinition definition) {
         switch (definition.getRuleType()) {
-            case WEB_HOOK:
-                return new WebHookNode();
+            case HTTP:
+                return new TransmitRuleNode(Source.HTTP);
             case PREDICATE:
                 return new PredicateRuleNode(definition.getScript());
             case KAFKA:
+                return new TransmitRuleNode(Source.KAFKA);
             case TOPIC:
                 return new TopicRuleNode(String.valueOf(definition.getParam()));
             case LOG:
                 return new LoggerRuleNode();
-            case ROCKET_MQ: //todo 待实现
+            case ROCKET_MQ:
+                return new TransmitRuleNode(Source.ROCKET_MQ);
+            case H_BASE:
+                return new TransmitRuleNode(Source.H_BASE);
             default:
                 return new EmptyNode();
         }

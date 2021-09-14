@@ -1,6 +1,13 @@
 package io.github.quickmsg.common.message;
 
-import lombok.*;
+import io.github.quickmsg.common.utils.JacksonUtil;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author luxurong
@@ -21,5 +28,15 @@ public class HeapMqttMessage {
 
     private byte[] message;
 
+
+    public Map<String, Object> getKeyMap() {
+        Map<String, Object> keys = new HashMap<>(5);
+        keys.put("clientIdentifier", this.clientIdentifier);
+        keys.put("topic", this.topic);
+        keys.put("qos", this.qos);
+        keys.put("retain", this.retain);
+        keys.put("message", JacksonUtil.json2Bean(new String(message), Map.class));
+        return keys;
+    }
 
 }

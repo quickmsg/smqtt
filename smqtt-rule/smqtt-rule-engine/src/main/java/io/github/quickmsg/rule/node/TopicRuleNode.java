@@ -2,10 +2,9 @@ package io.github.quickmsg.rule.node;
 
 import io.github.quickmsg.common.channel.MockMqttChannel;
 import io.github.quickmsg.common.context.ReceiveContext;
+import io.github.quickmsg.common.message.HeapMqttMessage;
 import io.github.quickmsg.common.protocol.ProtocolAdaptor;
-import io.github.quickmsg.common.rule.RuleData;
 import io.github.quickmsg.rule.RuleNode;
-import io.netty.handler.codec.mqtt.MqttMessageType;
 import lombok.extern.slf4j.Slf4j;
 import reactor.util.context.ContextView;
 
@@ -37,15 +36,11 @@ public class TopicRuleNode implements RuleNode {
     @Override
     public void execute(ContextView contextView) {
         ReceiveContext<?> receiveContext = contextView.get(ReceiveContext.class);
-        RuleData request = contextView.get(RuleData.class);
-        // topic 只转发publish消息
-        if (request.getMsgType() == MqttMessageType.PUBLISH) {
-            ProtocolAdaptor protocolAdaptor = receiveContext.getProtocolAdaptor();
-            // 生成消息
-            protocolAdaptor.chooseProtocol(MockMqttChannel.DEFAULT_MOCK_CHANNEL, null, receiveContext);
-        } else {
-            log.warn("TopicRuleNode discard request {}", request);
-        }
+        HeapMqttMessage heapMqttMessage = contextView.get(HeapMqttMessage.class);
+        log.info("rule engine TopicRuleNode  request {}", heapMqttMessage);
+        ProtocolAdaptor protocolAdaptor = receiveContext.getProtocolAdaptor();
+        protocolAdaptor.chooseProtocol(MockMqttChannel.wrapClientIdentifier(heapMqttMessage.getClientIdentifier()), null, receiveContext);
+        protocolAdaptor.chooseProtocol(MockMqttChannel.DEFAULT_MOCK_CHANNEL, null, receiveContext);
         executeNext(contextView);
     }
 

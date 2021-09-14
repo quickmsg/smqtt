@@ -1,9 +1,8 @@
 package io.github.quickmsg.rule.node;
 
+import io.github.quickmsg.common.message.HeapMqttMessage;
 import io.github.quickmsg.rule.RuleNode;
 import reactor.util.context.ContextView;
-
-import java.util.Map;
 
 /**
  * @author luxurong
@@ -36,8 +35,8 @@ public class PredicateRuleNode implements RuleNode {
 
     public void execute(ContextView contextView) {
         if ((Boolean) triggerScript(script, context -> {
-            Map<String, Object> params = contextView.get(Map.class);
-            params.forEach(context::set);
+            HeapMqttMessage mqttMessage = contextView.get(HeapMqttMessage.class);
+            mqttMessage.getKeyMap().forEach(context::set);
         })) {
             executeNext(contextView);
         }

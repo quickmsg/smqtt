@@ -30,7 +30,12 @@ public enum RuleType {
     /**
      * web
      */
-    WEB_HOOK,
+    HTTP,
+
+    /**
+     * H_BASE
+     */
+    H_BASE,
 
 
     }
