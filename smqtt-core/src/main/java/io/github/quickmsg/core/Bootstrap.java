@@ -4,7 +4,7 @@ import ch.qos.logback.classic.Level;
 import io.github.quickmsg.common.config.BootstrapConfig;
 import io.github.quickmsg.common.config.SslContext;
 import io.github.quickmsg.common.rule.RuleDefinition;
-import io.github.quickmsg.common.rule.SourceDefinition;
+import io.github.quickmsg.common.rule.source.SourceDefinition;
 import io.github.quickmsg.common.transport.Transport;
 import io.github.quickmsg.common.utils.LoggerLevel;
 import io.github.quickmsg.core.http.HttpConfiguration;

@@ -1,4 +1,4 @@
-package io.github.quickmsg.common.rule;
+package io.github.quickmsg.common.rule.source;
 
 import lombok.Data;
 

@@ -5,7 +5,7 @@ import io.github.quickmsg.common.config.AbstractConfiguration;
 import io.github.quickmsg.common.config.BootstrapConfig;
 import io.github.quickmsg.common.config.SslContext;
 import io.github.quickmsg.common.rule.RuleDefinition;
-import io.github.quickmsg.common.rule.SourceDefinition;
+import io.github.quickmsg.common.rule.source.SourceDefinition;
 import io.github.quickmsg.core.ssl.AbstractSslHandler;
 import lombok.Data;
 

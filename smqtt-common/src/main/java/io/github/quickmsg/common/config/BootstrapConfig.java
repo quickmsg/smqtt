@@ -3,7 +3,7 @@ package io.github.quickmsg.common.config;
 import ch.qos.logback.classic.Level;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.quickmsg.common.rule.RuleDefinition;
-import io.github.quickmsg.common.rule.SourceDefinition;
+import io.github.quickmsg.common.rule.source.SourceDefinition;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

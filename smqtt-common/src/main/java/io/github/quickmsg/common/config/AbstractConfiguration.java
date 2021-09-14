@@ -2,7 +2,7 @@ package io.github.quickmsg.common.config;
 
 import io.github.quickmsg.common.auth.PasswordAuthentication;
 import io.github.quickmsg.common.rule.RuleDefinition;
-import io.github.quickmsg.common.rule.SourceDefinition;
+import io.github.quickmsg.common.rule.source.SourceDefinition;
 
 import java.util.List;
 import java.util.Map;

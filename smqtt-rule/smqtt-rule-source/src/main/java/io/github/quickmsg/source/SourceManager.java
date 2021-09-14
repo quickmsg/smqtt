@@ -1,7 +1,7 @@
 package io.github.quickmsg.source;
 
-import io.github.quickmsg.common.rule.Source;
-import io.github.quickmsg.common.rule.SourceDefinition;
+import io.github.quickmsg.common.rule.source.Source;
+import io.github.quickmsg.common.rule.source.SourceDefinition;
 import io.github.quickmsg.common.rule.source.SourceBean;
 
 import java.util.Map;
@@ -21,8 +21,12 @@ public class SourceManager {
    }
 
    public static void loadSource(SourceDefinition sourceDefinition){
-
+      SourceBean.SOURCE_BEAN_LIST.forEach(sourceBean -> {
+         if (sourceBean.support(sourceDefinition.getSource())) {
+            if (sourceBean.bootstrap(sourceDefinition.getSourceAttributes())) {
+               CACHE_BEANS.put(sourceDefinition.getSource(), sourceBean);
+            }
+         }
+      });
    }
-
-
 }

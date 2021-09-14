@@ -1,7 +1,7 @@
 package io.github.quickmsg.rule;
 
 import io.github.quickmsg.common.rule.RuleDefinition;
-import io.github.quickmsg.common.rule.Source;
+import io.github.quickmsg.common.rule.source.Source;
 import io.github.quickmsg.rule.node.*;
 import lombok.Getter;
 import reactor.core.publisher.Mono;

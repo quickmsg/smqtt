@@ -1,7 +1,8 @@
 package io.github.quickmsg.rule.node;
 
 import io.github.quickmsg.common.message.HeapMqttMessage;
-import io.github.quickmsg.common.rule.Source;
+import io.github.quickmsg.common.rule.source.Source;
+import io.github.quickmsg.common.utils.JacksonUtil;
 import io.github.quickmsg.rule.RuleNode;
 import io.github.quickmsg.source.SourceManager;
 import reactor.util.context.ContextView;
@@ -36,7 +37,7 @@ public class TransmitRuleNode implements RuleNode {
                             HeapMqttMessage mqttMessage = contextView.get(HeapMqttMessage.class);
                             mqttMessage.getKeyMap().forEach(context::set);
                         }))
-                .orElseGet(() -> new String(heapMqttMessage.getMessage()));
+                .orElseGet(() -> JacksonUtil.map2Json(heapMqttMessage.getKeyMap()));
         SourceManager.getSourceBean(source).transmit(param);
         executeNext(contextView);
     }

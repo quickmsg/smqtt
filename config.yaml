@@ -75,19 +75,17 @@ smqtt:
   rules:
     - ruleType: KAFKA
       ruleName: testKafka
-      param:
-      script:
-      nextDefinition:
+     # param:
+     # script:
+     # nextDefinition:
 
   sources:
     - source: KAFKA
       sourceName: kafka
-      replace:
+     # replace:
       sourceAttributes:
         topic: testTopic
         bootstrapServers: localhost:9092
-        keySerializer: org.apache.kafka.common.serialization.StringSerializer
-        valueSerializer: org.apache.kafka.common.serialization.StringSerializer
 
 
 

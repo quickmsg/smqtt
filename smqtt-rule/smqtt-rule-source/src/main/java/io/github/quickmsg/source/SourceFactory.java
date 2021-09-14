@@ -1,6 +1,6 @@
 package io.github.quickmsg.source;
 
-import io.github.quickmsg.common.rule.Source;
+import io.github.quickmsg.common.rule.source.Source;
 
 /**
  * @author luxurong
