@@ -1,27 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <artifactId>smqtt-rule</artifactId>
-    <groupId>io.github.quickmsg</groupId>
-    <version>1.0.7</version>
-  </parent>
+    <parent>
+        <artifactId>smqtt-rule</artifactId>
+        <groupId>io.github.quickmsg</groupId>
+        <version>1.0.7</version>
+    </parent>
 
-  <artifactId>smqtt-rule-source</artifactId>
-  <name>smqtt-rule-source</name>
+    <artifactId>smqtt-rule-source</artifactId>
+    <name>smqtt-rule-source</name>
 
 
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.11</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.github.quickmsg</groupId>
+            <artifactId>smqtt-common</artifactId>
+            <version>1.0.7</version>
+        </dependency>
+    </dependencies>
 
 
 </project>

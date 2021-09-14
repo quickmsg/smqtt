@@ -15,6 +15,7 @@ import io.github.quickmsg.common.transport.Transport;
 import io.github.quickmsg.core.cluster.InJvmClusterRegistry;
 import io.github.quickmsg.core.spi.*;
 import io.github.quickmsg.dsl.RuleDslParser;
+import io.github.quickmsg.source.SourceManager;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -57,6 +58,7 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
     public AbstractReceiveContext(T configuration, Transport<T> transport) {
         AbstractConfiguration abstractConfiguration = castConfiguration(configuration);
         RuleDslParser ruleDslParser = new RuleDslParser(abstractConfiguration.getRuleDefinitions());
+
         this.configuration = configuration;
         this.transport = transport;
         this.dslExecutor = ruleDslParser.parseRule();

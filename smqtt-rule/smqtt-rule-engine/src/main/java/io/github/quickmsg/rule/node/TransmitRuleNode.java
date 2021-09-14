@@ -1,7 +1,7 @@
 package io.github.quickmsg.rule.node;
 
 import io.github.quickmsg.rule.RuleNode;
-import io.github.quickmsg.source.Source;
+import io.github.quickmsg.common.rule.Source;
 import io.github.quickmsg.source.SourceManager;
 import reactor.util.context.ContextView;
 
