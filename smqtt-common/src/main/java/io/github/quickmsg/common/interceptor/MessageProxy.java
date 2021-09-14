@@ -50,6 +50,7 @@ public class MessageProxy {
                 if (mqttReceiveContext.getConfiguration().getClusterConfig().isEnable()) {
                     mqttReceiveContext.getClusterRegistry().spreadPublishMessage(heapMqttMessage).subscribeOn(Schedulers.boundedElastic()).subscribe();
                 }
+                // todo 添加规则引起切入点
             }
             return invocation.proceed();
         }
