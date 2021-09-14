@@ -1,8 +1,8 @@
 package io.github.quickmsg.rule;
 
 import io.github.quickmsg.common.rule.RuleDefinition;
-import io.github.quickmsg.rule.node.*;
 import io.github.quickmsg.common.rule.Source;
+import io.github.quickmsg.rule.node.*;
 import lombok.Getter;
 import reactor.core.publisher.Mono;
 import reactor.util.context.ContextView;
@@ -22,7 +22,7 @@ public class RuleChain {
 
     private LinkedList<RuleNode> ruleNodeList = new LinkedList<>();
 
-    public RuleChain addRule(RuleDefinition definition) {
+    public void addRule(RuleDefinition definition) {
         RuleDefinition root = definition;
         RuleNode rootNode = this.parseNode(definition);
         RuleNode preNode = rootNode;
@@ -33,26 +33,25 @@ public class RuleChain {
             root = root.getNextDefinition();
         }
         ruleNodeList.addLast(rootNode);
-        return this;
     }
 
 
     private RuleNode parseNode(RuleDefinition definition) {
         switch (definition.getRuleType()) {
             case HTTP:
-                return new TransmitRuleNode(Source.HTTP);
+                return new TransmitRuleNode(Source.HTTP, definition.getScript());
             case PREDICATE:
                 return new PredicateRuleNode(definition.getScript());
             case KAFKA:
-                return new TransmitRuleNode(Source.KAFKA);
+                return new TransmitRuleNode(Source.KAFKA, definition.getScript());
             case TOPIC:
-                return new TopicRuleNode(String.valueOf(definition.getParam()));
+                return new TopicRuleNode(String.valueOf(definition.getParam()),definition.getScript());
             case LOG:
                 return new LoggerRuleNode();
             case ROCKET_MQ:
-                return new TransmitRuleNode(Source.ROCKET_MQ);
+                return new TransmitRuleNode(Source.ROCKET_MQ, definition.getScript());
             case H_BASE:
-                return new TransmitRuleNode(Source.H_BASE);
+                return new TransmitRuleNode(Source.H_BASE, definition.getScript());
             default:
                 return new EmptyNode();
         }

@@ -11,6 +11,10 @@ smqtt:
     businessQueueSize: 100000 #业务队列 默认=100000
     lowWaterMark: 4000000 # 不建议配置 默认 32768
     highWaterMark: 80000000 # 不建议配置 默认 65536
+    options: # netty option设置
+      SO_BACKLOG: 200
+    childOptions:  #netty child option设置
+      SO_REUSEADDR: true
     ssl: # ssl配置
       enable: false # 开关
       key: /user/server.key # 指定ssl文件 默认系统生成
@@ -33,6 +37,7 @@ smqtt:
     url: 127.0.0.1:7771,127.0.0.1:7772 # 启动节点
     port: 7771  # 端口
     node: node-1 # 集群节点名称 唯一
+    namespace: smqtt
     external:
       host: localhost # 用于映射容器ip 请不要随意设置，如果不需要请移除此选项
       port: 7777 # 用于映射容器端口 请不要随意设置，如果不需要请移除此选项

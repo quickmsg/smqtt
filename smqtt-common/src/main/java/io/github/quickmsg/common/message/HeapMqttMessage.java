@@ -35,7 +35,7 @@ public class HeapMqttMessage {
         keys.put("topic", this.topic);
         keys.put("qos", this.qos);
         keys.put("retain", this.retain);
-        keys.put("message", JacksonUtil.json2Bean(new String(message), Map.class));
+        keys.put("msg", JacksonUtil.json2Bean(new String(message), Map.class));
         return keys;
     }
 

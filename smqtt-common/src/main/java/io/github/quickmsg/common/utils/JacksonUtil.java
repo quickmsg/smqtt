@@ -1,6 +1,8 @@
 package io.github.quickmsg.common.utils;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +21,13 @@ import java.util.Map;
 public class JacksonUtil {
 
     private static ObjectMapper mapper = new ObjectMapper();
+
+    static {
+        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true) ;
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
+
+    }
 
     public static String bean2Json(Object data) {
         try {

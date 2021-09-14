@@ -17,10 +17,13 @@ public class TopicRuleNode implements RuleNode {
 
     private final String topic;
 
+    private final String script;
+
     private RuleNode ruleNode;
 
-    public TopicRuleNode(String topic) {
+    public TopicRuleNode(String topic, String script) {
         this.topic = topic;
+        this.script = script;
     }
 
     @Override
