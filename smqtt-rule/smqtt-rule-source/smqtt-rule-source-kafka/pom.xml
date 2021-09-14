@@ -9,7 +9,6 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.github.quickmsg</groupId>
     <artifactId>smqtt-rule-source-kafka</artifactId>
     <version>1.0.7</version>
 

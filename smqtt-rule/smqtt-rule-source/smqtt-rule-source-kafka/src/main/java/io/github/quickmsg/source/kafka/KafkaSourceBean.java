@@ -16,6 +16,7 @@ import java.util.Properties;
  */
 public class KafkaSourceBean implements SourceBean {
 
+
     // TODO 类型
     public static KafkaProducer<String, String> producer;
 
