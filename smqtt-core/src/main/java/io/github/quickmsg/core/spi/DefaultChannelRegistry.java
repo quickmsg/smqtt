@@ -27,7 +27,7 @@ public class DefaultChannelRegistry implements ChannelRegistry {
     }
 
     @Override
-    public void startUp(BootstrapConfig bootstrapConfig) {
+    public void startUp(Map<Object,Object> environmentMap) {
 
     }
 

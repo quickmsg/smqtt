@@ -1,18 +1,16 @@
 package io.github.quickmsg.core.mqtt;
 
 import io.github.quickmsg.common.auth.PasswordAuthentication;
-import io.github.quickmsg.common.cluster.ClusterConfig;
 import io.github.quickmsg.common.config.AbstractConfiguration;
 import io.github.quickmsg.common.config.BootstrapConfig;
 import io.github.quickmsg.common.config.SslContext;
+import io.github.quickmsg.common.rule.RuleDefinition;
+import io.github.quickmsg.common.rule.SourceDefinition;
 import io.github.quickmsg.core.ssl.AbstractSslHandler;
-import io.netty.channel.ChannelOption;
 import lombok.Data;
-import reactor.netty.tcp.TcpServerConfig;
 
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.function.Consumer;
 
 /**
  * @author luxurong
@@ -20,7 +18,7 @@ import java.util.function.Consumer;
 @Data
 public class MqttConfiguration extends AbstractSslHandler implements AbstractConfiguration {
 
-    private Integer port = 0;
+    private Integer port = 1883;
 
     private Integer webSocketPort = 0;
 
@@ -46,21 +44,17 @@ public class MqttConfiguration extends AbstractSslHandler implements AbstractCon
 
     private Integer businessQueueSize = 100000;
 
+    private Map<String, Object> options;
 
-    private Consumer<Map<ChannelOption<?>, ?>> options;
+    private Map<String, Object> childOptions;
 
-    private Consumer<Map<ChannelOption<?>, ?>> childOptions;
+    private BootstrapConfig.ClusterConfig clusterConfig;
 
-    private ClusterConfig clusterConfig = ClusterConfig.defaultClusterConfig();
+    private List<RuleDefinition> ruleDefinitions;
 
-    private BootstrapConfig bootstrapConfig  = BootstrapConfig.defaultConfig();
+    private List<SourceDefinition> sourceDefinitions;
 
-    @Override
-    public Consumer<? super TcpServerConfig> getTcpServerConfig() {
-        return tcpServerConfig -> {
-            Optional.ofNullable(options).ifPresent(options -> options.accept(tcpServerConfig.options()));
-            Optional.ofNullable(childOptions).ifPresent(options -> options.accept(tcpServerConfig.childOptions()));
-        };
-    }
+    private Map<Object, Object> environmentMap;
+
 
 }

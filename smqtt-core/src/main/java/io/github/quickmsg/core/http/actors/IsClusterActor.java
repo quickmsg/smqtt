@@ -25,6 +25,6 @@ public class IsClusterActor implements HttpActor {
     public Publisher<Void> doRequest(HttpServerRequest request, HttpServerResponse response, Configuration httpConfiguration) {
         return request
                 .receive()
-                .then(response.sendString(Mono.just(DefaultTransport.receiveContext.getConfiguration().getClusterConfig().getClustered().toString())).then());
+                .then(response.sendString(Mono.just(String.valueOf(DefaultTransport.receiveContext.getConfiguration().getClusterConfig().isEnable()))).then());
     }
 }

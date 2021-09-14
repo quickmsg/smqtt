@@ -2,12 +2,13 @@ package io.github.quickmsg.common.config;
 
 import ch.qos.logback.classic.Level;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.github.quickmsg.common.enums.RuleType;
 import io.github.quickmsg.common.rule.RuleDefinition;
 import io.github.quickmsg.common.rule.SourceDefinition;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.xml.transform.Source;
 import java.util.List;
 import java.util.Map;
 
@@ -71,7 +72,7 @@ public class BootstrapConfig {
          * 数据库配置
          */
         @JsonProperty("db")
-        private DBConfig dbConfig;
+        private DatabaseConfig databaseConfig;
         /**
          * redis配置
          */
@@ -81,21 +82,25 @@ public class BootstrapConfig {
          * 规则定义
          */
         @JsonProperty("rules")
-        private List<RuleDefinition> rules;
+        private List<RuleDefinition> ruleDefinitions;
 
         /**
          * 规则定义
          */
         @JsonProperty("sources")
-        private List<SourceDefinition> sources;
+        private List<SourceDefinition> ruleSources;
+
     }
 
     @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class TcpConfig {
         /**
          * 端口
          */
-        private Integer port;
+        private Integer port ;
 
         /**
          * 用户名
@@ -140,9 +145,23 @@ public class BootstrapConfig {
          */
         @JsonProperty("ssl")
         private SslContext sslContext;
+
+        /**
+         * server channel options
+         */
+        Map<String, Object> options;
+
+        /**
+         * child client channel options
+         */
+        Map<String, Object> childOptions;
+
     }
 
     @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class HttpConfig {
         /**
          * 开启http
@@ -166,6 +185,9 @@ public class BootstrapConfig {
     }
 
     @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class WebsocketConfig {
         /**
          * 端口
@@ -183,6 +205,9 @@ public class BootstrapConfig {
     }
 
     @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class ClusterConfig {
         /**
          * 开启集群
@@ -200,44 +225,22 @@ public class BootstrapConfig {
          * 集群名称 需要唯一
          */
         private String node;
+
+        /**
+         * 集群空间 需要一致才能通信
+         */
+        private String namespace;
         /**
          * 集群额外配置（主要用于容器映射）
          */
         private ClusterExternal external;
     }
 
-
     @Data
-    public static class HttpAdmin {
-        /**
-         * 开启http管理页面
-         */
-        private boolean enable;
-        /**
-         * 用户名
-         */
-        private String username;
-        /**
-         * 密码
-         */
-        private String password;
-    }
-
-    @Data
-    public static class ClusterExternal {
-        /**
-         * 本地曝光host
-         */
-        private String host;
-
-        /**
-         * 本地曝光port
-         */
-        private Integer port;
-    }
-
-    @Data
-    public static class DBConfig {
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DatabaseConfig {
         /**
          * 数据库驱动
          */
@@ -273,6 +276,9 @@ public class BootstrapConfig {
     }
 
     @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class RedisConfig {
 
         /**
@@ -324,10 +330,50 @@ public class BootstrapConfig {
 
     }
 
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class HttpAdmin {
+        /**
+         * 开启http管理页面
+         */
+        private boolean enable;
+        /**
+         * 用户名
+         */
+        private String username;
+        /**
+         * 密码
+         */
+        private String password;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ClusterExternal {
+        /**
+         * 本地曝光host
+         */
+        private String host;
+
+        /**
+         * 本地曝光port
+         */
+        private Integer port;
+    }
+
+
     /**
      * redis单机配置
      */
     @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class RedisSingle {
         /**
          * 地址
@@ -339,6 +385,9 @@ public class BootstrapConfig {
      * redis集群模式配置
      */
     @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class RedisCluster {
         private Integer scanInterval;
         private String nodes;
@@ -353,6 +402,9 @@ public class BootstrapConfig {
      * redis哨兵模式配置
      */
     @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class RedisSentinel {
         private String master;
         private String nodes;

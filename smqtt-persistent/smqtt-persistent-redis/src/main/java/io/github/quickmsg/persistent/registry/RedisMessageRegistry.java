@@ -37,9 +37,9 @@ public class RedisMessageRegistry implements MessageRegistry {
     private RedissonClient redissonClient = null;
 
     @Override
-    public void startUp(BootstrapConfig bootstrapConfig) {
+    public void startUp(Map<Object, Object> environmentMap) {
         try {
-            BootstrapConfig.RedisConfig redisConfig = bootstrapConfig.getSmqttConfig().getRedisConfig();
+            BootstrapConfig.RedisConfig redisConfig = (BootstrapConfig.RedisConfig) environmentMap.get(BootstrapConfig.RedisConfig.class);
             // 获取客户端策略
             ClientStrategy clientStrategy = ClientFactory.getClientStrategy(redisConfig.getMode());
             // 获取redisson客户端

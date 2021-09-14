@@ -1,10 +1,10 @@
 package io.github.quickmsg.registry;
 
-import io.github.quickmsg.common.cluster.ClusterConfig;
-import io.github.quickmsg.common.message.HeapMqttMessage;
 import io.github.quickmsg.common.cluster.ClusterNode;
 import io.github.quickmsg.common.cluster.ClusterRegistry;
+import io.github.quickmsg.common.config.BootstrapConfig;
 import io.github.quickmsg.common.enums.ClusterStatus;
+import io.github.quickmsg.common.message.HeapMqttMessage;
 import io.scalecube.cluster.Cluster;
 import io.scalecube.cluster.ClusterImpl;
 import io.scalecube.cluster.ClusterMessageHandler;
@@ -38,16 +38,20 @@ public class ScubeClusterRegistry implements ClusterRegistry {
 
 
     @Override
-    public void registry(ClusterConfig clusterConfig) {
+    public void registry(BootstrapConfig.ClusterConfig clusterConfig) {
         this.cluster = new ClusterImpl()
-                .config(opts -> opts.memberAlias(clusterConfig.getNodeName())
-                        .externalHost(clusterConfig.getExternalHost())
-                        .externalPort(clusterConfig.getExternalPort())
-                )
+                .config(opts -> {
+                    opts.memberAlias(clusterConfig.getNode());
+                    if (clusterConfig.getExternal() != null) {
+                        opts.externalHost(clusterConfig.getExternal().getHost());
+                        opts.externalPort(clusterConfig.getExternal().getPort());
+                    }
+                    return opts;
+                })
                 .transportFactory(TcpTransportFactory::new)
                 .transport(transportConfig -> transportConfig.port(clusterConfig.getPort()))
                 .membership(opts -> opts.seedMembers(Arrays.stream(clusterConfig
-                        .getClusterUrl()
+                        .getUrl()
                         .split(","))
                         .map(Address::from)
                         .collect(Collectors.toList())).namespace(clusterConfig.getNamespace()))

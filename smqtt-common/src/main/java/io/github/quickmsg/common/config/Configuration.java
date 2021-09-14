@@ -92,6 +92,6 @@ public interface Configuration {
      *
      * @return {@link ClusterConfig}
      */
-    ClusterConfig getClusterConfig();
+    BootstrapConfig.ClusterConfig getClusterConfig();
 
 }

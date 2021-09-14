@@ -56,7 +56,7 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
 
     public AbstractReceiveContext(T configuration, Transport<T> transport) {
         AbstractConfiguration abstractConfiguration = castConfiguration(configuration);
-        RuleDslParser ruleDslParser = new RuleDslParser(abstractConfiguration.getBootstrapConfig().getSmqttConfig());
+        RuleDslParser ruleDslParser = new RuleDslParser(abstractConfiguration.getRuleDefinitions());
         this.configuration = configuration;
         this.transport = transport;
         this.dslExecutor = ruleDslParser.parseRule();
@@ -68,8 +68,8 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
         this.messageRegistry = messageRegistry();
         this.clusterRegistry = clusterRegistry();
         this.passwordAuthentication = basicAuthentication();
-        this.channelRegistry.startUp(abstractConfiguration.getBootstrapConfig());
-        this.messageRegistry.startUp(abstractConfiguration.getBootstrapConfig());
+        this.channelRegistry.startUp(abstractConfiguration.getEnvironmentMap());
+        this.messageRegistry.startUp(abstractConfiguration.getEnvironmentMap());
     }
 
 

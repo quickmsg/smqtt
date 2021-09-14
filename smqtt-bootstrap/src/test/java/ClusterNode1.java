@@ -16,6 +16,7 @@ public class ClusterNode1 {
                 .websocketPort(8999)
                 .websocketPath("/mqtt")
                 .options(channelOptionMap -> {
+                    channelOptionMap.
                 })//netty options设置
                 .childOptions(channelOptionMap -> {
                 }) //netty childOptions设置

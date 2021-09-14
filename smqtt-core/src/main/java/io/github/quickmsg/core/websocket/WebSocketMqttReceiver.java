@@ -35,13 +35,9 @@ public class WebSocketMqttReceiver extends AbstractSslHandler implements Receive
     private TcpServer newTcpServer(ContextView context) {
         MqttReceiveContext receiveContext = context.get(MqttReceiveContext.class);
         MqttConfiguration mqttConfiguration = receiveContext.getConfiguration();
-        TcpServer server = TcpServer.create();
-        if (mqttConfiguration.getSsl()) {
-            server.secure(sslContextSpec -> this.secure(sslContextSpec, mqttConfiguration));
-        }
+        TcpServer server = initTcpServer(mqttConfiguration);
         return server
                 .port(mqttConfiguration.getWebSocketPort())
-                .doOnBind(mqttConfiguration.getTcpServerConfig())
                 .wiretap(mqttConfiguration.getWiretap())
                 .childOption(ChannelOption.WRITE_BUFFER_WATER_MARK, new WriteBufferWaterMark(mqttConfiguration.getLowWaterMark(), mqttConfiguration.getHighWaterMark()))
                 .childOption(ChannelOption.TCP_NODELAY, true)

@@ -1,10 +1,11 @@
 package io.github.quickmsg.common.config;
 
 import io.github.quickmsg.common.auth.PasswordAuthentication;
-import io.github.quickmsg.common.environment.EnvContext;
-import reactor.netty.tcp.TcpServerConfig;
+import io.github.quickmsg.common.rule.RuleDefinition;
+import io.github.quickmsg.common.rule.SourceDefinition;
 
-import java.util.function.Consumer;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author luxurong
@@ -21,14 +22,6 @@ public interface AbstractConfiguration extends Configuration {
 
 
     /**
-     * 获取Tcp服务配置
-     *
-     * @return {@link Consumer }
-     */
-    Consumer<? super TcpServerConfig> getTcpServerConfig();
-
-
-    /**
      * 获取服务端认证
      *
      * @return {@link PasswordAuthentication}
@@ -37,11 +30,27 @@ public interface AbstractConfiguration extends Configuration {
 
 
     /**
-     * 获取启动设置参数
+     * 获取规则引擎
      *
-     * @return {@link BootstrapConfig}
+     * @return {@link RuleDefinition}
      */
-    BootstrapConfig getBootstrapConfig();
+    List<RuleDefinition> getRuleDefinitions();
+
+
+    /**
+     * 获取source
+     *
+     * @return {@link SourceDefinition}
+     */
+    List<SourceDefinition> getSourceDefinitions();
+
+
+    /**
+     * 获取环境参数
+     *
+     * @return {@link Map}
+     */
+    Map<Object, Object> getEnvironmentMap();
 
 }
 

@@ -1,7 +1,6 @@
 package io.github.quickmsg.persistent.registry;
 
 import io.github.quickmsg.common.config.BootstrapConfig;
-import io.github.quickmsg.common.environment.EnvContext;
 import io.github.quickmsg.common.message.MessageRegistry;
 import io.github.quickmsg.common.message.RetainMessage;
 import io.github.quickmsg.common.message.SessionMessage;
@@ -42,9 +41,8 @@ public class DbMessageRegistry implements MessageRegistry {
 
 
     @Override
-    public void startUp(BootstrapConfig bootstrapConfig) {
-        BootstrapConfig.DBConfig dbConfig = bootstrapConfig.getSmqttConfig().getDbConfig();
-
+    public void startUp(Map<Object, Object> environmentMap) {
+        BootstrapConfig.DatabaseConfig dbConfig = (BootstrapConfig.DatabaseConfig) environmentMap.get(BootstrapConfig.DatabaseConfig.class);
         Properties properties = new Properties();
         properties.put("driverClassName", dbConfig.getDriverClassName());
         properties.put("url", dbConfig.getUrl());
@@ -55,7 +53,6 @@ public class DbMessageRegistry implements MessageRegistry {
         properties.put("maxWait", dbConfig.getMaxWait());
         properties.put("minIdle", dbConfig.getMinIdle());
         // to add more
-
         DruidConnectionProvider
                 .singleTon()
                 .init(properties);

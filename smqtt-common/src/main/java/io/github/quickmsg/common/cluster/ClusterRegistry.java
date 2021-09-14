@@ -1,5 +1,6 @@
 package io.github.quickmsg.common.cluster;
 
+import io.github.quickmsg.common.config.BootstrapConfig;
 import io.github.quickmsg.common.enums.ClusterStatus;
 import io.github.quickmsg.common.message.HeapMqttMessage;
 import io.github.quickmsg.common.spi.DynamicLoader;
@@ -22,7 +23,7 @@ public interface ClusterRegistry {
      *
      * @param c 集群配置
      */
-    void registry(ClusterConfig c);
+    void registry(BootstrapConfig.ClusterConfig c);
 
 
     /**

@@ -2,10 +2,15 @@ package io.github.quickmsg.core.ssl;
 
 import io.github.quickmsg.common.config.Configuration;
 import io.github.quickmsg.common.config.SslContext;
+import io.github.quickmsg.core.mqtt.MqttConfiguration;
+import io.github.quickmsg.core.mqtt.MqttReceiveContext;
+import io.netty.channel.ChannelOption;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
 import lombok.extern.slf4j.Slf4j;
 import reactor.netty.tcp.SslProvider;
+import reactor.netty.tcp.TcpServer;
+import reactor.util.context.ContextView;
 
 import java.io.File;
 
@@ -39,4 +44,21 @@ public class AbstractSslHandler {
         }
 
     }
+
+
+    public TcpServer initTcpServer(MqttConfiguration mqttConfiguration){
+        TcpServer server = TcpServer.create();
+        if (mqttConfiguration.getSsl()) {
+            server.secure(sslContextSpec -> this.secure(sslContextSpec, mqttConfiguration));
+        }
+        if (mqttConfiguration.getOptions() != null) {
+            mqttConfiguration.getOptions().forEach((k, v) -> server.option(ChannelOption.valueOf(k), v));
+        }
+        if (mqttConfiguration.getChildOptions() != null) {
+            mqttConfiguration.getChildOptions().forEach((k, v) -> server.option(ChannelOption.valueOf(k), v));
+        }
+        return server;
+    }
+
+
 }
