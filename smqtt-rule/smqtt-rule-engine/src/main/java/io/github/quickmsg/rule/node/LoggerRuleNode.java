@@ -1,6 +1,7 @@
 package io.github.quickmsg.rule.node;
 
 import io.github.quickmsg.rule.RuleNode;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import reactor.util.context.ContextView;
 

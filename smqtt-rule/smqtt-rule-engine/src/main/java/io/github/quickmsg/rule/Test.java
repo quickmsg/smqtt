@@ -1,5 +1,6 @@
 package io.github.quickmsg.rule;
 
+import io.github.quickmsg.common.utils.JacksonUtil;
 import org.apache.commons.jexl3.*;
 
 import java.util.HashMap;
@@ -34,14 +35,18 @@ public class Test {
 
 
         JexlContext context1 = new MapContext();
-        Map<String,String> msp = new HashMap<>();
-        msp.put("hah","sddd");
+        Map<String,Object> msp = new HashMap<>();
+        msp.put("hah",2);
         context1.set("test", msp);
         JexlEngine jexl2 = new JexlBuilder().create();
         JxltEngine jxlt = jexl2.createJxltEngine();
-        JxltEngine.Expression expr = jxlt.createExpression("Hello ${test.hah}");
+        String exp = "{'key' :${test.hah}}";
+        JxltEngine.Expression expr = jxlt.createExpression(exp);
+
         String hello = expr.evaluate(context1).toString();
-        System.out.println(hello);
+        Map map=JacksonUtil.json2Bean(hello,Map.class);
+
+        System.out.println(map);
     }
 
 }

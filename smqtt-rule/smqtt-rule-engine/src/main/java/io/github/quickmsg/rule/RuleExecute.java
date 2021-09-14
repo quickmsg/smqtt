@@ -1,9 +1,6 @@
 package io.github.quickmsg.rule;
 
-import org.apache.commons.jexl3.JexlBuilder;
-import org.apache.commons.jexl3.JexlEngine;
-import org.apache.commons.jexl3.JexlExpression;
-import org.apache.commons.jexl3.MapContext;
+import org.apache.commons.jexl3.*;
 import reactor.util.context.ContextView;
 
 import java.util.function.Consumer;
@@ -13,7 +10,9 @@ import java.util.function.Consumer;
  */
 public interface RuleExecute {
 
-    JexlEngine JEXL_ENGINE = new JexlBuilder().create();
+    JexlEngine J_EXL_ENGINE = new JexlBuilder().create();
+
+    JxltEngine T_J_EXL_ENGINE = new JexlBuilder().create().createJxltEngine();
 
 
     /**
@@ -25,11 +24,33 @@ public interface RuleExecute {
     void execute(ContextView context);
 
 
-    default Object triggerScript(String script,Consumer<MapContext> mapContextConsumer) {
-        JexlExpression e = JEXL_ENGINE.createExpression(script);
+    /**
+     * 执行脚本
+     *
+     * @param script             脚本
+     * @param mapContextConsumer 设置参数
+     * @return Object 返回值
+     */
+    default Object triggerScript(String script, Consumer<MapContext> mapContextConsumer) {
+        JexlExpression e = J_EXL_ENGINE.createExpression(script);
         MapContext context = new MapContext();
         mapContextConsumer.accept(context);
         return e.evaluate(context);
+    }
+
+    /**
+     * 执行模版
+     *
+     * @param script             模版
+     * @param mapContextConsumer 设置参数
+     * @return Object 返回值
+     */
+    default Object triggerTemplate(String script, Consumer<MapContext> mapContextConsumer) {
+        J_EXL_ENGINE.createJxltEngine();
+        JxltEngine.Expression expression = T_J_EXL_ENGINE.createExpression(script);
+        MapContext context = new MapContext();
+        mapContextConsumer.accept(context);
+        return expression.evaluate(context);
     }
 
 }
