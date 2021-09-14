@@ -148,7 +148,7 @@ public class Bootstrap {
 
 
     private Mono<Void> startHttp() {
-        return httpConfig != null && websocketConfig.isEnable() ? new HttpTransportFactory().createTransport(this.buildHttpConfiguration())
+        return httpConfig != null && httpConfig.isEnable() ? new HttpTransportFactory().createTransport(this.buildHttpConfiguration())
                 .start()
                 .doOnSuccess(transports::add).doOnError(throwable -> log.error("start http error", throwable)).then() : Mono.empty();
     }

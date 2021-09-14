@@ -1,5 +1,5 @@
-import io.github.quickmsg.common.cluster.ClusterConfig;
-import io.github.quickmsg.common.config.SslContext;
+import ch.qos.logback.classic.Level;
+import io.github.quickmsg.common.config.BootstrapConfig;
 import io.github.quickmsg.core.Bootstrap;
 
 /**
@@ -11,22 +11,34 @@ public class ClusterNode2 {
 
     @org.junit.Test
     public void startServer() throws InterruptedException {
+
         Bootstrap bootstrap = Bootstrap.builder()
-                .port(8556)
-                .options(channelOptionMap -> {})//netty options设置
-                .childOptions(channelOptionMap ->{}) //netty childOptions设置
-                .highWaterMark(1000000)
-                .lowWaterMark(1000)
-                .reactivePasswordAuth((U,P,C)->true)
-                .ssl(false)
-                .wiretap(true)
-                .clusterConfig(
-                        ClusterConfig.builder()
-                        .clustered(true)
-                                .port(7772)
-                                .nodeName("node-3")
-                                .clusterUrl("127.0.0.1:7771,127.0.0.1:7773")
+                .rootLevel(Level.DEBUG)
+                .tcpConfig(
+                        BootstrapConfig
+                                .TcpConfig
+                                .builder()
+                                .port(8551)
+                                .username("smqtt")
+                                .password("smqtt")
                                 .build())
+                .httpConfig(
+                        BootstrapConfig
+                                .HttpConfig
+                                .builder()
+                                .enable(true)
+                                .accessLog(true)
+                                .build())
+                .clusterConfig(
+                        BootstrapConfig.
+                                ClusterConfig
+                                .builder()
+                                .enable(true)
+                                .node("node-3")
+                                .namespace("smqtt")
+                                .port(7772)
+                                .url("127.0.0.1:7773,127.0.0.1:7771").
+                                build())
                 .build()
                 .start().block();
         assert bootstrap != null;
