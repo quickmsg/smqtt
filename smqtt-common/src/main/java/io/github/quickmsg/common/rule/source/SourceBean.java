@@ -1,4 +1,4 @@
-package io.github.quickmsg.source;
+package io.github.quickmsg.common.rule.source;
 
 import io.github.quickmsg.common.rule.Source;
 import io.github.quickmsg.common.spi.DynamicLoader;
@@ -43,5 +43,12 @@ public interface SourceBean {
      * @return Object
      */
     Object transmit(Object object);
+
+    /**
+     * 关闭
+     *
+     * @return {@link Boolean}
+     */
+    Boolean close(Map<String, Object> sourceParam);
 
 }

@@ -2,6 +2,7 @@ package io.github.quickmsg.source;
 
 import io.github.quickmsg.common.rule.Source;
 import io.github.quickmsg.common.rule.SourceDefinition;
+import io.github.quickmsg.common.rule.source.SourceBean;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -12,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class SourceManager {
 
-   private static final Map<Source,SourceBean>  CACHE_BEANS = new ConcurrentHashMap<>();
+   private static final Map<Source, SourceBean>  CACHE_BEANS = new ConcurrentHashMap<>();
 
 
    public static SourceBean getSourceBean(Source source){

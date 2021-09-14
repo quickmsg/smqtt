@@ -71,7 +71,7 @@ public interface ReceiveContext<T extends Configuration> extends BiConsumer<Mqtt
 
 
     /**
-     * 集群注册器
+     * 规则引擎注册器
      *
      * @return {@link DslExecutor}
      */
