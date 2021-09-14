@@ -6,6 +6,7 @@ import io.github.quickmsg.common.context.ReceiveContext;
 import io.github.quickmsg.common.message.HeapMqttMessage;
 import io.github.quickmsg.common.message.SmqttMessage;
 import io.github.quickmsg.common.protocol.ProtocolAdaptor;
+import io.github.quickmsg.common.rule.DslExecutor;
 import io.github.quickmsg.common.spi.DynamicLoader;
 import io.github.quickmsg.common.utils.MessageUtils;
 import io.netty.handler.codec.mqtt.MqttFixedHeader;
@@ -43,6 +44,7 @@ public class MessageProxy {
             MqttChannel mqttChannel = (MqttChannel) invocation.getArgs()[0];
             SmqttMessage<MqttMessage> smqttMessage = (SmqttMessage<MqttMessage>) invocation.getArgs()[1];
             ReceiveContext<Configuration> mqttReceiveContext = (ReceiveContext<Configuration>) invocation.getArgs()[2];
+            DslExecutor dslExecutor=mqttReceiveContext.getDslExecutor();
             MqttMessage message = smqttMessage.getMessage();
             if (!smqttMessage.getIsCluster() && message instanceof MqttPublishMessage) {
                 MqttPublishMessage publishMessage = (MqttPublishMessage) message;
@@ -50,7 +52,9 @@ public class MessageProxy {
                 if (mqttReceiveContext.getConfiguration().getClusterConfig().isEnable()) {
                     mqttReceiveContext.getClusterRegistry().spreadPublishMessage(heapMqttMessage).subscribeOn(Schedulers.boundedElastic()).subscribe();
                 }
-                // todo 添加规则引起切入点
+                if(dslExecutor.isExecute()){
+                    dslExecutor.executeRule(mqttChannel,heapMqttMessage,mqttReceiveContext);
+                }
             }
             return invocation.proceed();
         }

@@ -18,16 +18,9 @@ public class ClusterNode3 {
                         BootstrapConfig
                                 .TcpConfig
                                 .builder()
-                                .port(8551)
+                                .port(8553)
                                 .username("smqtt")
                                 .password("smqtt")
-                                .build())
-                .httpConfig(
-                        BootstrapConfig
-                                .HttpConfig
-                                .builder()
-                                .enable(true)
-                                .accessLog(true)
                                 .build())
                 .clusterConfig(
                         BootstrapConfig.

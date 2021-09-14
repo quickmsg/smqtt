@@ -22,13 +22,6 @@ public class ClusterNode2 {
                                 .username("smqtt")
                                 .password("smqtt")
                                 .build())
-                .httpConfig(
-                        BootstrapConfig
-                                .HttpConfig
-                                .builder()
-                                .enable(true)
-                                .accessLog(true)
-                                .build())
                 .clusterConfig(
                         BootstrapConfig.
                                 ClusterConfig
