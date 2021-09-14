@@ -69,7 +69,15 @@ smqtt:
 
   rules:
     - ruleType: KAFKA
-      sourceName: testKafka
+      ruleName: testKafka
+      param:
+      script:
+      nextDefinition:
+
+  sources:
+    - source: KAFKA
+      sourceName: kafka
+      replace:
       sourceAttributes:
         topic: testTopic
         bootstrapServers: localhost:9092
