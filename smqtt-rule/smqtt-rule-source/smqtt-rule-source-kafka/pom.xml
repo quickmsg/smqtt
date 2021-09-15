@@ -12,6 +12,8 @@
     <artifactId>smqtt-rule-source-kafka</artifactId>
     <version>1.0.7</version>
 
+    <url>https://github.com/quickmsg/smqtt</url>
+
     <dependencies>
         <!--kafka客户端-->
         <dependency>

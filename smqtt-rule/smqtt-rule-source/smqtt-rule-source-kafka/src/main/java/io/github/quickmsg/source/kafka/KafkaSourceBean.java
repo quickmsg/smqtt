@@ -17,8 +17,7 @@ import java.util.Properties;
 public class KafkaSourceBean implements SourceBean {
 
 
-    // TODO 类型
-    public static KafkaProducer<String, String> producer;
+    public KafkaProducer<String, Object> producer;
 
     private String topic;
 
@@ -58,24 +57,17 @@ public class KafkaSourceBean implements SourceBean {
      */
     @Override
     public Object transmit(Object object) {
-       /* ReceiveContext<?> receiveContext =  ((ContextView)object).get(ReceiveContext.class);
-        RuleData request = ((ContextView)object).get(RuleData.class);
-        HeapMqttMessage heapMqttMessage = ((ContextView)object).get(HeapMqttMessage.class);*/
-
-        // 发送发布消息到kafka
-        ProducerRecord record = new ProducerRecord<String, String>(topic, object.toString());
-        producer.send(record);
+        if (producer != null) {
+            ProducerRecord<String, Object> record = new ProducerRecord<>(topic, object);
+            producer.send(record);
+        }
         return object;
     }
 
-    /**
-     * 关闭
-     *
-     * @param sourceParam 参数
-     * @return {@link Boolean}
-     */
+
     @Override
-    public Boolean close(Map<String, Object> sourceParam) {
-        return null;
+    public void close() {
+        producer.close();
     }
+
 }

@@ -44,10 +44,9 @@ public interface SourceBean {
     Object transmit(Object object);
 
     /**
-     * 关闭
+     * 关闭资源
      *
-     * @return {@link Boolean}
      */
-    Boolean close(Map<String, Object> sourceParam);
+    void close();
 
 }
