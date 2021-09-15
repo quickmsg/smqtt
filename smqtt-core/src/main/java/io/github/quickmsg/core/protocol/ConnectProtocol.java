@@ -57,12 +57,13 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
         ChannelRegistry channelRegistry = mqttReceiveContext.getChannelRegistry();
         TopicRegistry topicRegistry = mqttReceiveContext.getTopicRegistry();
         PasswordAuthentication passwordAuthentication = mqttReceiveContext.getPasswordAuthentication();
-        if (channelRegistry.exists(clientIdentifier)){
+        if (channelRegistry.exists(clientIdentifier)) {
             return mqttChannel.write(
                     MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_IDENTIFIER_REJECTED),
                     false).then(mqttChannel.close());
         }
-        if (MqttVersion.MQTT_3_1_1.protocolLevel() != (byte) mqttConnectVariableHeader.version()) {
+        if (MqttVersion.MQTT_3_1_1.protocolLevel() != (byte) mqttConnectVariableHeader.version()
+                && MqttVersion.MQTT_3_1.protocolLevel() != (byte) mqttConnectVariableHeader.version()) {
             return mqttChannel.write(
                     MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_UNACCEPTABLE_PROTOCOL_VERSION),
                     false).then(mqttChannel.close());

@@ -1,7 +1,6 @@
 package io.github.quickmsg.common.channel;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.quickmsg.common.enums.ChannelStatus;
 import io.github.quickmsg.common.topic.SubscribeTopic;
 import io.github.quickmsg.common.utils.MessageUtils;
@@ -248,8 +247,7 @@ public class MqttChannel {
                 Increase the reference count of bytebuf, and the reference count of retrybytebuf is 2
                 mqttChannel.write() method releases a reference count.
                  */
-                MqttMessage dupMessage = getDupMessage(mqttMessage);
-                return mqttChannel.write(Mono.just(mqttMessage)).then(offerReply(dupMessage, mqttChannel, getMessageId(mqttMessage), replyMqttMessageMap));
+                return mqttChannel.write(Mono.just(mqttMessage)).then(offerReply(getReplyMqttMessage(mqttMessage), mqttChannel, getMessageId(mqttMessage), replyMqttMessageMap));
             } else {
                 return mqttChannel.write(Mono.just(mqttMessage));
             }
@@ -264,6 +262,16 @@ public class MqttChannel {
             } else {
                 return -1; // client send connect key
             }
+        }
+
+
+        private MqttMessage getReplyMqttMessage(MqttMessage mqttMessage) {
+            if (mqttMessage instanceof MqttPublishMessage) {
+                return ((MqttPublishMessage) mqttMessage).copy().retain(Integer.MAX_VALUE >> 2);
+            } else {
+                return mqttMessage;
+            }
+
         }
 
 
@@ -282,9 +290,6 @@ public class MqttChannel {
                     oldFixedHeader.isRetain(),
                     oldFixedHeader.remainingLength());
             Object payload = mqttMessage.payload();
-            if (payload instanceof ByteBuf) {
-                payload = ((ByteBuf) payload).copy().retain(Integer.MAX_VALUE >> 2);
-            }
             try {
                 Constructor<?> constructor = mqttMessage.getClass().getDeclaredConstructors()[0];
                 constructor.setAccessible(true);
@@ -312,7 +317,7 @@ public class MqttChannel {
         public Mono<Void> offerReply(MqttMessage message, final MqttChannel mqttChannel, final int messageId, Map<MqttMessageType, Map<Integer, Disposable>> replyMqttMessageMap) {
             return Mono.fromRunnable(() ->
                     replyMqttMessageMap.computeIfAbsent(message.fixedHeader().messageType(), mqttMessageType -> new ConcurrentHashMap<>(8)).put(messageId,
-                            mqttChannel.write(Mono.just(message))
+                            mqttChannel.write(Mono.fromCallable(()->getDupMessage(message)))
                                     .delaySubscription(Duration.ofSeconds(5))
                                     .repeat(10)
                                     .doOnError(error -> {
