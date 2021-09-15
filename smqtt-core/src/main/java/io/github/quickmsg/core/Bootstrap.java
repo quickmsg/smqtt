@@ -3,7 +3,7 @@ package io.github.quickmsg.core;
 import ch.qos.logback.classic.Level;
 import io.github.quickmsg.common.config.BootstrapConfig;
 import io.github.quickmsg.common.config.SslContext;
-import io.github.quickmsg.common.rule.RuleDefinition;
+import io.github.quickmsg.common.rule.RuleChainDefinition;
 import io.github.quickmsg.common.rule.source.SourceDefinition;
 import io.github.quickmsg.common.transport.Transport;
 import io.github.quickmsg.common.utils.LoggerLevel;
@@ -46,7 +46,7 @@ public class Bootstrap {
 
     private BootstrapConfig.DatabaseConfig databaseConfig;
 
-    private List<RuleDefinition> ruleDefinitions;
+    private List<RuleChainDefinition> ruleChainDefinitions;
 
     private List<SourceDefinition> sourceDefinitions;
 
@@ -88,7 +88,7 @@ public class Bootstrap {
         }
         mqttConfiguration.setOptions(tcpConfig.getOptions());
         mqttConfiguration.setChildOptions(tcpConfig.getChildOptions());
-        mqttConfiguration.setRuleDefinitions(ruleDefinitions);
+        mqttConfiguration.setRuleChainDefinitions(ruleChainDefinitions);
         mqttConfiguration.setSourceDefinitions(sourceDefinitions);
         Map<Object, Object> environmentMap = new HashMap<>();
         environmentMap.put(BootstrapConfig.RedisConfig.class, this.redisConfig);

@@ -57,7 +57,7 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
 
     public AbstractReceiveContext(T configuration, Transport<T> transport) {
         AbstractConfiguration abstractConfiguration = castConfiguration(configuration);
-        RuleDslParser ruleDslParser = new RuleDslParser(abstractConfiguration.getRuleDefinitions());
+        RuleDslParser ruleDslParser = new RuleDslParser(abstractConfiguration.getRuleChainDefinitions());
         this.configuration = configuration;
         this.transport = transport;
         this.dslExecutor = ruleDslParser.parseRule();

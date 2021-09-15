@@ -42,7 +42,7 @@ public class JacksonUtil {
         try {
             return mapper.readValue(jsonData, beanType);
         } catch (Exception e) {
-            log.error("JacksonUtil json2Bean error", e);
+            log.error("JacksonUtil json {}  error",jsonData, e);
             return null;
         }
     }

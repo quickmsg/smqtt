@@ -2,6 +2,8 @@ package io.github.quickmsg.source.kafka;
 
 import io.github.quickmsg.common.rule.source.Source;
 import io.github.quickmsg.common.rule.source.SourceBean;
+import io.github.quickmsg.common.utils.JacksonUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 
@@ -14,6 +16,7 @@ import java.util.Properties;
  * @author zhaopeng
  * @date 2021/09/14
  */
+@Slf4j
 public class KafkaSourceBean implements SourceBean {
 
 
@@ -36,12 +39,12 @@ public class KafkaSourceBean implements SourceBean {
     @Override
     public Boolean bootstrap(Map<String, Object> sourceParam) {
         try {
-            // 配置信息
-            Properties props = new Properties();
-            props.put("bootstrap.servers", sourceParam.get("bootstrapServers"));
-            topic = sourceParam.get("topic").toString();
-            // 创建生产者实例
-            producer = new KafkaProducer<>(props);
+//            // 配置信息
+//            Properties props = new Properties();
+//            props.put("bootstrap.servers", sourceParam.get("bootstrapServers"));
+//            topic = sourceParam.get("topic").toString();
+//            // 创建生产者实例
+//            producer = new KafkaProducer<>(props);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -56,12 +59,12 @@ public class KafkaSourceBean implements SourceBean {
      * @return {@link Object}
      */
     @Override
-    public Object transmit(Object object) {
+    public void transmit(Map<String, Object>  object) {
+        log.info("kafka object {}",object);
         if (producer != null) {
-            ProducerRecord<String, Object> record = new ProducerRecord<>(topic, object);
-            producer.send(record);
+//            ProducerRecord<String, Object> record = new ProducerRecord<>(topic, object);
+//            producer.send(record);
         }
-        return object;
     }
 
 

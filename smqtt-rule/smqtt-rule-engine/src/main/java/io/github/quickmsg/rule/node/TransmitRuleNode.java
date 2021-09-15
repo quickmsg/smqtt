@@ -7,6 +7,7 @@ import io.github.quickmsg.rule.RuleNode;
 import io.github.quickmsg.source.SourceManager;
 import reactor.util.context.ContextView;
 
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -31,13 +32,12 @@ public class TransmitRuleNode implements RuleNode {
     @Override
     public void execute(ContextView contextView) {
         HeapMqttMessage heapMqttMessage = contextView.get(HeapMqttMessage.class);
-        Object param = Optional.ofNullable(script)
-                .map(spt ->
-                        triggerTemplate(spt, context -> {
-                            HeapMqttMessage mqttMessage = contextView.get(HeapMqttMessage.class);
-                            mqttMessage.getKeyMap().forEach(context::set);
-                        }))
-                .orElseGet(() -> JacksonUtil.map2Json(heapMqttMessage.getKeyMap()));
+        Map<String,Object> param = Optional.ofNullable(script)
+                .map(spt ->JacksonUtil.json2Bean( triggerTemplate(spt, context -> {
+                            heapMqttMessage.getKeyMap().forEach(context::set);
+                        }).toString(),Map.class)
+                )
+                .orElseGet(() -> heapMqttMessage.getKeyMap());
         SourceManager.getSourceBean(source).transmit(param);
         executeNext(contextView);
     }

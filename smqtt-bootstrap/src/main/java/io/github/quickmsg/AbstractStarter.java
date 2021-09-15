@@ -42,6 +42,7 @@ public abstract class AbstractStarter {
                     config = mapper.readValue(new File(path), BootstrapConfig.class);
                 } catch (Exception e) {
                     log.error("yaml read error", e);
+                    return;
                 }
             } else {
                 throw new NotSupportConfigException();
@@ -58,7 +59,7 @@ public abstract class AbstractStarter {
                 .clusterConfig(config.getSmqttConfig().getClusterConfig())
                 .redisConfig(config.getSmqttConfig().getRedisConfig())
                 .databaseConfig(config.getSmqttConfig().getDatabaseConfig())
-                .ruleDefinitions(config.getSmqttConfig().getRuleDefinitions())
+                .ruleChainDefinitions(config.getSmqttConfig().getRuleChainDefinitions())
                 .sourceDefinitions(config.getSmqttConfig().getRuleSources())
                 .build()
                 .doOnStarted(AbstractStarter::printUiUrl).startAwait();

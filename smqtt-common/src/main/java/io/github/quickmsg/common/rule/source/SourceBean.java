@@ -38,14 +38,13 @@ public interface SourceBean {
     /**
      * 转发数据
      *
-     * @param object {@link Source}
+     * @param object {@link Map}
      * @return Object
      */
-    Object transmit(Object object);
+    void transmit(Map<String, Object> object);
 
     /**
      * 关闭资源
-     *
      */
     void close();
 

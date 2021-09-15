@@ -2,7 +2,7 @@ package io.github.quickmsg.common.config;
 
 import ch.qos.logback.classic.Level;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.github.quickmsg.common.rule.RuleDefinition;
+import io.github.quickmsg.common.rule.RuleChainDefinition;
 import io.github.quickmsg.common.rule.source.SourceDefinition;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -82,7 +82,7 @@ public class BootstrapConfig {
          * 规则定义
          */
         @JsonProperty("rules")
-        private List<RuleDefinition> ruleDefinitions;
+        private List<RuleChainDefinition> ruleChainDefinitions;
 
         /**
          * 规则定义
@@ -100,7 +100,7 @@ public class BootstrapConfig {
         /**
          * 端口
          */
-        private Integer port ;
+        private Integer port;
 
         /**
          * 用户名

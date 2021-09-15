@@ -1,16 +1,16 @@
 package io.github.quickmsg.common.rule;
 
 import io.github.quickmsg.common.enums.RuleType;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * @author luxurong
  */
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
+@Setter
+@ToString
 public class RuleDefinition {
 
 
@@ -21,8 +21,6 @@ public class RuleDefinition {
     private Object param;
 
     private String script;
-
-    private RuleDefinition nextDefinition;
 
 
 }

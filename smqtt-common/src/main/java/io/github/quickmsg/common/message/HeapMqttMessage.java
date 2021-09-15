@@ -1,6 +1,5 @@
 package io.github.quickmsg.common.message;
 
-import io.github.quickmsg.common.utils.JacksonUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -35,7 +34,7 @@ public class HeapMqttMessage {
         keys.put("topic", this.topic);
         keys.put("qos", this.qos);
         keys.put("retain", this.retain);
-        keys.put("msg", JacksonUtil.json2Bean(new String(message), Map.class));
+        keys.put("msg", new String(message));
         return keys;
     }
 

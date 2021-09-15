@@ -73,8 +73,12 @@ smqtt:
       nodes: 127.0.0.1:26379,127.0.0.1:26379,127.0.0.1:26379
 
   rules:
-    - ruleType: KAFKA
-      ruleName: testKafka
+    - ruleName: 过滤
+      chain:
+        - ruleType: PREDICATE
+          script:  topic.equals("test/test")
+        - ruleType: KAFKA
+          script:  '{"topic":${topic},"msg":${msg},"qos":${qos}}'
   sources:
     - source: KAFKA
       sourceName: kafka

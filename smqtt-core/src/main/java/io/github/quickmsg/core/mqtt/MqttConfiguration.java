@@ -4,6 +4,7 @@ import io.github.quickmsg.common.auth.PasswordAuthentication;
 import io.github.quickmsg.common.config.AbstractConfiguration;
 import io.github.quickmsg.common.config.BootstrapConfig;
 import io.github.quickmsg.common.config.SslContext;
+import io.github.quickmsg.common.rule.RuleChainDefinition;
 import io.github.quickmsg.common.rule.RuleDefinition;
 import io.github.quickmsg.common.rule.source.SourceDefinition;
 import io.github.quickmsg.core.ssl.AbstractSslHandler;
@@ -50,7 +51,7 @@ public class MqttConfiguration extends AbstractSslHandler implements AbstractCon
 
     private BootstrapConfig.ClusterConfig clusterConfig;
 
-    private List<RuleDefinition> ruleDefinitions;
+    private List<RuleChainDefinition> ruleChainDefinitions;
 
     private List<SourceDefinition> sourceDefinitions;
 

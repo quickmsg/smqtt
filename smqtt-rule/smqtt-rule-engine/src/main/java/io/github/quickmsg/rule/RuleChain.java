@@ -8,6 +8,7 @@ import reactor.core.publisher.Mono;
 import reactor.util.context.ContextView;
 
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author luxurong
@@ -22,15 +23,13 @@ public class RuleChain {
 
     private LinkedList<RuleNode> ruleNodeList = new LinkedList<>();
 
-    public void addRule(RuleDefinition definition) {
-        RuleDefinition root = definition;
-        RuleNode rootNode = this.parseNode(definition);
+    public void addRules(List<RuleDefinition> definitions) {
+        RuleNode rootNode = this.parseNode(definitions.get(0));
         RuleNode preNode = rootNode;
-        while (root != null) {
-            RuleNode node = this.parseNode(definition);
+        for (int i = 1; i < definitions.size(); i++) {
+            RuleNode node = this.parseNode(definitions.get(i));
             preNode.setNextRuleNode(node);
             preNode = node;
-            root = root.getNextDefinition();
         }
         ruleNodeList.addLast(rootNode);
     }
@@ -45,7 +44,7 @@ public class RuleChain {
             case KAFKA:
                 return new TransmitRuleNode(Source.KAFKA, definition.getScript());
             case TOPIC:
-                return new TopicRuleNode(String.valueOf(definition.getParam()),definition.getScript());
+                return new TopicRuleNode(String.valueOf(definition.getParam()), definition.getScript());
             case LOG:
                 return new LoggerRuleNode();
             case ROCKET_MQ:
