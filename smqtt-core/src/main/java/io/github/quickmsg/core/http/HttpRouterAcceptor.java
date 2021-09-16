@@ -13,7 +13,6 @@ import reactor.netty.http.server.HttpServerResponse;
 import reactor.netty.http.server.HttpServerRoutes;
 
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
@@ -69,16 +68,17 @@ public class HttpRouterAcceptor implements Consumer<HttpServerRoutes> {
         if (router.resource() && !httpConfiguration.getEnableAdmin()) {
             return Mono.empty();
         } else {
-            Optional.ofNullable(header)
-                    .ifPresent(hd -> httpServerResponse.addHeader(hd.key(), hd.value()));
-            Optional.ofNullable(headers)
-                    .ifPresent(hds -> Arrays.stream(hds.headers()).forEach(hd -> httpServerResponse.addHeader(hd.key(), hd.value())));
-            Optional.ofNullable(allowCors)
-                    .ifPresent(cors -> {
-                        httpServerResponse.addHeader(HttpHeaderNames.ACCESS_CONTROL_ALLOW_HEADERS, "*");
-                        httpServerResponse.addHeader(HttpHeaderNames.ACCESS_CONTROL_ALLOW_METHODS, "*");
-                        httpServerResponse.addHeader(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
-                    });
+            if (header != null) {
+                httpServerResponse.addHeader(header.key(), header.value());
+            }
+            if (headers != null) {
+                Arrays.stream(headers.headers()).forEach(hd -> httpServerResponse.addHeader(hd.key(), hd.value()));
+            }
+            if (allowCors != null) {
+                httpServerResponse.addHeader(HttpHeaderNames.ACCESS_CONTROL_ALLOW_HEADERS, "*");
+                httpServerResponse.addHeader(HttpHeaderNames.ACCESS_CONTROL_ALLOW_METHODS, "*");
+                httpServerResponse.addHeader(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
+            }
             return httpActor.doRequest(httpServerRequest, httpServerResponse, httpConfiguration);
         }
     }
