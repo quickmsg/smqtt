@@ -60,7 +60,7 @@ public class KafkaSourceBean implements SourceBean {
     @Override
     public void transmit(Map<String, Object> object) {
         String json = JacksonUtil.bean2Json(object);
-        log.info("kafka object {}", json);
+        log.info("kafka send msg {}", json);
         if (producer != null) {
             ProducerRecord<String, Object> record = new ProducerRecord<>(topic, json);
             producer.send(record);

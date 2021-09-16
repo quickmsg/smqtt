@@ -45,7 +45,6 @@ public class RocketmqSourceBean implements SourceBean {
         try {
             topic = sourceParam.get("topic").toString();
             tags = sourceParam.get("tags").toString();
-
             producer = new DefaultMQProducer(sourceParam.get("producerGroup").toString());
             // 设置NameServer地址
             producer.setNamesrvAddr(sourceParam.get("namesrvAddr").toString());
@@ -69,12 +68,12 @@ public class RocketmqSourceBean implements SourceBean {
     @Override
     public void transmit(Map<String, Object> object) {
         String json = JacksonUtil.bean2Json(object);
-        log.info("kafka object {}", json);
         if (producer != null) {
             Message message = new Message(topic, tags, json.getBytes());
             //发送消息v
             try {
                 SendResult sendResult = producer.send(message);
+                log.info("rocketMq send status {}", sendResult.getSendStatus());
             } catch (Exception e) {
                 e.printStackTrace();
             }
