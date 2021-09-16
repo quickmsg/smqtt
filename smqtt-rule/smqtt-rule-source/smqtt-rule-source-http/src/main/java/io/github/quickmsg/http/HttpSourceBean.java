@@ -23,8 +23,8 @@ public class HttpSourceBean implements SourceBean {
     }
 
     @Override
-    public Object transmit(Object object) {
-        return null;
+    public void transmit(Map<String, Object> object) {
+
     }
 
     @Override

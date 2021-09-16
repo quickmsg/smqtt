@@ -32,10 +32,12 @@ public class TransmitRuleNode implements RuleNode {
     @Override
     public void execute(ContextView contextView) {
         HeapMqttMessage heapMqttMessage = contextView.get(HeapMqttMessage.class);
-        Map<String,Object> param = Optional.ofNullable(script)
-                .map(spt ->JacksonUtil.json2Bean( triggerTemplate(spt, context -> {
-                            heapMqttMessage.getKeyMap().forEach(context::set);
-                        }).toString(),Map.class)
+        Map<String, Object> param = Optional.ofNullable(script)
+                .map(spt -> JacksonUtil.json2Bean(triggerTemplate(spt, context -> {
+                            heapMqttMessage.getKeyMap().forEach((key, value) -> {
+                                context.set(key, value instanceof String ? String.format("\"" + "%s" + "\"", value) : value);
+                            });
+                        }).toString(), Map.class)
                 )
                 .orElseGet(() -> heapMqttMessage.getKeyMap());
         SourceManager.getSourceBean(source).transmit(param);
@@ -52,6 +54,5 @@ public class TransmitRuleNode implements RuleNode {
     public void setNextRuleNode(RuleNode ruleNode) {
         this.ruleNode = ruleNode;
     }
-
 
 }

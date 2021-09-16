@@ -84,9 +84,9 @@ smqtt:
       sourceName: kafka
       sourceAttributes:
         topic: testTopic
-        bootstrap.servers: localhost:9092
-        key.serializer:
-        value.serializer:
+        bootstrap.servers: 172.16.63.50:9092
+        key.serializer: org.apache.kafka.common.serialization.StringSerializer
+        value.serializer: org.apache.kafka.common.serialization.StringSerializer
 
 
 

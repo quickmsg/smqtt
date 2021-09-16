@@ -19,8 +19,7 @@ import java.util.Properties;
 @Slf4j
 public class KafkaSourceBean implements SourceBean {
 
-
-    public KafkaProducer<String, Object> producer;
+    private KafkaProducer<String, Object> producer;
 
     private String topic;
 
@@ -39,12 +38,12 @@ public class KafkaSourceBean implements SourceBean {
     @Override
     public Boolean bootstrap(Map<String, Object> sourceParam) {
         try {
-//            // 配置信息
-//            Properties props = new Properties();
-//            props.put("bootstrap.servers", sourceParam.get("bootstrapServers"));
-//            topic = sourceParam.get("topic").toString();
-//            // 创建生产者实例
-//            producer = new KafkaProducer<>(props);
+            // 配置信息
+            Properties props = new Properties();
+            props.putAll(sourceParam);
+            topic = sourceParam.get("topic").toString();
+            // 创建生产者实例
+            producer = new KafkaProducer<>(props);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -59,18 +58,21 @@ public class KafkaSourceBean implements SourceBean {
      * @return {@link Object}
      */
     @Override
-    public void transmit(Map<String, Object>  object) {
-        log.info("kafka object {}",object);
+    public void transmit(Map<String, Object> object) {
+        String json = JacksonUtil.bean2Json(object);
+        log.info("kafka object {}", json);
         if (producer != null) {
-//            ProducerRecord<String, Object> record = new ProducerRecord<>(topic, object);
-//            producer.send(record);
+            ProducerRecord<String, Object> record = new ProducerRecord<>(topic, json);
+            producer.send(record);
         }
     }
 
 
     @Override
     public void close() {
-        producer.close();
+        if (producer != null) {
+            producer.close();
+        }
     }
 
 }
