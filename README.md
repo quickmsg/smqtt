@@ -78,61 +78,70 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
 阻塞式启动服务：
 
 ```markdown
-Bootstrap.builder()
-          .rootLevel(Level.INFO)
-          .wiretap(false)
-          .port(8555)
-          .websocketPort(8999)
-          .options(channelOptionMap -> { })//netty options设置
-          .childOptions(channelOptionMap -> { }) //netty childOptions设置
-          .highWaterMark(1000000)
-          .reactivePasswordAuth((U, P) -> true)
-          .lowWaterMark(1000)
-          .ssl(false)
-          .sslContext(new SslContext("crt", "key"))
-          .isWebsocket(true)
-          .httpOptions(Bootstrap.HttpOptions.builder().enableAdmin(true).ssl(false).accessLog(true).build())
-          .clusterConfig(
-               ClusterConfig.builder()
-                                .clustered(false)
+  Bootstrap bootstrap = Bootstrap.builder()
+                .rootLevel(Level.DEBUG)
+                .tcpConfig(
+                        BootstrapConfig
+                                .TcpConfig
+                                .builder()
+                                .port(8888)
+                                .username("smqtt")
+                                .password("smqtt")
+                                .build())
+                .httpConfig(
+                        BootstrapConfig
+                                .HttpConfig
+                                .builder()
+                                .enable(true)
+                                .accessLog(true)
+                                .build())
+                .clusterConfig(
+                        BootstrapConfig.
+                                ClusterConfig
+                                .builder()
+                                .enable(true)
+                                .namespace("smqtt")
+                                .node("node-1")
                                 .port(7773)
-                                .nodeName("node-2")
-                                .clusterUrl("127.0.0.1:7771,127.0.0.1:7772")
-                                .build()
-           )
-           .started(bootstrap->{})
-           .build()
-           .startAwait();
+                                .url("127.0.0.1:7771,127.0.0.1:7772").
+                                build())
+                .build()
+                .startAwait();
 ```
 
 非阻塞式启动服务：
 
 ```markdown
-Bootstrap bootstrap = Bootstrap.builder()
-          .rootLevel(Level.INFO)
-          .wiretap(false)
-          .port(8555)
-          .websocketPort(8999)
-          .options(channelOptionMap -> { })//netty options设置
-          .childOptions(channelOptionMap -> { }) //netty childOptions设置
-          .highWaterMark(1000000)
-          .reactivePasswordAuth((U, P) -> true)
-          .lowWaterMark(1000)
-          .ssl(false)
-          .sslContext(new SslContext("crt", "key"))
-          .isWebsocket(true)
-          .httpOptions(Bootstrap.HttpOptions.builder().enableAdmin(true).ssl(false).accessLog(true).build())
-          .clusterConfig(
-               ClusterConfig.builder()
-                                .clustered(false)
+
+  Bootstrap bootstrap = Bootstrap.builder()
+                .rootLevel(Level.DEBUG)
+                .tcpConfig(
+                        BootstrapConfig
+                                .TcpConfig
+                                .builder()
+                                .port(8888)
+                                .username("smqtt")
+                                .password("smqtt")
+                                .build())
+                .httpConfig(
+                        BootstrapConfig
+                                .HttpConfig
+                                .builder()
+                                .enable(true)
+                                .accessLog(true)
+                                .build())
+                .clusterConfig(
+                        BootstrapConfig.
+                                ClusterConfig
+                                .builder()
+                                .enable(true)
+                                .namespace("smqtt")
+                                .node("node-1")
                                 .port(7773)
-                                .nodeName("node-2")
-                                .clusterUrl("127.0.0.1:7771,127.0.0.1:7772")
-                                .build()
-           )
-           .started(bootstrap->{})
-           .build()
-           .start().block();
+                                .url("127.0.0.1:7771,127.0.0.1:7772").
+                                build())
+                .build()
+                .start().block();
 ```
 
 ## jar方式
@@ -274,12 +283,19 @@ curl -H "Content-Type: application/json" -X POST -d '{"topic": "test/teus", "qos
     
 - main启动
     
-   设置httpOptions && enableAdmin = true
-   
+    1. 初始化BootstrapConfig.HttpConfig对象
     ``` 
-    Bootstrap.httpOptions(Bootstrap.HttpOptions.builder().enableAdmin(true).ssl(false).accessLog(true).build())
-  
+     BootstrapConfig
+             .HttpConfig
+             .builder()
+             .enable(true)
+             .accessLog(true)
+             .build()
     ```
+    2. 设置到Bootstrap中
+      ``` 
+        Bootstrap.builder().httpConfig(你的HttpConfig);
+      ```      
 - jar / docker 启动
     
    设置config.yaml
