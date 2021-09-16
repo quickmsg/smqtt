@@ -1,5 +1,6 @@
 package io.github.quickmsg.rule.node;
 
+import io.github.quickmsg.common.message.HeapMqttMessage;
 import io.github.quickmsg.rule.RuleNode;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ public class LoggerRuleNode implements RuleNode {
 
     @Override
     public void execute(ContextView contextView) {
+        log.debug("logger rule accept msg : {}",contextView.get(HeapMqttMessage.class).getKeyMap());
         executeNext(contextView);
     }
 
