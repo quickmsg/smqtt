@@ -10,6 +10,4 @@ module.exports = {
   ISCLUESTER:`http://${IP}:60000/smqtt/is/cluster`,
   PUBLISH:`http://${IP}:60000/smqtt/publish`,
   ROUTES: `${BASE_URL}/routes`,
-  GOODS: `${BASE_URL}/goods`,
-  GOODS_COLUMNS: `${BASE_URL}/columns`,
 }

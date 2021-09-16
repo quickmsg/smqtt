@@ -28,6 +28,10 @@
             width: '100px',
             customRender: (text, record, index) => index + 1
         },
+        {   title: 'IP',
+            dataIndex: 'address',
+            width: "200px"
+        },
         {
             title: '设备id',
             dataIndex: 'clientIdentifier'
