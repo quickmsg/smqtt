@@ -11,8 +11,10 @@ import io.scalecube.cluster.ClusterMessageHandler;
 import io.scalecube.cluster.Member;
 import io.scalecube.cluster.membership.MembershipEvent;
 import io.scalecube.cluster.transport.api.Message;
+import io.scalecube.cluster.transport.api.Transport;
+import io.scalecube.cluster.transport.api.TransportConfig;
+import io.scalecube.cluster.transport.api.TransportFactory;
 import io.scalecube.net.Address;
-import io.scalecube.transport.netty.tcp.TcpTransportFactory;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -48,7 +50,6 @@ public class ScubeClusterRegistry implements ClusterRegistry {
                     }
                     return opts;
                 })
-                .transportFactory(TcpTransportFactory::new)
                 .transport(transportConfig -> transportConfig.port(clusterConfig.getPort()))
                 .membership(opts -> opts.seedMembers(Arrays.stream(clusterConfig
                         .getUrl()
