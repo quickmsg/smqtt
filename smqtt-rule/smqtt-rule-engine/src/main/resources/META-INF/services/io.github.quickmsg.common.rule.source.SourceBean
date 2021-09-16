@@ -1,2 +1,3 @@
 io.github.quickmsg.source.kafka.KafkaSourceBean
 io.github.quickmsg.source.rocketmq.RocketmqSourceBean
+io.github.quickmsg.http.HttpSourceBean

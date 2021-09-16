@@ -1,16 +1,10 @@
 package io.github.quickmsg.source.rocketmq;
 
-import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
-import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
-import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
 import org.apache.rocketmq.client.exception.MQClientException;
-import org.apache.rocketmq.common.message.MessageExt;
-
-import java.util.List;
 
 public class TestRocketmq {
     public static void main(String[] args) throws MQClientException {
-        // TODO 1 创建消费者，指定所属的消费者组名
+      /*  // TODO 1 创建消费者，指定所属的消费者组名
         DefaultMQPushConsumer defaultMQPushConsumer = new DefaultMQPushConsumer("testProducerGroup");
         // TODO 2 指定NameServer的地址
         defaultMQPushConsumer.setNamesrvAddr("172.16.70.156:9876");
@@ -31,6 +25,6 @@ public class TestRocketmq {
 
         // TODO 5 启动消费者
         defaultMQPushConsumer.start();
-        System.out.println("消费者启动成功。。。");
+        System.out.println("消费者启动成功。。。");*/
     }
 }

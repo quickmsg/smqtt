@@ -72,30 +72,43 @@ smqtt:
       master: mymaster
       nodes: 127.0.0.1:26379,127.0.0.1:26379,127.0.0.1:26379
 
-  rules: # 规则引擎相关配置
+  #  rules: # 规则引擎相关配置
+  #    - ruleName: 过滤
+  #      chain: # 规则链
+  #        - ruleType: LOG  #转发到Log
+  #        - ruleType: PREDICATE  # 条件过滤
+  #          script:  topic.equals("test/test") #脚本
+  #        - ruleType: KAFKA  #转发到kafka
+  #          script:  '{"topic":"${topic}","msg":"${msg.test}","qos":${qos}}'
+  #  sources: # 配置数据源sources
+  #    - source: KAFKA # kafka配置
+  #      sourceName: kafka
+  #      sourceAttributes:
+  #        topic: testTopic
+  #        bootstrap.servers: 172.16.63.50:9092
+  #        key.serializer: org.apache.kafka.common.serialization.StringSerializer
+  #        value.serializer: org.apache.kafka.common.serialization.StringSerializer
+  #    - source: ROCKET_MQ # rocket mq配置
+  #      sourceName: rocketmq
+  #      sourceAttributes:
+  #        topic: testTopic
+  #        tags: testTags
+  #        namesrvAddr: 172.16.70.156:9876
+  #        instanceName: testInstanceName
+  #        producerGroup: testProducerGroup
+  rules:
     - ruleName: 过滤
-      chain: # 规则链
-        - ruleType: LOG  #转发到Log
-        - ruleType: PREDICATE  # 条件过滤
-          script:  topic.equals("test/test") #脚本
-        - ruleType: KAFKA  #转发到kafka
-          script:  '{"topic":"${topic}","msg":"${msg.test}","qos":${qos}}'
-  sources: # 配置数据源sources
-    - source: KAFKA # kafka配置
-      sourceName: kafka
+      chain:
+        - ruleType: PREDICATE
+          script:  topic.equals("test/test")
+        - ruleType: HTTP
+          script:  '{"topic":${topic},"msg":${msg},"qos":${qos}}'
+  sources:
+    - source: HTTP
+      sourceName: http
       sourceAttributes:
-        topic: testTopic
-        bootstrap.servers: 172.16.63.50:9092
-        key.serializer: org.apache.kafka.common.serialization.StringSerializer
-        value.serializer: org.apache.kafka.common.serialization.StringSerializer
-    - source: ROCKET_MQ # rocket mq配置
-      sourceName: rocketmq
-      sourceAttributes:
-        topic: testTopic
-        tags: testTags
-        namesrvAddr: 172.16.70.156:9876
-        instanceName: testInstanceName
-        producerGroup: testProducerGroup
+        url: http://www.baidu.com
+        port: 80
 
 
 
