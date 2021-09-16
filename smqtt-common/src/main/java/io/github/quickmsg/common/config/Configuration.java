@@ -1,7 +1,5 @@
 package io.github.quickmsg.common.config;
 
-import io.github.quickmsg.common.cluster.ClusterConfig;
-
 /**
  * @author luxurong
  */
@@ -90,7 +88,7 @@ public interface Configuration {
     /**
      * 获取集群配置
      *
-     * @return {@link ClusterConfig}
+     * @return {@link BootstrapConfig.ClusterConfig}
      */
     BootstrapConfig.ClusterConfig getClusterConfig();
 

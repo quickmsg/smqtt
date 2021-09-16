@@ -77,9 +77,16 @@ smqtt:
       chain:
         - ruleType: PREDICATE
           script:  topic.equals("test/test")
-        - ruleType: ROCKET_MQ
-          script:  '{"topic":${topic},"msg":${msg},"qos":${qos}}'
+        - ruleType: KAFKA
+          script:  '{"topic":"${topic}","msg":"${msg.test}","qos":${qos}}'
   sources:
+    - source: KAFKA
+      sourceName: kafka
+      sourceAttributes:
+        topic: testTopic
+        bootstrap.servers: 172.16.63.50:9092
+        key.serializer: org.apache.kafka.common.serialization.StringSerializer
+        value.serializer: org.apache.kafka.common.serialization.StringSerializer
     - source: ROCKET_MQ
       sourceName: rocketmq
       sourceAttributes:

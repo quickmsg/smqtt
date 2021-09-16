@@ -8,7 +8,6 @@ import io.github.quickmsg.source.SourceManager;
 import reactor.util.context.ContextView;
 
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * 转发节点
@@ -32,14 +31,14 @@ public class TransmitRuleNode implements RuleNode {
     @Override
     public void execute(ContextView contextView) {
         HeapMqttMessage heapMqttMessage = contextView.get(HeapMqttMessage.class);
-        Map<String, Object> param = Optional.ofNullable(script)
-                .map(spt -> JacksonUtil.json2Bean(triggerTemplate(spt, context -> {
-                            heapMqttMessage.getKeyMap().forEach((key, value) -> {
-                                context.set(key, value instanceof String ? String.format("\"" + "%s" + "\"", value) : value);
-                            });
-                        }).toString(), Map.class)
-                )
-                .orElseGet(() -> heapMqttMessage.getKeyMap());
+        Map<String, Object> param;
+        if (script != null) {
+            Object obj = triggerTemplate(script, context -> heapMqttMessage.getKeyMap().forEach(context::set));
+            param = JacksonUtil.json2Map(obj.toString(), String.class, Object.class);
+
+        } else {
+            param = heapMqttMessage.getKeyMap();
+        }
         SourceManager.getSourceBean(source).transmit(param);
         executeNext(contextView);
     }

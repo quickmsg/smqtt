@@ -1,7 +1,6 @@
 package io.github.quickmsg.core.cluster;
 
 import io.github.quickmsg.common.channel.MockMqttChannel;
-import io.github.quickmsg.common.cluster.ClusterConfig;
 import io.github.quickmsg.common.config.BootstrapConfig;
 import io.github.quickmsg.common.message.HeapMqttMessage;
 import io.github.quickmsg.common.cluster.ClusterRegistry;
