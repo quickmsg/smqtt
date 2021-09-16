@@ -21,15 +21,30 @@
       <artifactId>smqtt-common</artifactId>
       <version>1.0.7</version>
     </dependency>
+
     <dependency>
       <groupId>io.github.quickmsg</groupId>
       <artifactId>smqtt-rule-source</artifactId>
       <version>1.0.7</version>
     </dependency>
+
+    <dependency>
+      <groupId>io.github.quickmsg</groupId>
+      <artifactId>smqtt-rule-source-kafka</artifactId>
+      <version>1.0.7</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.github.quickmsg</groupId>
+      <artifactId>smqtt-rule-source-rocketmq</artifactId>
+      <version>1.0.7</version>
+    </dependency>
+
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-jexl3</artifactId>

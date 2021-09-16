@@ -17,6 +17,7 @@
     <modules>
         <module>smqtt-rule-source-kafka</module>
         <module>smqtt-rule-source-http</module>
+        <module>smqtt-rule-source-rocketmq</module>
     </modules>
 
     <dependencies>
@@ -31,11 +32,6 @@
             <artifactId>smqtt-common</artifactId>
             <version>1.0.7</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.github.quickmsg</groupId>
-            <artifactId>smqtt-rule-source-kafka</artifactId>
-            <version>1.0.7</version>
         </dependency>
     </dependencies>
 
