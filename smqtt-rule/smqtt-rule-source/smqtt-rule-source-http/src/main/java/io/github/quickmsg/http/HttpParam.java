@@ -2,6 +2,7 @@ package io.github.quickmsg.http;
 
 import lombok.Data;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -15,6 +16,6 @@ public class HttpParam {
 
     private Map<String,Object> additions;
 
-    private Map<String,Object> headers;
+    private Map<String, Object> headers;
 
 }

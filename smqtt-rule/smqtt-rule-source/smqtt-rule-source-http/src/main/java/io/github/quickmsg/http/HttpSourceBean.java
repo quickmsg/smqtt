@@ -4,6 +4,7 @@ import io.github.quickmsg.common.rule.source.Source;
 import io.github.quickmsg.common.rule.source.SourceBean;
 import io.github.quickmsg.common.utils.JacksonUtil;
 import io.netty.buffer.PooledByteBufAllocator;
+import io.netty.handler.codec.http.HttpHeaderNames;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
@@ -19,7 +20,7 @@ public class HttpSourceBean implements SourceBean {
 
     private HttpParam httpParam;
 
-    private HttpClient httpClient = HttpClient.create();
+    private HttpClient httpClient;
 
 
     @Override
@@ -34,6 +35,10 @@ public class HttpSourceBean implements SourceBean {
         httpParam.setUrl(String.valueOf(sourceParam.get("url")));
         httpParam.setHeaders((Map<String, Object>) sourceParam.get("headers"));
         httpParam.setAdditions((Map<String, Object>) sourceParam.get("additions"));
+        httpClient = HttpClient.create().headers(heads -> {
+            httpParam.getHeaders().forEach(heads::add);
+            heads.add(HttpHeaderNames.CONTENT_TYPE, "application/json; charset=utf-8");
+        });
         return true;
     }
 
