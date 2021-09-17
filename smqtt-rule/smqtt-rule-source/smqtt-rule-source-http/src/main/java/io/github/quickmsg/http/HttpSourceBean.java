@@ -2,7 +2,10 @@ package io.github.quickmsg.http;
 
 import io.github.quickmsg.common.rule.source.Source;
 import io.github.quickmsg.common.rule.source.SourceBean;
+import io.github.quickmsg.common.utils.JacksonUtil;
+import io.netty.buffer.PooledByteBufAllocator;
 import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 
 import java.util.Map;
@@ -14,9 +17,10 @@ import java.util.Map;
 @Slf4j
 public class HttpSourceBean implements SourceBean {
 
-    private String url;
+    private HttpParam httpParam;
 
-    private Integer port;
+    private HttpClient httpClient = HttpClient.create();
+
 
     @Override
     public Boolean support(Source source) {
@@ -24,27 +28,33 @@ public class HttpSourceBean implements SourceBean {
     }
 
     @Override
+    @SuppressWarnings("Unchecked")
     public Boolean bootstrap(Map<String, Object> sourceParam) {
-        url = sourceParam.get("url").toString();
-        port = (Integer) sourceParam.get("port");
+        httpParam = new HttpParam();
+        httpParam.setUrl(String.valueOf(sourceParam.get("url")));
+        httpParam.setHeaders((Map<String, Object>) sourceParam.get("headers"));
+        httpParam.setAdditions((Map<String, Object>) sourceParam.get("additions"));
         return true;
     }
 
+
     @Override
     public void transmit(Map<String, Object> object) {
-        log.info("http send msg {}", object);
-        HttpClient client = HttpClient.create();
-             client.get()
-                .uri("https://baidu.com/")
-                .responseContent()
-                .aggregate()
-                .asString()
-                .subscribe(System.out::println );
+        if (httpParam.getAdditions() != null && httpParam.getAdditions().size() > 0) {
+            httpParam.getAdditions().forEach(object::put);
+        }
+        httpClient
+                .post()
+                .uri(httpParam.getUrl())
+                .send(Mono.just(PooledByteBufAllocator.DEFAULT.directBuffer().writeBytes(JacksonUtil.bean2Json(object).getBytes())))
+                .response()
+                .log()
+                .subscribe();
     }
 
     @Override
     public void close() {
-
+        httpClient.configuration().connectionProvider().dispose();
     }
 
 

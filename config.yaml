@@ -78,8 +78,8 @@ smqtt:
         - ruleType: LOG  #转发到Log
         - ruleType: PREDICATE  # 条件过滤
           script:  topic.equals("test/test") #脚本
-#        - ruleType: KAFKA  #转发到kafka
-#          script:  '{"topic":"${topic}","msg":"${msg.test}","qos":${qos}}'
+        - ruleType: KAFKA  #转发到kafka
+          script:  '{"topic":"${topic}","msg":"${msg.test}","qos":${qos}}'
         - ruleType: HTTP
           script:  '{"topic":"${topic}","msg":"${msg.test}","qos":${qos}}'
   sources: # 配置数据源sources
