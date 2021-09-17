@@ -102,7 +102,10 @@ smqtt:
       sourceName: http
       sourceAttributes:
         url: http://www.baidu.com
-·
+        port: 80
+        headers:
+          Authorization: token value
+
 
 
 
