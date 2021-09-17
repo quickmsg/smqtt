@@ -15,6 +15,7 @@
         <module>smqtt-rule</module>
         <module>smqtt-ui</module>
         <module>smqtt-metric</module>
+        <module>smqtt-spring-boot-starter</module>
     </modules>
     <packaging>pom</packaging>
 
