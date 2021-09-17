@@ -13,6 +13,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>io.github.quickmsg</groupId>
+            <artifactId>smqtt-common</artifactId>
+            <version>1.0.7</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <artifactId>smqtt-rule-engine</artifactId>
             <groupId>io.github.quickmsg</groupId>
             <version>1.0.7</version>

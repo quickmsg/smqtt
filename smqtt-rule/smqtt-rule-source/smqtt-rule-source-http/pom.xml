@@ -18,7 +18,6 @@
     <version>1.0.7</version>
   </parent>
 
-
   <dependencies>
     <dependency>
       <groupId>io.github.quickmsg</groupId>

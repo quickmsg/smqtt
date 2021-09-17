@@ -4,7 +4,7 @@ import io.github.quickmsg.common.message.HeapMqttMessage;
 import io.github.quickmsg.common.rule.source.Source;
 import io.github.quickmsg.common.utils.JacksonUtil;
 import io.github.quickmsg.rule.RuleNode;
-import io.github.quickmsg.source.SourceManager;
+import io.github.quickmsg.rule.source.SourceManager;
 import reactor.util.context.ContextView;
 
 import java.util.Map;
