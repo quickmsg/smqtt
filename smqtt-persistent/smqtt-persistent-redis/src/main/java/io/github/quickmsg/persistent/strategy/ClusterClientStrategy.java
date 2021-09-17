@@ -24,7 +24,7 @@ public class ClusterClientStrategy implements ClientStrategy {
     @Override
     public RedissonClient getRedissonClient(BootstrapConfig.RedisConfig redisConfig) {
         Config config = new Config();
-        String[] nodes = redisConfig.getRedisCluster().getNodes().split(",");
+        String[] nodes = redisConfig.getCluster().getNodes().split(",");
         List<String> newNodes = new ArrayList(nodes.length);
         Arrays.stream(nodes).forEach((index) -> newNodes.add(index.startsWith("redis://") ? index : "redis://" + index));
 
@@ -32,12 +32,12 @@ public class ClusterClientStrategy implements ClientStrategy {
                 .addNodeAddress(newNodes.toArray(new String[0]))
                 .setTimeout(redisConfig.getTimeout())
                 .setConnectTimeout(redisConfig.getPoolConnTimeout())
-                .setScanInterval(redisConfig.getRedisCluster().getScanInterval())
-                .setReadMode(getReadMode(redisConfig.getRedisCluster().getReadMode()))
-                .setRetryAttempts(redisConfig.getRedisCluster().getRetryAttempts())
-                .setMasterConnectionPoolSize(redisConfig.getRedisCluster().getMasterConnectionPoolSize())
-                .setSlaveConnectionPoolSize(redisConfig.getRedisCluster().getSlaveConnectionPoolSize())
-                .setRetryInterval(redisConfig.getRedisCluster().getRetryInterval());
+                .setScanInterval(redisConfig.getCluster().getScanInterval())
+                .setReadMode(getReadMode(redisConfig.getCluster().getReadMode()))
+                .setRetryAttempts(redisConfig.getCluster().getRetryAttempts())
+                .setMasterConnectionPoolSize(redisConfig.getCluster().getMasterConnectionPoolSize())
+                .setSlaveConnectionPoolSize(redisConfig.getCluster().getSlaveConnectionPoolSize())
+                .setRetryInterval(redisConfig.getCluster().getRetryInterval());
 
         if (StringUtils.isNotBlank(redisConfig.getPassword())) {
             serverConfig.setPassword(redisConfig.getPassword());

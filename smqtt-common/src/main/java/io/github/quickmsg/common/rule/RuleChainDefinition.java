@@ -18,7 +18,6 @@ public class RuleChainDefinition {
 
     private String ruleName;
 
-    @JsonProperty("chain")
-    private List<RuleDefinition> ruleDefinitions;
+    private List<RuleDefinition> chain;
 
 }

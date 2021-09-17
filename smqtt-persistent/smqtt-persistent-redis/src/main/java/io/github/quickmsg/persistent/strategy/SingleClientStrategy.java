@@ -22,7 +22,7 @@ public class SingleClientStrategy implements ClientStrategy {
     @Override
     public RedissonClient getRedissonClient(BootstrapConfig.RedisConfig redisConfig) {
         Config config = new Config();
-        String node = redisConfig.getRedisSingle().getAddress();
+        String node = redisConfig.getSingle().getAddress();
         node = node.startsWith("redis://") ? node : "redis://" + node;
         SingleServerConfig serverConfig = config.useSingleServer()
                 .setAddress(node)

@@ -9,8 +9,11 @@ import io.github.quickmsg.core.Bootstrap;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -24,12 +27,9 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
+@EnableAutoConfiguration
+@Component
 public class SpringBootstrapConfig {
-
-    /**
-     * 是否开启
-     */
-    private boolean enable;
 
     /**
      * sfl4j日志级别
@@ -41,49 +41,41 @@ public class SpringBootstrapConfig {
     /**
      * tcp配置
      */
-    @JsonProperty("tcp")
-    private BootstrapConfig.TcpConfig tcpConfig;
+    private BootstrapConfig.TcpConfig tcp;
 
     /**
      * http配置
      */
-    @JsonProperty("http")
-    private BootstrapConfig.HttpConfig httpConfig;
+    private BootstrapConfig.HttpConfig http;
 
     /**
      * websocket配置
      */
-    @JsonProperty("ws")
-    private BootstrapConfig.WebsocketConfig websocketConfig;
+    private BootstrapConfig.WebsocketConfig ws;
 
     /**
      * 集群配置配置
      */
-    @JsonProperty("cluster")
-    private BootstrapConfig.ClusterConfig clusterConfig;
+    private BootstrapConfig.ClusterConfig cluster;
 
 
     /**
      * 数据库配置
      */
-    @JsonProperty("db")
-    private BootstrapConfig.DatabaseConfig databaseConfig;
+    private BootstrapConfig.DatabaseConfig db;
     /**
      * redis配置
      */
-    @JsonProperty("redis")
-    private BootstrapConfig.RedisConfig redisConfig;
+    private BootstrapConfig.RedisConfig redis;
     /**
      * 规则定义
      */
-    @JsonProperty("rules")
-    private List<RuleChainDefinition> ruleChainDefinitions;
+    private List<RuleChainDefinition> rules;
 
     /**
      * 规则定义
      */
-    @JsonProperty("sources")
-    private List<SourceDefinition> ruleSources;
+    private List<SourceDefinition> sources;
 
 
 }

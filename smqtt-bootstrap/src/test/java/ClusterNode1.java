@@ -24,7 +24,7 @@ public class ClusterNode1 {
                                 .builder()
                                 .enable(true)
                                 .accessLog(true)
-                                .httpAdmin(BootstrapConfig.HttpAdmin.builder().enable(true).username("smqtt").password("smqtt").build())
+                                .admin(BootstrapConfig.HttpAdmin.builder().enable(true).username("smqtt").password("smqtt").build())
                                 .build())
                 .clusterConfig(
                         BootstrapConfig.

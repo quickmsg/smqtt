@@ -14,8 +14,6 @@ public class JarStarter extends AbstractStarter {
 
     public static void main(String[] args) throws IOException {
 
-        BannerUtils.banner();
-
         log.info("JarStarter start args {}", String.join(",", args));
         if (args.length > 0) {
             start(args[0]);

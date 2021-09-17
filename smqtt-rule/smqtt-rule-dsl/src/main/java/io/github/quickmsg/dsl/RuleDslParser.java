@@ -21,7 +21,7 @@ public class RuleDslParser {
 
     public RuleDslExecutor parseRule() {
         if (ruleChainDefinitions != null && ruleChainDefinitions.size() > 0) {
-            ruleChainDefinitions.stream().map(RuleChainDefinition::getRuleDefinitions).forEach(ruleChain::addRules);
+            ruleChainDefinitions.stream().map(RuleChainDefinition::getChain).forEach(ruleChain::addRules);
         }
         return new RuleDslExecutor(ruleChain);
     }
