@@ -32,15 +32,14 @@ public class HttpSourceBean implements SourceBean {
 
     @Override
     public void transmit(Map<String, Object> object) {
+        log.info("http send msg {}", object);
         HttpClient client = HttpClient.create();
-
-        String res = client.get()
+             client.get()
                 .uri("https://baidu.com/")
                 .responseContent()
                 .aggregate()
                 .asString()
-                .block();
-        System.out.println(res);
+                .subscribe(System.out::println );
     }
 
     @Override
