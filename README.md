@@ -36,7 +36,8 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
     > 默认镜像最新tag: 1ssqq1lxr/smqtt
 12. 持久化支持（session 保留消息）
 13. 规则引擎支持(文档需要赞助提供)
-13. 管理后台
+14. 支持springboot starter容器化
+15. 管理后台
     > 请参考smqtt文档如何启动管理后台
    
 

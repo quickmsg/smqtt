@@ -3,10 +3,17 @@ package io.github.quickmsg.rule.node;
 import io.github.quickmsg.common.channel.MockMqttChannel;
 import io.github.quickmsg.common.context.ReceiveContext;
 import io.github.quickmsg.common.message.HeapMqttMessage;
+import io.github.quickmsg.common.message.MqttMessageBuilder;
+import io.github.quickmsg.common.message.SmqttMessage;
 import io.github.quickmsg.common.protocol.ProtocolAdaptor;
 import io.github.quickmsg.rule.RuleNode;
+import io.netty.buffer.PooledByteBufAllocator;
+import io.netty.handler.codec.mqtt.MqttPublishMessage;
+import io.netty.handler.codec.mqtt.MqttQoS;
 import lombok.extern.slf4j.Slf4j;
 import reactor.util.context.ContextView;
+
+import java.util.Objects;
 
 /**
  * @author luxurong
@@ -22,6 +29,7 @@ public class TopicRuleNode implements RuleNode {
     private RuleNode ruleNode;
 
     public TopicRuleNode(String topic, String script) {
+        Objects.requireNonNull(topic);
         this.topic = topic;
         this.script = script;
     }
@@ -42,9 +50,22 @@ public class TopicRuleNode implements RuleNode {
         HeapMqttMessage heapMqttMessage = contextView.get(HeapMqttMessage.class);
         log.info("rule engine TopicRuleNode  request {}", heapMqttMessage);
         ProtocolAdaptor protocolAdaptor = receiveContext.getProtocolAdaptor();
-        protocolAdaptor.chooseProtocol(MockMqttChannel.wrapClientIdentifier(heapMqttMessage.getClientIdentifier()), null, receiveContext);
+        protocolAdaptor.chooseProtocol(
+                MockMqttChannel.wrapClientIdentifier(heapMqttMessage.getClientIdentifier()),
+                new SmqttMessage<>(getMqttMessage(heapMqttMessage), heapMqttMessage.getTimestamp(), false), receiveContext);
         protocolAdaptor.chooseProtocol(MockMqttChannel.DEFAULT_MOCK_CHANNEL, null, receiveContext);
         executeNext(contextView);
     }
+
+
+    private MqttPublishMessage getMqttMessage(HeapMqttMessage heapMqttMessage) {
+        return MqttMessageBuilder
+                .buildPub(false,
+                        MqttQoS.valueOf(heapMqttMessage.getQos()),
+                        0,
+                        this.topic,
+                        PooledByteBufAllocator.DEFAULT.buffer().writeBytes(heapMqttMessage.getMessage()));
+    }
+
 
 }

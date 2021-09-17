@@ -18,6 +18,8 @@ import java.util.Map;
 @Data
 public class HeapMqttMessage {
 
+    private long timestamp;
+
     private String clientIdentifier;
 
     private String topic;

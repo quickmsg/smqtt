@@ -44,16 +44,16 @@ public class MessageProxy {
             MqttChannel mqttChannel = (MqttChannel) invocation.getArgs()[0];
             SmqttMessage<MqttMessage> smqttMessage = (SmqttMessage<MqttMessage>) invocation.getArgs()[1];
             ReceiveContext<Configuration> mqttReceiveContext = (ReceiveContext<Configuration>) invocation.getArgs()[2];
-            DslExecutor dslExecutor=mqttReceiveContext.getDslExecutor();
+            DslExecutor dslExecutor = mqttReceiveContext.getDslExecutor();
             MqttMessage message = smqttMessage.getMessage();
             if (!smqttMessage.getIsCluster() && message instanceof MqttPublishMessage) {
                 MqttPublishMessage publishMessage = (MqttPublishMessage) message;
-                HeapMqttMessage heapMqttMessage = this.clusterMessage(publishMessage, mqttChannel);
+                HeapMqttMessage heapMqttMessage = this.clusterMessage(publishMessage, mqttChannel, smqttMessage.getTimestamp());
                 if (mqttReceiveContext.getConfiguration().getClusterConfig().isEnable()) {
                     mqttReceiveContext.getClusterRegistry().spreadPublishMessage(heapMqttMessage).subscribeOn(Schedulers.boundedElastic()).subscribe();
                 }
-                if(dslExecutor.isExecute()){
-                    dslExecutor.executeRule(mqttChannel,heapMqttMessage,mqttReceiveContext);
+                if (dslExecutor.isExecute()) {
+                    dslExecutor.executeRule(mqttChannel, heapMqttMessage, mqttReceiveContext);
                 }
             }
             return invocation.proceed();
@@ -63,13 +63,15 @@ public class MessageProxy {
         /**
          * 构建消息体
          *
-         * @param message {@link MqttPublishMessage}
+         * @param message   {@link MqttPublishMessage}
+         * @param timestamp
          * @return {@link HeapMqttMessage}
          */
-        private HeapMqttMessage clusterMessage(MqttPublishMessage message, MqttChannel channel) {
+        private HeapMqttMessage clusterMessage(MqttPublishMessage message, MqttChannel channel, long timestamp) {
             MqttPublishVariableHeader header = message.variableHeader();
             MqttFixedHeader fixedHeader = message.fixedHeader();
             return HeapMqttMessage.builder()
+                    .timestamp(timestamp)
                     .clientIdentifier(channel.getClientIdentifier())
                     .message(MessageUtils.copyReleaseByteBuf(message.payload()))
                     .topic(header.topicName())
