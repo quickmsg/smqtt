@@ -42,6 +42,12 @@
             <version>${scalecube-cluster.version}</version>
         </dependency>
         <dependency>
+            <groupId>io.scalecube</groupId>
+            <artifactId>scalecube-transport-netty</artifactId>
+            <version>${scalecube-cluster.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>io.github.quickmsg</groupId>
             <artifactId>smqtt-common</artifactId>
             <version>1.0.7</version>
