@@ -53,7 +53,8 @@ public class TopicRuleNode implements RuleNode {
         protocolAdaptor.chooseProtocol(
                 MockMqttChannel.wrapClientIdentifier(heapMqttMessage.getClientIdentifier()),
                 new SmqttMessage<>(getMqttMessage(heapMqttMessage), heapMqttMessage.getTimestamp(), false), receiveContext);
-        protocolAdaptor.chooseProtocol(MockMqttChannel.DEFAULT_MOCK_CHANNEL, null, receiveContext);
+        protocolAdaptor.chooseProtocol(MockMqttChannel.DEFAULT_MOCK_CHANNEL,
+                new SmqttMessage<>(getMqttMessage(heapMqttMessage),heapMqttMessage.getTimestamp(),Boolean.FALSE), receiveContext);
         executeNext(contextView);
     }
 
