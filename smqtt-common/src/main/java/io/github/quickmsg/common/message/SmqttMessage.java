@@ -12,7 +12,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@AllArgsConstructor
+ @AllArgsConstructor
 public class SmqttMessage<T extends MqttMessage> {
 
     private T message;

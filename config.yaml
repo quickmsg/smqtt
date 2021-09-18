@@ -84,29 +84,29 @@ smqtt:
 #          script:  '{"topic":"${topic}","msg":"${msg.test}","qos":${qos}}'
         - ruleType: TOPIC
           param: test/topic
-  sources: # 配置数据源sources
-    - source: KAFKA # kafka配置
-      sourceName: kafka
-      sourceAttributes:
-        topic: testTopic
-        bootstrap.servers: 172.16.63.50:9092
-        key.serializer: org.apache.kafka.common.serialization.StringSerializer
-        value.serializer: org.apache.kafka.common.serialization.StringSerializer
-    - source: ROCKET_MQ # rocket mq配置
-      sourceName: rocketmq
-      sourceAttributes:
-        topic: testTopic
-        tags: testTags
-        namesrvAddr: 172.16.70.156:9876
-        instanceName: testInstanceName
-        producerGroup: testProducerGroup
-    - source: HTTP
-      sourceName: http
-      sourceAttributes:
-        url: http://www.baidu.com
-        port: 80
-        headers:
-          Authorization: token value
+#  sources: # 配置数据源sources
+#    - source: KAFKA # kafka配置
+#      sourceName: kafka
+#      sourceAttributes:
+#        topic: testTopic
+#        bootstrap.servers: 172.16.63.50:9092
+#        key.serializer: org.apache.kafka.common.serialization.StringSerializer
+#        value.serializer: org.apache.kafka.common.serialization.StringSerializer
+#    - source: ROCKET_MQ # rocket mq配置
+#      sourceName: rocketmq
+#      sourceAttributes:
+#        topic: testTopic
+#        tags: testTags
+#        namesrvAddr: 172.16.70.156:9876
+#        instanceName: testInstanceName
+#        producerGroup: testProducerGroup
+#    - source: HTTP
+#      sourceName: http
+#      sourceAttributes:
+#        url: http://www.baidu.com
+#        port: 80
+#        headers:
+#          Authorization: token value
 
 
 

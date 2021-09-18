@@ -50,11 +50,8 @@ public class TopicRuleNode implements RuleNode {
         HeapMqttMessage heapMqttMessage = contextView.get(HeapMqttMessage.class);
         log.info("rule engine TopicRuleNode  request {}", heapMqttMessage);
         ProtocolAdaptor protocolAdaptor = receiveContext.getProtocolAdaptor();
-        protocolAdaptor.chooseProtocol(
-                MockMqttChannel.wrapClientIdentifier(heapMqttMessage.getClientIdentifier()),
-                new SmqttMessage<>(getMqttMessage(heapMqttMessage), heapMqttMessage.getTimestamp(), false), receiveContext);
         protocolAdaptor.chooseProtocol(MockMqttChannel.DEFAULT_MOCK_CHANNEL,
-                new SmqttMessage<>(getMqttMessage(heapMqttMessage),heapMqttMessage.getTimestamp(),Boolean.FALSE), receiveContext);
+                new SmqttMessage<>(getMqttMessage(heapMqttMessage),heapMqttMessage.getTimestamp(),Boolean.TRUE), receiveContext);
         executeNext(contextView);
     }
 
