@@ -22,7 +22,7 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
 6.  tls加密
      - 支持tls加密（mqtt端口/http端口）
 7.  websocket协议支持x
-     > 使用websocket协议包装mqtt协议
+     > 使用mqtt over websocket
 8.  http协议交互
     - 支持http接口推送消息
     - 支持spi扩展http接口
@@ -36,7 +36,7 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
     > 默认镜像最新tag: 1ssqq1lxr/smqtt
 12. 持久化支持（session 保留消息）
 13. 规则引擎支持(文档需要赞助提供)
-14. 支持springboot starter容器化
+14. 支持springboot starter启动
 15. 管理后台
     > 请参考smqtt文档如何启动管理后台
    
