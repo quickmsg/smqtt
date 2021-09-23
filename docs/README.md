@@ -3,7 +3,12 @@
 SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署，支持容器化部署，具备低延迟，高吞吐量，支持百万TCP连接，同时支持多种协议交互，是一款非常优秀的消息中间件！
 [![quickmsg/mqtt-cluster](https://gitee.com/quickmsg/mqtt-cluster/widgets/widget_card.svg?colors=ffffff,1e252b,323d47,455059,d7deea,99a0ae)](https://gitee.com/quickmsg/mqtt-cluster)
 
+## 架构图
+
+
 ## smqtt目前拥有的功能如下：
+
+![架构图](icon/component.png)
 
 1.  消息质量等级实现(支持qos0，qos1，qos2)
 2.  topicFilter支持
@@ -22,7 +27,7 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
      - 支持spi注入外部认证
 6.  tls加密
      - 支持tls加密（mqtt端口/http端口）
-7.  websocket协议支持
+7.  websocket协议支持x
      > 使用websocket协议包装mqtt协议
 8.  http协议交互
     - 支持http接口推送消息
@@ -36,7 +41,9 @@ SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署�
 11. 容器化支持 
     > 默认镜像最新tag: 1ssqq1lxr/smqtt
 12. 持久化支持（session 保留消息）
-13. 管理后台
+13. 规则引擎支持(文档需要赞助提供)
+14. 支持springboot starter容器化
+15. 管理后台
     > 请参考smqtt文档如何启动管理后台
 
 
