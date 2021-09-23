@@ -174,13 +174,11 @@ public class BootstrapConfig {
         /**
          * ssl配置
          */
-        @JsonProperty("ssl")
-        private SslContext sslContext;
+        private SslContext ssl;
         /**
          * 管理页面配置
          */
-        @JsonProperty("admin")
-        private HttpAdmin httpAdmin;
+        private HttpAdmin admin;
 
     }
 
@@ -313,20 +311,17 @@ public class BootstrapConfig {
         /**
          * redis单机配置
          */
-        @JsonProperty("single")
-        private RedisSingle redisSingle;
+        private RedisSingle single;
 
         /**
          * redis集群模式配置
          */
-        @JsonProperty("cluster")
-        private RedisCluster redisCluster;
+        private RedisCluster cluster;
 
         /**
          * redis哨兵模式配置
          */
-        @JsonProperty("sentinel")
-        private RedisSentinel redisSentinel;
+        private RedisSentinel sentinel;
 
     }
 

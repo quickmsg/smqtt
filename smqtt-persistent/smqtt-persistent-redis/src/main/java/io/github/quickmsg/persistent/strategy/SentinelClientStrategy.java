@@ -26,7 +26,7 @@ public class SentinelClientStrategy implements ClientStrategy {
     public RedissonClient getRedissonClient(BootstrapConfig.RedisConfig redisConfig) {
         Config config = new Config();
 
-        String[] nodes = redisConfig.getRedisSentinel().getNodes().split(",");
+        String[] nodes = redisConfig.getSentinel().getNodes().split(",");
         List<String> newNodes = new ArrayList(nodes.length);
 
         Arrays.stream(nodes).forEach((index) -> newNodes.add(
@@ -37,7 +37,7 @@ public class SentinelClientStrategy implements ClientStrategy {
                 .setDatabase(redisConfig.getDatabase())
                 .setTimeout(redisConfig.getTimeout())
                 .setConnectTimeout(redisConfig.getPoolConnTimeout())
-                .setMasterName(redisConfig.getRedisSentinel().getMaster())
+                .setMasterName(redisConfig.getSentinel().getMaster())
                 .setTimeout(redisConfig.getTimeout());
 
         if (StringUtils.isNotBlank(redisConfig.getPassword())) {
