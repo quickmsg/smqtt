@@ -37,7 +37,7 @@ public class JvmMetric implements MetricsGetter {
         MemoryMXBean mxb = ManagementFactory.getMemoryMXBean();
         ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
         RuntimeMXBean runtimeBean = ManagementFactory.getRuntimeMXBean();
-        jvm.put("smqtt", "1.0.5");
+        jvm.put("smqtt", "1.0.8");
         jvm.put("start_time",sdf.format(new Date(runtimeBean.getStartTime())));
         jvm.put("jdk_home", props.getProperty("java.home"));
         jvm.put("jdk_version", props.getProperty("java.version"));
