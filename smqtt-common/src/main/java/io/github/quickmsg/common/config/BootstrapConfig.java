@@ -132,19 +132,20 @@ public class BootstrapConfig {
          * 业务队列
          */
         private Integer businessQueueSize;
-        /**
-         * 高水位
-         */
-        private Integer lowWaterMark;
+
         /**
          * 低水位
+         */
+        private Integer lowWaterMark;
+
+        /**
+         * 高水位
          */
         private Integer highWaterMark;
         /**
          * ssl配置
          */
-        @JsonProperty("ssl")
-        private SslContext sslContext;
+        private SslContext ssl;
 
         /**
          * server channel options

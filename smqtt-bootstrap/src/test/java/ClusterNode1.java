@@ -10,6 +10,14 @@ public class ClusterNode1 {
     public static void main(String[] args) throws InterruptedException {
         Bootstrap bootstrap = Bootstrap.builder()
                 .rootLevel(Level.DEBUG)
+                .websocketConfig(
+                        BootstrapConfig.WebsocketConfig
+                                .builder()
+                                .enable(false)
+                                .path("/mqtt")
+                                .port(8880)
+                                .build()
+                )
                 .tcpConfig(
                         BootstrapConfig
                                 .TcpConfig
