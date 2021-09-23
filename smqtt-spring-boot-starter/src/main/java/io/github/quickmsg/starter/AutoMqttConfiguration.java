@@ -5,7 +5,6 @@ import io.github.quickmsg.common.utils.IPUtils;
 import io.github.quickmsg.core.Bootstrap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,7 +37,8 @@ public class AutoMqttConfiguration {
                 .ruleChainDefinitions(springBootstrapConfig.getRules())
                 .sourceDefinitions(springBootstrapConfig.getSources())
                 .build()
-                .doOnStarted(this::printUiUrl).start().block();
+                .start()
+                .doOnSuccess(this::printUiUrl).block();
     }
 
     public void printUiUrl(Bootstrap bootstrap) {

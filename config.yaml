@@ -33,7 +33,7 @@ smqtt:
     port: 8999 # 端口
     path: /mqtt # ws 的访问path mqtt.js请设置此选项
   cluster: # 集群配置
-    enable: true # 集群开关
+    enable: false # 集群开关
     url: 127.0.0.1:7771,127.0.0.1:7772 # 启动节点
     port: 7771  # 端口
     node: node-1 # 集群节点名称 唯一
@@ -87,9 +87,9 @@ smqtt:
       sourceName: kafka
       sourceAttributes:
         topic: testTopic
-        bootstrap.servers: 172.16.63.50:9092
-        key.serializer: org.apache.kafka.common.serialization.StringSerializer
-        value.serializer: org.apache.kafka.common.serialization.StringSerializer
+        bootstrap-servers: 172.16.63.50:9092
+        key-serializer: org.apache.kafka.common.serialization.StringSerializer
+        value-serializer: org.apache.kafka.common.serialization.StringSerializer
     - source: ROCKET_MQ # rocket mq配置
       sourceName: rocketmq
       sourceAttributes:

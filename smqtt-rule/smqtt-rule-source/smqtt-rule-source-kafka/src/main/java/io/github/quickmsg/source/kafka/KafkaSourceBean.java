@@ -40,7 +40,9 @@ public class KafkaSourceBean implements SourceBean {
         try {
             // 配置信息
             Properties props = new Properties();
-            props.putAll(sourceParam);
+            for (String key : sourceParam.keySet()) {
+                props.put(key.replaceAll("-", "."), sourceParam.get(key));
+            }
             topic = sourceParam.get("topic").toString();
             // 创建生产者实例
             producer = new KafkaProducer<>(props);
