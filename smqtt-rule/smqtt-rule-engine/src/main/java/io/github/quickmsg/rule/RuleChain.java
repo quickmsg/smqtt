@@ -44,7 +44,7 @@ public class RuleChain {
             case KAFKA:
                 return new TransmitRuleNode(Source.KAFKA, definition.getScript());
             case TOPIC:
-                return new TopicRuleNode(String.valueOf(definition.getParam()), definition.getScript());
+                return new TopicRuleNode(String.valueOf(definition.getParam()));
             case LOG:
                 return new LoggerRuleNode();
             case ROCKET_MQ:

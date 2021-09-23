@@ -24,14 +24,11 @@ public class TopicRuleNode implements RuleNode {
 
     private final String topic;
 
-    private final String script;
-
     private RuleNode ruleNode;
 
-    public TopicRuleNode(String topic, String script) {
+    public TopicRuleNode(String topic) {
         Objects.requireNonNull(topic);
         this.topic = topic;
-        this.script = script;
     }
 
     @Override
