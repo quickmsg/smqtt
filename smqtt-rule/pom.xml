@@ -7,7 +7,7 @@
     <parent>
         <artifactId>smqtt</artifactId>
         <groupId>io.github.quickmsg</groupId>
-        <version>1.0.7</version>
+        <version>1.0.8</version>
     </parent>
     <artifactId>smqtt-rule</artifactId>
     <modules>

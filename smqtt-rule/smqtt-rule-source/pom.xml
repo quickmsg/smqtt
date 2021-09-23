@@ -8,7 +8,7 @@
     <parent>
         <artifactId>smqtt-rule</artifactId>
         <groupId>io.github.quickmsg</groupId>
-        <version>1.0.7</version>
+        <version>1.0.8</version>
     </parent>
 
     <artifactId>smqtt-rule-source</artifactId>
@@ -30,7 +30,7 @@
         <dependency>
             <groupId>io.github.quickmsg</groupId>
             <artifactId>smqtt-common</artifactId>
-            <version>1.0.7</version>
+            <version>1.0.8</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

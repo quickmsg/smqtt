@@ -42,17 +42,17 @@
         <dependency>
             <groupId>io.github.quickmsg</groupId>
             <artifactId>smqtt-core</artifactId>
-            <version>1.0.7</version>
+            <version>1.0.8</version>
         </dependency>
         <dependency>
             <artifactId>smqtt-registry-scube</artifactId>
             <groupId>io.github.quickmsg</groupId>
-            <version>1.0.7</version>
+            <version>1.0.8</version>
         </dependency>
         <dependency>
             <artifactId>smqtt-ui</artifactId>
             <groupId>io.github.quickmsg</groupId>
-            <version>1.0.7</version>
+            <version>1.0.8</version>
         </dependency>
         <dependency>
             <groupId>io.projectreactor.netty</groupId>
