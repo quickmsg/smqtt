@@ -33,9 +33,9 @@ public enum RuleType {
     HTTP,
 
     /**
-     * H_BASE
+     * 数据库
      */
-    H_BASE,
+    DATA_BASE,
 
 
     }

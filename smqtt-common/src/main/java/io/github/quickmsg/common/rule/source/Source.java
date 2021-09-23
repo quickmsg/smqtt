@@ -14,9 +14,9 @@ public enum Source {
      */
     ROCKET_MQ,
     /**
-     * influxDb
+     * 数据库
      */
-    INFLUX_DB,
+    DATA_BASE,
     /**
      * hBase
      */
