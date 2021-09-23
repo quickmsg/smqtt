@@ -1,6 +1,9 @@
 <template>
   <div style="margin-top: 20px">
-    <a-collapse v-for="(topicData,index) in dataShow" :key="index" style="margin-top: 10px" >
+      <div v-if="dataShow.length==0">
+        暂无数据
+      </div>
+      <a-collapse v-for="(topicData,index) in dataShow" :key="index" style="margin-top: 10px" >
       <a-collapse-panel :key="index" :header="'Topic：'+ topicData.topic">
         <div>
           <a-form layout="horizontal">
