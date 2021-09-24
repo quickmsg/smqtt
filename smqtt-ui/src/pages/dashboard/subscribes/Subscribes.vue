@@ -1,7 +1,11 @@
 <template>
   <div style="margin-top: 20px">
       <div v-if="dataShow.length==0">
-        暂无数据
+          <a-collapse v-for="(topicData,index) in dataShow" :key="index" style="margin-top: 10px" >
+              <a-collapse-panel>
+                  <standard-table></standard-table>
+              </a-collapse-panel>
+          </a-collapse>
       </div>
       <a-collapse v-for="(topicData,index) in dataShow" :key="index" style="margin-top: 10px" >
       <a-collapse-panel :key="index" :header="'Topic：'+ topicData.topic">
