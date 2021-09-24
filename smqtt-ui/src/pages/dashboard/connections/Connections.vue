@@ -5,10 +5,12 @@
             :row-key="(r,i)=>{i.toString()}"
     >
         <template slot="connection" slot-scope="{text,record}">
-            <a-tag v-for="(v,k) in record.connection" :key="k" style="margin-top: 1px">{{ k }}:{{ v }}</a-tag>
+            <a-tag v-if="record.connection.length===0" > — </a-tag>
+            <a-tag v-else v-for="(v,k) in record.connection" :key="k" style="margin-top: 1px">{{ k }}:{{ v }}</a-tag>
         </template>
         <template slot="will" slot-scope="{text,record}">
-            <a-tag v-for="(v,k) in record.will" :key="k" style="margin-top: 1px">{{ k }}:{{ v }}</a-tag>
+            <a-tag v-if="record.will.length===0" > — </a-tag>
+            <a-tag v-else v-for="(v,k) in record.will" :key="k" style="margin-top: 1px">{{ k }}:{{ v }}</a-tag>
         </template>
         <template slot="topics" slot-scope="{text,record}">
             <span v-if="record.topics.length===0"> — </span>
