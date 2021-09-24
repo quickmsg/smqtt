@@ -1,11 +1,7 @@
 <template>
   <div style="margin-top: 20px">
       <div v-if="dataShow.length==0">
-          <a-collapse style="margin-top: 10px" >
-              <a-collapse-panel>
-                  <standard-table></standard-table>
-              </a-collapse-panel>
-          </a-collapse>
+          <standard-table></standard-table>
       </div>
       <a-collapse v-for="(topicData,index) in dataShow" :key="index" style="margin-top: 10px" >
       <a-collapse-panel :key="index" :header="'Topic：'+ topicData.topic">
