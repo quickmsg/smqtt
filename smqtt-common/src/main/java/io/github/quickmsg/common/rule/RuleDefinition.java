@@ -18,8 +18,6 @@ public class RuleDefinition {
 
     private RuleType ruleType;
 
-    private Object param;
-
     private String script;
 
 
