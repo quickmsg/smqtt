@@ -9,6 +9,7 @@ import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.common.message.Message;
 
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * rocketmq source
@@ -43,7 +44,7 @@ public class RocketmqSourceBean implements SourceBean {
     @Override
     public Boolean bootstrap(Map<String, Object> sourceParam) {
         try {
-            topic = sourceParam.get("topic").toString();
+            topic = Optional.ofNullable(sourceParam.get("topic")).map(String::valueOf).orElse("smqtt");
             tags = sourceParam.get("tags").toString();
             producer = new DefaultMQProducer(sourceParam.get("producerGroup").toString());
             // 设置NameServer地址

@@ -8,6 +8,7 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 
 /**
@@ -43,7 +44,7 @@ public class KafkaSourceBean implements SourceBean {
             for (String key : sourceParam.keySet()) {
                 props.put(key.replaceAll("-", "."), sourceParam.get(key));
             }
-            topic = sourceParam.get("topic").toString();
+            topic = Optional.ofNullable(sourceParam.get("topic")).map(String::valueOf).orElse("smqtt");
             // 创建生产者实例
             producer = new KafkaProducer<>(props);
             return true;
