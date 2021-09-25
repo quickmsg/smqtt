@@ -41,7 +41,6 @@ public class DatabaseRuleNode implements RuleNode {
             Object obj = triggerTemplate(script, context -> heapMqttMessage.getKeyMap().forEach(context::set));
             param.put("sql", String.valueOf(obj));
             SourceManager.getSourceBean(Source.DATA_BASE).transmit(param);
-
         }
         executeNext(contextView);
     }

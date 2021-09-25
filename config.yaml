@@ -79,9 +79,11 @@ smqtt:
         - ruleType: PREDICATE  # 条件过滤
           script:  topic.equals("test/test") #脚本
         - ruleType: KAFKA  #转发到kafka
-          script:  '{"topic":"${topic}","msg":"${msg.test}","qos":${qos}}'
+          script:  '{"topic":"${topic}","msg":"${msg}","qos":${qos}}'
         - ruleType: HTTP
-          script:  '{"topic":"${topic}","msg":"${msg.test}","qos":${qos}}'
+          script:  '{"topic":"${topic}","msg":"${msg}","qos":${qos}}'
+        - ruleType: DATA_BASE
+          script:  insert into device_msg (clientIdentifier,topic,qos,retain,msg) value ('${clientIdentifier}','${topic}','${qos}',${retain},'${msg}')
   sources: # 配置数据源sources
     - source: KAFKA # kafka配置
       sourceName: kafka
@@ -105,6 +107,17 @@ smqtt:
         port: 80
         headers:
           Authorization: token value
+    - source: DATA_BASE # 数据库配置
+      sourceName: dataBase
+      sourceAttributes:
+        driverClassName: com.mysql.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/smqtt?characterEncoding=utf-8&useSSL=false&useInformationSchema=true&serverTimezone=UTC
+        username: root
+        password: 123
+        initialSize: 10
+        maxActive: 300
+        maxWait: 60000
+        minIdle: 2
 
 
 

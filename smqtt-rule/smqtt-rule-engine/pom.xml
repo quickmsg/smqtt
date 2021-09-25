@@ -41,6 +41,12 @@
     </dependency>
 
     <dependency>
+      <groupId>io.github.quickmsg</groupId>
+      <artifactId>smqtt-rule-source-db</artifactId>
+      <version>1.0.8</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
     </dependency>
