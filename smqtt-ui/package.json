@@ -22,6 +22,7 @@
     "mockjs": "^1.1.0",
     "moment": "^2.29.1",
     "nprogress": "^0.2.0",
+    "vg-editor": "^2.7.2",
     "vue": "^2.6.11",
     "vue-i18n": "^8.18.2",
     "vue-router": "^3.3.4",
@@ -60,7 +61,9 @@
     "parserOptions": {
       "parser": "babel-eslint"
     },
-    "rules": {}
+    "rules": {
+      "no-unused-vars": "off"
+    }
   },
   "browserslist": [
     "> 1%",

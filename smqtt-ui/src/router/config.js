@@ -55,7 +55,15 @@ const options = {
               component: () => import('@/pages/dashboard/publish'),
             }
           ]
-        }
+        },
+        {
+          path: '/rule',
+          name: '规则引擎',
+          meta: {
+            icon: 'link'
+          },
+          component: () => import('@/pages/rule/RuleEditor'),
+        },
       ]
     },
   ]
