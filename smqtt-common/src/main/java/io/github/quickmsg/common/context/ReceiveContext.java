@@ -11,6 +11,8 @@ import io.github.quickmsg.common.protocol.ProtocolAdaptor;
 import io.github.quickmsg.common.rule.DslExecutor;
 import io.github.quickmsg.common.topic.TopicRegistry;
 import io.netty.handler.codec.mqtt.MqttMessage;
+import io.netty.handler.traffic.AbstractTrafficShapingHandler;
+import io.netty.handler.traffic.GlobalChannelTrafficShapingHandler;
 
 import java.util.function.BiConsumer;
 
@@ -84,6 +86,15 @@ public interface ReceiveContext<T extends Configuration> extends BiConsumer<Mqtt
      * @return {@link Configuration}
      */
     T getConfiguration();
+
+
+    /**
+     * 全局流控
+     *
+     * @return {@link AbstractTrafficShapingHandler}
+     */
+    AbstractTrafficShapingHandler getTrafficShapingHandler();
+
 
 
 }

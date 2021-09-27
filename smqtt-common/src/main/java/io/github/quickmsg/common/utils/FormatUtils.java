@@ -1,4 +1,4 @@
-package io.github.quickmsg.metric.utils;
+package io.github.quickmsg.common.utils;
 
 import java.text.DecimalFormat;
 

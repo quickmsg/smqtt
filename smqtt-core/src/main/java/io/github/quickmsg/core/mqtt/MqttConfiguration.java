@@ -5,7 +5,6 @@ import io.github.quickmsg.common.config.AbstractConfiguration;
 import io.github.quickmsg.common.config.BootstrapConfig;
 import io.github.quickmsg.common.config.SslContext;
 import io.github.quickmsg.common.rule.RuleChainDefinition;
-import io.github.quickmsg.common.rule.RuleDefinition;
 import io.github.quickmsg.common.rule.source.SourceDefinition;
 import io.github.quickmsg.core.ssl.AbstractSslHandler;
 import lombok.Data;
@@ -44,6 +43,10 @@ public class MqttConfiguration extends AbstractSslHandler implements AbstractCon
     private Integer businessThreadSize = Runtime.getRuntime().availableProcessors() * 4;
 
     private Integer businessQueueSize = 100000;
+
+    private String globalReadWriteSize;
+
+    private String channelReadWriteSize;
 
     private Map<String, Object> options;
 

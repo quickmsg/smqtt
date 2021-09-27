@@ -148,6 +148,17 @@ public class BootstrapConfig {
         private SslContext ssl;
 
         /**
+         * 全局写字节限制
+         */
+        private String globalReadWriteSize;
+
+        /**
+         * 单个连接读写字节限制
+         */
+        private String  channelReadWriteSize;
+
+
+        /**
          * server channel options
          */
         Map<String, Object> options;

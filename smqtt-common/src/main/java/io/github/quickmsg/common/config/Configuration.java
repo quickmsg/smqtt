@@ -37,6 +37,20 @@ public interface Configuration {
      */
     Integer getBusinessQueueSize();
 
+    /**
+     * 获取全局读写限制
+     *
+     * @return 工作队列数
+     */
+    String getGlobalReadWriteSize();
+
+    /**
+     * 获取单个channel读写限制
+     *
+     * @return 工作队列数
+     */
+    String getChannelReadWriteSize();
+
 
     /**
      * mqtt 端口
@@ -91,5 +105,8 @@ public interface Configuration {
      * @return {@link BootstrapConfig.ClusterConfig}
      */
     BootstrapConfig.ClusterConfig getClusterConfig();
+
+
+
 
 }

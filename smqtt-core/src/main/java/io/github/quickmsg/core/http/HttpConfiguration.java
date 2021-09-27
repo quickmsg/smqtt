@@ -44,6 +44,16 @@ public class HttpConfiguration implements Configuration {
     }
 
     @Override
+    public String getGlobalReadWriteSize() {
+        return null;
+    }
+
+    @Override
+    public String getChannelReadWriteSize() {
+        return null;
+    }
+
+    @Override
     public Integer getLowWaterMark() {
         return 0;
     }

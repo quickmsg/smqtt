@@ -16,6 +16,10 @@ import io.github.quickmsg.core.cluster.InJvmClusterRegistry;
 import io.github.quickmsg.core.spi.*;
 import io.github.quickmsg.dsl.RuleDslParser;
 import io.github.quickmsg.rule.source.SourceManager;
+import io.netty.handler.traffic.AbstractTrafficShapingHandler;
+import io.netty.handler.traffic.ChannelTrafficShapingHandler;
+import io.netty.handler.traffic.GlobalChannelTrafficShapingHandler;
+import io.netty.handler.traffic.GlobalTrafficShapingHandler;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -54,6 +58,8 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
 
     private final DslExecutor dslExecutor;
 
+    private final AbstractTrafficShapingHandler trafficShapingHandler;
+
 
     public AbstractReceiveContext(T configuration, Transport<T> transport) {
         AbstractConfiguration abstractConfiguration = castConfiguration(configuration);
@@ -66,6 +72,7 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
         this.channelRegistry = channelRegistry();
         this.topicRegistry = topicRegistry();
         this.loopResources = LoopResources.create("smqtt-cluster-io", configuration.getBossThreadSize(), configuration.getWorkThreadSize(), true);
+        this.trafficShapingHandler = trafficShapingHandler();
         this.messageRegistry = messageRegistry();
         this.clusterRegistry = clusterRegistry();
         this.passwordAuthentication = basicAuthentication();
@@ -73,6 +80,31 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
         this.messageRegistry.startUp(abstractConfiguration.getEnvironmentMap());
         Optional.ofNullable(abstractConfiguration.getSourceDefinitions())
                 .ifPresent(sourceDefinitions -> sourceDefinitions.forEach(SourceManager::loadSource));
+    }
+
+    private AbstractTrafficShapingHandler trafficShapingHandler() {
+        if (configuration.getGlobalReadWriteSize() == null && configuration.getChannelReadWriteSize() == null) {
+            return new GlobalTrafficShapingHandler(this.loopResources.onServer(true).next());
+        } else if (configuration.getChannelReadWriteSize() == null) {
+            String[] limits = configuration.getGlobalReadWriteSize().split(",");
+            return new GlobalTrafficShapingHandler(this.loopResources.onServer(true),
+                    Long.parseLong(limits[0]),
+                    Long.parseLong(limits[1]));
+        } else if (configuration.getGlobalReadWriteSize() == null) {
+            String[] limits = configuration.getChannelReadWriteSize().split(",");
+            return new ChannelTrafficShapingHandler(
+                    Long.parseLong(limits[0]),
+                    Long.parseLong(limits[1]));
+        } else {
+            String[] globalLimits = configuration.getGlobalReadWriteSize().split(",");
+            String[] channelLimits = configuration.getChannelReadWriteSize().split(",");
+            return new GlobalChannelTrafficShapingHandler(
+                    this.loopResources.onServer(true),
+                    Long.parseLong(globalLimits[0]),
+                    Long.parseLong(globalLimits[1]),
+                    Long.parseLong(channelLimits[0]),
+                    Long.parseLong(channelLimits[1]));
+        }
     }
 
 
