@@ -76,6 +76,8 @@ public class Bootstrap {
         Optional.ofNullable(tcpConfig.getWorkThreadSize()).ifPresent(mqttConfiguration::setWorkThreadSize);
         Optional.ofNullable(tcpConfig.getBusinessThreadSize()).ifPresent(mqttConfiguration::setBusinessThreadSize);
         Optional.ofNullable(tcpConfig.getBusinessQueueSize()).ifPresent(mqttConfiguration::setBusinessQueueSize);
+        Optional.ofNullable(tcpConfig.getChannelReadWriteSize()).ifPresent(mqttConfiguration::setChannelReadWriteSize);
+        Optional.ofNullable(tcpConfig.getGlobalReadWriteSize()).ifPresent(mqttConfiguration::setGlobalReadWriteSize);
         Optional.ofNullable(tcpConfig.getSsl()).map(SslContext::getEnable).ifPresent(mqttConfiguration::setSsl);
         Optional.ofNullable(tcpConfig.getSsl()).ifPresent(mqttConfiguration::setSslContext);
         Optional.ofNullable(tcpConfig.getSsl()).ifPresent(mqttConfiguration::setSslContext);
