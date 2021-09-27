@@ -5,26 +5,26 @@
             :row-key="(r,i)=>{i.toString()}"
     >
         <template slot="connection" slot-scope="{text,record}">
-            <a-tag v-if="record.connection.length===0" > — </a-tag>
+            <a-tag v-if="record.connection.size===0"> 空</a-tag>
             <a-tag v-else v-for="(v,k) in record.connection" :key="k" style="margin-top: 1px">{{ k }}:{{ v }}</a-tag>
         </template>
         <template slot="will" slot-scope="{text,record}">
-            <a-tag v-if="record.will.length===0" > — </a-tag>
+            <a-tag v-if="record.will.size===0"> 空</a-tag>
             <a-tag v-else v-for="(v,k) in record.will" :key="k" style="margin-top: 1px">{{ k }}:{{ v }}</a-tag>
         </template>
         <template slot="topics" slot-scope="{text,record}">
-            <span v-if="record.topics.length===0"> — </span>
+            <span v-if="record.topics.size===0"> 空 </span>
             <a-tag v-else v-for="(item,index) in record.topics" :key="index" style="margin-top: 1px">{{item}}</a-tag>
         </template>
     </standard-table>
 </template>
 
 <script>
-    import moment from "moment";
-    import {connections} from '@/services/smqtt'
-    import StandardTable from '@/components/table/StandardTable'
+import moment from "moment";
+import {connections} from '@/services/smqtt'
+import StandardTable from '@/components/table/StandardTable'
 
-    const columns = [
+const columns = [
         {
             title: 'ID',
             width: '100px',

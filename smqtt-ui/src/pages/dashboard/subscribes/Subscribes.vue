@@ -1,7 +1,7 @@
 <template>
   <div style="margin-top: 20px">
       <div v-if="dataShow.length==0">
-          <standard-table></standard-table>
+          <a-empty/>
       </div>
       <a-collapse v-for="(topicData,index) in dataShow" :key="index" style="margin-top: 10px" >
       <a-collapse-panel :key="index" :header="'Topic：'+ topicData.topic">
@@ -21,14 +21,16 @@
             :dataSource="topicData.data"
             :row-key="(r,i)=>{i.toString()}"
         >
-          <template slot="connection" slot-scope="{text,record}">
-            <a-tag v-for="(v,k) in record.connection" :key="k" style="margin-top: 1px">{{ k }}:{{ v }}</a-tag>
-          </template>
-          <template slot="will" slot-scope="{text,record}">
-            <a-tag v-for="(v,k) in record.will" :key="k" style="margin-top: 1px">{{ k }}:{{ v }}</a-tag>
-          </template>
+            <template slot="connection" slot-scope="{text,record}">
+                <a-tag v-if="record.connection.size===0"> 空</a-tag>
+                <a-tag v-for="(v,k) in record.connection" v-else :key="k" style="margin-top: 1px">{{ k }}:{{ v }}</a-tag>
+            </template>
+            <template slot="will" slot-scope="{text,record}">
+                <a-tag v-if="record.will.size===0"> 空</a-tag>
+                <a-tag v-for="(v,k) in record.will" v-else :key="k" style="margin-top: 1px">{{ k }}:{{ v }}</a-tag>
+            </template>
           <template slot="topics" slot-scope="{text,record}">
-            <span v-if="record.topics.length===0"> — </span>
+              <span v-if="record.topics.size===0"> 空</span>
             <a-tag v-for="(item,index) in record.topics" v-else :key="index" style="margin-top: 1px">{{ item }}</a-tag>
           </template>
         </standard-table>
