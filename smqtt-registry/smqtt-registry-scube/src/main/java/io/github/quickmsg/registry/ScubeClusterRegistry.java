@@ -11,9 +11,6 @@ import io.scalecube.cluster.ClusterMessageHandler;
 import io.scalecube.cluster.Member;
 import io.scalecube.cluster.membership.MembershipEvent;
 import io.scalecube.cluster.transport.api.Message;
-import io.scalecube.cluster.transport.api.Transport;
-import io.scalecube.cluster.transport.api.TransportConfig;
-import io.scalecube.cluster.transport.api.TransportFactory;
 import io.scalecube.net.Address;
 import io.scalecube.transport.netty.tcp.TcpTransportFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -43,14 +40,15 @@ public class ScubeClusterRegistry implements ClusterRegistry {
     @Override
     public void registry(BootstrapConfig.ClusterConfig clusterConfig) {
         this.cluster = new ClusterImpl()
-                .config(opts -> {
-                    opts.memberAlias(clusterConfig.getNode());
-                    if (clusterConfig.getExternal() != null) {
-                        opts.externalHost(clusterConfig.getExternal().getHost());
-                        opts.externalPort(clusterConfig.getExternal().getPort());
-                    }
-                    return opts;
-                })
+                .config(opts ->
+                        opts.memberAlias(clusterConfig.getNode())
+                                .externalHost(Optional.ofNullable(clusterConfig.getExternal())
+                                        .map(BootstrapConfig.ClusterExternal::getHost)
+                                        .orElse(null))
+                                .externalPort(Optional.ofNullable(clusterConfig.getExternal())
+                                        .map(BootstrapConfig.ClusterExternal::getPort)
+                                        .orElse(null))
+                )
                 .transportFactory(TcpTransportFactory::new)
                 .transport(transportConfig -> transportConfig.port(clusterConfig.getPort()))
                 .membership(opts -> opts.seedMembers(Arrays.stream(clusterConfig
