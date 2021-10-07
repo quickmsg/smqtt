@@ -45,8 +45,10 @@ public class DefaultProtocolAdaptor implements ProtocolAdaptor {
     @Override
     public <C extends Configuration> void chooseProtocol(MqttChannel mqttChannel, SmqttMessage<MqttMessage> smqttMessage, ReceiveContext<C> receiveContext) {
         MqttMessage mqttMessage = smqttMessage.getMessage();
+        if(log.isDebugEnabled()){
+            log.debug("accept channel] {} message {}", mqttChannel.getConnection(), mqttMessage);
+        }
         if (mqttMessage != null && mqttMessage.decoderResult() != null && (mqttMessage.decoderResult().isSuccess())) {
-            log.info("chooseProtocol channel {} chooseProtocol message {}", mqttChannel, mqttMessage);
             Optional.ofNullable(types.get(mqttMessage.fixedHeader().messageType()))
                     .ifPresent(protocol -> protocol
                             .doParseProtocol(smqttMessage, mqttChannel)
@@ -55,8 +57,8 @@ public class DefaultProtocolAdaptor implements ProtocolAdaptor {
                             .subscribe(aVoid -> {
                             }, error -> {
                                 log.error("channel {} chooseProtocol: {} error {}", mqttChannel, mqttMessage, error.getMessage());
-                                MessageUtils.safeRelease(mqttMessage);
-                            }, () -> MessageUtils.safeRelease(mqttMessage)));
+                                MessageUtils.safeRelease(mqttMessage,1);
+                            }, () -> MessageUtils.safeRelease(mqttMessage,1)));
         } else {
             log.warn("chooseProtocol {} error mqttMessage {} ", mqttChannel, mqttMessage);
         }

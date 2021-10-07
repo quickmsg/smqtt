@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.quickmsg.common.enums.ChannelStatus;
 import io.github.quickmsg.common.topic.SubscribeTopic;
 import io.github.quickmsg.common.utils.MessageUtils;
-import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.mqtt.*;
 import lombok.Builder;
 import lombok.Data;
@@ -241,7 +240,9 @@ public class MqttChannel {
 
 
         public Mono<Void> sendMessage(MqttMessage mqttMessage, MqttChannel mqttChannel, boolean retry, Map<MqttMessageType, Map<Integer, Disposable>> replyMqttMessageMap) {
-            log.info("write channel {} message {}", mqttChannel.getConnection(), mqttMessage);
+            if (log.isDebugEnabled()) {
+                log.debug("write channel {} message {}", mqttChannel.getConnection(), mqttMessage);
+            }
             if (retry) {
                 /*
                 Increase the reference count of bytebuf, and the reference count of retrybytebuf is 2
@@ -317,7 +318,7 @@ public class MqttChannel {
         public Mono<Void> offerReply(MqttMessage message, final MqttChannel mqttChannel, final int messageId, Map<MqttMessageType, Map<Integer, Disposable>> replyMqttMessageMap) {
             return Mono.fromRunnable(() ->
                     replyMqttMessageMap.computeIfAbsent(message.fixedHeader().messageType(), mqttMessageType -> new ConcurrentHashMap<>(8)).put(messageId,
-                            mqttChannel.write(Mono.fromCallable(()->getDupMessage(message)))
+                            mqttChannel.write(Mono.fromCallable(() -> getDupMessage(message)))
                                     .delaySubscription(Duration.ofSeconds(5))
                                     .repeat(10)
                                     .doOnError(error -> {

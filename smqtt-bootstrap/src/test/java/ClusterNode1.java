@@ -9,7 +9,7 @@ public class ClusterNode1 {
 
     public static void main(String[] args) throws InterruptedException {
         Bootstrap bootstrap = Bootstrap.builder()
-                .rootLevel(Level.DEBUG)
+                .rootLevel(Level.INFO)
                 .websocketConfig(
                         BootstrapConfig.WebsocketConfig
                                 .builder()
@@ -38,7 +38,7 @@ public class ClusterNode1 {
                         BootstrapConfig.
                                 ClusterConfig
                                 .builder()
-                                .enable(true)
+                                .enable(false)
                                 .namespace("smqtt")
                                 .node("node-1")
                                 .port(7773)

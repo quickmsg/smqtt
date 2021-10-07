@@ -23,8 +23,29 @@ public class MessageUtils {
         }
     }
 
+    public static void safeRelease(MqttMessage mqttMessage,Integer count) {
+        if (mqttMessage.payload() instanceof ByteBuf) {
+            ByteBuf byteBuf = ((ByteBuf) mqttMessage.payload());
+            if (count > 0) {
+                byteBuf.release(count);
+                if (log.isDebugEnabled()) {
+                    log.info("netty success release mqttMessage {} count {} ", byteBuf, count);
+                }
+            }
+        }
+    }
+
     public static void safeRelease(ByteBuf buf) {
         int count = buf.refCnt();
+        if (count > 0) {
+            buf.release(count);
+            if (log.isDebugEnabled()) {
+                log.info("netty success release byteBuf {} count {} ", buf, count);
+            }
+        }
+    }
+
+    public static void safeRelease(ByteBuf buf,Integer count) {
         if (count > 0) {
             buf.release(count);
             if (log.isDebugEnabled()) {
