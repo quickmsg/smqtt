@@ -47,7 +47,7 @@ public class RabbitmqSourceBean implements SourceBean {
             ConnectionFactory factory = new ConnectionFactory();
             factory.setAutomaticRecoveryEnabled(true);
             factory.setTopologyRecoveryEnabled(true);
-            factory.setNetworkRecoveryInterval(3000);  //每5s重试一次
+            factory.setNetworkRecoveryInterval(3000);
             //设置RabbitMQ相关信息
             factory.setHost(sourceParam.get("host").toString());
             factory.setPort(Integer.parseInt(sourceParam.get("port").toString()));
