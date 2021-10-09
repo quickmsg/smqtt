@@ -8,11 +8,13 @@ import io.github.quickmsg.common.rule.source.SourceBean;
 import io.github.quickmsg.common.utils.JacksonUtil;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * rabbitmq source
+ *
  * @author leafseelight
  * @date 2021/10/09
  */
@@ -24,10 +26,9 @@ public class RabbitmqSourceBean implements SourceBean {
      */
     private Connection connection = null;
     /**
-     * 消息队列
+     * 缓存消息队列
      */
     private Map<String, Channel> channelHashMap = new HashMap<>();
-
 
     @Override
     public Boolean support(Source source) {
@@ -64,20 +65,45 @@ public class RabbitmqSourceBean implements SourceBean {
 
     /**
      * 转发数据
-     *
      * @param object 对象
      * @return {@link Object}
      */
     @Override
     public void transmit(Map<String, Object> object) {
         String json = JacksonUtil.bean2Json(object);
-        log.info("transmit={}",json);
+        log.info("transmit={}", json);
         String clientId = (String) object.get("clientIdentifier");
         String topic = (String) object.get("topic");
         String msg = (String) object.get("msg");
-        //boolean clusterMsg = (boolean) object.get("clusterMsg");
-        log.info("【Hex消息】clientId={},topic={},msg={}",clientId,topic,msg);
+        corePublish("test", json);
     }
+
+    /**
+     * 核心执行内容
+     *
+     * @param queueName
+     * @param json
+     */
+    public void corePublish(String queueName, String json) {
+        try {
+            Channel cacheChannel = channelHashMap.get(queueName);
+            Channel channel = null;
+            if (cacheChannel == null) {
+                //创建一个通道
+                channel = connection.createChannel();
+                channelHashMap.put(queueName, channel);
+            } else {
+                channel = cacheChannel;
+            }
+            // 声明一个队列
+            channel.queueDeclare(queueName, false, false, false, null);
+            // 发送消息到队列中
+            channel.basicPublish("", queueName, null, json.getBytes("UTF-8"));
+        }catch (Exception e){
+            log.error("RabbitMq转发异常",e);
+        }
+    }
+
 
     @Override
     public void close() {
@@ -89,7 +115,7 @@ public class RabbitmqSourceBean implements SourceBean {
             }
             connection.close();
         } catch (Exception e) {
-            log.error("#Close.Exception: {}",e.getMessage());
+            log.error("#Close.Exception: {}", e.getMessage());
         }
     }
 
