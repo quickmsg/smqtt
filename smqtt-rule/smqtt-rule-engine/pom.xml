@@ -42,6 +42,12 @@
 
     <dependency>
       <groupId>io.github.quickmsg</groupId>
+      <artifactId>smqtt-rule-source-rabbitmq</artifactId>
+      <version>1.0.8</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.github.quickmsg</groupId>
       <artifactId>smqtt-rule-source-db</artifactId>
       <version>1.0.8</version>
     </dependency>

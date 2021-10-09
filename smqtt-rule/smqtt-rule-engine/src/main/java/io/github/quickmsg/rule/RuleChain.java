@@ -49,6 +49,8 @@ public class RuleChain {
                 return new LoggerRuleNode(definition.getScript());
             case ROCKET_MQ:
                 return new TransmitRuleNode(Source.ROCKET_MQ, definition.getScript());
+            case RABBIT_MQ:
+                return new TransmitRuleNode(Source.RABBIT_MQ, definition.getScript());
             case DATA_BASE:
                 return new DatabaseRuleNode(definition.getScript());
             default:

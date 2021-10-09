@@ -18,6 +18,7 @@
         <module>smqtt-rule-source-kafka</module>
         <module>smqtt-rule-source-http</module>
         <module>smqtt-rule-source-rocketmq</module>
+        <module>smqtt-rule-source-rabbitmq</module>
         <module>smqtt-rule-source-db</module>
     </modules>
 
