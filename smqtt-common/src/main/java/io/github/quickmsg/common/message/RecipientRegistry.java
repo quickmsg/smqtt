@@ -3,7 +3,6 @@ package io.github.quickmsg.common.message;
 import io.github.quickmsg.common.channel.MqttChannel;
 import io.github.quickmsg.common.enums.ChannelStatus;
 import io.github.quickmsg.common.spi.DynamicLoader;
-import io.netty.handler.codec.mqtt.MqttPublishMessage;
 
 /**
  * @author luxurong
@@ -16,11 +15,11 @@ public interface RecipientRegistry {
     /**
      * 全局消息处理
      *
-     * @param mqttChannel    {@link MqttChannel}
-     * @param publishMessage {@link MqttPublishMessage}
+     * @param mqttChannel     {@link MqttChannel}
+     * @param heapMqttMessage {@link HeapMqttMessage}
      */
     @Deprecated
-    void accept(MqttChannel mqttChannel, MqttPublishMessage publishMessage);
+    void accept(MqttChannel mqttChannel, HeapMqttMessage heapMqttMessage);
 
     /**
      * message
