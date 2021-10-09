@@ -28,7 +28,9 @@ module.exports = {
     direction: 'left'                   //动画方向，切换页面时动画的方向，参考 ./animate.config.js
   },
   footerLinks: [                        //页面底部链接，{link: '链接地址', name: '名称/显示文字', icon: '图标，支持 ant design vue 图标库'}
-    {link: 'https://doc.smqtt.cc/', name: '文档'},
-    {link: 'https://github.com/quickmsg', icon: 'github'},
+    {link: 'https://www.smqtt.cc', name: '官网'},
+    {link: 'https://wiki.smqtt.cc', name: '文档'},
+    {link: 'https://github.com/quickmsg/smqtt', name: 'github'},
+    {link: 'https://gitee.com/quickmsg/mqtt-cluster', name: '码云'},
   ],
 }

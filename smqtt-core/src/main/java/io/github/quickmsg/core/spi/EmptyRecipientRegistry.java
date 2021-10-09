@@ -4,7 +4,6 @@ import io.github.quickmsg.common.channel.MqttChannel;
 import io.github.quickmsg.common.enums.ChannelStatus;
 import io.github.quickmsg.common.message.HeapMqttMessage;
 import io.github.quickmsg.common.message.RecipientRegistry;
-import io.netty.handler.codec.mqtt.MqttPublishMessage;
 import lombok.extern.slf4j.Slf4j;
 
 /**
