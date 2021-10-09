@@ -19,8 +19,8 @@ public interface RecipientRegistry {
      * @param mqttChannel    {@link MqttChannel}
      * @param publishMessage {@link MqttPublishMessage}
      */
+    @Deprecated
     void accept(MqttChannel mqttChannel, MqttPublishMessage publishMessage);
-
 
     /**
      * message
