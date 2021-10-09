@@ -111,6 +111,9 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
 
             doSession(mqttChannel, channelRegistry, topicRegistry);
 
+            // registry new channel
+            channelRegistry.registry(mqttChannel.getClientIdentifier(), mqttChannel);
+
             // registry close mqtt channel event
             mqttChannel.registryClose(channel -> this.close(mqttChannel, mqttReceiveContext));
 
@@ -177,8 +180,6 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
                     channelRegistry.close(sessionChannel);
                     topicRegistry.clear(sessionChannel);
                 });
-
-        channelRegistry.registry(mqttChannel.getClientIdentifier(), mqttChannel);
     }
 
 

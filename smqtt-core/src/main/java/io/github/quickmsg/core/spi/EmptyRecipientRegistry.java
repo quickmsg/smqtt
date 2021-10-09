@@ -15,12 +15,15 @@ public class EmptyRecipientRegistry implements RecipientRegistry {
 
     @Override
     public void accept(MqttChannel mqttChannel, MqttPublishMessage publishMessage) {
-        log.info("RecipientRegistry message channel {} message {}",mqttChannel,publishMessage);
+        if(log.isDebugEnabled()){
+            log.debug("RecipientRegistry message channel {} message {}",mqttChannel,publishMessage);
+        }
     }
 
     @Override
     public void channelStatus(MqttChannel mqttChannel, ChannelStatus channelStatus) {
-        log.info("RecipientRegistry channelStatus channel {} status {}",mqttChannel,channelStatus);
-
+        if(log.isDebugEnabled()) {
+            log.debug("RecipientRegistry channelStatus channel {} status {}", mqttChannel, channelStatus);
+        }
     }
 }
