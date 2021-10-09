@@ -109,15 +109,10 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
                                         ).subscribe();
                                     })));
 
-            Optional.ofNullable(channelRegistry.get(clientIdentifier))
-                    .ifPresent(sessionChannel -> {
-                        doSession(sessionChannel, mqttChannel, channelRegistry, topicRegistry, mqttReceiveContext.getMessageRegistry());
-                    });
+            doSession(mqttChannel, channelRegistry, topicRegistry);
 
             // registry close mqtt channel event
             mqttChannel.registryClose(channel -> this.close(mqttChannel, mqttReceiveContext));
-
-            channelRegistry.registry(clientIdentifier, mqttChannel);
 
             WindowMetric.WINDOW_METRIC_INSTANCE.recordConnect(1);
 
@@ -127,12 +122,26 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
 
             mqttChannel.registryClose(mqttChannel1 -> recipientRegistry.channelStatus(mqttChannel1, ChannelStatus.OFFLINE));
 
-            return mqttChannel.write(MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_ACCEPTED), false);
+            return mqttChannel.write(MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_ACCEPTED), false)
+                    .then(Mono.fromRunnable(() -> sendOfflineMessage(mqttReceiveContext.getMessageRegistry(),mqttChannel)));
         } else {
             return mqttChannel.write(
                     MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_BAD_USER_NAME_OR_PASSWORD),
                     false).then(mqttChannel.close());
         }
+    }
+
+    private void sendOfflineMessage(MessageRegistry messageRegistry, MqttChannel mqttChannel){
+        Optional.ofNullable(messageRegistry.getSessionMessage(mqttChannel.getClientIdentifier()))
+                .ifPresent(sessionMessages -> {
+                    sessionMessages.forEach(sessionMessage -> {
+                        mqttChannel
+                                .write(sessionMessage.toPublishMessage(mqttChannel),
+                                        sessionMessage.getQos() > 0)
+                                .subscribeOn(Schedulers.single())
+                                .subscribe();
+                    });
+                });
     }
 
     private void close(MqttChannel mqttChannel, MqttReceiveContext mqttReceiveContext) {
@@ -146,41 +155,30 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
     }
 
     /**
-     * 处理session消息
-     *
-     * @param sessionChannel  session链接 {@link MqttChannel}
+     * 处理session
      * @param mqttChannel     新链接      {@link MqttChannel}
      * @param channelRegistry {@link ChannelRegistry}
      * @param topicRegistry   {@link TopicRegistry}
-     * @param messageRegistry {@link MessageRegistry}
      */
-    private void doSession(MqttChannel sessionChannel,
-                           MqttChannel mqttChannel,
+    private void doSession(MqttChannel mqttChannel,
                            ChannelRegistry channelRegistry,
-                           TopicRegistry topicRegistry,
-                           MessageRegistry messageRegistry) {
-        Set<SubscribeTopic> topics = sessionChannel.getTopics().stream().map(subscribeTopic ->
-                new SubscribeTopic(
-                        subscribeTopic.getTopicFilter(),
-                        subscribeTopic.getQoS(),
-                        mqttChannel))
-                .collect(Collectors.toSet());
-        // 注册新的匹配树
-        topicRegistry.registrySubscribesTopic(topics);
-        // 移除session会话
-        channelRegistry.close(sessionChannel);
-        topicRegistry.clear(sessionChannel);
-        // 获取session消息
-        Optional.ofNullable(messageRegistry.getSessionMessage(mqttChannel.getClientIdentifier()))
-                .ifPresent(sessionMessages -> {
-                    sessionMessages.forEach(sessionMessage -> {
-                        mqttChannel
-                                .write(sessionMessage.toPublishMessage(mqttChannel),
-                                        sessionMessage.getQos() > 0)
-                                .subscribeOn(Schedulers.single())
-                                .subscribe();
-                    });
+                           TopicRegistry topicRegistry) {
+        Optional.ofNullable(channelRegistry.get(mqttChannel.getClientIdentifier()))
+                .ifPresent(sessionChannel -> {
+                    Set<SubscribeTopic> topics = sessionChannel.getTopics().stream().map(subscribeTopic ->
+                            new SubscribeTopic(
+                                    subscribeTopic.getTopicFilter(),
+                                    subscribeTopic.getQoS(),
+                                    mqttChannel))
+                            .collect(Collectors.toSet());
+                    // 注册新的匹配树
+                    topicRegistry.registrySubscribesTopic(topics);
+                    // 移除session会话
+                    channelRegistry.close(sessionChannel);
+                    topicRegistry.clear(sessionChannel);
                 });
+
+        channelRegistry.registry(mqttChannel.getClientIdentifier(), mqttChannel);
     }
 
 
