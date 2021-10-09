@@ -14,6 +14,8 @@ import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
 
+import java.util.stream.Collectors;
+
 /**
  * @author luxurong
  */
@@ -28,7 +30,14 @@ public class ConnectionActor extends AbstractHttpActor {
         return request
                 .receive()
                 .then(response
-                        .sendString(Mono.just(JacksonUtil.bean2Json(DefaultTransport.receiveContext.getChannelRegistry().getChannels())))
+                        .sendString(Mono.just(JacksonUtil.bean2Json(
+                                DefaultTransport.receiveContext.getChannelRegistry().getChannels()
+                                        .stream()
+                                        .map(record -> {
+                                            record.setAddress(record.getAddress().replaceAll("/", ""));
+                                            return record;
+                                        }).collect(Collectors.toList())
+                        )))
                         .then());
     }
 
