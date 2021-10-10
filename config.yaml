@@ -14,7 +14,7 @@ smqtt:
     # globalReadWriteSize: 10000000,100000000  全局读写大小限制
     # channelReadWriteSize: 10000000,100000000 单个channel读写大小限制
     options:
-      SO_BACKLOG: 1000
+      SO_BACKLOG: 2000
     ssl: # ssl配置
       enable: false # 开关
       key: /user/server.key # 指定ssl文件 默认系统生成
