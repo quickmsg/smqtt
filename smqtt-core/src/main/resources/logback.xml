@@ -45,7 +45,7 @@
     <logger name="io.scalecube.cluster" level="info"/>
     <logger name="io.scalecube.services" level="info"/>
 
-    <root level="DEBUG">
+    <root level="INFO">
         <appender-ref ref="stdout"/>
         <appender-ref ref="file"/>
     </root>

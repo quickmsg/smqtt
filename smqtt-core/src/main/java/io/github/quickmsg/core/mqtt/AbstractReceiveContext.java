@@ -88,22 +88,22 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
         } else if (configuration.getChannelReadWriteSize() == null) {
             String[] limits = configuration.getGlobalReadWriteSize().split(",");
             return new GlobalTrafficShapingHandler(this.loopResources.onServer(true),
-                    Long.parseLong(limits[0]),
-                    Long.parseLong(limits[1]));
+                    Long.parseLong(limits[1]),
+                    Long.parseLong(limits[0]));
         } else if (configuration.getGlobalReadWriteSize() == null) {
             String[] limits = configuration.getChannelReadWriteSize().split(",");
             return new ChannelTrafficShapingHandler(
-                    Long.parseLong(limits[0]),
-                    Long.parseLong(limits[1]));
+                    Long.parseLong(limits[1]),
+                    Long.parseLong(limits[0]));
         } else {
             String[] globalLimits = configuration.getGlobalReadWriteSize().split(",");
             String[] channelLimits = configuration.getChannelReadWriteSize().split(",");
             return new GlobalChannelTrafficShapingHandler(
                     this.loopResources.onServer(true),
-                    Long.parseLong(globalLimits[0]),
                     Long.parseLong(globalLimits[1]),
-                    Long.parseLong(channelLimits[0]),
-                    Long.parseLong(channelLimits[1]));
+                    Long.parseLong(globalLimits[0]),
+                    Long.parseLong(channelLimits[1]),
+                    Long.parseLong(channelLimits[0]));
         }
     }
 

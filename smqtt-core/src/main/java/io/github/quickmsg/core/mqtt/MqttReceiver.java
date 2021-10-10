@@ -5,6 +5,8 @@ import io.github.quickmsg.common.channel.MqttChannel;
 import io.github.quickmsg.core.ssl.AbstractSslHandler;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.DefaultMaxMessagesRecvByteBufAllocator;
+import io.netty.channel.FixedRecvByteBufAllocator;
 import io.netty.channel.WriteBufferWaterMark;
 import io.netty.handler.codec.mqtt.MqttDecoder;
 import io.netty.handler.codec.mqtt.MqttEncoder;
@@ -34,7 +36,9 @@ public class MqttReceiver extends AbstractSslHandler implements Receiver {
                 .childOption(ChannelOption.TCP_NODELAY, true)
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
                 .childOption(ChannelOption.SO_REUSEADDR, true)
+                .option(ChannelOption.SO_REUSEADDR, true)
                 .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
+                .childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
                 .runOn(receiveContext.getLoopResources())
                 .doOnConnection(connection -> {
                     connection
@@ -42,6 +46,7 @@ public class MqttReceiver extends AbstractSslHandler implements Receiver {
                             .addHandler(new MetricChannelHandler())
                             .addHandler(new MqttDecoder())
                             .addHandler(receiveContext.getTrafficShapingHandler());
+
                     receiveContext.apply(MqttChannel.init(connection));
                 });
     }

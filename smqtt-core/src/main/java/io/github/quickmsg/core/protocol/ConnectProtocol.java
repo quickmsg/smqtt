@@ -48,90 +48,95 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
 
     @Override
     public Mono<Void> parseProtocol(SmqttMessage<MqttConnectMessage> smqttMessage, MqttChannel mqttChannel, ContextView contextView) {
-        MqttConnectMessage message = smqttMessage.getMessage();
-        MqttReceiveContext mqttReceiveContext = (MqttReceiveContext) contextView.get(ReceiveContext.class);
-        RecipientRegistry recipientRegistry = mqttReceiveContext.getRecipientRegistry();
-        MqttConnectVariableHeader mqttConnectVariableHeader = message.variableHeader();
-        MqttConnectPayload mqttConnectPayload = message.payload();
-        String clientIdentifier = mqttConnectPayload.clientIdentifier();
-        ChannelRegistry channelRegistry = mqttReceiveContext.getChannelRegistry();
-        TopicRegistry topicRegistry = mqttReceiveContext.getTopicRegistry();
-        PasswordAuthentication passwordAuthentication = mqttReceiveContext.getPasswordAuthentication();
-        if (channelRegistry.exists(clientIdentifier)) {
-            return mqttChannel.write(
-                    MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_IDENTIFIER_REJECTED),
-                    false).then(mqttChannel.close());
-        }
-        if (MqttVersion.MQTT_3_1_1.protocolLevel() != (byte) mqttConnectVariableHeader.version()
-                && MqttVersion.MQTT_3_1.protocolLevel() != (byte) mqttConnectVariableHeader.version()) {
-            return mqttChannel.write(
-                    MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_UNACCEPTABLE_PROTOCOL_VERSION),
-                    false).then(mqttChannel.close());
-        }
-        if (passwordAuthentication.auth(mqttConnectPayload.userName(), mqttConnectPayload.passwordInBytes(), clientIdentifier)) {
-            /*cancel  defer close not authenticate channel */
-            mqttChannel.getCloseDisposable().dispose();
-            mqttChannel.setClientIdentifier(mqttConnectPayload.clientIdentifier());
-            if (mqttConnectVariableHeader.isWillFlag()) {
-                mqttChannel.setWill(MqttChannel.Will.builder()
-                        .isRetain(mqttConnectVariableHeader.isWillRetain())
-                        .willTopic(mqttConnectPayload.willTopic())
-                        .willMessage(mqttConnectPayload.willMessageInBytes())
-                        .mqttQoS(MqttQoS.valueOf(mqttConnectVariableHeader.willQos()))
-                        .build());
-            }
-            mqttChannel.setAuthTime(System.currentTimeMillis());
-            mqttChannel.setKeepalive(mqttConnectVariableHeader.keepAliveTimeSeconds());
-            mqttChannel.setSessionPersistent(!mqttConnectVariableHeader.isCleanSession());
-            mqttChannel.setStatus(ChannelStatus.ONLINE);
-            mqttChannel.setUsername(mqttConnectPayload.userName());
-            /*registry unread event close channel */
+       try {
+           MqttConnectMessage message = smqttMessage.getMessage();
+           MqttReceiveContext mqttReceiveContext = (MqttReceiveContext) contextView.get(ReceiveContext.class);
+           RecipientRegistry recipientRegistry = mqttReceiveContext.getRecipientRegistry();
+           MqttConnectVariableHeader mqttConnectVariableHeader = message.variableHeader();
+           MqttConnectPayload mqttConnectPayload = message.payload();
+           String clientIdentifier = mqttConnectPayload.clientIdentifier();
+           ChannelRegistry channelRegistry = mqttReceiveContext.getChannelRegistry();
+           TopicRegistry topicRegistry = mqttReceiveContext.getTopicRegistry();
+           PasswordAuthentication passwordAuthentication = mqttReceiveContext.getPasswordAuthentication();
+           if (channelRegistry.exists(clientIdentifier)) {
+               return mqttChannel.write(
+                       MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_IDENTIFIER_REJECTED),
+                       false).then(mqttChannel.close());
+           }
+           if (MqttVersion.MQTT_3_1_1.protocolLevel() != (byte) mqttConnectVariableHeader.version()
+                   && MqttVersion.MQTT_3_1.protocolLevel() != (byte) mqttConnectVariableHeader.version()) {
+               return mqttChannel.write(
+                       MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_UNACCEPTABLE_PROTOCOL_VERSION),
+                       false).then(mqttChannel.close());
+           }
+           if (passwordAuthentication.auth(mqttConnectPayload.userName(), mqttConnectPayload.passwordInBytes(), clientIdentifier)) {
+               /*cancel  defer close not authenticate channel */
+               mqttChannel.disposableClose();
+               mqttChannel.setClientIdentifier(mqttConnectPayload.clientIdentifier());
+               if (mqttConnectVariableHeader.isWillFlag()) {
+                   mqttChannel.setWill(MqttChannel.Will.builder()
+                           .isRetain(mqttConnectVariableHeader.isWillRetain())
+                           .willTopic(mqttConnectPayload.willTopic())
+                           .willMessage(mqttConnectPayload.willMessageInBytes())
+                           .mqttQoS(MqttQoS.valueOf(mqttConnectVariableHeader.willQos()))
+                           .build());
+               }
+               mqttChannel.setAuthTime(System.currentTimeMillis());
+               mqttChannel.setKeepalive(mqttConnectVariableHeader.keepAliveTimeSeconds());
+               mqttChannel.setSessionPersistent(!mqttConnectVariableHeader.isCleanSession());
+               mqttChannel.setStatus(ChannelStatus.ONLINE);
+               mqttChannel.setUsername(mqttConnectPayload.userName());
+               /*registry unread event close channel */
 
-            mqttChannel.getConnection()
-                    .onReadIdle(mqttConnectVariableHeader.keepAliveTimeSeconds() * MILLI_SECOND_PERIOD << 1,
-                            () -> close(mqttChannel, mqttReceiveContext));
+               mqttChannel.getConnection()
+                       .onReadIdle(mqttConnectVariableHeader.keepAliveTimeSeconds() * MILLI_SECOND_PERIOD << 1,
+                               () -> close(mqttChannel, mqttReceiveContext));
 
-            /*registry will message send */
-            mqttChannel.registryClose(channel -> Optional.ofNullable(mqttChannel.getWill())
-                    .ifPresent(will ->
-                            topicRegistry.getSubscribesByTopic(will.getWillTopic(), will.getMqttQoS())
-                                    .forEach(subscribeTopic -> {
-                                        MqttChannel subscribeChannel = subscribeTopic.getMqttChannel();
-                                        subscribeChannel.write(
-                                                MqttMessageBuilder
-                                                        .buildPub(false,
-                                                                subscribeTopic.getQoS(),
-                                                                subscribeTopic.getQoS() == MqttQoS.AT_MOST_ONCE
-                                                                        ? 0 : subscribeChannel.generateMessageId(),
-                                                                will.getWillTopic(),
-                                                                Unpooled.wrappedBuffer(will.getWillMessage())
-                                                        ), subscribeTopic.getQoS().value() > 0
-                                        ).subscribe();
-                                    })));
+               /*registry will message send */
+               mqttChannel.registryClose(channel -> Optional.ofNullable(mqttChannel.getWill())
+                       .ifPresent(will ->
+                               topicRegistry.getSubscribesByTopic(will.getWillTopic(), will.getMqttQoS())
+                                       .forEach(subscribeTopic -> {
+                                           MqttChannel subscribeChannel = subscribeTopic.getMqttChannel();
+                                           subscribeChannel.write(
+                                                   MqttMessageBuilder
+                                                           .buildPub(false,
+                                                                   subscribeTopic.getQoS(),
+                                                                   subscribeTopic.getQoS() == MqttQoS.AT_MOST_ONCE
+                                                                           ? 0 : subscribeChannel.generateMessageId(),
+                                                                   will.getWillTopic(),
+                                                                   Unpooled.wrappedBuffer(will.getWillMessage())
+                                                           ), subscribeTopic.getQoS().value() > 0
+                                           ).subscribe();
+                                       })));
 
-            doSession(mqttChannel, channelRegistry, topicRegistry);
+               doSession(mqttChannel, channelRegistry, topicRegistry);
 
-            // registry new channel
-            channelRegistry.registry(mqttChannel.getClientIdentifier(), mqttChannel);
+               // registry new channel
+               channelRegistry.registry(mqttChannel.getClientIdentifier(), mqttChannel);
 
-            // registry close mqtt channel event
-            mqttChannel.registryClose(channel -> this.close(mqttChannel, mqttReceiveContext));
+               // registry close mqtt channel event
+               mqttChannel.registryClose(channel -> this.close(mqttChannel, mqttReceiveContext));
 
-            WindowMetric.WINDOW_METRIC_INSTANCE.recordConnect(1);
+               WindowMetric.WINDOW_METRIC_INSTANCE.recordConnect(1);
 
-            mqttChannel.registryClose(ConnectProtocol::accept);
+               mqttChannel.registryClose(ConnectProtocol::accept);
 
-            recipientRegistry.channelStatus(mqttChannel, mqttChannel.getStatus());
+               recipientRegistry.channelStatus(mqttChannel, mqttChannel.getStatus());
 
-            mqttChannel.registryClose(mqttChannel1 -> recipientRegistry.channelStatus(mqttChannel1, ChannelStatus.OFFLINE));
+               mqttChannel.registryClose(mqttChannel1 -> recipientRegistry.channelStatus(mqttChannel1, ChannelStatus.OFFLINE));
 
-            return mqttChannel.write(MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_ACCEPTED), false)
-                    .then(Mono.fromRunnable(() -> sendOfflineMessage(mqttReceiveContext.getMessageRegistry(),mqttChannel)));
-        } else {
-            return mqttChannel.write(
-                    MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_BAD_USER_NAME_OR_PASSWORD),
-                    false).then(mqttChannel.close());
-        }
+               return mqttChannel.write(MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_ACCEPTED), false)
+                       .then(Mono.fromRunnable(() -> sendOfflineMessage(mqttReceiveContext.getMessageRegistry(),mqttChannel)));
+           } else {
+               return mqttChannel.write(
+                       MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_BAD_USER_NAME_OR_PASSWORD),
+                       false).then(mqttChannel.close());
+           }
+       }catch (Exception e){
+           log.error("connect error ",e);
+       }
+       return Mono.empty();
     }
 
     private void sendOfflineMessage(MessageRegistry messageRegistry, MqttChannel mqttChannel){

@@ -74,6 +74,13 @@ public class MqttChannel {
     private Disposable closeDisposable;
 
 
+    public void disposableClose() {
+        if (closeDisposable != null && !closeDisposable.isDisposed()) {
+            closeDisposable.dispose();
+        }
+    }
+
+
     public static MqttChannel init(Connection connection) {
         MqttChannel mqttChannel = new MqttChannel();
         mqttChannel.setTopics(new CopyOnWriteArraySet<>());
@@ -121,7 +128,7 @@ public class MqttChannel {
             if (!connection.isDisposed()) {
                 connection.dispose();
             }
-        }).delaySubscription(Duration.ofSeconds(2)).subscribe());
+        }).delaySubscription(Duration.ofSeconds(10)).subscribe());
         return this;
     }
 
@@ -334,15 +341,9 @@ public class MqttChannel {
     @Override
     public String toString() {
         return "MqttChannel{" +
-                "connection=" + connection +
                 ", clientIdentifier='" + clientIdentifier + '\'' +
                 ", status=" + status +
-                ", activeTime=" + activeTime +
-                ", authTime=" + authTime +
-                ", sessionPersistent=" + sessionPersistent +
-                ", will=" + will +
                 ", keepalive=" + keepalive +
-                ", username='" + username + '\'' +
-                '}';
+                ", username='" + username  + '}';
     }
 }

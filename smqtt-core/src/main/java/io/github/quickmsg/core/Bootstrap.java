@@ -118,7 +118,6 @@ public class Bootstrap {
                     log.info("bootstrap server start error", err);
                     START_ONLY_MQTT.tryEmitEmpty();
                 })
-                .doOnSuccess(started)
                 .subscribe();
         START_ONLY_MQTT.asMono().block();
     }
@@ -140,7 +139,8 @@ public class Bootstrap {
                 .doOnSuccess(transports::add)
                 .then(startWs(mqttConfiguration))
                 .then(startHttp())
-                .thenReturn(this);
+                .thenReturn(this)
+                .doOnSuccess(started);
     }
 
 
