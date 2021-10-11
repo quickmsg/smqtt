@@ -5,8 +5,6 @@ import io.github.quickmsg.common.channel.MqttChannel;
 import io.github.quickmsg.core.ssl.AbstractSslHandler;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.ChannelOption;
-import io.netty.channel.DefaultMaxMessagesRecvByteBufAllocator;
-import io.netty.channel.FixedRecvByteBufAllocator;
 import io.netty.channel.WriteBufferWaterMark;
 import io.netty.handler.codec.mqtt.MqttDecoder;
 import io.netty.handler.codec.mqtt.MqttEncoder;
@@ -45,7 +43,7 @@ public class MqttReceiver extends AbstractSslHandler implements Receiver {
                             .addHandler(MqttEncoder.INSTANCE)
                             .addHandler(new MetricChannelHandler())
                             .addHandler(new MqttDecoder())
-                            .addHandler(receiveContext.getTrafficShapingHandler());
+                            .addHandler(receiveContext.getTrafficHandlerLoader().get());
 
                     receiveContext.apply(MqttChannel.init(connection));
                 });

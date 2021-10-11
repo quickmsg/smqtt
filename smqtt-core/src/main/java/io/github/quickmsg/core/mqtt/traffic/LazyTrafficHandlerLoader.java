@@ -2,7 +2,10 @@ package io.github.quickmsg.core.mqtt.traffic;
 
 import io.github.quickmsg.common.channel.traffic.TrafficHandlerLoader;
 import io.netty.handler.traffic.AbstractTrafficShapingHandler;
+import io.netty.handler.traffic.ChannelTrafficShapingHandler;
+import io.netty.handler.traffic.GlobalChannelTrafficShapingHandler;
 
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Supplier;
 
 /**
@@ -20,4 +23,5 @@ public class LazyTrafficHandlerLoader implements TrafficHandlerLoader {
     public AbstractTrafficShapingHandler get() {
         return this.shapingHandlerSupplier.get();
     }
+
 }
