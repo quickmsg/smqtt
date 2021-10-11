@@ -26,7 +26,10 @@ public enum RuleType {
      * rocketmq转发器
      */
     ROCKET_MQ,
-
+    /**
+     * rabbitmq转发器
+     */
+    RABBIT_MQ,
     /**
      * web
      */

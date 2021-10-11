@@ -14,6 +14,10 @@ public enum Source {
      */
     ROCKET_MQ,
     /**
+     * RABBIT_MQ
+     */
+    RABBIT_MQ,
+    /**
      * 数据库
      */
     DATA_BASE,
