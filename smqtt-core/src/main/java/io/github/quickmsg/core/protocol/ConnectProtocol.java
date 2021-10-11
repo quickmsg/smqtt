@@ -58,17 +58,20 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
            ChannelRegistry channelRegistry = mqttReceiveContext.getChannelRegistry();
            TopicRegistry topicRegistry = mqttReceiveContext.getTopicRegistry();
            PasswordAuthentication passwordAuthentication = mqttReceiveContext.getPasswordAuthentication();
+           /*check clientIdentifier exist*/
            if (channelRegistry.exists(clientIdentifier)) {
                return mqttChannel.write(
                        MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_IDENTIFIER_REJECTED),
                        false).then(mqttChannel.close());
            }
+           /*protocol version support*/
            if (MqttVersion.MQTT_3_1_1.protocolLevel() != (byte) mqttConnectVariableHeader.version()
                    && MqttVersion.MQTT_3_1.protocolLevel() != (byte) mqttConnectVariableHeader.version()) {
                return mqttChannel.write(
                        MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_UNACCEPTABLE_PROTOCOL_VERSION),
                        false).then(mqttChannel.close());
            }
+           /*password check*/
            if (passwordAuthentication.auth(mqttConnectPayload.userName(), mqttConnectPayload.passwordInBytes(), clientIdentifier)) {
                /*cancel  defer close not authenticate channel */
                mqttChannel.disposableClose();
@@ -109,13 +112,14 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
                                                            ), subscribeTopic.getQoS().value() > 0
                                            ).subscribe();
                                        })));
-
+               /* do session message*/
                doSession(mqttChannel, channelRegistry, topicRegistry);
 
-               // registry new channel
+
+               /* registry new channel*/
                channelRegistry.registry(mqttChannel.getClientIdentifier(), mqttChannel);
 
-               // registry close mqtt channel event
+               /* registry close mqtt channel event*/
                mqttChannel.registryClose(channel -> this.close(mqttChannel, mqttReceiveContext));
 
                WindowMetric.WINDOW_METRIC_INSTANCE.recordConnect(1);
@@ -163,8 +167,8 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
     }
 
     /**
-     * 处理session
-     * @param mqttChannel     新链接      {@link MqttChannel}
+     * session
+     * @param mqttChannel     new channel      {@link MqttChannel}
      * @param channelRegistry {@link ChannelRegistry}
      * @param topicRegistry   {@link TopicRegistry}
      */
@@ -179,9 +183,9 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
                                     subscribeTopic.getQoS(),
                                     mqttChannel))
                             .collect(Collectors.toSet());
-                    // 注册新的匹配树
+                    // registry new chanel
                     topicRegistry.registrySubscribesTopic(topics);
-                    // 移除session会话
+                    // remove old channel
                     channelRegistry.close(sessionChannel);
                     topicRegistry.clear(sessionChannel);
                 });

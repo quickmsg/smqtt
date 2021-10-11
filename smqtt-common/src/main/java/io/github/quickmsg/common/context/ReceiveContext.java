@@ -2,6 +2,7 @@ package io.github.quickmsg.common.context;
 
 import io.github.quickmsg.common.channel.ChannelRegistry;
 import io.github.quickmsg.common.channel.MqttChannel;
+import io.github.quickmsg.common.channel.traffic.TrafficHandlerLoader;
 import io.github.quickmsg.common.cluster.ClusterRegistry;
 import io.github.quickmsg.common.config.Configuration;
 import io.github.quickmsg.common.message.MessageRegistry;
@@ -91,9 +92,9 @@ public interface ReceiveContext<T extends Configuration> extends BiConsumer<Mqtt
     /**
      * 全局流控
      *
-     * @return {@link AbstractTrafficShapingHandler}
+     * @return {@link TrafficHandlerLoader}
      */
-    AbstractTrafficShapingHandler getTrafficShapingHandler();
+    TrafficHandlerLoader getTrafficHandlerLoader();
 
 
 

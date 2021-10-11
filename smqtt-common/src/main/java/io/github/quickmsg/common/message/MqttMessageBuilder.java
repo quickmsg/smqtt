@@ -70,7 +70,7 @@ public class MqttMessageBuilder {
     }
 
     public static MqttConnAckMessage buildConnectAck(MqttConnectReturnCode connectReturnCode) {
-        MqttConnAckVariableHeader mqttConnAckVariableHeader = new MqttConnAckVariableHeader(connectReturnCode, true);
+        MqttConnAckVariableHeader mqttConnAckVariableHeader = new MqttConnAckVariableHeader(connectReturnCode, false);
         MqttFixedHeader mqttFixedHeader = new MqttFixedHeader(
                 MqttMessageType.CONNACK, false, MqttQoS.AT_MOST_ONCE, false, 0X02);
         return new MqttConnAckMessage(mqttFixedHeader, mqttConnAckVariableHeader);
