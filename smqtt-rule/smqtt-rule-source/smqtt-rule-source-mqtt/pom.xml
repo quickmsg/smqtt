@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>smqtt-rule-source</artifactId>
+        <groupId>io.github.quickmsg</groupId>
+        <version>1.0.8</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>io.github.quickmsg</groupId>
+    <artifactId>smqtt-rule-source-mqtt</artifactId>
+    <version>1.0.8</version>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.hivemq</groupId>
+            <artifactId>hivemq-mqtt-client</artifactId>
+            <version>1.2.2</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>netty-buffer</artifactId>
+                    <groupId>io.netty</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>netty-codec</artifactId>
+                    <groupId>io.netty</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>netty-common</artifactId>
+                    <groupId>io.netty</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>netty-handler</artifactId>
+                    <groupId>io.netty</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>netty-transport</artifactId>
+                    <groupId>io.netty</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+
+
+</project>

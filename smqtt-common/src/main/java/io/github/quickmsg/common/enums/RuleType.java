@@ -39,6 +39,9 @@ public enum RuleType {
      * 数据库
      */
     DATA_BASE,
+    /**
+     * mqtt转发
+     */
+    MQTT
 
-
-    }
+}

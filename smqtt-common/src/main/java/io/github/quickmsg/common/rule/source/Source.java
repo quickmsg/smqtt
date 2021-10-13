@@ -29,5 +29,9 @@ public enum Source {
     /**
      * http
      */
-    HTTP
+    HTTP,
+    /**
+     * mqtt转发
+     */
+    MQTT
 }

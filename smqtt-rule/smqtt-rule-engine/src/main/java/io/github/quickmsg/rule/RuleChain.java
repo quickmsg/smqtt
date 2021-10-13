@@ -53,6 +53,8 @@ public class RuleChain {
                 return new TransmitRuleNode(Source.RABBIT_MQ, definition.getScript());
             case DATA_BASE:
                 return new DatabaseRuleNode(definition.getScript());
+            case MQTT:
+                return new TransmitRuleNode(Source.MQTT, definition.getScript());
             default:
                 return new EmptyNode();
         }
