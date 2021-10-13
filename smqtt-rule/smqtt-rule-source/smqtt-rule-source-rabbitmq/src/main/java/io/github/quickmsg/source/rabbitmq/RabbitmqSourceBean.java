@@ -8,7 +8,6 @@ import io.github.quickmsg.common.rule.source.SourceBean;
 import io.github.quickmsg.common.utils.JacksonUtil;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,6 +28,11 @@ public class RabbitmqSourceBean implements SourceBean {
      * 缓存消息队列
      */
     private Map<String, Channel> channelHashMap = new HashMap<>();
+
+    /**
+     * 队列名称
+     */
+    private String queueName;
 
     @Override
     public Boolean support(Source source) {
@@ -52,10 +56,11 @@ public class RabbitmqSourceBean implements SourceBean {
             //设置RabbitMQ相关信息
             factory.setHost(sourceParam.get("host").toString());
             factory.setPort(Integer.parseInt(sourceParam.get("port").toString()));
-            factory.setUsername(sourceParam.get("username").toString());
-            factory.setPassword(sourceParam.get("password").toString());
+            factory.setUsername(sourceParam.get("userName").toString());
+            factory.setPassword(sourceParam.get("passWord").toString());
             //创建一个新的连接
             connection = factory.newConnection();
+            queueName = sourceParam.get("queueName").toString();
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -72,10 +77,10 @@ public class RabbitmqSourceBean implements SourceBean {
     public void transmit(Map<String, Object> object) {
         String json = JacksonUtil.bean2Json(object);
         log.info("transmit={}", json);
-        String clientId = (String) object.get("clientIdentifier");
-        String topic = (String) object.get("topic");
-        String msg = (String) object.get("msg");
-        corePublish("test", json);
+        // String clientId = (String) object.get("clientIdentifier");
+        // String topic = (String) object.get("topic");
+        // String msg = (String) object.get("msg");
+        corePublish(queueName, json);
     }
 
     /**
