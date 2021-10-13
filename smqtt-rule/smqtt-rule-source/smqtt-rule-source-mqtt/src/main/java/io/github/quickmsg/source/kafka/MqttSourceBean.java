@@ -43,8 +43,6 @@ public class MqttSourceBean implements SourceBean {
             String clientId = sourceParam.get("clientId").toString();
             String host = sourceParam.get("host").toString();
             Integer port = Integer.parseInt(sourceParam.get("port").toString());
-            String userName = sourceParam.get("userName").toString();
-            String passWord = sourceParam.get("passWord").toString();
 
             client = MqttClient.builder()
                     .useMqttVersion3()
@@ -55,11 +53,16 @@ public class MqttSourceBean implements SourceBean {
 
             Mqtt3ConnectBuilder.Send<CompletableFuture<Mqtt3ConnAck>> completableFutureSend = client.connectWith();
 
-            if (!StringUtil.isNullOrEmpty(userName) && !StringUtil.isNullOrEmpty(passWord)) {
-                completableFutureSend.simpleAuth()
-                        .username(userName)
-                        .password(passWord.getBytes())
-                        .applySimpleAuth();
+            if (sourceParam.get("userName") != null && sourceParam.get("passWord") != null) {
+                String userName = sourceParam.get("userName").toString();
+                String passWord = sourceParam.get("passWord").toString();
+                if (!StringUtil.isNullOrEmpty(userName) && !StringUtil.isNullOrEmpty(passWord)) {
+                    completableFutureSend.simpleAuth()
+                            .username(userName)
+                            .password(passWord.getBytes())
+                            .applySimpleAuth();
+                }
+
             }
 
             completableFutureSend
