@@ -16,7 +16,6 @@ import java.util.Properties;
  * 数据源
  *
  * @author zhaopeng
- * @date 2021/09/25
  */
 @Slf4j
 public class DbSourceBean implements SourceBean {
@@ -32,7 +31,7 @@ public class DbSourceBean implements SourceBean {
      * 初始化数据库连接
      *
      * @param sourceParam 参数
-     * @return {@link Boolean}
+     * @return Boolean
      */
     @Override
     public Boolean bootstrap(Map<String, Object> sourceParam) {
@@ -56,7 +55,6 @@ public class DbSourceBean implements SourceBean {
      * 转发数据
      *
      * @param object 对象
-     * @return {@link Object}
      */
     @Override
     public void transmit(Map<String, Object> object) {

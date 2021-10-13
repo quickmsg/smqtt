@@ -21,7 +21,6 @@ import java.util.concurrent.CompletableFuture;
  * mqtt
  *
  * @author zhaopeng
- * @date 2021/10/13
  */
 @Slf4j
 public class MqttSourceBean implements SourceBean {
@@ -89,7 +88,6 @@ public class MqttSourceBean implements SourceBean {
      * 转发数据
      *
      * @param object 对象
-     * @return {@link Object}
      */
     @Override
     public void transmit(Map<String, Object> object) {

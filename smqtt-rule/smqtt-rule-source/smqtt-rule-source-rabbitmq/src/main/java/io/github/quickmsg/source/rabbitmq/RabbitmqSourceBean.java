@@ -15,7 +15,6 @@ import java.util.Map;
  * rabbitmq source
  *
  * @author leafseelight
- * @date 2021/10/09
  */
 @Slf4j
 public class RabbitmqSourceBean implements SourceBean {
@@ -43,7 +42,7 @@ public class RabbitmqSourceBean implements SourceBean {
      * 初始化rocketmq
      *
      * @param sourceParam 参数
-     * @return {@link Boolean}
+     * @return Boolean
      */
     @Override
     public Boolean bootstrap(Map<String, Object> sourceParam) {
@@ -71,7 +70,6 @@ public class RabbitmqSourceBean implements SourceBean {
     /**
      * 转发数据
      * @param object 对象
-     * @return {@link Object}
      */
     @Override
     public void transmit(Map<String, Object> object) {
@@ -86,8 +84,8 @@ public class RabbitmqSourceBean implements SourceBean {
     /**
      * 核心执行内容
      *
-     * @param queueName
-     * @param json
+     * @param queueName 队列名
+     * @param json body
      */
     public void corePublish(String queueName, String json) {
         try {

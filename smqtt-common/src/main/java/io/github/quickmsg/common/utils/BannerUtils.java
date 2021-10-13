@@ -12,7 +12,6 @@ import java.io.InputStreamReader;
  * banner
  *
  * @author zhaopeng
- * @date 2021/09/17
  */
 @Slf4j
 public class BannerUtils {

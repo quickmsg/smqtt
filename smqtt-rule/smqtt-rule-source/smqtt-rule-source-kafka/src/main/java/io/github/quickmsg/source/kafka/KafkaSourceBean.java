@@ -15,7 +15,6 @@ import java.util.Properties;
  * kafka source bean
  *
  * @author zhaopeng
- * @date 2021/09/14
  */
 @Slf4j
 public class KafkaSourceBean implements SourceBean {
@@ -34,7 +33,7 @@ public class KafkaSourceBean implements SourceBean {
      * 初始化kafka
      *
      * @param sourceParam 参数
-     * @return {@link Boolean}
+     * @return Boolean
      */
     @Override
     public Boolean bootstrap(Map<String, Object> sourceParam) {
@@ -58,7 +57,6 @@ public class KafkaSourceBean implements SourceBean {
      * 转发数据
      *
      * @param object 对象
-     * @return {@link Object}
      */
     @Override
     public void transmit(Map<String, Object> object) {

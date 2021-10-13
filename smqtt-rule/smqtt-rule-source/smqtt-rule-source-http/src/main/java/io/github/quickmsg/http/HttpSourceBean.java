@@ -13,7 +13,6 @@ import java.util.Map;
 
 /**
  * @author luxurong
- * @date 2021/9/15 14:07
  */
 @Slf4j
 public class HttpSourceBean implements SourceBean {
@@ -29,7 +28,7 @@ public class HttpSourceBean implements SourceBean {
     }
 
     @Override
-    @SuppressWarnings("Unchecked")
+    @SuppressWarnings("all")
     public Boolean bootstrap(Map<String, Object> sourceParam) {
         httpParam = new HttpParam();
         httpParam.setUrl(String.valueOf(sourceParam.get("url")));

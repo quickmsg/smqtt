@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 /**
  * @author luxurong
- * @date 2021/8/24 16:41
  */
 public interface SourceBean {
 
@@ -39,7 +38,6 @@ public interface SourceBean {
      * 转发数据
      *
      * @param object {@link Map}
-     * @return Object
      */
     void transmit(Map<String, Object> object);
 

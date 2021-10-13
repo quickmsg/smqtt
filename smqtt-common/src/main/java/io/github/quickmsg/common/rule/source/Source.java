@@ -2,7 +2,6 @@ package io.github.quickmsg.common.rule.source;
 
 /**
  * @author luxurong
- * @date 2021/8/24 11:38
  */
 public enum Source {
     /**
