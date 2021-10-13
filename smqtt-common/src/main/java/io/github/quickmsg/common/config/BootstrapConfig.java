@@ -29,6 +29,12 @@ public class BootstrapConfig {
         smqttConfig.setTcpConfig(tcpConfig);
         smqttConfig.setLogLevel("INFO");
         bootstrapConfig.setSmqttConfig(smqttConfig);
+        smqttConfig.setClusterConfig(ClusterConfig.builder()
+                        .enable(false).build());
+        smqttConfig.setHttpConfig(HttpConfig.builder()
+                .enable(false).build());
+        smqttConfig.setWebsocketConfig(WebsocketConfig.builder()
+                .enable(false).build());
         return bootstrapConfig;
     }
 
