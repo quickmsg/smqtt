@@ -12,6 +12,8 @@ import io.netty.util.internal.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 
@@ -35,7 +37,7 @@ public class MqttSourceBean implements SourceBean {
      * 初始化
      *
      * @param sourceParam 参数
-     * @return {@link Boolean}
+     * @return boolean
      */
     @Override
     public Boolean bootstrap(Map<String, Object> sourceParam) {
@@ -91,23 +93,20 @@ public class MqttSourceBean implements SourceBean {
      */
     @Override
     public void transmit(Map<String, Object> object) {
-        String json = JacksonUtil.bean2Json(object);
-        log.info("mqtt send msg {}", json);
         String topic = (String) object.get("topic");
         String msg = (String) object.get("msg");
-        Integer qos = (Integer) object.get("qos");
-
+        Boolean retain = (Boolean) object.get("retain");
+        Integer qos = Optional.ofNullable((Integer)object.get("qos")).orElse(0);
         client.publishWith()
                 .topic(topic)
                 .payload(msg.getBytes())
-                .qos(MqttQos.fromCode(qos))
+                .qos(Objects.requireNonNull(MqttQos.fromCode(qos)))
+                .retain(retain)
                 .send()
                 .whenComplete((publish, throwable) -> {
                     if (throwable != null) {
                         // handle failure to publish
                         log.error("mqtt client publish error", throwable);
-                    } else {
-                        // handle successful publish, e.g. logging or incrementing a metric
                     }
                 });
     }

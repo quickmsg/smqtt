@@ -12,7 +12,11 @@ public class DockerStarter extends AbstractStarter {
 
     public static void main(String[] args) {
         log.info("DockerStarter start args {}", String.join(",", args));
-        start(null);
+        if (args.length > 0) {
+            start(args[0]);
+        } else {
+            start(null);
+        }
     }
 
 
