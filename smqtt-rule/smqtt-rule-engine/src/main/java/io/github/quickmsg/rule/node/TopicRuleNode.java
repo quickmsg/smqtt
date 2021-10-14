@@ -17,7 +17,6 @@ import java.util.Objects;
 
 /**
  * @author luxurong
- * @date 2021/8/30 11:05
  */
 @Slf4j
 public class TopicRuleNode implements RuleNode {
