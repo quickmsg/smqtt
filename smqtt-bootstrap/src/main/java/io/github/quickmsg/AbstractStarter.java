@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.javaprop.JavaPropsFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import io.github.quickmsg.common.config.BootstrapConfig;
+import io.github.quickmsg.common.utils.FileExtension;
 import io.github.quickmsg.common.utils.IPUtils;
 import io.github.quickmsg.core.Bootstrap;
 import io.github.quickmsg.exception.NotSupportConfigException;
@@ -19,24 +20,19 @@ import java.io.File;
 public abstract class AbstractStarter {
 
 
-    private static final String PROPERTIES_SYMBOL = ".properties";
-
-    private static final String YAML_SYMBOL_1 = ".yaml";
-
-    private static final String YAML_SYMBOL_2 = ".yml";
 
 
     public static void start(String path) {
         BootstrapConfig config = null;
         if (path != null) {
-            if (path.endsWith(PROPERTIES_SYMBOL)) {
+            if (path.endsWith(FileExtension.PROPERTIES_SYMBOL)) {
                 ObjectMapper mapper = new ObjectMapper(new JavaPropsFactory());
                 try {
                     config = mapper.readValue(new File(path), BootstrapConfig.class);
                 } catch (Exception e) {
                     log.error("properties read error", e);
                 }
-            } else if (path.endsWith(YAML_SYMBOL_1) || path.endsWith(YAML_SYMBOL_2)) {
+            } else if (path.endsWith(FileExtension.YAML_SYMBOL_1) || path.endsWith(FileExtension.YAML_SYMBOL_2)) {
                 ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
                 try {
                     config = mapper.readValue(new File(path), BootstrapConfig.class);
