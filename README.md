@@ -1,4 +1,4 @@
-# ![image](icon/logo.png) SMQTT是一款开源的MQTT消息代理Broker，
+## ![image](icon/logo.png) SMQTT是一款开源的MQTT消息代理Broker，
 
 SMQTT基于Netty开发，底层采用Reactor3反应堆模型,支持单机部署，支持容器化部署，具备低延迟，高吞吐量，支持百万TCP连接，同时支持多种协议交互，是一款非常优秀的消息中间件！
 ## smqtt目前拥有的功能如下：
