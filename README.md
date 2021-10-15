@@ -268,7 +268,7 @@ docker run -it  -v <配置文件路径目录>:/conf -p 1883:1883  -p 1999:1999 1
 
 
 
-### springboot启动
+### springboot方式
 
 1. 引入依赖
    
