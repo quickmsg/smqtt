@@ -6,8 +6,6 @@ import reactor.util.context.ContextView;
 
 /**
  * @author luxurong
- * @date 2021/8/23 19:34
- * @description
  */
 public class PredicateRuleNode implements RuleNode {
 

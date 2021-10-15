@@ -19,8 +19,7 @@ public interface RuleExecute {
      * 执行
      *
      * @param context 上下文容器
-     * @return Boolean 是否往下走
-     */
+\     */
     void execute(ContextView context);
 
 

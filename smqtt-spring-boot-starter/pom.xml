@@ -4,21 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.github.quickmsg</groupId>
+    <parent>
+        <artifactId>smqtt</artifactId>
+        <groupId>io.github.quickmsg</groupId>
+        <version>1.0.8</version>
+    </parent>
+
     <artifactId>smqtt-spring-boot-starter</artifactId>
-    <version>1.0.7</version>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>8</source>
-                    <target>8</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
     <name>smqtt-spring-boot-starter</name>
 

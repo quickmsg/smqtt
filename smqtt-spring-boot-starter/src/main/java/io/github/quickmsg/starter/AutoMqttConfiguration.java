@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * @author luxurong
- * @date 2021/9/17 17:22
  */
 @Slf4j
 @Configuration
@@ -22,7 +21,8 @@ public class AutoMqttConfiguration {
     /**
      * 配置异常切面
      *
-     * @return
+     * @param springBootstrapConfig {@link SpringBootstrapConfig}
+     * @return {@link Bootstrap}
      */
     @Bean
     public Bootstrap startServer(@Autowired SpringBootstrapConfig springBootstrapConfig) {
