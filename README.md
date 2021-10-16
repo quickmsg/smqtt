@@ -264,7 +264,7 @@ docker run -it  -p 1883:1883 1ssqq1lxr/smqtt
 
 ``` 
 # 启动服务
-docker run -it  -v <配置文件路径目录>:/conf -p 1883:1883  -p 1999:1999 1ssqq1lxr/smqtt
+docker run -it  -v <配置文件路径目录>:/conf/config.yaml -p 1883:1883  -p 1999:1999 1ssqq1lxr/smqtt
 ```
 
 
@@ -410,13 +410,13 @@ curl -H "Content-Type: application/json" -X POST -d '{"topic": "test/teus", "qos
 ![image](icon/admin.png)
 
 ## 压测文档
-[点这里](https://blog.csdn.net/JingleYe/article/details/118190935)
+[点这里](https://wiki.smqtt.cc/docs/108/test/test.html)
 
 ## wiki地址
 
 集群类配置参考文档:
 
-[smqtt文档](https://quickmsg.github.io/smqtt)
+[smqtt文档](https://wiki.smqtt.cc/)
 
 
 ## License
