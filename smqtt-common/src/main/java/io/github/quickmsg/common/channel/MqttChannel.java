@@ -341,9 +341,10 @@ public class MqttChannel {
     @Override
     public String toString() {
         return "MqttChannel{" +
+                " address='" + this.connection.address().toString() + '\'' +
                 ", clientIdentifier='" + clientIdentifier + '\'' +
                 ", status=" + status +
                 ", keepalive=" + keepalive +
-                ", username='" + username  + '}';
+                ", username='" + username + '}';
     }
 }
