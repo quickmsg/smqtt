@@ -46,7 +46,7 @@ public class DefaultProtocolAdaptor implements ProtocolAdaptor {
     public <C extends Configuration> void chooseProtocol(MqttChannel mqttChannel, SmqttMessage<MqttMessage> smqttMessage, ReceiveContext<C> receiveContext) {
         MqttMessage mqttMessage = smqttMessage.getMessage();
         log.info(" 【{}】【{}】 【{}】",
-                Thread.currentThread().getName()+":"+Thread.currentThread().getId(),
+                Thread.currentThread().getName(),
                 mqttMessage.fixedHeader().messageType(),
                 mqttChannel);
         if (mqttMessage.decoderResult() != null && (mqttMessage.decoderResult().isSuccess())) {
