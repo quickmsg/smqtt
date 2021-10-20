@@ -2,7 +2,7 @@ package io.github.quickmsg.source.db;
 
 import io.github.quickmsg.common.rule.source.Source;
 import io.github.quickmsg.common.rule.source.SourceBean;
-import io.github.quickmsg.source.db.config.DruidConnectionProvider;
+import io.github.quickmsg.source.db.config.HikariCPConnectionProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
@@ -37,11 +37,11 @@ public class DbSourceBean implements SourceBean {
     public Boolean bootstrap(Map<String, Object> sourceParam) {
         Properties properties = new Properties();
         for (String key : sourceParam.keySet()) {
-            properties.put(key, sourceParam.get(key).toString());
+            properties.put(key.replaceAll("-", "."), sourceParam.get(key).toString());
         }
 
         try {
-            DruidConnectionProvider
+            HikariCPConnectionProvider
                     .singleTon()
                     .init(properties);
             return true;
@@ -58,7 +58,7 @@ public class DbSourceBean implements SourceBean {
      */
     @Override
     public void transmit(Map<String, Object> object) {
-        try (Connection connection = DruidConnectionProvider.singleTon().getConnection()) {
+        try (Connection connection = HikariCPConnectionProvider.singleTon().getConnection()) {
             DSLContext dslContext = DSL.using(connection);
             dslContext.execute(object.get("sql").toString());
         } catch (Exception e) {
@@ -69,7 +69,7 @@ public class DbSourceBean implements SourceBean {
 
     @Override
     public void close() {
-        DruidConnectionProvider.singleTon().shutdown();
+        HikariCPConnectionProvider.singleTon().shutdown();
     }
 
 }

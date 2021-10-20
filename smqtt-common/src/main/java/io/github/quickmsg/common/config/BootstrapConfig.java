@@ -258,37 +258,28 @@ public class BootstrapConfig {
     @AllArgsConstructor
     public static class DatabaseConfig {
         /**
-         * 数据库驱动
-         */
-        private String driverClassName;
-        /**
          * 数据库连接
          */
-        private String url;
+        private String jdbcUrl;
         /**
-         * 数据库用户名
+         * 用户名
          */
         private String username;
         /**
-         * 数据库密码
+         * 密码
          */
         private String password;
-        /**
-         * 连接池初始化连接数
-         */
-        private String initialSize;
-        /**
-         * 连接池中最多支持多少个活动会话
-         */
-        private String maxActive;
-        /**
-         * 向连接池中请求连接时,超过maxWait的值后,认为本次请求失败
-         */
-        private String maxWait;
-        /**
-         * 回收空闲连接时，将保证至少有minIdle个连接
-         */
-        private String minIdle;
+
+        private Boolean dataSourceCachePrepStmts;
+        private Integer dataSourcePrepStmtCacheSize;
+        private Integer dataSourcePrepStmtCacheSqlLimit;
+        private Boolean dataSourceUseServerPrepStmts;
+        private Boolean dataSourceUseLocalSessionState;
+        private Boolean dataSourceRewriteBatchedStatements;
+        private Boolean dataSourceCacheResultSetMetadata;
+        private Boolean dataSourceCacheServerConfiguration;
+        private Boolean dataSourceElideSetAutoCommits;
+        private Boolean dataSourceMaintainTimeStats;
     }
 
     @Data

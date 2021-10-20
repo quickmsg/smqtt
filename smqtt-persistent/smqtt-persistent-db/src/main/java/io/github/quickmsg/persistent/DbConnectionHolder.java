@@ -1,6 +1,6 @@
 package io.github.quickmsg.persistent;
 
-import io.github.quickmsg.persistent.config.DruidConnectionProvider;
+import io.github.quickmsg.persistent.config.HikariCPConnectionProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
@@ -22,7 +22,7 @@ public class DbConnectionHolder {
      * @return {@link Mono}
      */
     public static Mono<Connection> getConnection() throws SQLException {
-        Connection connection = DruidConnectionProvider.singleTon().getConnection();
+        Connection connection = HikariCPConnectionProvider.singleTon().getConnection();
         return Optional.ofNullable(connection).map(Mono::just).orElse(Mono.empty());
     }
 

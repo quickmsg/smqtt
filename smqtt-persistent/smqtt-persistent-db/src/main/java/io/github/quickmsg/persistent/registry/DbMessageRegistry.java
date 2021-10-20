@@ -5,7 +5,7 @@ import io.github.quickmsg.common.message.MessageRegistry;
 import io.github.quickmsg.common.message.RetainMessage;
 import io.github.quickmsg.common.message.SessionMessage;
 import io.github.quickmsg.common.utils.TopicRegexUtils;
-import io.github.quickmsg.persistent.config.DruidConnectionProvider;
+import io.github.quickmsg.persistent.config.HikariCPConnectionProvider;
 import io.github.quickmsg.persistent.tables.Tables;
 import io.netty.util.CharsetUtil;
 import liquibase.Liquibase;
@@ -39,25 +39,30 @@ public class DbMessageRegistry implements MessageRegistry {
 
     public final static String DB_PREFIX = "db.";
 
-
     @Override
     public void startUp(Map<Object, Object> environmentMap) {
         BootstrapConfig.DatabaseConfig dbConfig = (BootstrapConfig.DatabaseConfig) environmentMap.get(BootstrapConfig.DatabaseConfig.class);
         Properties properties = new Properties();
-        properties.put("driverClassName", dbConfig.getDriverClassName());
-        properties.put("url", dbConfig.getUrl());
+        properties.put("jdbcUrl", dbConfig.getJdbcUrl());
         properties.put("username", dbConfig.getUsername());
         properties.put("password", dbConfig.getPassword());
-        properties.put("initialSize", dbConfig.getInitialSize());
-        properties.put("maxActive", dbConfig.getMaxActive());
-        properties.put("maxWait", dbConfig.getMaxWait());
-        properties.put("minIdle", dbConfig.getMinIdle());
+        properties.put("dataSource.cachePrepStmts", dbConfig.getDataSourceCachePrepStmts());
+        properties.put("dataSource.prepStmtCacheSize", dbConfig.getDataSourcePrepStmtCacheSize());
+        properties.put("dataSource.prepStmtCacheSqlLimit", dbConfig.getDataSourcePrepStmtCacheSqlLimit());
+        properties.put("dataSource.useServerPrepStmts", dbConfig.getDataSourceUseServerPrepStmts());
+        properties.put("dataSource.useLocalSessionState", dbConfig.getDataSourceUseLocalSessionState());
+        properties.put("dataSource.rewriteBatchedStatements", dbConfig.getDataSourceRewriteBatchedStatements());
+        properties.put("dataSource.cacheResultSetMetadata", dbConfig.getDataSourceCacheResultSetMetadata());
+        properties.put("dataSource.cacheServerConfiguration", dbConfig.getDataSourceCacheServerConfiguration());
+        properties.put("dataSource.elideSetAutoCommits", dbConfig.getDataSourceElideSetAutoCommits());
+        properties.put("dataSource.maintainTimeStats", dbConfig.getDataSourceMaintainTimeStats());
+
         // to add more
-        DruidConnectionProvider
+        HikariCPConnectionProvider
                 .singleTon()
                 .init(properties);
         ClassLoaderResourceAccessor classLoaderResourceAccessor = new ClassLoaderResourceAccessor(this.getClass().getClassLoader());
-        try (Connection connection = DruidConnectionProvider.singleTon().getConnection()) {
+        try (Connection connection = HikariCPConnectionProvider.singleTon().getConnection()) {
             Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
             Liquibase liquibase = new Liquibase(DEFAULT_LIQUIBASE_PATH, classLoaderResourceAccessor, database);
             liquibase.update(DEFAULT_DATABASE_NAME);
@@ -68,7 +73,7 @@ public class DbMessageRegistry implements MessageRegistry {
 
     @Override
     public List<SessionMessage> getSessionMessage(String clientIdentifier) {
-        try (Connection connection = DruidConnectionProvider.singleTon().getConnection()) {
+        try (Connection connection = HikariCPConnectionProvider.singleTon().getConnection()) {
             DSLContext dslContext = DSL.using(connection);
 
             List<SessionMessage> list = dslContext
@@ -107,7 +112,7 @@ public class DbMessageRegistry implements MessageRegistry {
         boolean retain = sessionMessage.isRetain();
         byte[] body = sessionMessage.getBody();
 
-        try (Connection connection = DruidConnectionProvider.singleTon().getConnection()) {
+        try (Connection connection = HikariCPConnectionProvider.singleTon().getConnection()) {
             DSLContext dslContext = DSL.using(connection);
             String bodyMsg = new String(body, CharsetUtil.UTF_8);
             dslContext.insertInto(Tables.SMQTT_SESSION)
@@ -129,7 +134,7 @@ public class DbMessageRegistry implements MessageRegistry {
         String topic = retainMessage.getTopic();
         int qos = retainMessage.getQos();
 
-        try (Connection connection = DruidConnectionProvider.singleTon().getConnection()) {
+        try (Connection connection = HikariCPConnectionProvider.singleTon().getConnection()) {
             DSLContext dslContext = DSL.using(connection);
             if (retainMessage.getBody() == null || retainMessage.getBody().length == 0) {
                 // 消息为空, 删除话题
@@ -167,7 +172,7 @@ public class DbMessageRegistry implements MessageRegistry {
 
     @Override
     public List<RetainMessage> getRetainMessage(String topic) {
-        try (Connection connection = DruidConnectionProvider.singleTon().getConnection()) {
+        try (Connection connection = HikariCPConnectionProvider.singleTon().getConnection()) {
             DSLContext dslContext = DSL.using(connection);
             return dslContext
                     .selectFrom(Tables.SMQTT_RETAIN)

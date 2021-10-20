@@ -1,8 +1,7 @@
 package io.github.quickmsg.source.db.config;
 
-
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.DruidDataSourceFactory;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
@@ -15,18 +14,18 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author zhaopeng
  */
 @Slf4j
-public class DruidConnectionProvider implements ConnectionProvider {
+public class HikariCPConnectionProvider implements ConnectionProvider {
 
-    private DruidConnectionProvider() {
+    private HikariCPConnectionProvider() {
     }
 
-    private static DruidConnectionProvider connectionProvider = new DruidConnectionProvider();
+    private static HikariCPConnectionProvider connectionProvider = new HikariCPConnectionProvider();
 
-    public static DruidConnectionProvider singleTon() {
+    public static HikariCPConnectionProvider singleTon() {
         return connectionProvider;
     }
 
-    private DruidDataSource druidDataSource;
+    private HikariDataSource hikariDataSource;
 
     private AtomicInteger startUp = new AtomicInteger(0);
 
@@ -34,7 +33,8 @@ public class DruidConnectionProvider implements ConnectionProvider {
     public void init(Properties properties) {
         if (startUp.compareAndSet(0, 1)) {
             try {
-                this.druidDataSource = (DruidDataSource) DruidDataSourceFactory.createDataSource(properties);
+                HikariConfig config = new HikariConfig(properties);
+                this.hikariDataSource = new HikariDataSource(config);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -44,7 +44,7 @@ public class DruidConnectionProvider implements ConnectionProvider {
     @Override
     public Connection getConnection() {
         try {
-            return druidDataSource.getConnection();
+            return hikariDataSource.getConnection();
         } catch (SQLException e) {
             log.error("getConnection error", e);
             return null;
@@ -53,8 +53,8 @@ public class DruidConnectionProvider implements ConnectionProvider {
 
     @Override
     public void shutdown() {
-        if (druidDataSource != null) {
-            druidDataSource.close();
+        if (hikariDataSource != null) {
+            hikariDataSource.close();
         }
     }
 
