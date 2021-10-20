@@ -1,14 +1,20 @@
 smqtt:
-  logLevel: DEBUG # 系统日志
+  logLevel: INFO # 系统日志
   tcp: # tcp配置
-    port: 1883 # mqtt端口号
+    port: 1884 # mqtt端口号
     username: smqtt # mqtt连接默认用户名  生产环境建议spi去注入PasswordAuthentication接口
     password: smqtt  # mqtt连接默认密码 生产环境建议spi去注入PasswordAuthentication接口
-    wiretap: true  # 二进制日志 前提是 smqtt.logLevel = DEBUG
-    bossThreadSize: 4  # boss线程
-    workThreadSize: 8  # work线程
+    wiretap: false  # 二进制日志 前提是 smqtt.logLevel = DEBUG
+    bossThreadSize: 8  # boss线程 默认=cpu核心数
+    workThreadSize: 16 # work线程 默认=cpu核心数*2
+    businessThreadSize: 32 # 业务线程数 默认=cpu核心数*10
+    businessQueueSize: 100000 #业务队列 默认=100000
     lowWaterMark: 4000000 # 不建议配置 默认 32768
     highWaterMark: 80000000 # 不建议配置 默认 65536
+    # globalReadWriteSize: 10000000,100000000  全局读写大小限制
+    # channelReadWriteSize: 10000000,100000000 单个channel读写大小限制
+    options:
+      SO_BACKLOG: 2000
     ssl: # ssl配置
       enable: false # 开关
       key: /user/server.key # 指定ssl文件 默认系统生成
@@ -31,36 +37,42 @@ smqtt:
     url: 127.0.0.1:7771,127.0.0.1:7772 # 启动节点
     port: 7771  # 端口
     node: node-1 # 集群节点名称 唯一
+    namespace: smqtt
     external:
       host: localhost # 用于映射容器ip 请不要随意设置，如果不需要请移除此选项
       port: 7777 # 用于映射容器端口 请不要随意设置，如果不需要请移除此选项
-db: # 数据库相关设置 请参考 https://doc.smqtt.cc/%E5%85%B6%E4%BB%96/1.store.html 【如果没有引入相关依赖请移除此配置】
-  driverClassName: com.mysql.jdbc.Driver
-  url: jdbc:mysql://127.0.0.1:3306/smqtt?characterEncoding=utf-8&useSSL=false&useInformationSchema=true&serverTimezone=UTC
-  username: root
-  password: 123
-  initialSize: 10
-  maxActive: 300
-  maxWait: 60000
-  minIdle: 2
-redis: # redis 请参考 https://doc.smqtt.cc/%E5%85%B6%E4%BB%96/1.store.html 【如果没有引入相关依赖请移除此配置】
-  mode: single
-  database: 0
-  password:
-  timeout: 3000
-  poolMinIdle: 8
-  poolConnTimeout: 3000
-  poolSize: 10
-  single:
-    address: 127.0.0.1:6379
-  cluster:
-    scanInterval: 1000
-    nodes: 127.0.0.1:7000,127.0.0.1:7001,127.0.0.1:7002,127.0.0.1:7003,127.0.0.1:7004,127.0.0.1:7005
-    readMode: SLAVE
-    retryAttempts: 3
-    slaveConnectionPoolSize: 64
-    masterConnectionPoolSize: 64
-    retryInterval: 1500
-  sentinel:
-    master: mymaster
-    nodes: 127.0.0.1:26379,127.0.0.1:26379,127.0.0.1:26379
+  db: # 参数值配置参考https://github.com/brettwooldridge/HikariCP/wiki/MySQL-Configuration
+    jdbcUrl: jdbc:mysql://localhost:3306/smqtt
+    username: root
+    password: 123
+    dataSourceCachePrepStmts: false
+    dataSourcePrepStmtCacheSize: 250
+    dataSourcePrepStmtCacheSqlLimit: 2048
+    dataSourceUseServerPrepStmts: true
+    dataSourceUseLocalSessionState: true
+    dataSourceRewriteBatchedStatements: true
+    dataSourceCacheResultSetMetadata: true
+    dataSourceCacheServerConfiguration: true
+    dataSourceElideSetAutoCommits: true
+    dataSourceMaintainTimeStats: false
+  redis: # redis 请参考 https://doc.smqtt.cc/%E5%85%B6%E4%BB%96/1.store.html 【如果没有引入相关依赖请移除此配置】
+    mode: single
+    database: 0
+    password:
+    timeout: 3000
+    poolMinIdle: 8
+    poolConnTimeout: 3000
+    poolSize: 10
+    single:
+      address: 127.0.0.1:6379
+    cluster:
+      scanInterval: 1000
+      nodes: 127.0.0.1:7000,127.0.0.1:7001,127.0.0.1:7002,127.0.0.1:7003,127.0.0.1:7004,127.0.0.1:7005
+      readMode: SLAVE
+      retryAttempts: 3
+      slaveConnectionPoolSize: 64
+      masterConnectionPoolSize: 64
+      retryInterval: 1500
+    sentinel:
+      master: mymaster
+      nodes: 127.0.0.1:26379,127.0.0.1:26379,127.0.0.1:26379
