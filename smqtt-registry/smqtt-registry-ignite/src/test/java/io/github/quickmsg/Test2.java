@@ -34,12 +34,6 @@ public class Test2 {
         ipFinder.setAddresses(Collections.singletonList("127.0.0.1:47500..47509"));
         TcpDiscoveryIpFinder discoveryIpFinder= new TcpDiscoveryVmIpFinder();
 
-
-        TcpDiscoverySpi firstDiscoverySpi = new TcpDiscoverySpi();
-
-        discoveryIpFinder.setLocalPort(48500);
-
-        discoveryIpFinder.registerAddresses();
         cfg.setDiscoverySpi(new TcpDiscoverySpi().setIpFinder(ipFinder));
 
         // Starting the node
@@ -57,7 +51,7 @@ public class Test2 {
         System.out.println(">> Compute task is executed, check for output on the server nodes.");
 
         // Disconnect from the cluster.
-        Thread.sleep(1000000L);
+        Thread.sleep(1000000000L);
 //        ignite.close();
     }
 

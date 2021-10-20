@@ -2,13 +2,18 @@ package io.github.quickmsg.core.mqtt;
 
 import io.github.quickmsg.common.auth.PasswordAuthentication;
 import io.github.quickmsg.common.channel.ChannelRegistry;
+import io.github.quickmsg.common.channel.MqttChannel;
 import io.github.quickmsg.common.channel.traffic.TrafficHandlerLoader;
 import io.github.quickmsg.common.cluster.ClusterRegistry;
 import io.github.quickmsg.common.config.AbstractConfiguration;
 import io.github.quickmsg.common.config.Configuration;
 import io.github.quickmsg.common.context.ReceiveContext;
+import io.github.quickmsg.common.enums.ChannelStatus;
+import io.github.quickmsg.common.enums.Event;
+import io.github.quickmsg.common.message.HeapMqttMessage;
 import io.github.quickmsg.common.message.MessageRegistry;
-import io.github.quickmsg.common.message.RecipientRegistry;
+import io.github.quickmsg.common.message.EventRegistry;
+import io.github.quickmsg.common.message.SmqttMessage;
 import io.github.quickmsg.common.protocol.ProtocolAdaptor;
 import io.github.quickmsg.common.rule.DslExecutor;
 import io.github.quickmsg.common.topic.TopicRegistry;
@@ -27,6 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 import reactor.core.scheduler.Schedulers;
 import reactor.netty.resources.LoopResources;
 
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -55,7 +61,7 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
 
     private final ClusterRegistry clusterRegistry;
 
-    private final RecipientRegistry recipientRegistry;
+    private final EventRegistry eventRegistry;
 
     private final DslExecutor dslExecutor;
 
@@ -68,7 +74,7 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
         this.configuration = configuration;
         this.transport = transport;
         this.dslExecutor = ruleDslParser.parseRule();
-        this.recipientRegistry = recipientRegistry();
+        this.eventRegistry = eventRegistry();
         this.protocolAdaptor = protocolAdaptor();
         this.channelRegistry = channelRegistry();
         this.topicRegistry = topicRegistry();
@@ -109,9 +115,8 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
     }
 
 
-    private RecipientRegistry recipientRegistry() {
-        return Optional.ofNullable(RecipientRegistry.INSTANCE)
-                .orElse(new EmptyRecipientRegistry());
+    private EventRegistry eventRegistry() {
+        return Event::sender;
     }
 
     private MessageRegistry messageRegistry() {

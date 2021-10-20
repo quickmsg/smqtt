@@ -40,10 +40,15 @@ public class Test1 {
         cache.put(1, "Hello");
         cache.put(2, "World!");
 
-        System.out.println(">> Created the cache and add the values.");
+        long time1 = System.currentTimeMillis();
+        for (int i = 0; i < 500000; i++) {
+            System.out.println(">> " + cache.get(3));
+        }
 
-        // Executing custom Java compute task on server nodes.
-        ignite.compute(ignite.cluster().forServers()).broadcast(new RemoteTask());
+        long time2 = System.currentTimeMillis();
+
+
+        System.out.println("cost time " + ((time2 - time1) / 1000) + "s");
 
         System.out.println(">> Compute task is executed, check for output on the server nodes.");
 
@@ -61,18 +66,10 @@ public class Test1 {
         @IgniteInstanceResource
         Ignite ignite;
 
-        @Override public void run() {
+        @Override
+        public void run() {
             System.out.println(">> Executing the compute task");
 
-            System.out.println(
-                    "   Node ID: " + ignite.cluster().localNode().id() + "\n" +
-                            "   OS: " + System.getProperty("os.name") +
-                            "   JRE: " + System.getProperty("java.runtime.name"));
-
-            IgniteCache<Integer, String> cache = ignite.cache("myCache");
-
-            System.out.println(">> " + cache.get(1) + " " + cache.get(2));
-            System.out.println(">> " + cache.get(3) );
 
         }
     }

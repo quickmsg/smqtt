@@ -49,7 +49,7 @@ public class MessageProxy {
             if (!smqttMessage.getIsCluster() && message instanceof MqttPublishMessage) {
                 MqttPublishMessage publishMessage = (MqttPublishMessage) message;
                 HeapMqttMessage heapMqttMessage = this.clusterMessage(publishMessage, mqttChannel, smqttMessage.getTimestamp());
-                mqttReceiveContext.getRecipientRegistry().accept(mqttChannel, heapMqttMessage);
+                mqttReceiveContext.getEventRegistry().accept(mqttChannel, heapMqttMessage);
                 if (mqttReceiveContext.getConfiguration().getClusterConfig().isEnable()) {
                     mqttReceiveContext.getClusterRegistry().spreadPublishMessage(heapMqttMessage).subscribeOn(Schedulers.boundedElastic()).subscribe();
                 }
