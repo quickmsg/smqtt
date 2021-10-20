@@ -2,7 +2,10 @@ package io.github.quickmsg.core.protocol;
 
 import io.github.quickmsg.common.channel.MqttChannel;
 import io.github.quickmsg.common.context.ReceiveContext;
+import io.github.quickmsg.common.enums.ChannelStatus;
+import io.github.quickmsg.common.message.MessageRegistry;
 import io.github.quickmsg.common.message.MqttMessageBuilder;
+import io.github.quickmsg.common.message.SessionMessage;
 import io.github.quickmsg.common.message.SmqttMessage;
 import io.github.quickmsg.common.protocol.Protocol;
 import io.github.quickmsg.common.topic.SubscribeTopic;
@@ -11,6 +14,7 @@ import io.github.quickmsg.common.utils.MessageUtils;
 import io.netty.handler.codec.mqtt.MqttMessage;
 import io.netty.handler.codec.mqtt.MqttMessageIdVariableHeader;
 import io.netty.handler.codec.mqtt.MqttMessageType;
+import io.netty.handler.codec.mqtt.MqttPublishMessage;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 import reactor.netty.Connection;
@@ -71,9 +75,11 @@ public class CommonProtocol implements Protocol<MqttMessage> {
                         .map(msg -> {
                             ReceiveContext<?> receiveContext = contextView.get(ReceiveContext.class);
                             TopicRegistry topicRegistry = receiveContext.getTopicRegistry();
+                            MessageRegistry messageRegistry = receiveContext.getMessageRegistry();
                             Set<SubscribeTopic> subscribeTopics = topicRegistry.getSubscribesByTopic(msg.variableHeader().topicName(), msg.fixedHeader().qosLevel());
                             return Mono.when(
                                     subscribeTopics.stream()
+                                            .filter(subscribeTopic -> filterOfflineSession(subscribeTopic.getMqttChannel(), messageRegistry, MessageUtils.wrapPublishMessage(msg, subscribeTopic.getQoS(), subscribeTopic.getMqttChannel().generateMessageId())))
                                             .map(subscribeTopic -> subscribeTopic.getMqttChannel()
                                                     .write(MessageUtils.wrapPublishMessage(msg, subscribeTopic.getQoS(),
                                                             subscribeTopic.getMqttChannel().generateMessageId()), subscribeTopic.getQoS().value() > 0)
@@ -96,5 +102,23 @@ public class CommonProtocol implements Protocol<MqttMessage> {
     @Override
     public List<MqttMessageType> getMqttMessageTypes() {
         return MESSAGE_TYPE_LIST;
+    }
+
+    /**
+     * 过滤离线会话消息
+     *
+     * @param mqttChannel     {@link MqttChannel}
+     * @param messageRegistry {@link MessageRegistry}
+     * @param mqttMessage     {@link MqttPublishMessage}
+     * @return boolean
+     */
+    private boolean filterOfflineSession(MqttChannel mqttChannel, MessageRegistry messageRegistry, MqttPublishMessage mqttMessage) {
+        if (mqttChannel.getStatus() == ChannelStatus.ONLINE) {
+            return true;
+        } else {
+            messageRegistry
+                    .saveSessionMessage(SessionMessage.of(mqttChannel.getClientIdentifier(), mqttMessage));
+            return false;
+        }
     }
 }
