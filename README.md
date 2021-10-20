@@ -277,7 +277,7 @@ docker run -it  -v <配置文件路径目录>:/conf -p 1883:1883  -p 1999:1999 1
         <groupId>io.github.quickmsg</groupId>
         <artifactId>smqtt-spring-boot-starter</artifactId>
         <version>${Latest version >= 1.0.8}</version>
-    <dependency>
+    </dependency>
     ```
 
 2. 启动类Application上添加注解 `  @EnableMqttServer`
