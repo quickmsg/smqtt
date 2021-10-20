@@ -11,3 +11,11 @@ io.github.quickmsg.core.http.actors.CpuHttpActor
 io.github.quickmsg.core.http.actors.IsClusterActor
 io.github.quickmsg.core.http.actors.AllowCorsHttpActor
 io.github.quickmsg.core.http.actors.resource.FaviconResourceActor
+io.github.quickmsg.core.http.actors.rule.RuleAddActor
+io.github.quickmsg.core.http.actors.rule.RuleQueryActor
+io.github.quickmsg.core.http.actors.rule.RuleDeleteActor
+io.github.quickmsg.core.http.actors.rule.RuleUpdateActor
+io.github.quickmsg.core.http.actors.source.SourceAddActor
+io.github.quickmsg.core.http.actors.source.SourceDeleteActor
+io.github.quickmsg.core.http.actors.source.SourceQueryActor
+io.github.quickmsg.core.http.actors.source.SourceUpdateActor
