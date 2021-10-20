@@ -41,7 +41,7 @@ smqtt:
     external:
       host: localhost # 用于映射容器ip 请不要随意设置，如果不需要请移除此选项
       port: 7777 # 用于映射容器端口 请不要随意设置，如果不需要请移除此选项
-  db:
+  db: # 参数值配置参考https://github.com/brettwooldridge/HikariCP/wiki/MySQL-Configuration
     jdbcUrl: jdbc:mysql://localhost:3306/smqtt
     username: root
     password: 123
