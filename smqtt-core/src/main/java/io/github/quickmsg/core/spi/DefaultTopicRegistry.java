@@ -53,7 +53,9 @@ public class DefaultTopicRegistry implements TopicRegistry {
     @Override
     public void clear(MqttChannel mqttChannel) {
         Set<SubscribeTopic> topics = mqttChannel.getTopics();
-        log.info("mqttChannel channel {} clear topics {}",mqttChannel,topics);
+        if(log.isDebugEnabled()){
+            log.info("mqttChannel channel {} clear topics {}",mqttChannel,topics);
+        }
         topics.forEach(this::removeSubscribeTopic);
     }
 
