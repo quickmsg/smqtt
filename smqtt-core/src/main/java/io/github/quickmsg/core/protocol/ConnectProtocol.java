@@ -94,7 +94,7 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
 
                 mqttChannel.getConnection()
                         .onReadIdle(mqttConnectVariableHeader.keepAliveTimeSeconds() * MILLI_SECOND_PERIOD << 1,
-                                () -> close(mqttChannel, mqttReceiveContext));
+                                () -> close(mqttChannel, mqttReceiveContext, eventRegistry));
 
                 /*registry will message send */
                 mqttChannel.registryClose(channel -> Optional.ofNullable(mqttChannel.getWill())
@@ -121,16 +121,13 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
                 channelRegistry.registry(mqttChannel.getClientIdentifier(), mqttChannel);
 
                 /* registry close mqtt channel event*/
-                mqttChannel.registryClose(channel -> this.close(mqttChannel, mqttReceiveContext));
+                mqttChannel.registryClose(channel -> this.close(mqttChannel, mqttReceiveContext, eventRegistry));
 
                 WindowMetric.WINDOW_METRIC_INSTANCE.recordConnect(1);
 
                 mqttChannel.registryClose(ConnectProtocol::accept);
 
                 eventRegistry.registry(Event.CONNECT, mqttChannel, message, mqttReceiveContext);
-
-                mqttChannel.registryClose(mqttChannel1 ->
-                        eventRegistry.registry(Event.CLOSE, mqttChannel, null, mqttReceiveContext));
 
                 return mqttChannel.write(MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_ACCEPTED), false)
                         .then(Mono.fromRunnable(() -> sendOfflineMessage(mqttReceiveContext.getMessageRegistry(), mqttChannel)));
@@ -158,13 +155,17 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
                 });
     }
 
-    private void close(MqttChannel mqttChannel, MqttReceiveContext mqttReceiveContext) {
-        if (mqttChannel.isSessionPersistent()) {
-            mqttChannel.setStatus(ChannelStatus.OFFLINE);
-        } else {
+    private void close(MqttChannel mqttChannel, MqttReceiveContext mqttReceiveContext, EventRegistry eventRegistry) {
+        log.info(" 【{}】【{}】 【{}】",
+                Thread.currentThread().getName(),
+                "CLOSE",
+                mqttChannel);
+        mqttChannel.setStatus(ChannelStatus.OFFLINE);
+        if (!mqttChannel.isSessionPersistent()) {
             mqttReceiveContext.getTopicRegistry().clear(mqttChannel);
             mqttReceiveContext.getChannelRegistry().close(mqttChannel);
         }
+        eventRegistry.registry(Event.CLOSE, mqttChannel, null, mqttReceiveContext);
         mqttChannel.close().subscribe();
     }
 
