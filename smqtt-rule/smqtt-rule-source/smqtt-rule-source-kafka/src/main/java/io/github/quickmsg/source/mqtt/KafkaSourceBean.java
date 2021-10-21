@@ -1,4 +1,4 @@
-package io.github.quickmsg.source.kafka;
+package io.github.quickmsg.source.mqtt;
 
 import io.github.quickmsg.common.rule.source.Source;
 import io.github.quickmsg.common.rule.source.SourceBean;

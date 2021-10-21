@@ -1,6 +1,6 @@
-io.github.quickmsg.source.kafka.KafkaSourceBean
+io.github.quickmsg.source.mqtt.KafkaSourceBean
 io.github.quickmsg.source.rocketmq.RocketmqSourceBean
 io.github.quickmsg.source.rabbitmq.RabbitmqSourceBean
 io.github.quickmsg.http.HttpSourceBean
 io.github.quickmsg.source.db.DbSourceBean
-io.github.quickmsg.source.kafka.MqttSourceBean
+io.github.quickmsg.source.mqtt.MqttSourceBean
