@@ -14,7 +14,6 @@ import io.netty.handler.codec.mqtt.MqttQoS;
 
 /**
  * @author luxurong
- * @date 2021/10/19 21:39
  */
 public enum Event {
 
@@ -82,6 +81,7 @@ public enum Event {
      *
      * @param mqttChannel    {@link MqttChannel }
      * @param body           {@link Object }
+     * @return ByteBuf
      */
     public abstract ByteBuf writeBody(MqttChannel mqttChannel, Object body);
 
