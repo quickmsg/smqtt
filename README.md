@@ -425,8 +425,8 @@ curl -H "Content-Type: application/json" -X POST -d '{"topic": "test/teus", "qos
 
 
 ## 相关技术文档
-[reactor3](https://projectreactor.io/docs/core/release/reference/)
-[reactor-netty](https://projectreactor.io/docs/netty/1.0.12/reference/index.html)
+- [reactor3](https://projectreactor.io/docs/core/release/reference/)
+- [reactor-netty](https://projectreactor.io/docs/netty/1.0.12/reference/index.html)
 
 ## 麻烦关注下公众号！
 ![image](icon/icon.jpg)
