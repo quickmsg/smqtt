@@ -19,3 +19,5 @@ io.github.quickmsg.core.http.actors.source.SourceAddActor
 io.github.quickmsg.core.http.actors.source.SourceDeleteActor
 io.github.quickmsg.core.http.actors.source.SourceQueryActor
 io.github.quickmsg.core.http.actors.source.SourceUpdateActor
+io.github.quickmsg.core.http.actors.rule.RuleTypeActor
+io.github.quickmsg.core.http.actors.source.SourceTypeActor
