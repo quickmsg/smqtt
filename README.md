@@ -157,82 +157,7 @@ SMQTT基于reactor-netty(spring-webflux底层依赖)开发，底层采用Reactor
 
 2. 准备配置文件 config.yaml
 
-```markdown
-smqtt:
-  logLevel: DEBUG # 系统日志
-  tcp: # tcp配置
-    port: 1883 # mqtt端口号
-    username: smqtt # mqtt连接默认用户名  生产环境建议spi去注入PasswordAuthentication接口
-    password: smqtt  # mqtt连接默认密码 生产环境建议spi去注入PasswordAuthentication接口
-    wiretap: true  # 二进制日志 前提是 smqtt.logLevel = DEBUG
-    bossThreadSize: 4  # boss线程 默认=cpu核心数
-    workThreadSize: 8  # work线程 默认=cpu核心数*2
-    businessThreadSize: 16 # 业务线程数 默认=cpu核心数*10
-    businessQueueSize: 100000 #业务队列 默认=100000
-    lowWaterMark: 4000000 # 不建议配置 默认 32768
-    highWaterMark: 80000000 # 不建议配置 默认 65536
-    options: # netty option设置
-      SO_BACKLOG: 200
-    childOptions:  #netty child option设置
-      SO_REUSEADDR: true
-    ssl: # ssl配置
-      enable: false # 开关
-      key: /user/server.key # 指定ssl文件 默认系统生成
-      crt: /user/server.crt # 指定ssl文件 默认系统生成
-  http: # http相关配置 端口固定60000
-    enable: true # 开关
-    accessLog: true # http访问日志
-    ssl: # ssl配置
-      enable: false
-    admin: # 后台管理配置
-      enable: true  # 开关
-      username: smqtt # 访问用户名
-      password: smqtt # 访问密码
-  ws: # websocket配置
-    enable: true # 开关
-    port: 8999 # 端口
-    path: /mqtt # ws 的访问path mqtt.js请设置此选项
-  cluster: # 集群配置
-    enable: false # 集群开关
-    url: 127.0.0.1:7771,127.0.0.1:7772 # 启动节点
-    port: 7771  # 端口
-    node: node-1 # 集群节点名称 唯一
-    namespace: smqtt
-    external:
-      host: localhost # 用于映射容器ip 请不要随意设置，如果不需要请移除此选项
-      port: 7777 # 用于映射容器端口 请不要随意设置，如果不需要请移除此选项
-  db: # 数据库相关设置 请参考 https://doc.smqtt.cc/%E5%85%B6%E4%BB%96/1.store.html 【如果没有引入相关依赖请移除此配置】
-    driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/smqtt?characterEncoding=utf-8&useSSL=false&useInformationSchema=true&serverTimezone=UTC
-    username: root
-    password: 123
-    initialSize: 10
-    maxActive: 300
-    maxWait: 60000
-    minIdle: 2
-  redis: # redis 请参考 https://doc.smqtt.cc/%E5%85%B6%E4%BB%96/1.store.html 【如果没有引入相关依赖请移除此配置】
-    mode: single
-    database: 0
-    password:
-    timeout: 3000
-    poolMinIdle: 8
-    poolConnTimeout: 3000
-    poolSize: 10
-    single:
-      address: 127.0.0.1:6379
-    cluster:
-      scanInterval: 1000
-      nodes: 127.0.0.1:7000,127.0.0.1:7001,127.0.0.1:7002,127.0.0.1:7003,127.0.0.1:7004,127.0.0.1:7005
-      readMode: SLAVE
-      retryAttempts: 3
-      slaveConnectionPoolSize: 64
-      masterConnectionPoolSize: 64
-      retryInterval: 1500
-    sentinel:
-      master: mymaster
-      nodes: 127.0.0.1:26379,127.0.0.1:26379,127.0.0.1:26379
-
-  ```
+   [config.yaml](config.yaml)
 
 3. 启动服务
 
@@ -285,132 +210,9 @@ docker run -it  -v <配置文件路径目录>:/conf -p 1883:1883  -p 1999:1999 1
 
 3. 配置application.yml文件
 
-```markdown
-     smqtt:
-       logLevel: DEBUG # 系统日志
-       tcp: # tcp配置
-         port: 1883 # mqtt端口号
-         username: smqtt # mqtt连接默认用户名  生产环境建议spi去注入PasswordAuthentication接口
-         password: smqtt  # mqtt连接默认密码 生产环境建议spi去注入PasswordAuthentication接口
-         wiretap: true  # 二进制日志 前提是 smqtt.logLevel = DEBUG
-         bossThreadSize: 4  # boss线程
-         workThreadSize: 8  # work线程
-         lowWaterMark: 4000000 # 不建议配置 默认 32768yong
-         highWaterMark: 80000000 # 不建议配置 默认 65536
-         ssl: # ssl配置
-           enable: false # 开关
-           key: /user/server.key # 指定ssl文件 默认系统生成
-           crt: /user/server.crt # 指定ssl文件 默认系统生成
-       http: # http相关配置 端口固定60000
-         enable: true # 开关
-         accessLog: true # http访问日志
-         ssl: # ssl配置
-           enable: false
-         admin: # 后台管理配置
-           enable: true  # 开关
-           username: smqtt # 访问用户名
-           password: smqtt # 访问密码
-       ws: # websocket配置
-         enable: true # 开关
-         port: 8999 # 端口
-         path: /mqtt # ws 的访问path mqtt.js请设置此选项
-       cluster: # 集群配置
-         enable: false # 集群开关
-         url: 127.0.0.1:7771,127.0.0.1:7772 # 启动节点
-         port: 7771  # 端口
-         node: node-1 # 集群节点名称 唯一
-         external:
-           host: localhost # 用于映射容器ip 请不要随意设置，如果不需要请移除此选项
-           port: 7777 # 用于映射容器端口 请不要随意设置，如果不需要请移除此选项
-     db: # 数据库相关设置 请参考 https://doc.smqtt.cc/%E5%85%B6%E4%BB%96/1.store.html 【如果没有引入相关依赖请移除此配置】
-       driverClassName: com.mysql.jdbc.Driver
-       url: jdbc:mysql://127.0.0.1:3306/smqtt?characterEncoding=utf-8&useSSL=false&useInformationSchema=true&serverTimezone=UTC
-       username: root
-       password: 123
-       initialSize: 10
-       maxActive: 300
-       maxWait: 60000
-       minIdle: 2
-     redis: # redis 请参考 https://doc.smqtt.cc/%E5%85%B6%E4%BB%96/1.store.html 【如果没有引入相关依赖请移除此配置】
-       mode: single
-       database: 0
-       password:
-       timeout: 3000
-       poolMinIdle: 8
-       poolConnTimeout: 3000
-       poolSize: 10
-       single:
-         address: 127.0.0.1:6379
-       cluster:
-         scanInterval: 1000
-         nodes: 127.0.0.1:7000,127.0.0.1:7001,127.0.0.1:7002,127.0.0.1:7003,127.0.0.1:7004,127.0.0.1:7005
-         readMode: SLAVE
-         retryAttempts: 3
-         slaveConnectionPoolSize: 64
-         masterConnectionPoolSize: 64
-         retryInterval: 1500
-       sentinel:
-         master: mymaster
-         nodes: 127.0.0.1:26379,127.0.0.1:26379,127.0.0.1:26379
-```
+[config.yaml](config.yaml)
+
 4. 启动springboot服务服务即可
-
-
-## 管理后台（60000端口）
-
-### 启动配置
-
-    
-- main启动
-    
-    1. 初始化BootstrapConfig.HttpConfig对象
-    ``` 
-     BootstrapConfig
-             .HttpConfig
-             .builder()
-             .enable(true)
-             .accessLog(true)
-             .build()
-    ```
-    2. 设置到Bootstrap中
-      ``` 
-        Bootstrap.builder().httpConfig(你的HttpConfig);
-      ```      
-- jar / docker 启动
-    
-   设置config.yaml
-   
-    ``` 
-    smqtt:
-      http: # http相关配置 端口固定60000
-        enable: true # 开关
-        accessLog: true # http访问日志
-        ssl: # ssl配置
-          enable: false
-        admin: # 后台管理配置
-          enable: true  # 开关
-          username: smqtt # 访问用户名
-          password: smqtt # 访问密码
-    ```
-  
-> 访问路径  http是://127.0.0.1:60000/smqtt/admin
-
-
-### http接口 （启动http端口）
-
-- 使用http接口推送mqtt消息
-
-``` 
-# 推送消息
-curl -H "Content-Type: application/json" -X POST -d '{"topic": "test/teus", "qos":2, "retain":true, "message":"我来测试保留消息3" }' "http://localhost:1999/smqtt/publish"
-```
-
-### 页面预览
-
-![image](icon/admin.png)
-
-## 压测文档
-[点这里](https://blog.csdn.net/JingleYe/article/details/118190935)
 
 ## 官网地址
 
@@ -422,7 +224,7 @@ curl -H "Content-Type: application/json" -X POST -d '{"topic": "test/teus", "qos
 
 ## License
 
-[Apache License, Version 2.0](https://github.com/quickmsg/smqtt/blob/main/LICENSE)
+[Apache License, Version 2.0](LICENSE)
 
 
 ## 相关技术文档
