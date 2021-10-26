@@ -412,12 +412,13 @@ curl -H "Content-Type: application/json" -X POST -d '{"topic": "test/teus", "qos
 ## 压测文档
 [点这里](https://blog.csdn.net/JingleYe/article/details/118190935)
 
+## 官网地址
+
+[smqtt官网](https://www.smqtt.cc/)
+
 ## wiki地址
 
-集群类配置参考文档:
-
-[smqtt文档](https://quickmsg.github.io/smqtt)
-
+[wiki地址](https://wiki.smqtt.cc/)
 
 ## License
 
