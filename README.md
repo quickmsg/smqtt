@@ -210,7 +210,7 @@ docker run -it  -v <配置文件路径目录>:/conf -p 1883:1883  -p 1999:1999 1
 
 3. 配置application.yml文件
 
-[config.yaml](config.yaml)
+   [config.yaml](config.yaml)
 
 4. 启动springboot服务服务即可
 
