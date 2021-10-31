@@ -47,6 +47,8 @@ public class Bootstrap {
 
     private BootstrapConfig.DatabaseConfig databaseConfig;
 
+    private BootstrapConfig.MeterConfig meterConfig;
+
     private List<RuleChainDefinition> ruleChainDefinitions;
 
     private List<SourceDefinition> sourceDefinitions;
@@ -81,7 +83,9 @@ public class Bootstrap {
         Optional.ofNullable(tcpConfig.getSsl()).map(SslContext::getEnable).ifPresent(mqttConfiguration::setSsl);
         Optional.ofNullable(tcpConfig.getSsl()).ifPresent(mqttConfiguration::setSslContext);
         Optional.ofNullable(tcpConfig.getSsl()).ifPresent(mqttConfiguration::setSslContext);
+        Optional.ofNullable(meterConfig.getEnable()).ifPresent(mqttConfiguration::setMeterEnable);
         Optional.ofNullable(clusterConfig).ifPresent(mqttConfiguration::setClusterConfig);
+
         if (websocketConfig != null && websocketConfig.isEnable()) {
             mqttConfiguration.setWebSocketPort(websocketConfig.getPort());
             mqttConfiguration.setWebSocketPath(websocketConfig.getPath());
@@ -156,7 +160,6 @@ public class Bootstrap {
                 .start()
                 .doOnSuccess(transports::add).doOnError(throwable -> log.error("start http error", throwable)).then() : Mono.empty();
     }
-
 
     private HttpConfiguration buildHttpConfiguration() {
         HttpConfiguration httpConfiguration = new HttpConfiguration();

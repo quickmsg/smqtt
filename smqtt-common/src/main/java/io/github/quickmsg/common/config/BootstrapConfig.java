@@ -96,6 +96,12 @@ public class BootstrapConfig {
         @JsonProperty("sources")
         private List<SourceDefinition> ruleSources;
 
+        /**
+         * 指标配置
+         */
+        @JsonProperty("meter")
+        private MeterConfig meterConfig;
+
     }
 
     @Data
@@ -414,4 +420,21 @@ public class BootstrapConfig {
         private String nodes;
     }
 
+    /**
+     * 指标配置
+     *
+     * @author easy
+     * @date 2021/10/29
+     */
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class MeterConfig {
+        /**
+         * 指标开关
+         */
+        private Boolean enable;
+
+    }
 }
