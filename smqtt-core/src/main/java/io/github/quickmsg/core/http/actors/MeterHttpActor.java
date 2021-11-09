@@ -7,7 +7,6 @@ import io.github.quickmsg.common.config.Configuration;
 import io.github.quickmsg.common.enums.HttpType;
 import io.github.quickmsg.common.http.HttpActor;
 import io.github.quickmsg.metric.micrometer.PrometheusMeterRegistrySingleton;
-import io.micrometer.prometheus.PrometheusMeterRegistry;
 import io.prometheus.client.exporter.common.TextFormat;
 import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Publisher;
@@ -30,12 +29,10 @@ public class MeterHttpActor implements HttpActor {
 
     @Override
     public Publisher<Void> doRequest(HttpServerRequest request, HttpServerResponse response, Configuration configuration) {
-        PrometheusMeterRegistry prometheusRegistry = PrometheusMeterRegistrySingleton.getInstance().getPrometheusMeterRegistry();
-        String openMetricsScrape = prometheusRegistry.scrape(TextFormat.CONTENT_TYPE_OPENMETRICS_100);
         return request
                 .receive()
                 .then(response
-                        .sendString(Mono.just(openMetricsScrape))
+                        .sendString(Mono.just(PrometheusMeterRegistrySingleton.getInstance().getPrometheusMeterRegistry().scrape(TextFormat.CONTENT_TYPE_OPENMETRICS_100)))
                         .then());
     }
 }
