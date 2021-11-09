@@ -17,7 +17,7 @@ import reactor.netty.http.server.HttpServerResponse;
 
 
 /**
- * 指标
+ * 监控指标
  *
  * @author easy
  * @date 2021/10/30
@@ -30,10 +30,8 @@ public class MeterHttpActor implements HttpActor {
 
     @Override
     public Publisher<Void> doRequest(HttpServerRequest request, HttpServerResponse response, Configuration configuration) {
-
         PrometheusMeterRegistry prometheusRegistry = PrometheusMeterRegistrySingleton.getInstance().getPrometheusMeterRegistry();
         String openMetricsScrape = prometheusRegistry.scrape(TextFormat.CONTENT_TYPE_OPENMETRICS_100);
-
         return request
                 .receive()
                 .then(response

@@ -13,6 +13,10 @@ import io.github.quickmsg.core.http.HttpTransportFactory;
 import io.github.quickmsg.core.mqtt.MqttConfiguration;
 import io.github.quickmsg.core.mqtt.MqttTransportFactory;
 import io.github.quickmsg.core.websocket.WebSocketMqttTransportFactory;
+import io.github.quickmsg.metric.micrometer.PrometheusMeterRegistrySingleton;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.Metrics;
+import io.micrometer.prometheus.PrometheusMeterRegistry;
 import io.netty.channel.WriteBufferWaterMark;
 import lombok.Builder;
 import lombok.Getter;
@@ -83,7 +87,7 @@ public class Bootstrap {
         Optional.ofNullable(tcpConfig.getSsl()).map(SslContext::getEnable).ifPresent(mqttConfiguration::setSsl);
         Optional.ofNullable(tcpConfig.getSsl()).ifPresent(mqttConfiguration::setSslContext);
         Optional.ofNullable(tcpConfig.getSsl()).ifPresent(mqttConfiguration::setSslContext);
-        Optional.ofNullable(meterConfig.getEnable()).ifPresent(mqttConfiguration::setMeterEnable);
+        Optional.ofNullable(meterConfig.isEnable()).ifPresent(mqttConfiguration::setMeterEnable);
         Optional.ofNullable(clusterConfig).ifPresent(mqttConfiguration::setClusterConfig);
 
         if (websocketConfig != null && websocketConfig.isEnable()) {
@@ -143,6 +147,7 @@ public class Bootstrap {
                 .doOnSuccess(transports::add)
                 .then(startWs(mqttConfiguration))
                 .then(startHttp())
+                .then(initMeter())
                 .thenReturn(this)
                 .doOnSuccess(started);
     }
@@ -159,6 +164,17 @@ public class Bootstrap {
         return httpConfig != null && httpConfig.isEnable() ? new HttpTransportFactory().createTransport(this.buildHttpConfiguration())
                 .start()
                 .doOnSuccess(transports::add).doOnError(throwable -> log.error("start http error", throwable)).then() : Mono.empty();
+    }
+
+    private Mono<Void> initMeter() {
+        return meterConfig != null && meterConfig.isEnable() ? Mono.create(record -> {
+            PrometheusMeterRegistry prometheusRegistry = PrometheusMeterRegistrySingleton.getInstance().getPrometheusMeterRegistry();
+            Metrics.globalRegistry.add(prometheusRegistry);
+            Counter counter = Metrics.globalRegistry.counter("smqtt.http.request", "createOrder", "/order/create");
+            for (int i = 0; i < 68; i++) {
+                counter.increment();
+            }
+        }) : Mono.empty();
     }
 
     private HttpConfiguration buildHttpConfiguration() {

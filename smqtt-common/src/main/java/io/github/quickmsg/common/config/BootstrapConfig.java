@@ -434,7 +434,7 @@ public class BootstrapConfig {
         /**
          * 指标开关
          */
-        private Boolean enable;
+        private boolean enable;
 
     }
 }
