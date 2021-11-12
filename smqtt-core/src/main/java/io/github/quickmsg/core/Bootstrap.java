@@ -3,8 +3,11 @@ package io.github.quickmsg.core;
 import ch.qos.logback.classic.Level;
 import io.github.quickmsg.common.config.BootstrapConfig;
 import io.github.quickmsg.common.config.SslContext;
+import io.github.quickmsg.common.http.HttpActor;
+import io.github.quickmsg.common.metric.Metric;
 import io.github.quickmsg.common.rule.RuleChainDefinition;
 import io.github.quickmsg.common.rule.source.SourceDefinition;
+import io.github.quickmsg.common.spi.DynamicLoader;
 import io.github.quickmsg.common.transport.Transport;
 import io.github.quickmsg.common.utils.BannerUtils;
 import io.github.quickmsg.common.utils.LoggerLevel;
@@ -13,10 +16,6 @@ import io.github.quickmsg.core.http.HttpTransportFactory;
 import io.github.quickmsg.core.mqtt.MqttConfiguration;
 import io.github.quickmsg.core.mqtt.MqttTransportFactory;
 import io.github.quickmsg.core.websocket.WebSocketMqttTransportFactory;
-import io.github.quickmsg.metric.micrometer.PrometheusMeterRegistrySingleton;
-import io.micrometer.core.instrument.Counter;
-import io.micrometer.core.instrument.Metrics;
-import io.micrometer.prometheus.PrometheusMeterRegistry;
 import io.netty.channel.WriteBufferWaterMark;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,6 +26,7 @@ import reactor.core.publisher.Sinks;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  * @author luxurong
@@ -65,6 +65,8 @@ public class Bootstrap {
 
     @Builder.Default
     private Level rootLevel = Level.INFO;
+
+    private static Metric metric = DynamicLoader.findFirst(Metric.class).orElse(null);
 
 
     @SuppressWarnings("Unchecked")
@@ -141,6 +143,7 @@ public class Bootstrap {
         MqttConfiguration mqttConfiguration = initMqttConfiguration();
         MqttTransportFactory mqttTransportFactory = new MqttTransportFactory();
         LoggerLevel.root(rootLevel);
+
         return mqttTransportFactory.createTransport(mqttConfiguration)
                 .start()
                 .doOnError(Throwable::printStackTrace)
@@ -168,12 +171,7 @@ public class Bootstrap {
 
     private Mono<Void> initMeter() {
         return meterConfig != null && meterConfig.isEnable() ? Mono.create(record -> {
-            PrometheusMeterRegistry prometheusRegistry = PrometheusMeterRegistrySingleton.getInstance().getPrometheusMeterRegistry();
-            Metrics.globalRegistry.add(prometheusRegistry);
-            Counter counter = Metrics.globalRegistry.counter("smqtt.http.request", "createOrder", "/order/create");
-            for (int i = 0; i < 68; i++) {
-                counter.increment();
-            }
+            metric.init();
         }) : Mono.empty();
     }
 

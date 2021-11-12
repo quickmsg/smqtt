@@ -6,14 +6,13 @@ import io.github.quickmsg.common.annotation.Router;
 import io.github.quickmsg.common.config.Configuration;
 import io.github.quickmsg.common.enums.HttpType;
 import io.github.quickmsg.common.http.HttpActor;
-import io.github.quickmsg.metric.micrometer.PrometheusMeterRegistrySingleton;
-import io.prometheus.client.exporter.common.TextFormat;
+import io.github.quickmsg.common.metric.Metric;
+import io.github.quickmsg.common.spi.DynamicLoader;
 import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
-
 
 /**
  * 监控指标
@@ -27,12 +26,14 @@ import reactor.netty.http.server.HttpServerResponse;
 @AllowCors
 public class MeterHttpActor implements HttpActor {
 
+    private static Metric metric = DynamicLoader.findFirst(Metric.class).orElse(null);
+
     @Override
     public Publisher<Void> doRequest(HttpServerRequest request, HttpServerResponse response, Configuration configuration) {
         return request
                 .receive()
                 .then(response
-                        .sendString(Mono.just(PrometheusMeterRegistrySingleton.getInstance().getPrometheusMeterRegistry().scrape(TextFormat.CONTENT_TYPE_OPENMETRICS_100)))
+                        .sendString(Mono.just(metric.scrape()))
                         .then());
     }
 }

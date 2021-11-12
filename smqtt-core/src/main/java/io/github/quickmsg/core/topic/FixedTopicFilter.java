@@ -1,6 +1,8 @@
 package io.github.quickmsg.core.topic;
 
 import io.github.quickmsg.common.channel.MqttChannel;
+import io.github.quickmsg.common.metric.Metric;
+import io.github.quickmsg.common.spi.DynamicLoader;
 import io.github.quickmsg.common.topic.SubscribeTopic;
 import io.netty.handler.codec.mqtt.MqttQoS;
 
@@ -21,6 +23,8 @@ public class FixedTopicFilter implements TopicFilter {
 
     private Map<String, CopyOnWriteArraySet<SubscribeTopic>> topicChannels = new ConcurrentHashMap<>();
 
+    private static Metric metric = DynamicLoader.findFirst(Metric.class).orElse(null);
+
 
     @Override
     public Set<SubscribeTopic> getSubscribeByTopic(String topic, MqttQoS mqttQoS) {
@@ -39,6 +43,7 @@ public class FixedTopicFilter implements TopicFilter {
         if (channels.add(subscribeTopic)) {
             subscribeNumber.add(1);
             subscribeTopic.linkSubscribe();
+            metric.getMetricCounter("topicCounter").increment();
         }
     }
 
@@ -48,6 +53,7 @@ public class FixedTopicFilter implements TopicFilter {
         if (channels.remove(subscribeTopic)) {
             subscribeNumber.add(-1);
             subscribeTopic.unLinkSubscribe();
+            metric.getMetricCounter("topicCounter").decrement();
         }
     }
 
