@@ -8,10 +8,24 @@ package io.github.quickmsg.common.metric;
  */
 public interface Metric {
 
+    /**
+     * 初始化
+     */
     void init();
 
-    MetricCounter getMetricCounter(String name);
+    /**
+     * 获取计数器
+     *
+     * @param counterEnum 类型枚举
+     * @return {@link MetricCounter}
+     */
+    MetricCounter getMetricCounter(CounterEnum counterEnum);
 
+    /**
+     * 样本数据手机
+     *
+     * @return {@link String}
+     */
     String scrape();
 
 

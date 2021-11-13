@@ -1,6 +1,7 @@
 package io.github.quickmsg.core.topic;
 
 import io.github.quickmsg.common.channel.MqttChannel;
+import io.github.quickmsg.common.metric.CounterEnum;
 import io.github.quickmsg.common.metric.Metric;
 import io.github.quickmsg.common.spi.DynamicLoader;
 import io.github.quickmsg.common.topic.SubscribeTopic;
@@ -37,7 +38,7 @@ public class TreeTopicFilter implements TopicFilter {
         if (rootTreeNode.addSubscribeTopic(subscribeTopic)) {
             subscribeNumber.add(1);
             subscribeTopic.linkSubscribe();
-            metric.getMetricCounter("topicCounter").increment();
+            metric.getMetricCounter(CounterEnum.TOPIC_COUNTER).increment();
         }
     }
 
@@ -46,7 +47,7 @@ public class TreeTopicFilter implements TopicFilter {
         if (rootTreeNode.removeSubscribeTopic(subscribeTopic)) {
             subscribeNumber.add(-1);
             subscribeTopic.unLinkSubscribe();
-            metric.getMetricCounter("topicCounter").decrement();
+            metric.getMetricCounter(CounterEnum.TOPIC_COUNTER).decrement();
         }
     }
 

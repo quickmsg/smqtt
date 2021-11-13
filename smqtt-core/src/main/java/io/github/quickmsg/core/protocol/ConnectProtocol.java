@@ -10,6 +10,7 @@ import io.github.quickmsg.common.message.EventRegistry;
 import io.github.quickmsg.common.message.MessageRegistry;
 import io.github.quickmsg.common.message.MqttMessageBuilder;
 import io.github.quickmsg.common.message.SmqttMessage;
+import io.github.quickmsg.common.metric.CounterEnum;
 import io.github.quickmsg.common.metric.Metric;
 import io.github.quickmsg.common.protocol.Protocol;
 import io.github.quickmsg.common.spi.DynamicLoader;
@@ -49,7 +50,7 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
 
     private static void accept(MqttChannel mqttChannel1) {
         WindowMetric.WINDOW_METRIC_INSTANCE.recordConnect(-1);
-        metric.getMetricCounter("connectCounter").decrement();
+        metric.getMetricCounter(CounterEnum.CONNETC_COUNTER).decrement();
     }
 
     @Override
@@ -129,7 +130,7 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
                 mqttChannel.registryClose(channel -> this.close(mqttChannel, mqttReceiveContext, eventRegistry));
 
                 WindowMetric.WINDOW_METRIC_INSTANCE.recordConnect(1);
-                metric.getMetricCounter("connectCounter").increment();
+                metric.getMetricCounter(CounterEnum.CONNETC_COUNTER).increment();
 
                 mqttChannel.registryClose(ConnectProtocol::accept);
 

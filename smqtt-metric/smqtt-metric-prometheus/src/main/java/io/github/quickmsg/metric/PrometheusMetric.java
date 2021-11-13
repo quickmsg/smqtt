@@ -1,5 +1,6 @@
 package io.github.quickmsg.metric;
 
+import io.github.quickmsg.common.metric.CounterEnum;
 import io.github.quickmsg.common.metric.MetircConstant;
 import io.github.quickmsg.common.metric.Metric;
 import io.github.quickmsg.common.metric.MetricCounter;
@@ -30,7 +31,7 @@ public class PrometheusMetric implements Metric {
 
     public static final PrometheusMeterRegistry PROMETHEUS_METER_REGISTRY_INSTANCE = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
 
-    public static final Map<String, MetricCounter> map = new HashMap<>();
+    public static final Map<CounterEnum, MetricCounter> map = new HashMap<>();
 
     @Override
     public void init() {
@@ -42,12 +43,12 @@ public class PrometheusMetric implements Metric {
         new ProcessorMetrics().bindTo(Metrics.globalRegistry);
         new JvmThreadMetrics().bindTo(Metrics.globalRegistry);
 
-        map.put("connectCounter", ConnectCounter.CONNECT_SIZE_COUNTER_INSTANCE);
-        map.put("topicCounter", TopicCounter.TOPIC_COUNTER_INSTANCE);
+        map.put(CounterEnum.CONNETC_COUNTER, ConnectCounter.CONNECT_SIZE_COUNTER_INSTANCE);
+        map.put(CounterEnum.TOPIC_COUNTER, TopicCounter.TOPIC_COUNTER_INSTANCE);
     }
 
-    public MetricCounter getMetricCounter(String name) {
-        return map.get(name);
+    public MetricCounter getMetricCounter(CounterEnum counterEnum) {
+        return map.get(counterEnum);
     }
 
     public String scrape() {
