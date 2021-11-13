@@ -50,7 +50,7 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
 
     private static void accept(MqttChannel mqttChannel1) {
         WindowMetric.WINDOW_METRIC_INSTANCE.recordConnect(-1);
-        metric.getMetricCounter(CounterEnum.CONNETC_COUNTER).decrement();
+        metric.getMetricCounter(CounterEnum.CONNECT_COUNTER).decrement();
     }
 
     @Override
@@ -130,7 +130,7 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
                 mqttChannel.registryClose(channel -> this.close(mqttChannel, mqttReceiveContext, eventRegistry));
 
                 WindowMetric.WINDOW_METRIC_INSTANCE.recordConnect(1);
-                metric.getMetricCounter(CounterEnum.CONNETC_COUNTER).increment();
+                metric.getMetricCounter(CounterEnum.CONNECT_COUNTER).increment();
 
                 mqttChannel.registryClose(ConnectProtocol::accept);
 
