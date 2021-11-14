@@ -70,7 +70,7 @@ public class Influx1Metric implements Metric {
         new ProcessorMetrics().bindTo(Metrics.globalRegistry);
         new JvmThreadMetrics().bindTo(Metrics.globalRegistry);
 
-        map.put(CounterEnum.CONNETC_COUNTER, ConnectCounter.CONNECT_SIZE_COUNTER_INSTANCE);
+        map.put(CounterEnum.CONNECT_COUNTER, ConnectCounter.CONNECT_SIZE_COUNTER_INSTANCE);
         map.put(CounterEnum.TOPIC_COUNTER, TopicCounter.TOPIC_COUNTER_INSTANCE);
     }
 
