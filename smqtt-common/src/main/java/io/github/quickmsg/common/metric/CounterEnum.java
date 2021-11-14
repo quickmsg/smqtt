@@ -5,8 +5,8 @@ public enum CounterEnum {
     /**
      * 连接数计数器
      */
-    CONNETC_COUNTER,
-    /**
+    CONNECT_COUNTER,
+    /**　
      * topic计数器
      */
     TOPIC_COUNTER
