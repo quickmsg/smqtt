@@ -43,6 +43,12 @@ smqtt:
       port: 7777 # 用于映射容器端口 请不要随意设置，如果不需要请移除此选项
   meter:
     enable: true # 指标开关
+    influxdb1: # influxdb1.x 参数设置,如选择使用prometheus不用设置
+      db: smqttdb
+      uri: http://121.40.92.152:8086
+      userName: root
+      password: 123
+      step: 10 # 单位秒
   db: # 参数值配置参考https://github.com/brettwooldridge/HikariCP/wiki/MySQL-Configuration
     jdbcUrl: jdbc:mysql://localhost:3306/smqtt
     username: root

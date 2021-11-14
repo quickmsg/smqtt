@@ -435,6 +435,39 @@ public class BootstrapConfig {
          * 指标开关
          */
         private boolean enable;
+        /**
+         * influx1.x参数
+         */
+        private Influxdb1 influxdb1;
+    }
 
+    /**
+     * influx1.x参数
+     */
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Influxdb1 {
+        /**
+         * 数据库
+         */
+        private String db;
+        /**
+         * uri
+         */
+        private String uri;
+        /**
+         * 用户名
+         */
+        private String userName;
+        /**
+         * 密码
+         */
+        private String password;
+        /**
+         * 步长
+         */
+        private Integer step;
     }
 }

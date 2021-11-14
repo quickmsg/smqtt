@@ -4,6 +4,7 @@ import ch.qos.logback.classic.Level;
 import io.github.quickmsg.common.config.BootstrapConfig;
 import io.github.quickmsg.common.config.SslContext;
 import io.github.quickmsg.common.http.HttpActor;
+import io.github.quickmsg.common.metric.DatabaseEnum;
 import io.github.quickmsg.common.metric.Metric;
 import io.github.quickmsg.common.rule.RuleChainDefinition;
 import io.github.quickmsg.common.rule.source.SourceDefinition;
@@ -171,7 +172,7 @@ public class Bootstrap {
 
     private Mono<Void> initMeter() {
         return meterConfig != null && meterConfig.isEnable() ? Mono.create(record -> {
-            metric.init();
+            metric.init(meterConfig);
         }) : Mono.empty();
     }
 

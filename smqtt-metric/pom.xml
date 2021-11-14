@@ -6,9 +6,8 @@
     <packaging>pom</packaging>
     <modules>
         <module>smqtt-metric-prometheus</module>
-        <module>smqtt-metric-influx1.x</module>
-        <module>smqtt-metric-influx2.x</module>
         <module>smqtt-metric-web</module>
+        <module>smqtt-metric-influx1</module>
     </modules>
 
     <parent>

@@ -1,5 +1,7 @@
 package io.github.quickmsg.common.metric;
 
+import io.github.quickmsg.common.config.BootstrapConfig;
+
 /**
  * 度量
  *
@@ -11,7 +13,7 @@ public interface Metric {
     /**
      * 初始化
      */
-    void init();
+    void init(BootstrapConfig.MeterConfig meterConfig);
 
     /**
      * 获取计数器
@@ -28,5 +30,12 @@ public interface Metric {
      */
     String scrape();
 
+
+    /**
+     * 获取数据库类型
+     *
+     * @return {@link DatabaseEnum}
+     */
+    DatabaseEnum getDatabaseType();
 
 }

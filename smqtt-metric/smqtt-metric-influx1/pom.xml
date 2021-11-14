@@ -9,7 +9,19 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>smqtt-metric-influx2.x</artifactId>
+    <artifactId>smqtt-metric-influx1</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>io.github.quickmsg</groupId>
+            <artifactId>smqtt-common</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-influx</artifactId>
+            <version>1.7.5</version>
+        </dependency>
+    </dependencies>
 
 </project>
