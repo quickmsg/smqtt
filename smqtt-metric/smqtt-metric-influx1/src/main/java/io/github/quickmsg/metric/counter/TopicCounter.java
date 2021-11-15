@@ -1,5 +1,6 @@
 package io.github.quickmsg.metric.counter;
 
+import io.github.quickmsg.common.metric.MetircConstant;
 import io.github.quickmsg.common.metric.MetricCounter;
 import io.github.quickmsg.metric.Influx1Metric;
 
@@ -18,18 +19,17 @@ public class TopicCounter implements MetricCounter {
 
     private static final AtomicInteger  ATOMICINTEGER= new AtomicInteger(0);
 
-    public static final String NAME = "smqtt.topic.count";
 
     static {
-        Influx1Metric.INFLUX_METER_REGISTRY_INSTANCE.gauge(NAME, ATOMICINTEGER);
+        Influx1Metric.INFLUX_METER_REGISTRY_INSTANCE.gauge(MetircConstant.TOPIC_COUNTER_NAME, ATOMICINTEGER);
     }
 
     public void increment() {
-        Influx1Metric.INFLUX_METER_REGISTRY_INSTANCE.gauge(NAME, ATOMICINTEGER.incrementAndGet());
+        Influx1Metric.INFLUX_METER_REGISTRY_INSTANCE.gauge(MetircConstant.TOPIC_COUNTER_NAME, ATOMICINTEGER.incrementAndGet());
     }
 
     public void decrement() {
-        Influx1Metric.INFLUX_METER_REGISTRY_INSTANCE.gauge(NAME, ATOMICINTEGER.decrementAndGet());
+        Influx1Metric.INFLUX_METER_REGISTRY_INSTANCE.gauge(MetircConstant.TOPIC_COUNTER_NAME, ATOMICINTEGER.decrementAndGet());
     }
 
 }

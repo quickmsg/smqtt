@@ -1,1 +1,1 @@
-io.github.quickmsg.metric.Influx1Metric
+io.github.quickmsg.metric.PrometheusMetric

@@ -78,7 +78,7 @@
 
         <dependency>
             <groupId>io.github.quickmsg</groupId>
-            <artifactId>smqtt-metric-influx1</artifactId>
+            <artifactId>smqtt-metric-prometheus</artifactId>
             <version>1.0.8</version>
         </dependency>
 
