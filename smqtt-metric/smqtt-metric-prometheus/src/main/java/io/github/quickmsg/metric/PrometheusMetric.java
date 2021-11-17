@@ -39,11 +39,11 @@ public class PrometheusMetric implements Metric {
         return DatabaseEnum.PROMETHEUS;
     }
 
-    private ReadWriteSideWindowCounter readHourSize = ReadWriteSideWindowCounter.getInstance(30, TimeUnit.SECONDS, "READ-HOUR-SIZE", this);
-    private ReadWriteSideWindowCounter writeHourSize = ReadWriteSideWindowCounter.getInstance(30, TimeUnit.SECONDS, "WRITE-HOUR-SIZE", this);
+    private ReadWriteSideWindowCounter readHourSize = ReadWriteSideWindowCounter.getInstance(1, TimeUnit.HOURS, "READ-HOUR-SIZE", this);
+    private ReadWriteSideWindowCounter writeHourSize = ReadWriteSideWindowCounter.getInstance(1, TimeUnit.HOURS, "WRITE-HOUR-SIZE", this);
 
     public PrometheusMetric() {
-        System.out.println("AAAAAAAAAAAA");
+
     }
 
     @Override
