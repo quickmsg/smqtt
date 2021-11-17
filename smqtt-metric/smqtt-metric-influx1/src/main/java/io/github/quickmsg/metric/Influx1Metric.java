@@ -13,15 +13,12 @@ import io.micrometer.core.instrument.binder.jvm.JvmGcMetrics;
 import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics;
 import io.micrometer.core.instrument.binder.jvm.JvmThreadMetrics;
 import io.micrometer.core.instrument.binder.system.ProcessorMetrics;
-import io.micrometer.core.instrument.util.MeterPartition;
 import io.micrometer.influx.InfluxConfig;
 import io.micrometer.influx.InfluxMeterRegistry;
 
+import java.text.DecimalFormat;
 import java.time.Duration;
 import java.util.*;
-import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.joining;
 
 /**
  * influx度量
@@ -55,6 +52,7 @@ public class Influx1Metric implements Metric {
                 return meterConfig.getInfluxdb1().getDb();
             }
 
+            @Override
             public String uri() {
                 return meterConfig.getInfluxdb1().getUri();
             }
@@ -90,16 +88,26 @@ public class Influx1Metric implements Metric {
     }
 
     @Override
-    public List<Double> scrapeByMeterId(Meter.Id meterId) {
-        List<Meter> list = INFLUX_METER_REGISTRY_INSTANCE.getMeters();
-        Optional<List<Double>> first = list.stream()
-                .filter(meter -> meter.getId().equals(meterId))
-                .map(meter -> {
-                    List<Double> valueList = new ArrayList<>();
-                    meter.measure().forEach(measurement -> valueList.add(measurement.getValue()));
-                    return valueList;
-                }).findFirst();
-        return first.isPresent() ? first.get() : null;
+    public List<Double> scrapeByMeterId(Meter.Id meterId, Statistic statistic) {
+        List<Meter> meterList = INFLUX_METER_REGISTRY_INSTANCE.getMeters();
+        List<Double> valueList = new ArrayList<>();
+        meterList.stream()
+                .filter(meter -> {
+                    if (meterId.getTags() == null || meterId.getTags().size() <= 0) {
+                        return meter.getId().getName().equals(meterId.getName());
+                    } else {
+                        return meter.getId().equals(meterId);
+                    }
+                })
+                .forEach(meter -> {
+                    meter.measure().forEach(measurement -> {
+                        if (measurement.getStatistic() == statistic) {
+                            valueList.add(measurement.getValue());
+                        }
+                    });
+                });
+
+        return valueList;
     }
 
     @Override
@@ -107,17 +115,30 @@ public class Influx1Metric implements Metric {
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode window = objectMapper.createObjectNode();
 
-        window.put("connect_size", formatValue(scrapeByMeterId(new Meter.Id(MetircConstant.CONNECT_COUNTER_NAME, Tags.empty(), null, null, Meter.Type.GAUGE))));
-        window.put("read_size", 0);
+        //     window.put("connect_size", formatValue(scrapeByMeterId(new Meter.Id(MetircConstant.CONNECT_COUNTER_NAME, Tags.empty(), null, null, null))));
+        window.put("read_size", FormatUtils.formatByte(formatValue(scrapeByMeterId(new Meter.Id(MetircConstant.REACTOR_NETTY_TCP_SERVER_DATA_RECEIVED, Tags.empty(), null, null, null), Statistic.TOTAL))));
         window.put("read_hour_size", 0);
-        window.put("write_size", 0);
+        window.put("write_size", FormatUtils.formatByte(formatValue(scrapeByMeterId(new Meter.Id(MetircConstant.REACTOR_NETTY_TCP_SERVER_DATA_SENT, Tags.empty(), null, null, null), Statistic.TOTAL))));
         window.put("write_hour_size", 0);
         return window;
     }
 
+    @Override
     public ObjectNode scrapeCpu() {
         ObjectMapper objectMapper = new ObjectMapper();
-        ObjectNode window = objectMapper.createObjectNode();
-        return window;
+        ObjectNode cpuInfo = objectMapper.createObjectNode();
+
+        Tags tags = Tags.empty().and(MetircConstant.COMMON_TAG_NAME, MetircConstant.COMMON_TAG_VALUE);
+        //cpu核数
+        cpuInfo.put("cpuNum", formatValue(scrapeByMeterId(new Meter.Id(MetircConstant.SYSTEM_CPU_COUNT, tags, null, null, null), Statistic.VALUE)));
+        //cpu系统使用率
+        cpuInfo.put("cSys", new DecimalFormat("#.##%").format(formatValue(scrapeByMeterId(new Meter.Id(MetircConstant.SYSTEM_CPU_USAGE, tags, null, null, null), Statistic.VALUE))));
+        //cpu用户使用率
+        cpuInfo.put("user", new DecimalFormat("#.##%").format(formatValue(scrapeByMeterId(new Meter.Id(MetircConstant.PROCESS_CPU_USAGE, tags, null, null, null), Statistic.VALUE))));
+        //cpu当前等待率
+        cpuInfo.put("iowait", "N/A");
+        //cpu当前使用率
+        cpuInfo.put("idle", "N/A");
+        return cpuInfo;
     }
 }

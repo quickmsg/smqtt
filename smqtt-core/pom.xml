@@ -18,7 +18,7 @@
         </dependency>
         <dependency>
             <groupId>io.github.quickmsg</groupId>
-            <artifactId>smqtt-metric</artifactId>
+            <artifactId>smqtt-metric-web</artifactId>
             <version>1.0.8</version>
         </dependency>
         <dependency>
@@ -26,13 +26,6 @@
             <artifactId>smqtt-rule-dsl</artifactId>
             <version>1.0.8</version>
         </dependency>
-
-        <dependency>
-            <groupId>io.github.quickmsg</groupId>
-            <artifactId>smqtt-metric-web</artifactId>
-            <version>1.0.8</version>
-        </dependency>
-
     </dependencies>
 
 </project>

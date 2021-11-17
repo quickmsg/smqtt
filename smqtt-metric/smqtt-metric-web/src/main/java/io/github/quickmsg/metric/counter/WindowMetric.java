@@ -1,11 +1,10 @@
 package io.github.quickmsg.metric.counter;
 
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.github.quickmsg.metric.MetricsGetter;
 import io.github.quickmsg.common.utils.FormatUtils;
+import io.github.quickmsg.metric.MetricsGetter;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,9 +24,9 @@ public class WindowMetric implements MetricsGetter {
 
     }
 
-    private WindowCounter readAllBufferSize = new SideWindowCounter(1, TimeUnit.HOURS, "TRANSPORT-READ-BUFFER-SIZE");
+    private WindowCounter readAllBufferSize = new SideWindowCounter(1, TimeUnit.MINUTES, "TRANSPORT-READ-BUFFER-SIZE");
 
-    private WindowCounter writeAllBufferSize = new SideWindowCounter(1, TimeUnit.HOURS, "TRANSPORT-WRITE-BUFFER-SIZE");
+    private WindowCounter writeAllBufferSize = new SideWindowCounter(1, TimeUnit.MINUTES, "TRANSPORT-WRITE-BUFFER-SIZE");
 
     private WindowCounter connectCounter = new SimpleWindowCounter();
 

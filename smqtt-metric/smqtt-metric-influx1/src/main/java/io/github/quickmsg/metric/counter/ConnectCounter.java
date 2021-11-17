@@ -24,10 +24,12 @@ public class ConnectCounter implements MetricCounter {
         Influx1Metric.INFLUX_METER_REGISTRY_INSTANCE.gauge(MetircConstant.CONNECT_COUNTER_NAME, ATOMICINTEGER);
     }
 
+    @Override
     public void increment() {
         Influx1Metric.INFLUX_METER_REGISTRY_INSTANCE.gauge(MetircConstant.CONNECT_COUNTER_NAME, ATOMICINTEGER.incrementAndGet());
     }
 
+    @Override
     public void decrement() {
         Influx1Metric.INFLUX_METER_REGISTRY_INSTANCE.gauge(MetircConstant.CONNECT_COUNTER_NAME, ATOMICINTEGER.decrementAndGet());
     }

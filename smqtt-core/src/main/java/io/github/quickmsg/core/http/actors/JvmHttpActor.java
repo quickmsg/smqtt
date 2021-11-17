@@ -9,7 +9,6 @@ import io.github.quickmsg.common.http.HttpActor;
 import io.github.quickmsg.common.metric.Metric;
 import io.github.quickmsg.common.spi.DynamicLoader;
 import io.github.quickmsg.common.utils.JacksonUtil;
-import io.github.quickmsg.metric.category.JvmMetric;
 import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;

@@ -6,6 +6,7 @@ import io.github.quickmsg.common.config.BootstrapConfig;
 import io.github.quickmsg.common.metric.*;
 import io.github.quickmsg.common.utils.FormatUtils;
 import io.github.quickmsg.metric.counter.ConnectCounter;
+import io.github.quickmsg.metric.counter.ReadWriteSideWindowCounter;
 import io.github.quickmsg.metric.counter.TopicCounter;
 import io.micrometer.core.instrument.*;
 import io.micrometer.core.instrument.binder.jvm.ClassLoaderMetrics;
@@ -19,6 +20,7 @@ import io.prometheus.client.exporter.common.TextFormat;
 
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * prometheus度量
@@ -37,6 +39,13 @@ public class PrometheusMetric implements Metric {
         return DatabaseEnum.PROMETHEUS;
     }
 
+    private ReadWriteSideWindowCounter readHourSize = ReadWriteSideWindowCounter.getInstance(30, TimeUnit.SECONDS, "READ-HOUR-SIZE", this);
+    private ReadWriteSideWindowCounter writeHourSize = ReadWriteSideWindowCounter.getInstance(30, TimeUnit.SECONDS, "WRITE-HOUR-SIZE", this);
+
+    public PrometheusMetric() {
+        System.out.println("AAAAAAAAAAAA");
+    }
+
     @Override
     public void init(BootstrapConfig.MeterConfig meterConfig) {
         Metrics.globalRegistry.config().commonTags(Arrays.asList(Tag.of(MetircConstant.COMMON_TAG_NAME, MetircConstant.COMMON_TAG_VALUE)));
@@ -51,10 +60,12 @@ public class PrometheusMetric implements Metric {
         map.put(CounterEnum.TOPIC_COUNTER, TopicCounter.TOPIC_COUNTER_INSTANCE);
     }
 
+    @Override
     public MetricCounter getMetricCounter(CounterEnum counterEnum) {
         return map.get(counterEnum);
     }
 
+    @Override
     public String scrape() {
         return PROMETHEUS_METER_REGISTRY_INSTANCE.scrape(TextFormat.CONTENT_TYPE_OPENMETRICS_100);
     }
@@ -70,8 +81,7 @@ public class PrometheusMetric implements Metric {
                     } else {
                         return meter.getId().equals(meterId);
                     }
-                })
-                .forEach(meter -> {
+                }).forEach(meter -> {
                     meter.measure().forEach(measurement -> {
                         if (measurement.getStatistic() == statistic) {
                             valueList.add(measurement.getValue());
@@ -87,11 +97,14 @@ public class PrometheusMetric implements Metric {
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode window = objectMapper.createObjectNode();
 
-        //     window.put("connect_size", formatValue(scrapeByMeterId(new Meter.Id(MetircConstant.CONNECT_COUNTER_NAME, Tags.empty(), null, null, null))));
-        window.put("read_size", FormatUtils.formatByte(formatValue(scrapeByMeterId(new Meter.Id(MetircConstant.REACTOR_NETTY_TCP_SERVER_DATA_RECEIVED, Tags.empty(), null, null, null), Statistic.TOTAL))));
-        window.put("read_hour_size", 0);
-        window.put("write_size", FormatUtils.formatByte(formatValue(scrapeByMeterId(new Meter.Id(MetircConstant.REACTOR_NETTY_TCP_SERVER_DATA_SENT, Tags.empty(), null, null, null), Statistic.TOTAL))));
-        window.put("write_hour_size", 0);
+        double readSize = formatValue(scrapeByMeterId(new Meter.Id(MetircConstant.REACTOR_NETTY_TCP_SERVER_DATA_RECEIVED, Tags.empty(), null, null, null), Statistic.TOTAL));
+        double writeSize = formatValue(scrapeByMeterId(new Meter.Id(MetircConstant.REACTOR_NETTY_TCP_SERVER_DATA_SENT, Tags.empty(), null, null, null), Statistic.TOTAL));
+
+        window.put("connect_size", formatValue(scrapeByMeterId(new Meter.Id(MetircConstant.CONNECT_COUNTER_NAME, Tags.empty(), null, null, null), Statistic.VALUE)));
+        window.put("read_size", FormatUtils.formatByte(readSize));
+        window.put("read_hour_size", FormatUtils.formatByte(readSize - readHourSize.getLastReadSize()));
+        window.put("write_size", FormatUtils.formatByte(writeSize));
+        window.put("write_hour_size", FormatUtils.formatByte(writeSize - writeHourSize.getLastWriteSize()));
         return window;
     }
 

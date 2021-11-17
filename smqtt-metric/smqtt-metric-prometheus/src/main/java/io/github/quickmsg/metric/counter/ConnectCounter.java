@@ -24,10 +24,12 @@ public class ConnectCounter implements MetricCounter {
         PrometheusMetric.PROMETHEUS_METER_REGISTRY_INSTANCE.gauge(MetircConstant.CONNECT_COUNTER_NAME, ATOMICINTEGER);
     }
 
+    @Override
     public void increment() {
         PrometheusMetric.PROMETHEUS_METER_REGISTRY_INSTANCE.gauge(MetircConstant.CONNECT_COUNTER_NAME, ATOMICINTEGER.incrementAndGet());
     }
 
+    @Override
     public void decrement() {
         PrometheusMetric.PROMETHEUS_METER_REGISTRY_INSTANCE.gauge(MetircConstant.CONNECT_COUNTER_NAME, ATOMICINTEGER.decrementAndGet());
     }

@@ -3,7 +3,6 @@ package io.github.quickmsg.metric.counter;
 import io.github.quickmsg.common.metric.MetircConstant;
 import io.github.quickmsg.common.metric.MetricCounter;
 import io.github.quickmsg.metric.PrometheusMetric;
-import io.prometheus.client.exporter.common.TextFormat;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -25,10 +24,12 @@ public class TopicCounter implements MetricCounter {
         PrometheusMetric.PROMETHEUS_METER_REGISTRY_INSTANCE.gauge(MetircConstant.TOPIC_COUNTER_NAME, ATOMICINTEGER);
     }
 
+    @Override
     public void increment() {
         PrometheusMetric.PROMETHEUS_METER_REGISTRY_INSTANCE.gauge(MetircConstant.TOPIC_COUNTER_NAME, ATOMICINTEGER.incrementAndGet());
     }
 
+    @Override
     public void decrement() {
         PrometheusMetric.PROMETHEUS_METER_REGISTRY_INSTANCE.gauge(MetircConstant.TOPIC_COUNTER_NAME, ATOMICINTEGER.decrementAndGet());
     }

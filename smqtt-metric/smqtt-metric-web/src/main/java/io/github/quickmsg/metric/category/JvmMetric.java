@@ -2,8 +2,8 @@ package io.github.quickmsg.metric.category;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.github.quickmsg.metric.MetricsGetter;
 import io.github.quickmsg.common.utils.FormatUtils;
+import io.github.quickmsg.metric.MetricsGetter;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
