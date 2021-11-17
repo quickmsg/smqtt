@@ -6,6 +6,7 @@ import io.github.quickmsg.common.config.BootstrapConfig;
 import io.github.quickmsg.common.metric.*;
 import io.github.quickmsg.common.utils.FormatUtils;
 import io.github.quickmsg.metric.counter.ConnectCounter;
+import io.github.quickmsg.metric.counter.ReadWriteSideWindowCounter;
 import io.github.quickmsg.metric.counter.TopicCounter;
 import io.micrometer.core.instrument.*;
 import io.micrometer.core.instrument.binder.jvm.ClassLoaderMetrics;
@@ -19,6 +20,7 @@ import io.micrometer.influx.InfluxMeterRegistry;
 import java.text.DecimalFormat;
 import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * influx度量
@@ -39,8 +41,11 @@ public class Influx1Metric implements Metric {
 
     private static InfluxConfig config;
 
+    private ReadWriteSideWindowCounter readHourSize = ReadWriteSideWindowCounter.getInstance(1, TimeUnit.HOURS, "READ-HOUR-SIZE", this);
+    private ReadWriteSideWindowCounter writeHourSize = ReadWriteSideWindowCounter.getInstance(1, TimeUnit.HOURS, "WRITE-HOUR-SIZE", this);
+
     @Override
-    public void init(BootstrapConfig.MeterConfig meterConfig) {
+    public boolean init(BootstrapConfig.MeterConfig meterConfig) {
         config = new InfluxConfig() {
             @Override
             public Duration step() {
@@ -75,6 +80,8 @@ public class Influx1Metric implements Metric {
 
         map.put(CounterEnum.CONNECT_COUNTER, ConnectCounter.CONNECT_SIZE_COUNTER_INSTANCE);
         map.put(CounterEnum.TOPIC_COUNTER, TopicCounter.TOPIC_COUNTER_INSTANCE);
+
+        return true;
     }
 
     @Override
@@ -98,14 +105,13 @@ public class Influx1Metric implements Metric {
                     } else {
                         return meter.getId().equals(meterId);
                     }
-                })
-                .forEach(meter -> {
-                    meter.measure().forEach(measurement -> {
-                        if (measurement.getStatistic() == statistic) {
-                            valueList.add(measurement.getValue());
-                        }
-                    });
-                });
+                }).forEach(meter -> {
+            meter.measure().forEach(measurement -> {
+                if (measurement.getStatistic() == statistic) {
+                    valueList.add(measurement.getValue());
+                }
+            });
+        });
 
         return valueList;
     }
@@ -115,11 +121,14 @@ public class Influx1Metric implements Metric {
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode window = objectMapper.createObjectNode();
 
-        //     window.put("connect_size", formatValue(scrapeByMeterId(new Meter.Id(MetircConstant.CONNECT_COUNTER_NAME, Tags.empty(), null, null, null))));
-        window.put("read_size", FormatUtils.formatByte(formatValue(scrapeByMeterId(new Meter.Id(MetircConstant.REACTOR_NETTY_TCP_SERVER_DATA_RECEIVED, Tags.empty(), null, null, null), Statistic.TOTAL))));
-        window.put("read_hour_size", 0);
-        window.put("write_size", FormatUtils.formatByte(formatValue(scrapeByMeterId(new Meter.Id(MetircConstant.REACTOR_NETTY_TCP_SERVER_DATA_SENT, Tags.empty(), null, null, null), Statistic.TOTAL))));
-        window.put("write_hour_size", 0);
+        double readSize = formatValue(scrapeByMeterId(new Meter.Id(MetircConstant.REACTOR_NETTY_TCP_SERVER_DATA_RECEIVED, Tags.empty(), null, null, null), Statistic.TOTAL));
+        double writeSize = formatValue(scrapeByMeterId(new Meter.Id(MetircConstant.REACTOR_NETTY_TCP_SERVER_DATA_SENT, Tags.empty(), null, null, null), Statistic.TOTAL));
+
+        window.put("connect_size", formatValue(scrapeByMeterId(new Meter.Id(MetircConstant.CONNECT_COUNTER_NAME, Tags.empty(), null, null, null), Statistic.VALUE)));
+        window.put("read_size", FormatUtils.formatByte(readSize));
+        window.put("read_hour_size", FormatUtils.formatByte(readSize - readHourSize.getLastReadSize()));
+        window.put("write_size", FormatUtils.formatByte(writeSize));
+        window.put("write_hour_size", FormatUtils.formatByte(writeSize - writeHourSize.getLastWriteSize()));
         return window;
     }
 

@@ -47,7 +47,7 @@ public class PrometheusMetric implements Metric {
     }
 
     @Override
-    public void init(BootstrapConfig.MeterConfig meterConfig) {
+    public boolean init(BootstrapConfig.MeterConfig meterConfig) {
         Metrics.globalRegistry.config().commonTags(Arrays.asList(Tag.of(MetircConstant.COMMON_TAG_NAME, MetircConstant.COMMON_TAG_VALUE)));
         Metrics.globalRegistry.add(PROMETHEUS_METER_REGISTRY_INSTANCE);
         new ClassLoaderMetrics().bindTo(Metrics.globalRegistry);
@@ -58,6 +58,8 @@ public class PrometheusMetric implements Metric {
 
         map.put(CounterEnum.CONNECT_COUNTER, ConnectCounter.CONNECT_SIZE_COUNTER_INSTANCE);
         map.put(CounterEnum.TOPIC_COUNTER, TopicCounter.TOPIC_COUNTER_INSTANCE);
+
+        return true;
     }
 
     @Override

@@ -3,8 +3,6 @@ package io.github.quickmsg.core;
 import ch.qos.logback.classic.Level;
 import io.github.quickmsg.common.config.BootstrapConfig;
 import io.github.quickmsg.common.config.SslContext;
-import io.github.quickmsg.common.http.HttpActor;
-import io.github.quickmsg.common.metric.DatabaseEnum;
 import io.github.quickmsg.common.metric.Metric;
 import io.github.quickmsg.common.rule.RuleChainDefinition;
 import io.github.quickmsg.common.rule.source.SourceDefinition;
@@ -27,7 +25,6 @@ import reactor.core.publisher.Sinks;
 
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 /**
  * @author luxurong
@@ -90,7 +87,6 @@ public class Bootstrap {
         Optional.ofNullable(tcpConfig.getSsl()).map(SslContext::getEnable).ifPresent(mqttConfiguration::setSsl);
         Optional.ofNullable(tcpConfig.getSsl()).ifPresent(mqttConfiguration::setSslContext);
         Optional.ofNullable(tcpConfig.getSsl()).ifPresent(mqttConfiguration::setSslContext);
-        Optional.ofNullable(meterConfig.isEnable()).ifPresent(mqttConfiguration::setMeterEnable);
         Optional.ofNullable(clusterConfig).ifPresent(mqttConfiguration::setClusterConfig);
 
         if (websocketConfig != null && websocketConfig.isEnable()) {
@@ -170,10 +166,8 @@ public class Bootstrap {
                 .doOnSuccess(transports::add).doOnError(throwable -> log.error("start http error", throwable)).then() : Mono.empty();
     }
 
-    private Mono<Void> initMeter() {
-        return meterConfig != null && meterConfig.isEnable() ? Mono.create(record -> {
-            metric.init(meterConfig);
-        }) : Mono.empty();
+    private Mono<Boolean> initMeter() {
+        return Mono.just(metric.init(meterConfig)).doOnSuccess(msg -> log.info("init meter success")).doOnError(throwable -> log.error("init meter error", throwable));
     }
 
     private HttpConfiguration buildHttpConfiguration() {

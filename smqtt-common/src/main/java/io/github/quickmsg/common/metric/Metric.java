@@ -14,7 +14,6 @@ import java.lang.management.ThreadMXBean;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.Properties;
 
 /**
@@ -30,7 +29,7 @@ public interface Metric {
     /**
      * 初始化
      */
-    void init(BootstrapConfig.MeterConfig meterConfig);
+    boolean init(BootstrapConfig.MeterConfig meterConfig);
 
     /**
      * 获取计数器

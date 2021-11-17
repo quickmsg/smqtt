@@ -60,9 +60,7 @@ public class AbstractSslHandler {
                 server = server.childOption(ChannelOption.valueOf(entry.getKey()), entry.getValue());
             }
         }
-        if (mqttConfiguration.getMeterEnable() != null) {
-            server = server.metrics(mqttConfiguration.getMeterEnable());
-        }
+        server = server.metrics(true);
         return server;
     }
 

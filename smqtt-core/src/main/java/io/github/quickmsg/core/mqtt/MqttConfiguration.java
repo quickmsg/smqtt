@@ -60,9 +60,4 @@ public class MqttConfiguration extends AbstractSslHandler implements AbstractCon
 
     private Map<Object, Object> environmentMap;
 
-    /**
-     * 指标开关
-     */
-    private Boolean meterEnable;
-
 }
