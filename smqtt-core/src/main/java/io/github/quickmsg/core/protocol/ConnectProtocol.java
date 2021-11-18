@@ -17,7 +17,6 @@ import io.github.quickmsg.common.spi.DynamicLoader;
 import io.github.quickmsg.common.topic.SubscribeTopic;
 import io.github.quickmsg.common.topic.TopicRegistry;
 import io.github.quickmsg.core.mqtt.MqttReceiveContext;
-import io.github.quickmsg.metric.counter.WindowMetric;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.mqtt.*;
 import lombok.extern.slf4j.Slf4j;
@@ -49,7 +48,6 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
     }
 
     private static void accept(MqttChannel mqttChannel1) {
-        WindowMetric.WINDOW_METRIC_INSTANCE.recordConnect(-1);
         metric.getMetricCounter(CounterEnum.CONNECT_COUNTER).decrement();
     }
 
@@ -129,7 +127,6 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
                 /* registry close mqtt channel event*/
                 mqttChannel.registryClose(channel -> this.close(mqttChannel, mqttReceiveContext, eventRegistry));
 
-                WindowMetric.WINDOW_METRIC_INSTANCE.recordConnect(1);
                 metric.getMetricCounter(CounterEnum.CONNECT_COUNTER).increment();
 
                 mqttChannel.registryClose(ConnectProtocol::accept);

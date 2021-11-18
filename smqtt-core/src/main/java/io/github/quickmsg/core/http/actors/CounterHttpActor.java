@@ -33,7 +33,6 @@ public class CounterHttpActor implements HttpActor {
                 .receive()
                 .then(response
                         .sendString(Mono.just(JacksonUtil.bean2Json(metric.scrapeCounter())))
-                        //.sendString(Mono.just(JacksonUtil.bean2Json(WindowMetric.WINDOW_METRIC_INSTANCE.metrics())))
                         .then());
     }
 }
