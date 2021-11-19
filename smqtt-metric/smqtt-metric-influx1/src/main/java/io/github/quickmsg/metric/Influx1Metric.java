@@ -144,10 +144,10 @@ public class Influx1Metric implements Metric {
         cpuInfo.put("cSys", new DecimalFormat("#.##%").format(formatValue(scrapeByMeterId(new Meter.Id(MetircConstant.SYSTEM_CPU_USAGE, tags, null, null, null), Statistic.VALUE))));
         //cpu用户使用率
         cpuInfo.put("user", new DecimalFormat("#.##%").format(formatValue(scrapeByMeterId(new Meter.Id(MetircConstant.PROCESS_CPU_USAGE, tags, null, null, null), Statistic.VALUE))));
-        //cpu当前等待率
-        cpuInfo.put("iowait", "N/A");
-        //cpu当前使用率
-        cpuInfo.put("idle", "N/A");
+        // 守护线程数
+        cpuInfo.put("daemonThreads", new DecimalFormat("#").format(formatValue(scrapeByMeterId(new Meter.Id(MetircConstant.JVM_THREADS_DAEMON_THREADS, tags, null, null, null), Statistic.VALUE))));
+        // 最大线程数
+        cpuInfo.put("peakThreads", new DecimalFormat("#").format(formatValue(scrapeByMeterId(new Meter.Id(MetircConstant.JVM_THREADS_PEAK_THREADS, tags, null, null, null), Statistic.VALUE))));
         return cpuInfo;
     }
 }

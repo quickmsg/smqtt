@@ -81,16 +81,16 @@
                     </a-col>
                 </a-row>
                 <a-row v-if="Object.keys(cpuInfo).length>0">
-                    <a-col :span="12" >
-                        <p >
-                            <img width="40" src="@/assets/img/idle.png" />
-                            当前使用率： {{ cpuInfo["idle"] }}
+                    <a-col :span="12">
+                        <p>
+                            <img width="40" src="@/assets/img/idle.png"/>
+                            守护线程数： {{ cpuInfo["daemonThreads"] }}
                         </p>
                     </a-col>
                     <a-col :span="12">
-                        <p >
-                            <img width="40" src="@/assets/img/iowait.png" />
-                            当前等待率： {{ cpuInfo["iowait"] }}
+                        <p>
+                            <img width="40" src="@/assets/img/iowait.png"/>
+                            最大线程数： {{ cpuInfo["peakThreads"] }}
                         </p>
                     </a-col>
                 </a-row>
@@ -127,11 +127,11 @@
 </template>
 
 <script>
-import {clusters,isCluster} from '@/services/smqtt'
-import StandardTable from '@/components/table/StandardTable'
-import axios from "axios";
+    import {clusters, isCluster} from '@/services/smqtt'
+    import StandardTable from '@/components/table/StandardTable'
+    import axios from "axios";
 
-const columns = [
+    const columns = [
     {
         title: 'Node名称',
         dataIndex: 'alias',

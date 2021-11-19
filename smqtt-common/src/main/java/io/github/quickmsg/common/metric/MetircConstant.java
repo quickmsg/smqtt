@@ -10,6 +10,8 @@ public interface MetircConstant {
     String SYSTEM_CPU_COUNT = "system.cpu.count";
     String SYSTEM_CPU_USAGE = "system.cpu.usage";
     String PROCESS_CPU_USAGE = "process.cpu.usage";
+    String JVM_THREADS_PEAK_THREADS = "jvm.threads.peak";
+    String JVM_THREADS_DAEMON_THREADS = "jvm.threads.daemon";
 
     String REACTOR_NETTY_TCP_SERVER_DATA_RECEIVED ="reactor.netty.tcp.server.data.received";
     String REACTOR_NETTY_TCP_SERVER_DATA_SENT ="reactor.netty.tcp.server.data.sent";
