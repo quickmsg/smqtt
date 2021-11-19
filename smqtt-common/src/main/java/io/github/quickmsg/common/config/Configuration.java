@@ -38,6 +38,13 @@ public interface Configuration {
     Integer getBusinessQueueSize();
 
     /**
+     * 获取消息最大限制值
+     *
+     * @return {@link Integer}
+     */
+    Integer getMessageMaxSize();
+
+    /**
      * 获取全局读写限制
      *
      * @return 工作队列数

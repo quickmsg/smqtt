@@ -87,6 +87,7 @@ public class Bootstrap {
         Optional.ofNullable(tcpConfig.getSsl()).map(SslContext::getEnable).ifPresent(mqttConfiguration::setSsl);
         Optional.ofNullable(tcpConfig.getSsl()).ifPresent(mqttConfiguration::setSslContext);
         Optional.ofNullable(tcpConfig.getSsl()).ifPresent(mqttConfiguration::setSslContext);
+        Optional.ofNullable(tcpConfig.getMessageMaxSize()).ifPresent(mqttConfiguration::setMessageMaxSize);
         Optional.ofNullable(clusterConfig).ifPresent(mqttConfiguration::setClusterConfig);
 
         if (websocketConfig != null && websocketConfig.isEnable()) {

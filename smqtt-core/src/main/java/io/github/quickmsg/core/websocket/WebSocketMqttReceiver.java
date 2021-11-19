@@ -50,7 +50,7 @@ public class WebSocketMqttReceiver extends AbstractSslHandler implements Receive
                             .addHandlerLast(new WebSocketServerProtocolHandler(mqttConfiguration.getWebSocketPath(), "mqtt, mqttv3.1, mqttv3.1.1"))
                             .addHandlerLast(new WebSocketFrameToByteBufDecoder())
                             .addHandlerLast(new ByteBufToWebSocketFrameEncoder())
-                            .addHandlerLast(new MqttDecoder())
+                            .addHandlerLast(new MqttDecoder(mqttConfiguration.getMessageMaxSize()))
                             .addHandlerLast(MqttEncoder.INSTANCE);
                     receiveContext.apply(MqttChannel.init(connection));
                 });

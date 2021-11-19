@@ -146,6 +146,11 @@ public class BootstrapConfig {
         private Integer businessQueueSize;
 
         /**
+         * 接收消息的最大限制
+         */
+        private Integer messageMaxSize;
+
+        /**
          * 低水位
          */
         private Integer lowWaterMark;

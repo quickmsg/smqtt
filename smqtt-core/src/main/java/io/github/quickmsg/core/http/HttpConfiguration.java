@@ -32,6 +32,8 @@ public class HttpConfiguration implements Configuration {
 
     private String password;
 
+    private Integer messageMaxSize;
+
 
     @Override
     public Integer getBusinessThreadSize() {
