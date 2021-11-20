@@ -16,6 +16,7 @@ import io.micrometer.core.instrument.binder.jvm.JvmThreadMetrics;
 import io.micrometer.core.instrument.binder.system.ProcessorMetrics;
 import io.micrometer.influx.InfluxConfig;
 import io.micrometer.influx.InfluxMeterRegistry;
+import io.netty.util.internal.StringUtil;
 
 import java.text.DecimalFormat;
 import java.time.Duration;
@@ -66,6 +67,16 @@ public class Influx1Metric implements Metric {
             public String get(String k) {
                 return null;
             }
+
+            @Override
+            public String userName() {
+                return StringUtil.isNullOrEmpty(meterConfig.getInfluxdb1().getUserName()) ? null : meterConfig.getInfluxdb1().getUserName();
+            }
+
+            @Override
+            public String password() {
+                return StringUtil.isNullOrEmpty(meterConfig.getInfluxdb1().getPassword()) ? null : meterConfig.getInfluxdb1().getPassword();
+            }
         };
 
         INFLUX_METER_REGISTRY_INSTANCE = new InfluxMeterRegistry(config, Clock.SYSTEM);
@@ -96,6 +107,12 @@ public class Influx1Metric implements Metric {
 
     @Override
     public List<Double> scrapeByMeterId(Meter.Id meterId, Statistic statistic) {
+        if (INFLUX_METER_REGISTRY_INSTANCE == null) {
+            List<Double> list = new ArrayList<>();
+            list.add(0d);
+            return list;
+        }
+
         List<Meter> meterList = INFLUX_METER_REGISTRY_INSTANCE.getMeters();
         List<Double> valueList = new ArrayList<>();
         meterList.stream()

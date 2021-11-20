@@ -74,6 +74,12 @@ public class PrometheusMetric implements Metric {
 
     @Override
     public List<Double> scrapeByMeterId(Meter.Id meterId, Statistic statistic) {
+        if (PROMETHEUS_METER_REGISTRY_INSTANCE == null) {
+            List<Double> list = new ArrayList<>();
+            list.add(0d);
+            return list;
+        }
+
         List<Meter> meterList = PROMETHEUS_METER_REGISTRY_INSTANCE.getMeters();
         List<Double> valueList = new ArrayList<>();
         meterList.stream()

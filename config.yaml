@@ -45,7 +45,7 @@ smqtt:
   meter:
     influxdb1: # influxdb1.x 参数设置,如选择使用prometheus不用设置
       db: smqttdb
-      uri: http://121.40.92.152:8086
+      uri: http://127.0.0.1:8086
       userName: root
       password: 123
       step: 10 # 单位秒
