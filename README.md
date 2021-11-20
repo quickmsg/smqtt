@@ -410,7 +410,7 @@ curl -H "Content-Type: application/json" -X POST -d '{"topic": "test/teus", "qos
 ![image](icon/admin.png)
 
 ## 压测文档
-[点这里](https://wiki.smqtt.cc/docs/108/test/test.html)
+[点这里](https://wiki.smqtt.cc/docs/smqtt/test/test.html)
 
 ## wiki地址
 
