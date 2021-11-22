@@ -14,6 +14,7 @@ import io.netty.handler.codec.mqtt.MqttMessage;
 import io.netty.handler.codec.mqtt.MqttPublishMessage;
 import io.netty.handler.codec.mqtt.MqttPublishVariableHeader;
 import reactor.core.scheduler.Schedulers;
+import reactor.netty.ReactorNetty;
 
 import java.util.Comparator;
 import java.util.List;
@@ -93,11 +94,18 @@ public class MessageProxy {
         public Object intercept(Invocation invocation) {
             SmqttMessage<MqttMessage> smqttMessage = (SmqttMessage<MqttMessage>) invocation.getArgs()[1];
             MqttMessage message = smqttMessage.getMessage();
-            if (message instanceof MqttPublishMessage) {
-                MqttPublishMessage publishMessage = (MqttPublishMessage) message;
-                publishMessage.retain();
+            try {
+                if (message instanceof MqttPublishMessage) {
+                    MqttPublishMessage publishMessage = (MqttPublishMessage) message;
+                    publishMessage.retain();
+                }
+                return invocation.proceed();
+            } finally {
+                if (smqttMessage.getIsCluster()) {
+                    ReactorNetty.safeRelease(message.payload());
+                }
             }
-            return invocation.proceed();
+
         }
 
         @Override
