@@ -427,9 +427,7 @@ public class BootstrapConfig {
 
     /**
      * 指标配置
-     *
-     * @author easy
-     * @date 2021/10/29
+
      */
     @Data
     @Builder
