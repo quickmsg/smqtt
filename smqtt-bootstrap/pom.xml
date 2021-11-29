@@ -63,11 +63,11 @@
             <artifactId>smqtt-metric-prometheus</artifactId>
             <version>1.0.9</version>
         </dependency>
-        <dependency>
+       <!-- <dependency>
             <groupId>io.github.quickmsg</groupId>
             <artifactId>smqtt-metric-influx1</artifactId>
             <version>1.0.9</version>
-        </dependency>
+        </dependency>-->
 
 
     </dependencies>
