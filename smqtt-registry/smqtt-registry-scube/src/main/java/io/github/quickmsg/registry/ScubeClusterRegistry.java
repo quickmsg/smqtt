@@ -12,6 +12,7 @@ import io.scalecube.cluster.Member;
 import io.scalecube.cluster.membership.MembershipEvent;
 import io.scalecube.cluster.transport.api.Message;
 import io.scalecube.net.Address;
+import io.scalecube.reactor.RetryNonSerializedEmitFailureHandler;
 import io.scalecube.transport.netty.tcp.TcpTransportFactory;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
@@ -112,13 +113,13 @@ public class ScubeClusterRegistry implements ClusterRegistry {
         @Override
         public void onMessage(Message message) {
             log.info("cluster accept message {} ", message);
-            messageMany.tryEmitNext(message.data());
+            messageMany.emitNext(message.data(),new RetryNonSerializedEmitFailureHandler());
         }
 
         @Override
         public void onGossip(Message message) {
             log.info("cluster accept message {} ", message);
-            messageMany.tryEmitNext(message.data());
+            messageMany.emitNext(message.data(),new RetryNonSerializedEmitFailureHandler());
         }
 
         @Override
