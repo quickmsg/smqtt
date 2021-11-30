@@ -18,11 +18,6 @@
         </dependency>
         <dependency>
             <groupId>io.github.quickmsg</groupId>
-            <artifactId>smqtt-metric</artifactId>
-            <version>1.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>io.github.quickmsg</groupId>
             <artifactId>smqtt-rule-dsl</artifactId>
             <version>1.1.0</version>
         </dependency>
