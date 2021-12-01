@@ -1,6 +1,6 @@
 package io.github.quickmsg.metric.counter;
 
-import io.github.quickmsg.common.metric.MetircConstant;
+import io.github.quickmsg.common.metric.MetricConstant;
 import io.github.quickmsg.common.metric.MetricCounter;
 import io.github.quickmsg.metric.PrometheusMetric;
 
@@ -21,17 +21,17 @@ public class TopicCounter implements MetricCounter {
 
 
     static {
-        PrometheusMetric.PROMETHEUS_METER_REGISTRY_INSTANCE.gauge(MetircConstant.TOPIC_COUNTER_NAME, ATOMICINTEGER);
+        PrometheusMetric.PROMETHEUS_METER_REGISTRY_INSTANCE.gauge(MetricConstant.TOPIC_COUNTER_NAME, ATOMICINTEGER);
     }
 
     @Override
     public void increment() {
-        PrometheusMetric.PROMETHEUS_METER_REGISTRY_INSTANCE.gauge(MetircConstant.TOPIC_COUNTER_NAME, ATOMICINTEGER.incrementAndGet());
+        PrometheusMetric.PROMETHEUS_METER_REGISTRY_INSTANCE.gauge(MetricConstant.TOPIC_COUNTER_NAME, ATOMICINTEGER.incrementAndGet());
     }
 
     @Override
     public void decrement() {
-        PrometheusMetric.PROMETHEUS_METER_REGISTRY_INSTANCE.gauge(MetircConstant.TOPIC_COUNTER_NAME, ATOMICINTEGER.decrementAndGet());
+        PrometheusMetric.PROMETHEUS_METER_REGISTRY_INSTANCE.gauge(MetricConstant.TOPIC_COUNTER_NAME, ATOMICINTEGER.decrementAndGet());
     }
 
 }

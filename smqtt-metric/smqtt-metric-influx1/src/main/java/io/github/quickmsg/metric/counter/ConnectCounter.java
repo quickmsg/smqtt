@@ -1,7 +1,7 @@
 package io.github.quickmsg.metric.counter;
 
 
-import io.github.quickmsg.common.metric.MetircConstant;
+import io.github.quickmsg.common.metric.MetricConstant;
 import io.github.quickmsg.common.metric.MetricCounter;
 import io.github.quickmsg.metric.Influx1Metric;
 
@@ -21,17 +21,17 @@ public class ConnectCounter implements MetricCounter {
 
 
     static {
-        Influx1Metric.INFLUX_METER_REGISTRY_INSTANCE.gauge(MetircConstant.CONNECT_COUNTER_NAME, ATOMICINTEGER);
+        Influx1Metric.INFLUX_METER_REGISTRY_INSTANCE.gauge(MetricConstant.CONNECT_COUNTER_NAME, ATOMICINTEGER);
     }
 
     @Override
     public void increment() {
-        Influx1Metric.INFLUX_METER_REGISTRY_INSTANCE.gauge(MetircConstant.CONNECT_COUNTER_NAME, ATOMICINTEGER.incrementAndGet());
+        Influx1Metric.INFLUX_METER_REGISTRY_INSTANCE.gauge(MetricConstant.CONNECT_COUNTER_NAME, ATOMICINTEGER.incrementAndGet());
     }
 
     @Override
     public void decrement() {
-        Influx1Metric.INFLUX_METER_REGISTRY_INSTANCE.gauge(MetircConstant.CONNECT_COUNTER_NAME, ATOMICINTEGER.decrementAndGet());
+        Influx1Metric.INFLUX_METER_REGISTRY_INSTANCE.gauge(MetricConstant.CONNECT_COUNTER_NAME, ATOMICINTEGER.decrementAndGet());
     }
 
 }

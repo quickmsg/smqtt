@@ -48,7 +48,7 @@ public class PrometheusMetric implements Metric {
 
     @Override
     public boolean init(BootstrapConfig.MeterConfig meterConfig) {
-        Metrics.globalRegistry.config().commonTags(Arrays.asList(Tag.of(MetircConstant.COMMON_TAG_NAME, MetircConstant.COMMON_TAG_VALUE)));
+        Metrics.globalRegistry.config().commonTags(Arrays.asList(Tag.of(MetricConstant.COMMON_TAG_NAME, MetricConstant.COMMON_TAG_VALUE)));
         Metrics.globalRegistry.add(PROMETHEUS_METER_REGISTRY_INSTANCE);
         new ClassLoaderMetrics().bindTo(Metrics.globalRegistry);
         new JvmMemoryMetrics().bindTo(Metrics.globalRegistry);
@@ -105,10 +105,10 @@ public class PrometheusMetric implements Metric {
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode window = objectMapper.createObjectNode();
 
-        double readSize = formatValue(scrapeByMeterId(new Meter.Id(MetircConstant.REACTOR_NETTY_TCP_SERVER_DATA_RECEIVED, Tags.empty(), null, null, null), Statistic.TOTAL));
-        double writeSize = formatValue(scrapeByMeterId(new Meter.Id(MetircConstant.REACTOR_NETTY_TCP_SERVER_DATA_SENT, Tags.empty(), null, null, null), Statistic.TOTAL));
+        double readSize = formatValue(scrapeByMeterId(new Meter.Id(MetricConstant.REACTOR_NETTY_TCP_SERVER_DATA_RECEIVED, Tags.empty(), null, null, null), Statistic.TOTAL));
+        double writeSize = formatValue(scrapeByMeterId(new Meter.Id(MetricConstant.REACTOR_NETTY_TCP_SERVER_DATA_SENT, Tags.empty(), null, null, null), Statistic.TOTAL));
 
-        window.put("connect_size", formatValue(scrapeByMeterId(new Meter.Id(MetircConstant.CONNECT_COUNTER_NAME, Tags.empty(), null, null, null), Statistic.VALUE)));
+        window.put("connect_size", formatValue(scrapeByMeterId(new Meter.Id(MetricConstant.CONNECT_COUNTER_NAME, Tags.empty(), null, null, null), Statistic.VALUE)));
         window.put("read_size", FormatUtils.formatByte(readSize));
         window.put("read_hour_size", FormatUtils.formatByte(readSize - readHourSize.getLastReadSize()));
         window.put("write_size", FormatUtils.formatByte(writeSize));
@@ -121,17 +121,17 @@ public class PrometheusMetric implements Metric {
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode cpuInfo = objectMapper.createObjectNode();
 
-        Tags tags = Tags.empty().and(MetircConstant.COMMON_TAG_NAME, MetircConstant.COMMON_TAG_VALUE);
+        Tags tags = Tags.empty().and(MetricConstant.COMMON_TAG_NAME, MetricConstant.COMMON_TAG_VALUE);
         //cpu核数
-        cpuInfo.put("cpuNum", formatValue(scrapeByMeterId(new Meter.Id(MetircConstant.SYSTEM_CPU_COUNT, tags, null, null, null), Statistic.VALUE)));
+        cpuInfo.put("cpuNum", formatValue(scrapeByMeterId(new Meter.Id(MetricConstant.SYSTEM_CPU_COUNT, tags, null, null, null), Statistic.VALUE)));
         //cpu系统使用率
-        cpuInfo.put("cSys", new DecimalFormat("#.##%").format(formatValue(scrapeByMeterId(new Meter.Id(MetircConstant.SYSTEM_CPU_USAGE, tags, null, null, null), Statistic.VALUE))));
+        cpuInfo.put("cSys", new DecimalFormat("#.##%").format(formatValue(scrapeByMeterId(new Meter.Id(MetricConstant.SYSTEM_CPU_USAGE, tags, null, null, null), Statistic.VALUE))));
         //cpu用户使用率
-        cpuInfo.put("user", new DecimalFormat("#.##%").format(formatValue(scrapeByMeterId(new Meter.Id(MetircConstant.PROCESS_CPU_USAGE, tags, null, null, null), Statistic.VALUE))));
+        cpuInfo.put("user", new DecimalFormat("#.##%").format(formatValue(scrapeByMeterId(new Meter.Id(MetricConstant.PROCESS_CPU_USAGE, tags, null, null, null), Statistic.VALUE))));
         // 守护线程数
-        cpuInfo.put("daemonThreads", new DecimalFormat("#").format(formatValue(scrapeByMeterId(new Meter.Id(MetircConstant.JVM_THREADS_DAEMON_THREADS, tags, null, null, null), Statistic.VALUE))));
+        cpuInfo.put("daemonThreads", new DecimalFormat("#").format(formatValue(scrapeByMeterId(new Meter.Id(MetricConstant.JVM_THREADS_DAEMON_THREADS, tags, null, null, null), Statistic.VALUE))));
         // 最大线程数
-        cpuInfo.put("peakThreads", new DecimalFormat("#").format(formatValue(scrapeByMeterId(new Meter.Id(MetircConstant.JVM_THREADS_PEAK_THREADS, tags, null, null, null), Statistic.VALUE))));
+        cpuInfo.put("peakThreads", new DecimalFormat("#").format(formatValue(scrapeByMeterId(new Meter.Id(MetricConstant.JVM_THREADS_PEAK_THREADS, tags, null, null, null), Statistic.VALUE))));
         return cpuInfo;
     }
 }

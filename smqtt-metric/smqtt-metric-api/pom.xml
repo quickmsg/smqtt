@@ -9,18 +9,17 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>smqtt-metric-prometheus</artifactId>
+    <artifactId>smqtt-metric-api</artifactId>
 
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>io.github.quickmsg</groupId>
-            <artifactId>smqtt-metric-api</artifactId>
+            <artifactId>smqtt-common</artifactId>
             <version>1.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>io.micrometer</groupId>
-            <artifactId>micrometer-registry-prometheus</artifactId>
-            <version>1.7.5</version>
         </dependency>
     </dependencies>
 

@@ -1,6 +1,6 @@
 package io.github.quickmsg.metric.counter;
 
-import io.github.quickmsg.common.metric.MetircConstant;
+import io.github.quickmsg.common.metric.MetricConstant;
 import io.github.quickmsg.common.metric.Metric;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.Statistic;
@@ -67,8 +67,8 @@ public class ReadWriteSideWindowCounter implements Runnable {
 
     @Override
     public void run() {
-        double readSize = metric.formatValue(metric.scrapeByMeterId(new Meter.Id(MetircConstant.REACTOR_NETTY_TCP_SERVER_DATA_RECEIVED, Tags.empty(), null, null, null), Statistic.TOTAL));
-        double writeSize = metric.formatValue(metric.scrapeByMeterId(new Meter.Id(MetircConstant.REACTOR_NETTY_TCP_SERVER_DATA_SENT, Tags.empty(), null, null, null), Statistic.TOTAL));
+        double readSize = metric.formatValue(metric.scrapeByMeterId(new Meter.Id(MetricConstant.REACTOR_NETTY_TCP_SERVER_DATA_RECEIVED, Tags.empty(), null, null, null), Statistic.TOTAL));
+        double writeSize = metric.formatValue(metric.scrapeByMeterId(new Meter.Id(MetricConstant.REACTOR_NETTY_TCP_SERVER_DATA_SENT, Tags.empty(), null, null, null), Statistic.TOTAL));
 
         LAST_READ_SIZE.reset();
         LAST_WRITE_SIZE.reset();
