@@ -1,6 +1,7 @@
 package io.github.quickmsg.core;
 
 import io.github.quickmsg.common.Receiver;
+import io.github.quickmsg.common.context.ContextHolder;
 import io.github.quickmsg.common.context.ReceiveContext;
 import io.github.quickmsg.common.transport.Transport;
 import io.github.quickmsg.core.mqtt.MqttConfiguration;
@@ -26,8 +27,6 @@ public class DefaultTransport implements Transport<MqttConfiguration> {
     private DisposableServer disposableServer;
 
 
-    public volatile static ReceiveContext<MqttConfiguration> receiveContext;
-
     public DefaultTransport(MqttConfiguration configuration, Receiver receiver) {
         this.configuration = configuration;
         this.receiver = receiver;
@@ -38,7 +37,7 @@ public class DefaultTransport implements Transport<MqttConfiguration> {
     @Override
     public Mono<Transport> start() {
         return Mono.deferContextual(contextView ->
-                receiver.bind())
+                        receiver.bind())
                 .doOnNext(this::bindSever)
                 .thenReturn(this)
                 .doOnSuccess(defaultTransport -> log.info("server start success host {} port {}", disposableServer.host(), disposableServer.port()))
@@ -48,12 +47,14 @@ public class DefaultTransport implements Transport<MqttConfiguration> {
 
 
     @Override
+    @SuppressWarnings("unchecked")
     public ReceiveContext<MqttConfiguration> buildReceiveContext(MqttConfiguration mqttConfiguration) {
         synchronized (this) {
-            if (DefaultTransport.receiveContext == null) {
-                DefaultTransport.receiveContext = new MqttReceiveContext(mqttConfiguration, this);
+            if (ContextHolder.getReceiveContext() == null) {
+                MqttReceiveContext receiveContext = new MqttReceiveContext(mqttConfiguration, this);
+                ContextHolder.setReceiveContext(receiveContext);
             }
-            return DefaultTransport.receiveContext;
+            return (ReceiveContext<MqttConfiguration>) ContextHolder.getReceiveContext();
         }
     }
 

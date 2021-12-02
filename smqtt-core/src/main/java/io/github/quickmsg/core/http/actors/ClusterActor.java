@@ -4,6 +4,7 @@ import io.github.quickmsg.common.annotation.AllowCors;
 import io.github.quickmsg.common.annotation.Header;
 import io.github.quickmsg.common.annotation.Router;
 import io.github.quickmsg.common.config.Configuration;
+import io.github.quickmsg.common.context.ContextHolder;
 import io.github.quickmsg.common.enums.HttpType;
 import io.github.quickmsg.common.http.HttpActor;
 import io.github.quickmsg.common.utils.JacksonUtil;
@@ -28,6 +29,6 @@ public class ClusterActor implements HttpActor {
     public Publisher<Void> doRequest(HttpServerRequest request, HttpServerResponse response, Configuration httpConfiguration) {
         return request
                 .receive()
-                .then(response.sendString(Mono.just(JacksonUtil.bean2Json(DefaultTransport.receiveContext.getClusterRegistry().getClusterNode()))).then());
+                .then(response.sendString(Mono.just(JacksonUtil.bean2Json(ContextHolder.getReceiveContext().getClusterRegistry().getClusterNode()))).then());
     }
 }

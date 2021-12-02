@@ -3,6 +3,7 @@ package io.github.quickmsg.core.http.actors;
 import io.github.quickmsg.common.annotation.AllowCors;
 import io.github.quickmsg.common.annotation.Router;
 import io.github.quickmsg.common.config.Configuration;
+import io.github.quickmsg.common.context.ContextHolder;
 import io.github.quickmsg.common.enums.HttpType;
 import io.github.quickmsg.common.http.HttpActor;
 import io.github.quickmsg.core.DefaultTransport;
@@ -25,6 +26,6 @@ public class IsClusterActor implements HttpActor {
     public Publisher<Void> doRequest(HttpServerRequest request, HttpServerResponse response, Configuration httpConfiguration) {
         return request
                 .receive()
-                .then(response.sendString(Mono.just(String.valueOf(DefaultTransport.receiveContext.getConfiguration().getClusterConfig().isEnable()))).then());
+                .then(response.sendString(Mono.just(String.valueOf(ContextHolder.getReceiveContext().getConfiguration().getClusterConfig().isEnable()))).then());
     }
 }

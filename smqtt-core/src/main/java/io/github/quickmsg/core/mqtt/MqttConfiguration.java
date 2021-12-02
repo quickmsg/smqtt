@@ -62,6 +62,6 @@ public class MqttConfiguration extends AbstractSslHandler implements AbstractCon
 
     private Map<Object, Object> environmentMap;
 
-    private Integer messageMaxSize;
+    private Integer messageMaxSize = 4194304;
 
 }

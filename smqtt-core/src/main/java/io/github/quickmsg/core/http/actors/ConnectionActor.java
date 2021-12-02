@@ -4,6 +4,7 @@ import io.github.quickmsg.common.annotation.AllowCors;
 import io.github.quickmsg.common.annotation.Header;
 import io.github.quickmsg.common.annotation.Router;
 import io.github.quickmsg.common.config.Configuration;
+import io.github.quickmsg.common.context.ContextHolder;
 import io.github.quickmsg.common.enums.HttpType;
 import io.github.quickmsg.common.utils.JacksonUtil;
 import io.github.quickmsg.core.DefaultTransport;
@@ -31,7 +32,7 @@ public class ConnectionActor extends AbstractHttpActor {
                 .receive()
                 .then(response
                         .sendString(Mono.just(JacksonUtil.bean2Json(
-                                DefaultTransport.receiveContext.getChannelRegistry().getChannels()
+                                ContextHolder.getReceiveContext().getChannelRegistry().getChannels()
                                         .stream()
                                         .map(record -> {
                                             record.setAddress(record.getAddress().replaceAll("/", ""));

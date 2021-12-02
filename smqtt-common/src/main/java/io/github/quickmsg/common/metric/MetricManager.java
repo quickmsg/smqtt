@@ -2,7 +2,9 @@ package io.github.quickmsg.common.metric;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.quickmsg.common.config.BootstrapConfig;
+import io.github.quickmsg.common.context.ContextHolder;
 import io.github.quickmsg.common.utils.FormatUtils;
+import io.netty.handler.traffic.TrafficCounter;
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
 import oshi.hardware.HardwareAbstractionLayer;
@@ -86,19 +88,21 @@ public interface MetricManager {
         metrics.put("iowait", new DecimalFormat("#.##%").format(iowait * 1.0 / totalCpu));
         //cpu当前使用率
         metrics.put("idle", new DecimalFormat("#.##%").format(1.0 - (idle * 1.0 / totalCpu)));
-        //cpu核数
-        metrics.put("cpuNum", Runtime.getRuntime().availableProcessors());
         return metrics;
     }
 
     default Map<String, Object> getCounterMetric() {
         Map<String, Object> metrics = new HashMap<>();
         metrics.put("connect_size", getMetricRegistry().getMetricCounter(CounterType.CONNECT).getCounter());
-        metrics.put("topic_size", getMetricRegistry().getMetricCounter(CounterType.CONNECT).getCounter());
-        metrics.put("read_size", FormatUtils.formatByte(((WindowCounter) getMetricRegistry().getMetricCounter(CounterType.READ)).getAllCount()));
-        metrics.put("read_hour_size", FormatUtils.formatByte(((WindowCounter) getMetricRegistry().getMetricCounter(CounterType.READ)).getWindowCount()));
-        metrics.put("write_size", FormatUtils.formatByte(((WindowCounter) getMetricRegistry().getMetricCounter(CounterType.WRITE)).getAllCount()));
-        metrics.put("write_hour_size", FormatUtils.formatByte(((WindowCounter) getMetricRegistry().getMetricCounter(CounterType.WRITE)).getWindowCount()));
+        metrics.put("subscribe_size", getMetricRegistry().getMetricCounter(CounterType.SUBSCRIBE).getCounter());
+        metrics.put("publish_size", getMetricRegistry().getMetricCounter(CounterType.PUBLISH).getCounter());
+        metrics.put("disconnect_size", getMetricRegistry().getMetricCounter(CounterType.DIS_CONNECT).getCounter());
+        metrics.put("un_subscribe_size", getMetricRegistry().getMetricCounter(CounterType.UN_SUBSCRIBE).getCounter());
+        TrafficCounter trafficCounter=ContextHolder.getReceiveContext().getTrafficHandlerLoader().get().trafficCounter();
+        metrics.put("read_size", FormatUtils.formatByte(trafficCounter.cumulativeReadBytes() ));
+        metrics.put("read_second_size", FormatUtils.formatByte(trafficCounter.currentReadBytes()));
+        metrics.put("write_size", FormatUtils.formatByte(trafficCounter.cumulativeWrittenBytes()));
+        metrics.put("write_second_size", FormatUtils.formatByte(trafficCounter.currentWrittenBytes()));
         return metrics;
     }
 
