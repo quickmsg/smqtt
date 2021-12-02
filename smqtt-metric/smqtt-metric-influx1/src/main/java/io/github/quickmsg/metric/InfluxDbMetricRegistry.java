@@ -40,16 +40,16 @@ public class InfluxDbMetricRegistry implements MetricRegistry {
         return new WriteCounter(metricBean);
     }
 
-    @Override
-    public Object getMetricKey(Meter.Id id, Statistic statistic) {
-        MeterRegistry metricRegistry = metricBean.getMeterRegistry();
-        return metricRegistry
-                .getMeters()
-                .stream()
-                .filter(meter -> meter.getId().equals(id))
-                .flatMap(meter -> StreamSupport.stream(meter.measure().spliterator(), false))
-                .filter(measurement -> measurement.getStatistic() == statistic)
-                .map(Measurement::getValue)
-                .reduce(Double::sum).orElse(0D);
-    }
+//    @Override
+//    public Object getMetricKey(Meter.Id id, Statistic statistic) {
+//        MeterRegistry metricRegistry = metricBean.getMeterRegistry();
+//        return metricRegistry
+//                .getMeters()
+//                .stream()
+//                .filter(meter -> meter.getId().equals(id))
+//                .flatMap(meter -> StreamSupport.stream(meter.measure().spliterator(), false))
+//                .filter(measurement -> measurement.getStatistic() == statistic)
+//                .map(Measurement::getValue)
+//                .reduce(Double::sum).orElse(0D);
+//    }
 }

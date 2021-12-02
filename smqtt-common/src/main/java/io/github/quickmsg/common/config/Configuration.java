@@ -113,6 +113,16 @@ public interface Configuration {
      */
     BootstrapConfig.ClusterConfig getClusterConfig();
 
+    /**
+     * 获取监控配置
+     *
+     * @return {@link BootstrapConfig.MeterConfig}
+     */
+    BootstrapConfig.MeterConfig getMeterConfig();
+
+
+
+
 
 
 

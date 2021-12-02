@@ -434,9 +434,9 @@ public class BootstrapConfig {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class MeterConfig {
-        /**
-         * influx1.x参数
-         */
+
+        private boolean enable;
+
         private Influxdb influxdb;
     }
 

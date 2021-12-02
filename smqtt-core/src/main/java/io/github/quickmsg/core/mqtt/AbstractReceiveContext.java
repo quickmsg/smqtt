@@ -5,6 +5,7 @@ import io.github.quickmsg.common.channel.ChannelRegistry;
 import io.github.quickmsg.common.channel.traffic.TrafficHandlerLoader;
 import io.github.quickmsg.common.cluster.ClusterRegistry;
 import io.github.quickmsg.common.config.AbstractConfiguration;
+import io.github.quickmsg.common.config.BootstrapConfig;
 import io.github.quickmsg.common.config.Configuration;
 import io.github.quickmsg.common.context.ReceiveContext;
 import io.github.quickmsg.common.enums.Event;
@@ -83,7 +84,7 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
         this.passwordAuthentication = basicAuthentication();
         this.channelRegistry.startUp(abstractConfiguration.getEnvironmentMap());
         this.messageRegistry.startUp(abstractConfiguration.getEnvironmentMap());
-        this.metricManager = metricManager(abstractConfiguration.);
+        this.metricManager = metricManager(abstractConfiguration.getMeterConfig());
         Optional.ofNullable(abstractConfiguration.getSourceDefinitions())
                 .ifPresent(sourceDefinitions -> sourceDefinitions.forEach(SourceManager::loadSource));
     }
@@ -151,7 +152,8 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
     }
 
 
-    private MetricManager metricManager() {
+    private MetricManager metricManager(BootstrapConfig.MeterConfig meterConfig) {
+        if(meterConfig.)
 
     }
 
