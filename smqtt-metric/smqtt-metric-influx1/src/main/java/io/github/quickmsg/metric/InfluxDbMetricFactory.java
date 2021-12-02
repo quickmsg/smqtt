@@ -1,8 +1,8 @@
 package io.github.quickmsg.metric;
 
 import io.github.quickmsg.common.config.BootstrapConfig;
-import io.github.quickmsg.metric.api.MetricFactory;
-import io.github.quickmsg.metric.api.MetricManager;
+import io.github.quickmsg.common.metric.MetricFactory;
+import io.github.quickmsg.common.metric.MetricManager;
 
 /**
  * @author luxurong

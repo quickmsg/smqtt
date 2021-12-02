@@ -1,6 +1,6 @@
 package io.github.quickmsg.metric;
 
-import io.github.quickmsg.metric.api.*;
+import io.github.quickmsg.common.metric.*;
 import io.micrometer.core.instrument.Measurement;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.MeterRegistry;

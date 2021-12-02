@@ -1,8 +1,8 @@
 package io.github.quickmsg.metric;
 
 import io.github.quickmsg.common.config.BootstrapConfig;
-import io.github.quickmsg.metric.api.MetricConstant;
-import io.github.quickmsg.metric.api.MetricBean;
+import io.github.quickmsg.common.metric.MetricBean;
+import io.github.quickmsg.common.metric.MetricConstant;
 import io.micrometer.core.instrument.Clock;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Metrics;

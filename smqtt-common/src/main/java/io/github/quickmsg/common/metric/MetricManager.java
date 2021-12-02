@@ -1,4 +1,4 @@
-package io.github.quickmsg.metric.api;
+package io.github.quickmsg.common.metric;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.quickmsg.common.config.BootstrapConfig;

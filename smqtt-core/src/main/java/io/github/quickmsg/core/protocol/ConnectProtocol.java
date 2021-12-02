@@ -38,7 +38,6 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
 
     private static final int MILLI_SECOND_PERIOD = 1_000;
 
-    private static Metric metric = DynamicLoader.findFirst(Metric.class).orElse(null);
 
 
     static {
@@ -46,7 +45,7 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
     }
 
     private static void accept(MqttChannel mqttChannel1) {
-        metric.getMetricCounter(CounterEnum.CONNECT_COUNTER).decrement();
+//        metric.getMetricCounter(CounterEnum.CONNECT_COUNTER).decrement();
     }
 
     @Override

@@ -1,8 +1,8 @@
 package io.github.quickmsg.metric;
 
-import io.github.quickmsg.metric.api.MetricBean;
-import io.github.quickmsg.metric.api.MetricConstant;
-import io.github.quickmsg.metric.api.WholeCounter;
+import io.github.quickmsg.common.metric.MetricBean;
+import io.github.quickmsg.common.metric.MetricConstant;
+import io.github.quickmsg.common.metric.WholeCounter;
 
 /**
  * @author luxurong

@@ -63,8 +63,6 @@ public class Bootstrap {
     @Builder.Default
     private Level rootLevel = Level.INFO;
 
-    private static Metric metric = DynamicLoader.findFirst(Metric.class).orElse(null);
-
 
     @SuppressWarnings("Unchecked")
     private MqttConfiguration initMqttConfiguration() {
@@ -147,7 +145,6 @@ public class Bootstrap {
                 .doOnSuccess(transports::add)
                 .then(startWs(mqttConfiguration))
                 .then(startHttp())
-                .then(initMeter())
                 .thenReturn(this)
                 .doOnSuccess(started);
     }
@@ -164,10 +161,6 @@ public class Bootstrap {
         return httpConfig != null && httpConfig.isEnable() ? new HttpTransportFactory().createTransport(this.buildHttpConfiguration())
                 .start()
                 .doOnSuccess(transports::add).doOnError(throwable -> log.error("start http error", throwable)).then() : Mono.empty();
-    }
-
-    private Mono<Boolean> initMeter() {
-        return Mono.just(metric.init(meterConfig)).doOnSuccess(msg -> log.info("init meter success")).doOnError(throwable -> log.error("init meter error", throwable));
     }
 
     private HttpConfiguration buildHttpConfiguration() {

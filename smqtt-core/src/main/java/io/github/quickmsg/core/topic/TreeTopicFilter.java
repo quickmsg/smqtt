@@ -18,7 +18,6 @@ public class TreeTopicFilter implements TopicFilter {
 
     private LongAdder subscribeNumber = new LongAdder();
 
-    private static Metric metric = DynamicLoader.findFirst(Metric.class).orElse(null);
 
 
     @Override
@@ -36,7 +35,6 @@ public class TreeTopicFilter implements TopicFilter {
         if (rootTreeNode.addSubscribeTopic(subscribeTopic)) {
             subscribeNumber.add(1);
             subscribeTopic.linkSubscribe();
-            metric.getMetricCounter(CounterEnum.TOPIC_COUNTER).increment();
         }
     }
 
@@ -45,7 +43,6 @@ public class TreeTopicFilter implements TopicFilter {
         if (rootTreeNode.removeSubscribeTopic(subscribeTopic)) {
             subscribeNumber.add(-1);
             subscribeTopic.unLinkSubscribe();
-            metric.getMetricCounter(CounterEnum.TOPIC_COUNTER).decrement();
         }
     }
 

@@ -19,7 +19,6 @@
     <modules>
         <module>smqtt-metric-influx1</module>
         <module>smqtt-metric-prometheus</module>
-        <module>smqtt-metric-api</module>
     </modules>
 
 

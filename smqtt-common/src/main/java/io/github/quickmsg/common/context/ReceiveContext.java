@@ -11,6 +11,7 @@ import io.github.quickmsg.common.message.SmqttMessage;
 import io.github.quickmsg.common.protocol.ProtocolAdaptor;
 import io.github.quickmsg.common.rule.DslExecutor;
 import io.github.quickmsg.common.topic.TopicRegistry;
+import io.github.quickmsg.common.metric.MetricManager;
 import io.netty.handler.codec.mqtt.MqttMessage;
 
 import java.util.function.BiConsumer;
@@ -85,6 +86,9 @@ public interface ReceiveContext<T extends Configuration> extends BiConsumer<Mqtt
      * @return {@link Configuration}
      */
     T getConfiguration();
+
+
+    MetricManager getMetricManager();
 
 
     /**

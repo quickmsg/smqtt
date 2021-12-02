@@ -22,8 +22,6 @@ public class FixedTopicFilter implements TopicFilter {
 
     private Map<String, CopyOnWriteArraySet<SubscribeTopic>> topicChannels = new ConcurrentHashMap<>();
 
-    private static Metric metric = DynamicLoader.findFirst(Metric.class).orElse(null);
-
 
     @Override
     public Set<SubscribeTopic> getSubscribeByTopic(String topic, MqttQoS mqttQoS) {
@@ -42,7 +40,6 @@ public class FixedTopicFilter implements TopicFilter {
         if (channels.add(subscribeTopic)) {
             subscribeNumber.add(1);
             subscribeTopic.linkSubscribe();
-            metric.getMetricCounter(CounterEnum.TOPIC_COUNTER).increment();
         }
     }
 
@@ -52,7 +49,6 @@ public class FixedTopicFilter implements TopicFilter {
         if (channels.remove(subscribeTopic)) {
             subscribeNumber.add(-1);
             subscribeTopic.unLinkSubscribe();
-            metric.getMetricCounter(CounterEnum.TOPIC_COUNTER).decrement();
         }
     }
 

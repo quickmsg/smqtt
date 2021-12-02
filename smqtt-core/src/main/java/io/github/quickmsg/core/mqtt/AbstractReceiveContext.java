@@ -2,18 +2,14 @@ package io.github.quickmsg.core.mqtt;
 
 import io.github.quickmsg.common.auth.PasswordAuthentication;
 import io.github.quickmsg.common.channel.ChannelRegistry;
-import io.github.quickmsg.common.channel.MqttChannel;
 import io.github.quickmsg.common.channel.traffic.TrafficHandlerLoader;
 import io.github.quickmsg.common.cluster.ClusterRegistry;
 import io.github.quickmsg.common.config.AbstractConfiguration;
 import io.github.quickmsg.common.config.Configuration;
 import io.github.quickmsg.common.context.ReceiveContext;
-import io.github.quickmsg.common.enums.ChannelStatus;
 import io.github.quickmsg.common.enums.Event;
-import io.github.quickmsg.common.message.HeapMqttMessage;
 import io.github.quickmsg.common.message.MessageRegistry;
 import io.github.quickmsg.common.message.EventRegistry;
-import io.github.quickmsg.common.message.SmqttMessage;
 import io.github.quickmsg.common.protocol.ProtocolAdaptor;
 import io.github.quickmsg.common.rule.DslExecutor;
 import io.github.quickmsg.common.topic.TopicRegistry;
@@ -23,6 +19,7 @@ import io.github.quickmsg.core.mqtt.traffic.CacheTrafficHandlerLoader;
 import io.github.quickmsg.core.mqtt.traffic.LazyTrafficHandlerLoader;
 import io.github.quickmsg.core.spi.*;
 import io.github.quickmsg.dsl.RuleDslParser;
+import io.github.quickmsg.common.metric.MetricManager;
 import io.github.quickmsg.rule.source.SourceManager;
 import io.netty.handler.traffic.GlobalChannelTrafficShapingHandler;
 import io.netty.handler.traffic.GlobalTrafficShapingHandler;
@@ -32,7 +29,6 @@ import lombok.extern.slf4j.Slf4j;
 import reactor.core.scheduler.Schedulers;
 import reactor.netty.resources.LoopResources;
 
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -65,6 +61,8 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
 
     private final DslExecutor dslExecutor;
 
+    private final MetricManager metricManager;
+
     private final TrafficHandlerLoader trafficHandlerLoader;
 
 
@@ -85,6 +83,7 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
         this.passwordAuthentication = basicAuthentication();
         this.channelRegistry.startUp(abstractConfiguration.getEnvironmentMap());
         this.messageRegistry.startUp(abstractConfiguration.getEnvironmentMap());
+        this.metricManager = metricManager(abstractConfiguration.);
         Optional.ofNullable(abstractConfiguration.getSourceDefinitions())
                 .ifPresent(sourceDefinitions -> sourceDefinitions.forEach(SourceManager::loadSource));
     }
@@ -150,6 +149,12 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
         return Optional.ofNullable(ClusterRegistry.INSTANCE)
                 .orElse(new InJvmClusterRegistry());
     }
+
+
+    private MetricManager metricManager() {
+
+    }
+
 
 
     private AbstractConfiguration castConfiguration(T configuration) {

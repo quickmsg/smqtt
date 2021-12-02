@@ -24,8 +24,6 @@ import reactor.netty.http.server.HttpServerResponse;
 @AllowCors
 public class CounterHttpActor implements HttpActor {
 
-    private static Metric metric = DynamicLoader.findFirst(Metric.class).orElse(null);
-
     @Override
     public Publisher<Void> doRequest(HttpServerRequest request, HttpServerResponse response, Configuration configuration) {
         return request

@@ -46,6 +46,7 @@ public interface AbstractConfiguration extends Configuration {
     List<SourceDefinition> getSourceDefinitions();
 
 
+
     /**
      * 获取环境参数
      *

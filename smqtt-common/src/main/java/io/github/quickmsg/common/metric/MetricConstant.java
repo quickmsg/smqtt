@@ -1,4 +1,4 @@
-package io.github.quickmsg.metric.api;
+package io.github.quickmsg.common.metric;
 
 public interface MetricConstant {
     String COMMON_TAG_NAME = "application";
