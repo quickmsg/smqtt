@@ -1,10 +1,11 @@
 package io.github.quickmsg.common.metric;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.quickmsg.common.config.BootstrapConfig;
 import io.github.quickmsg.common.context.ContextHolder;
 import io.github.quickmsg.common.utils.FormatUtils;
+import io.micrometer.prometheus.PrometheusMeterRegistry;
 import io.netty.handler.traffic.TrafficCounter;
+import io.prometheus.client.exporter.common.TextFormat;
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
 import oshi.hardware.HardwareAbstractionLayer;
@@ -98,12 +99,20 @@ public interface MetricManager {
         metrics.put("publish_size", getMetricRegistry().getMetricCounter(CounterType.PUBLISH).getCounter());
         metrics.put("disconnect_size", getMetricRegistry().getMetricCounter(CounterType.DIS_CONNECT).getCounter());
         metrics.put("un_subscribe_size", getMetricRegistry().getMetricCounter(CounterType.UN_SUBSCRIBE).getCounter());
-        TrafficCounter trafficCounter=ContextHolder.getReceiveContext().getTrafficHandlerLoader().get().trafficCounter();
-        metrics.put("read_size", FormatUtils.formatByte(trafficCounter.cumulativeReadBytes() ));
+        TrafficCounter trafficCounter = ContextHolder.getReceiveContext().getTrafficHandlerLoader().get().trafficCounter();
+        metrics.put("read_size", FormatUtils.formatByte(trafficCounter.cumulativeReadBytes()));
         metrics.put("read_second_size", FormatUtils.formatByte(trafficCounter.currentReadBytes()));
         metrics.put("write_size", FormatUtils.formatByte(trafficCounter.cumulativeWrittenBytes()));
         metrics.put("write_second_size", FormatUtils.formatByte(trafficCounter.currentWrittenBytes()));
         return metrics;
+    }
+
+    default String scrape() {
+        if (getMetricBean().getMeterRegistry() instanceof PrometheusMeterRegistry) {
+            return ((PrometheusMeterRegistry) getMetricBean().getMeterRegistry()).scrape(TextFormat.CONTENT_TYPE_OPENMETRICS_100);
+        } else {
+            return null;
+        }
     }
 
 

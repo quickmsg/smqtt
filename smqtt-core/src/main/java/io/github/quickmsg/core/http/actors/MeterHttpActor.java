@@ -6,6 +6,8 @@ import io.github.quickmsg.common.annotation.Router;
 import io.github.quickmsg.common.config.Configuration;
 import io.github.quickmsg.common.enums.HttpType;
 import io.github.quickmsg.common.http.HttpActor;
+import io.github.quickmsg.common.metric.MetricManagerHolder;
+import io.github.quickmsg.common.utils.JacksonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
@@ -28,6 +30,10 @@ public class MeterHttpActor implements HttpActor {
 
     @Override
     public Publisher<Void> doRequest(HttpServerRequest request, HttpServerResponse response, Configuration configuration) {
-        return Mono.empty();
+        return request
+                .receive()
+                .then(response
+                        .sendString(Mono.just(MetricManagerHolder.getMetricManager().scrape()))
+                        .then());
     }
 }
