@@ -7,7 +7,7 @@ public interface MetricCounter {
 
     long getCounter();
 
-    void increment(int size);
+    void increment();
 
     void decrement();
 

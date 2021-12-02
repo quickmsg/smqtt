@@ -51,8 +51,8 @@ public abstract class WindowCounter implements MetricCounter, Runnable {
 
 
     @Override
-    public void increment(int size) {
-        sumCountAdder.add(size);
+    public void increment() {
+        sumCountAdder.increment();
         callMeter(sumCountAdder.sum());
     }
 

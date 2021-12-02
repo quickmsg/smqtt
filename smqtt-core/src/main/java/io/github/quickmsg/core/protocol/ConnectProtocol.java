@@ -124,7 +124,7 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
                 /* registry close mqtt channel event*/
                 mqttChannel.registryClose(channel -> this.close(mqttChannel, mqttReceiveContext, eventRegistry));
 
-                metricManager.getMetricRegistry().getMetricCounter(CounterType.CONNECT).increment(1);
+                metricManager.getMetricRegistry().getMetricCounter(CounterType.CONNECT).increment();
 
                 mqttChannel.registryClose(channel -> metricManager.getMetricRegistry().getMetricCounter(CounterType.CONNECT).decrement());
 

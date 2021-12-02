@@ -2,10 +2,7 @@ package io.github.quickmsg.metric;
 
 import io.github.quickmsg.common.config.BootstrapConfig;
 import io.github.quickmsg.common.metric.*;
-import io.github.quickmsg.common.metric.counter.ConnectCounter;
-import io.github.quickmsg.common.metric.counter.DisConnectCounter;
-import io.github.quickmsg.common.metric.counter.SubscribeCounter;
-import io.github.quickmsg.common.metric.counter.UnSubscribeCounter;
+import io.github.quickmsg.common.metric.counter.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +33,7 @@ public class PrometheusMetricManager  implements MetricManager {
         metricCounters.add(new DisConnectCounter(metricBean));
         metricCounters.add(new ReadCounter(metricBean));
         metricCounters.add(new WriteCounter(metricBean));
+        metricCounters.add(new PublishCounter(metricBean));;
         return new PrometheusMetricRegistry(metricCounters);
     }
 

@@ -34,7 +34,7 @@ public class TreeTopicFilter implements TopicFilter {
     public void addSubscribeTopic(SubscribeTopic subscribeTopic) {
         if (rootTreeNode.addSubscribeTopic(subscribeTopic)) {
             subscribeNumber.add(1);
-            MetricManagerHolder.metricManager.getMetricRegistry().getMetricCounter(CounterType.SUBSCRIBE).increment(1);
+            MetricManagerHolder.metricManager.getMetricRegistry().getMetricCounter(CounterType.SUBSCRIBE).increment();
             subscribeTopic.linkSubscribe();
         }
     }

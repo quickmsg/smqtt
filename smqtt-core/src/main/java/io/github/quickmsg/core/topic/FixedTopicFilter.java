@@ -41,7 +41,7 @@ public class FixedTopicFilter implements TopicFilter {
         if (channels.add(subscribeTopic)) {
             subscribeNumber.add(1);
             subscribeTopic.linkSubscribe();
-            MetricManagerHolder.metricManager.getMetricRegistry().getMetricCounter(CounterType.SUBSCRIBE).increment(1);
+            MetricManagerHolder.metricManager.getMetricRegistry().getMetricCounter(CounterType.SUBSCRIBE).increment();
         }
     }
 

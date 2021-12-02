@@ -21,8 +21,8 @@ public abstract class WholeCounter implements MetricCounter {
     }
 
     @Override
-    public void increment(int index) {
-        callMeter(count.getAndAdd(index) + index);
+    public void increment() {
+        callMeter(count.incrementAndGet());
     }
 
     @Override
