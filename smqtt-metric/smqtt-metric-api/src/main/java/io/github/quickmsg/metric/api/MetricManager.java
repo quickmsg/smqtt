@@ -70,9 +70,9 @@ public interface MetricManager {
         Map<String, Object> metrics = new HashMap<>();
         metrics.put("connect_size",  getMetricRegistry().getConnectCounter().getCounter());
         metrics.put("topic_size",  getMetricRegistry().getTopicCounter().getCounter());
-        metrics.put("read_size", FormatUtils.formatByte( getMetricRegistry().getReadCounter().getCounter()));
+        metrics.put("read_size", FormatUtils.formatByte( getMetricRegistry().getReadCounter().getAllCount()));
         metrics.put("read_hour_size", FormatUtils.formatByte( getMetricRegistry().getReadCounter().getWindowCount()));
-        metrics.put("write_size", FormatUtils.formatByte( getMetricRegistry().getWriteCounter().getCounter()));
+        metrics.put("write_size", FormatUtils.formatByte( getMetricRegistry().getWriteCounter().getAllCount()));
         metrics.put("write_hour_size", FormatUtils.formatByte( getMetricRegistry().getWriteCounter().getWindowCount()));
         return metrics;
     }
