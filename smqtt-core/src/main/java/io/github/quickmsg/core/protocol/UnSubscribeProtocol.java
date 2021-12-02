@@ -4,6 +4,8 @@ import io.github.quickmsg.common.channel.MqttChannel;
 import io.github.quickmsg.common.context.ReceiveContext;
 import io.github.quickmsg.common.message.MqttMessageBuilder;
 import io.github.quickmsg.common.message.SmqttMessage;
+import io.github.quickmsg.common.metric.CounterType;
+import io.github.quickmsg.common.metric.MetricManagerHolder;
 import io.github.quickmsg.common.protocol.Protocol;
 import io.github.quickmsg.common.topic.SubscribeTopic;
 import io.github.quickmsg.common.topic.TopicRegistry;
@@ -33,6 +35,7 @@ public class UnSubscribeProtocol implements Protocol<MqttUnsubscribeMessage> {
     public Mono<Void> parseProtocol(SmqttMessage<MqttUnsubscribeMessage> smqttMessage , MqttChannel mqttChannel, ContextView contextView) {
         MqttUnsubscribeMessage message = smqttMessage.getMessage();
         return Mono.fromRunnable(() -> {
+            MetricManagerHolder.metricManager.getMetricRegistry().getMetricCounter(CounterType.UN_SUBSCRIBE).increment();
             ReceiveContext<?> receiveContext = contextView.get(ReceiveContext.class);
             TopicRegistry topicRegistry = receiveContext.getTopicRegistry();
             message.payload()

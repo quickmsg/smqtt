@@ -81,7 +81,7 @@ public class InfluxDbMetricBean implements MetricBean, InfluxConfig {
 
     @Override
     public MetricBean Close() {
-
+        meterRegistry.close();
         return this;
     }
 

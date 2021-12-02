@@ -7,6 +7,8 @@ import io.github.quickmsg.common.message.MessageRegistry;
 import io.github.quickmsg.common.message.MqttMessageBuilder;
 import io.github.quickmsg.common.message.SessionMessage;
 import io.github.quickmsg.common.message.SmqttMessage;
+import io.github.quickmsg.common.metric.CounterType;
+import io.github.quickmsg.common.metric.MetricManagerHolder;
 import io.github.quickmsg.common.protocol.Protocol;
 import io.github.quickmsg.common.topic.SubscribeTopic;
 import io.github.quickmsg.common.topic.TopicRegistry;
@@ -52,6 +54,7 @@ public class CommonProtocol implements Protocol<MqttMessage> {
                 return mqttChannel.write(MqttMessageBuilder.buildPongMessage(), false);
             case DISCONNECT:
                 return Mono.fromRunnable(() -> {
+                    MetricManagerHolder.metricManager.getMetricRegistry().getMetricCounter(CounterType.DIS_CONNECT).increment();
                     mqttChannel.setWill(null);
                     Connection connection;
                     if (!(connection = mqttChannel.getConnection()).isDisposed()) {
