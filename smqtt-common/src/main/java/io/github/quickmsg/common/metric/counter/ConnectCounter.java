@@ -16,6 +16,7 @@ public class ConnectCounter extends WholeCounter {
     @Override
     public void callMeter(long counter) {
         getMetricBean().getMeterRegistry().gauge(getCounterType().getDesc(), counter);
+
     }
 
     @Override
