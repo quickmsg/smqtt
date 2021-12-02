@@ -9,8 +9,17 @@ import java.util.concurrent.TimeUnit;
  */
 public class WriteCounter extends WindowCounter {
 
-    public WriteCounter() {
-        super(1, TimeUnit.SECONDS, Schedulers.newSingle("read"));
+    private final MetricBean metricBean;
+
+
+    @Override
+    public MetricBean getMetricBean() {
+        return this.metricBean;
+    }
+
+    public WriteCounter(MetricBean metricBean) {
+        super(metricBean,1, TimeUnit.SECONDS, Schedulers.newSingle("read"));
+        this.metricBean = metricBean;
     }
 
 
@@ -18,4 +27,6 @@ public class WriteCounter extends WindowCounter {
     public void callMeter(long counter) {
 
     }
+
+
 }

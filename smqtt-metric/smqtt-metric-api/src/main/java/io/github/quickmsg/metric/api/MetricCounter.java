@@ -15,6 +15,10 @@ public interface MetricCounter {
 
     void callMeter(long counter);
 
+    MetricBean getMetricBean();
+
+
+
 
 
 

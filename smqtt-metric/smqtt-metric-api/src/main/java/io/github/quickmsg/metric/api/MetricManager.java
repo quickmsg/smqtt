@@ -1,9 +1,7 @@
 package io.github.quickmsg.metric.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.github.quickmsg.common.config.BootstrapConfig;
-import io.github.quickmsg.common.metric.MetricConstant;
 import io.github.quickmsg.common.utils.FormatUtils;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.Statistic;

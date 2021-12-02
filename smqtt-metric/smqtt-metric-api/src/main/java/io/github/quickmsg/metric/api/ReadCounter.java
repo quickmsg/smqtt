@@ -9,8 +9,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class ReadCounter extends WindowCounter {
 
-    public ReadCounter() {
-        super(1, TimeUnit.SECONDS, Schedulers.newSingle("read"));
+    public ReadCounter(MetricBean metricBean) {
+        super(metricBean, 1, TimeUnit.SECONDS, Schedulers.newSingle("read"));
     }
 
 

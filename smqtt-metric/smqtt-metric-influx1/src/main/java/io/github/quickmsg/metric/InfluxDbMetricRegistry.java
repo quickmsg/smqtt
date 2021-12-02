@@ -22,22 +22,22 @@ public class InfluxDbMetricRegistry implements MetricRegistry {
 
     @Override
     public WholeCounter getTopicCounter() {
-        return null;
+        return new TopicCounter(metricBean);
     }
 
     @Override
     public WholeCounter getConnectCounter() {
-        return new ConnectCounter();
+        return new ConnectCounter(metricBean);
     }
 
     @Override
     public WindowCounter getReadCounter() {
-        return new ReadCounter();
+        return new ReadCounter(metricBean);
     }
 
     @Override
     public WindowCounter getWriteCounter() {
-        return new WriteCounter();
+        return new WriteCounter(metricBean);
     }
 
     @Override

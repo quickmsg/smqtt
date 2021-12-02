@@ -1,8 +1,6 @@
 package io.github.quickmsg.core.topic;
 
 import io.github.quickmsg.common.channel.MqttChannel;
-import io.github.quickmsg.common.metric.CounterEnum;
-import io.github.quickmsg.common.metric.Metric;
 import io.github.quickmsg.common.spi.DynamicLoader;
 import io.github.quickmsg.common.topic.SubscribeTopic;
 import io.netty.handler.codec.mqtt.MqttQoS;

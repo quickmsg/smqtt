@@ -16,7 +16,15 @@ public abstract class WindowCounter implements MetricCounter, Runnable {
 
     private volatile long windowSize = 0L;
 
-    public WindowCounter(Integer time, TimeUnit timeUnit, Scheduler scheduler) {
+    private final MetricBean metricBean;
+
+    @Override
+    public MetricBean getMetricBean() {
+        return this.metricBean;
+    }
+
+    public WindowCounter(MetricBean metricBean,Integer time, TimeUnit timeUnit, Scheduler scheduler) {
+        this.metricBean =metricBean;
         scheduler.schedulePeriodically(this, time, time, timeUnit);
         scheduler.start();
     }

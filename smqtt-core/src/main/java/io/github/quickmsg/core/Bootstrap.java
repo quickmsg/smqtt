@@ -3,7 +3,6 @@ package io.github.quickmsg.core;
 import ch.qos.logback.classic.Level;
 import io.github.quickmsg.common.config.BootstrapConfig;
 import io.github.quickmsg.common.config.SslContext;
-import io.github.quickmsg.common.metric.Metric;
 import io.github.quickmsg.common.rule.RuleChainDefinition;
 import io.github.quickmsg.common.rule.source.SourceDefinition;
 import io.github.quickmsg.common.spi.DynamicLoader;
