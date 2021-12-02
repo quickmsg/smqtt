@@ -6,7 +6,6 @@ import io.github.quickmsg.common.annotation.Router;
 import io.github.quickmsg.common.config.Configuration;
 import io.github.quickmsg.common.enums.HttpType;
 import io.github.quickmsg.common.http.HttpActor;
-import io.github.quickmsg.common.spi.DynamicLoader;
 import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
@@ -23,15 +22,12 @@ import reactor.netty.http.server.HttpServerResponse;
 @Slf4j
 @Header(key = "Content-Type", value = "text/plain; version=0.0.4;charset=utf-8")
 @AllowCors
+@Deprecated
 public class MeterHttpActor implements HttpActor {
 
 
     @Override
     public Publisher<Void> doRequest(HttpServerRequest request, HttpServerResponse response, Configuration configuration) {
-        return request
-                .receive()
-                .then(response
-                        .sendString(Mono.just(metric.scrape()))
-                        .then());
+        return Mono.empty();
     }
 }

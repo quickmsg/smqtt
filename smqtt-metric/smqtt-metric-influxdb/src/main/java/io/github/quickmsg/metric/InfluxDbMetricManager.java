@@ -1,9 +1,10 @@
 package io.github.quickmsg.metric;
 
 import io.github.quickmsg.common.config.BootstrapConfig;
-import io.github.quickmsg.common.metric.MetricBean;
-import io.github.quickmsg.common.metric.MetricManager;
-import io.github.quickmsg.common.metric.MetricRegistry;
+import io.github.quickmsg.common.metric.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author luxurong
@@ -19,7 +20,19 @@ public class InfluxDbMetricManager implements MetricManager {
     public InfluxDbMetricManager(BootstrapConfig.MeterConfig config) {
         this.config = config;
         this.metricBean = new InfluxDbMetricBean(this.config);
-        this.metricRegistry = new InfluxDbMetricRegistry(metricBean);
+        this.metricRegistry = createMetricRegistry(metricBean);
+    }
+
+    private MetricRegistry createMetricRegistry(MetricBean metricBean) {
+        List<MetricCounter> metricCounters = new ArrayList<>();
+        metricCounters.add(new WriteCounter(metricBean));
+        metricCounters.add(new ConnectCounter(metricBean));
+        metricCounters.add(new SubscribeCounter(metricBean));
+        metricCounters.add(new UnSubscribeCounter(metricBean));
+        metricCounters.add(new DisConnectCounter(metricBean));
+        metricCounters.add(new ReadCounter(metricBean));
+        metricCounters.add(new WriteCounter(metricBean));
+        return new InfluxDbMetricRegistry(metricCounters);
     }
 
     @Override
@@ -36,8 +49,6 @@ public class InfluxDbMetricManager implements MetricManager {
     public BootstrapConfig.MeterConfig getMeterConfig() {
         return this.config;
     }
-
-
 
 
 }

@@ -54,7 +54,7 @@ public class MqttConfiguration extends AbstractSslHandler implements AbstractCon
 
     private BootstrapConfig.ClusterConfig clusterConfig;
 
-    private BootstrapConfig.MeterConfig meterConfig = BootstrapConfig.MeterConfig.builder().enable(true).build();
+    private BootstrapConfig.MeterConfig meterConfig ;
 
     private List<RuleChainDefinition> ruleChainDefinitions;
 

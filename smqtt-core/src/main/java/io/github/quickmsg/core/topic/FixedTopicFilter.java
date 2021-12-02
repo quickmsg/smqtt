@@ -1,7 +1,8 @@
 package io.github.quickmsg.core.topic;
 
 import io.github.quickmsg.common.channel.MqttChannel;
-import io.github.quickmsg.common.spi.DynamicLoader;
+import io.github.quickmsg.common.metric.CounterType;
+import io.github.quickmsg.common.metric.MetricManagerHolder;
 import io.github.quickmsg.common.topic.SubscribeTopic;
 import io.netty.handler.codec.mqtt.MqttQoS;
 
@@ -18,9 +19,9 @@ import java.util.stream.Collectors;
  */
 public class FixedTopicFilter implements TopicFilter {
 
-    private LongAdder subscribeNumber = new LongAdder();
+    private final LongAdder subscribeNumber = new LongAdder();
 
-    private Map<String, CopyOnWriteArraySet<SubscribeTopic>> topicChannels = new ConcurrentHashMap<>();
+    private final Map<String, CopyOnWriteArraySet<SubscribeTopic>> topicChannels = new ConcurrentHashMap<>();
 
 
     @Override
@@ -40,6 +41,7 @@ public class FixedTopicFilter implements TopicFilter {
         if (channels.add(subscribeTopic)) {
             subscribeNumber.add(1);
             subscribeTopic.linkSubscribe();
+            MetricManagerHolder.metricManager.getMetricRegistry().getMetricCounter(CounterType.SUBSCRIBE).increment(1);
         }
     }
 
@@ -49,6 +51,7 @@ public class FixedTopicFilter implements TopicFilter {
         if (channels.remove(subscribeTopic)) {
             subscribeNumber.add(-1);
             subscribeTopic.unLinkSubscribe();
+            MetricManagerHolder.metricManager.getMetricRegistry().getMetricCounter(CounterType.SUBSCRIBE).decrement();
         }
     }
 

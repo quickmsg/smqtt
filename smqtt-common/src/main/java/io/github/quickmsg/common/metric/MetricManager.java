@@ -3,8 +3,6 @@ package io.github.quickmsg.common.metric;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.quickmsg.common.config.BootstrapConfig;
 import io.github.quickmsg.common.utils.FormatUtils;
-import io.micrometer.core.instrument.Meter;
-import io.micrometer.core.instrument.Statistic;
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
 import oshi.hardware.HardwareAbstractionLayer;
@@ -16,7 +14,10 @@ import java.lang.management.RuntimeMXBean;
 import java.lang.management.ThreadMXBean;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * @author luxurong
@@ -31,10 +32,9 @@ public interface MetricManager {
 
     BootstrapConfig.MeterConfig getMeterConfig();
 
-    default Map<String,Object>  getJvmMetric() {
-        Map<String,Object> metrics = new HashMap<>();
+    default Map<String, Object> getJvmMetric() {
+        Map<String, Object> metrics = new HashMap<>();
         Properties props = System.getProperties();
-        ObjectMapper objectMapper = new ObjectMapper();
         MemoryMXBean mxb = ManagementFactory.getMemoryMXBean();
         ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
         RuntimeMXBean runtimeBean = ManagementFactory.getRuntimeMXBean();
@@ -57,7 +57,6 @@ public interface MetricManager {
     SystemInfo systemInfo = new SystemInfo();
 
     int O_SHI_WAIT_SECOND = 500;
-
 
 
     default Map<String, Object> getCpuMetric() {
@@ -92,19 +91,16 @@ public interface MetricManager {
         return metrics;
     }
 
-    default Map<String, Object> getBufferMetric() {
+    default Map<String, Object> getCounterMetric() {
         Map<String, Object> metrics = new HashMap<>();
-        metrics.put("connect_size",  getMetricRegistry().getConnectCounter().getCounter());
-        metrics.put("topic_size",  getMetricRegistry().getTopicCounter().getCounter());
-        metrics.put("read_size", FormatUtils.formatByte( getMetricRegistry().getReadCounter().getAllCount()));
-        metrics.put("read_hour_size", FormatUtils.formatByte( getMetricRegistry().getReadCounter().getWindowCount()));
-        metrics.put("write_size", FormatUtils.formatByte( getMetricRegistry().getWriteCounter().getAllCount()));
-        metrics.put("write_hour_size", FormatUtils.formatByte( getMetricRegistry().getWriteCounter().getWindowCount()));
+        metrics.put("connect_size", getMetricRegistry().getMetricCounter(CounterType.CONNECT).getCounter());
+        metrics.put("topic_size", getMetricRegistry().getMetricCounter(CounterType.CONNECT).getCounter());
+        metrics.put("read_size", FormatUtils.formatByte(((WindowCounter) getMetricRegistry().getMetricCounter(CounterType.READ)).getAllCount()));
+        metrics.put("read_hour_size", FormatUtils.formatByte(((WindowCounter) getMetricRegistry().getMetricCounter(CounterType.READ)).getWindowCount()));
+        metrics.put("write_size", FormatUtils.formatByte(((WindowCounter) getMetricRegistry().getMetricCounter(CounterType.WRITE)).getAllCount()));
+        metrics.put("write_hour_size", FormatUtils.formatByte(((WindowCounter) getMetricRegistry().getMetricCounter(CounterType.WRITE)).getWindowCount()));
         return metrics;
     }
-
-
-
 
 
 }

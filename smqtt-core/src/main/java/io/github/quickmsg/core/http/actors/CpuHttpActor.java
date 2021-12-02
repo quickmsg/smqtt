@@ -6,6 +6,7 @@ import io.github.quickmsg.common.annotation.Router;
 import io.github.quickmsg.common.config.Configuration;
 import io.github.quickmsg.common.enums.HttpType;
 import io.github.quickmsg.common.http.HttpActor;
+import io.github.quickmsg.common.metric.MetricManagerHolder;
 import io.github.quickmsg.common.spi.DynamicLoader;
 import io.github.quickmsg.common.utils.JacksonUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +31,7 @@ public class CpuHttpActor implements HttpActor {
         return request
                 .receive()
                 .then(response
-                        .sendString(Mono.just(JacksonUtil.bean2Json(metric.scrapeCpu())))
+                        .sendString(Mono.just(JacksonUtil.bean2Json(MetricManagerHolder.getMetricManager().getCpuMetric())))
                         .then());
     }
 }

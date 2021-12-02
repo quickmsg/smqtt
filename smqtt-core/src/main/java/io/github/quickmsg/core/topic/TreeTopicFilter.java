@@ -1,7 +1,8 @@
 package io.github.quickmsg.core.topic;
 
 import io.github.quickmsg.common.channel.MqttChannel;
-import io.github.quickmsg.common.spi.DynamicLoader;
+import io.github.quickmsg.common.metric.CounterType;
+import io.github.quickmsg.common.metric.MetricManagerHolder;
 import io.github.quickmsg.common.topic.SubscribeTopic;
 import io.netty.handler.codec.mqtt.MqttQoS;
 
@@ -19,7 +20,6 @@ public class TreeTopicFilter implements TopicFilter {
     private LongAdder subscribeNumber = new LongAdder();
 
 
-
     @Override
     public Set<SubscribeTopic> getSubscribeByTopic(String topic, MqttQoS mqttQoS) {
         return rootTreeNode.getSubscribeByTopic(topic).stream().map(tp -> tp.compareQos(mqttQoS)).collect(Collectors.toSet());
@@ -34,6 +34,7 @@ public class TreeTopicFilter implements TopicFilter {
     public void addSubscribeTopic(SubscribeTopic subscribeTopic) {
         if (rootTreeNode.addSubscribeTopic(subscribeTopic)) {
             subscribeNumber.add(1);
+            MetricManagerHolder.metricManager.getMetricRegistry().getMetricCounter(CounterType.SUBSCRIBE).increment(1);
             subscribeTopic.linkSubscribe();
         }
     }
@@ -42,6 +43,7 @@ public class TreeTopicFilter implements TopicFilter {
     public void removeSubscribeTopic(SubscribeTopic subscribeTopic) {
         if (rootTreeNode.removeSubscribeTopic(subscribeTopic)) {
             subscribeNumber.add(-1);
+            MetricManagerHolder.metricManager.getMetricRegistry().getMetricCounter(CounterType.SUBSCRIBE).decrement();
             subscribeTopic.unLinkSubscribe();
         }
     }

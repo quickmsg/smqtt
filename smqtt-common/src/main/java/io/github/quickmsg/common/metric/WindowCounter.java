@@ -14,17 +14,17 @@ public abstract class WindowCounter implements MetricCounter, Runnable {
 
     private final LongAdder windowCountAdder = new LongAdder();
 
-    private volatile long windowSize = 0L;
 
     private final MetricBean metricBean;
+
 
     @Override
     public MetricBean getMetricBean() {
         return this.metricBean;
     }
 
-    public WindowCounter(MetricBean metricBean,Integer time, TimeUnit timeUnit, Scheduler scheduler) {
-        this.metricBean =metricBean;
+    public WindowCounter(MetricBean metricBean, Integer time, TimeUnit timeUnit, Scheduler scheduler) {
+        this.metricBean = metricBean;
         scheduler.schedulePeriodically(this, time, time, timeUnit);
         scheduler.start();
     }
@@ -50,10 +50,10 @@ public abstract class WindowCounter implements MetricCounter, Runnable {
     }
 
 
-
     @Override
     public void increment(int size) {
         sumCountAdder.add(size);
+        callMeter(sumCountAdder.sum());
     }
 
     @Override
@@ -63,7 +63,7 @@ public abstract class WindowCounter implements MetricCounter, Runnable {
 
 
     public long getWindowCount() {
-        return  windowCountAdder.sum();
+        return windowCountAdder.sum();
     }
 
 

@@ -1,7 +1,7 @@
 package io.github.quickmsg.metric;
 
+import io.github.quickmsg.common.metric.CounterType;
 import io.github.quickmsg.common.metric.MetricBean;
-import io.github.quickmsg.common.metric.MetricConstant;
 import io.github.quickmsg.common.metric.WholeCounter;
 
 /**
@@ -15,7 +15,12 @@ public class ConnectCounter extends WholeCounter {
 
     @Override
     public void callMeter(long counter) {
-        getMetricBean().getMeterRegistry().gauge(MetricConstant.CONNECT_COUNTER_NAME, counter);
+        getMetricBean().getMeterRegistry().gauge(getCounterType().getDesc(), counter);
+    }
+
+    @Override
+    public CounterType getCounterType() {
+        return CounterType.CONNECT;
     }
 
 }

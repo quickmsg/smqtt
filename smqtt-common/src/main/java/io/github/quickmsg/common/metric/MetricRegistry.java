@@ -6,17 +6,8 @@ package io.github.quickmsg.common.metric;
  */
 public interface MetricRegistry {
 
+    MetricCounter getMetricCounter(CounterType counterType);
 
-    WholeCounter getTopicCounter();
-
-
-    WholeCounter getConnectCounter();
-
-
-    WindowCounter getReadCounter();
-
-
-    WindowCounter getWriteCounter();
 
 
 }

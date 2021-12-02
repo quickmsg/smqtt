@@ -57,6 +57,11 @@ public class SpringBootstrapConfig {
      */
     private BootstrapConfig.ClusterConfig cluster;
 
+    /**
+     * meter配置
+     */
+    private BootstrapConfig.MeterConfig meter;
+
 
     /**
      * 数据库配置

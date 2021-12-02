@@ -17,7 +17,7 @@ public interface MetricCounter {
 
     MetricBean getMetricBean();
 
-
+    CounterType getCounterType();
 
 
 

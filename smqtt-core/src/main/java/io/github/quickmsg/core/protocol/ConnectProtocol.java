@@ -10,8 +10,9 @@ import io.github.quickmsg.common.message.EventRegistry;
 import io.github.quickmsg.common.message.MessageRegistry;
 import io.github.quickmsg.common.message.MqttMessageBuilder;
 import io.github.quickmsg.common.message.SmqttMessage;
+import io.github.quickmsg.common.metric.CounterType;
+import io.github.quickmsg.common.metric.MetricManager;
 import io.github.quickmsg.common.protocol.Protocol;
-import io.github.quickmsg.common.spi.DynamicLoader;
 import io.github.quickmsg.common.topic.SubscribeTopic;
 import io.github.quickmsg.common.topic.TopicRegistry;
 import io.github.quickmsg.core.mqtt.MqttReceiveContext;
@@ -39,7 +40,6 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
     private static final int MILLI_SECOND_PERIOD = 1_000;
 
 
-
     static {
         MESSAGE_TYPE_LIST.add(MqttMessageType.CONNECT);
     }
@@ -59,6 +59,7 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
             String clientIdentifier = mqttConnectPayload.clientIdentifier();
             ChannelRegistry channelRegistry = mqttReceiveContext.getChannelRegistry();
             TopicRegistry topicRegistry = mqttReceiveContext.getTopicRegistry();
+            MetricManager metricManager = mqttReceiveContext.getMetricManager();
             PasswordAuthentication passwordAuthentication = mqttReceiveContext.getPasswordAuthentication();
             /*check clientIdentifier exist*/
             if (channelRegistry.exists(clientIdentifier)) {
@@ -93,9 +94,8 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
                 mqttChannel.setUsername(mqttConnectPayload.userName());
                 /*registry unread event close channel */
 
-                mqttChannel.getConnection()
-                        .onReadIdle(mqttConnectVariableHeader.keepAliveTimeSeconds() * MILLI_SECOND_PERIOD << 1,
-                                () -> close(mqttChannel, mqttReceiveContext, eventRegistry));
+                mqttChannel.getConnection().onReadIdle((long) mqttConnectVariableHeader.keepAliveTimeSeconds() * MILLI_SECOND_PERIOD << 1,
+                        () -> close(mqttChannel, mqttReceiveContext, eventRegistry));
 
                 /*registry will message send */
                 mqttChannel.registryClose(channel -> Optional.ofNullable(mqttChannel.getWill())
@@ -124,9 +124,9 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
                 /* registry close mqtt channel event*/
                 mqttChannel.registryClose(channel -> this.close(mqttChannel, mqttReceiveContext, eventRegistry));
 
-                metric.getMetricCounter(CounterEnum.CONNECT_COUNTER).increment();
+                metricManager.getMetricRegistry().getMetricCounter(CounterType.CONNECT).increment(1);
 
-                mqttChannel.registryClose(ConnectProtocol::accept);
+                mqttChannel.registryClose(channel -> metricManager.getMetricRegistry().getMetricCounter(CounterType.CONNECT).decrement());
 
                 eventRegistry.registry(Event.CONNECT, mqttChannel, message, mqttReceiveContext);
 
@@ -183,10 +183,10 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
         Optional.ofNullable(channelRegistry.get(mqttChannel.getClientIdentifier()))
                 .ifPresent(sessionChannel -> {
                     Set<SubscribeTopic> topics = sessionChannel.getTopics().stream().map(subscribeTopic ->
-                            new SubscribeTopic(
-                                    subscribeTopic.getTopicFilter(),
-                                    subscribeTopic.getQoS(),
-                                    mqttChannel))
+                                    new SubscribeTopic(
+                                            subscribeTopic.getTopicFilter(),
+                                            subscribeTopic.getQoS(),
+                                            mqttChannel))
                             .collect(Collectors.toSet());
                     // registry new chanel
                     topicRegistry.registrySubscribesTopic(topics);

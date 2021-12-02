@@ -34,7 +34,7 @@ public class MqttReceiver extends AbstractSslHandler implements Receiver {
                 .childOption(ChannelOption.TCP_NODELAY, true)
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
                 .childOption(ChannelOption.SO_REUSEADDR, true)
-                .metrics(mqttConfiguration.getMeterConfig().isEnable())
+                .metrics(mqttConfiguration.getMeterConfig() != null)
                 .option(ChannelOption.SO_REUSEADDR, true)
                 .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
                 .childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)

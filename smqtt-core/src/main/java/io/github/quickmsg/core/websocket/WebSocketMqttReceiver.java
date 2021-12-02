@@ -43,7 +43,7 @@ public class WebSocketMqttReceiver extends AbstractSslHandler implements Receive
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
                 .childOption(ChannelOption.SO_REUSEADDR, true)
                 .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
-                .metrics(mqttConfiguration.getMeterConfig().isEnable())
+                .metrics(mqttConfiguration.getMeterConfig() != null)
                 .runOn(receiveContext.getLoopResources())
                 .doOnConnection(connection -> {
                     connection.addHandlerLast(new HttpServerCodec())

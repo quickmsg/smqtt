@@ -17,7 +17,7 @@
 
 
     <modules>
-        <module>smqtt-metric-influx1</module>
+        <module>smqtt-metric-influxdb</module>
         <module>smqtt-metric-prometheus</module>
     </modules>
 

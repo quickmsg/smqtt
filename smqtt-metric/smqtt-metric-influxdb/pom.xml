@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>smqtt-metric-influx1</artifactId>
+    <artifactId>smqtt-metric-influxdb</artifactId>
 
     <dependencies>
         <dependency>

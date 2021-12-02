@@ -18,4 +18,9 @@ public class ReadCounter extends WindowCounter {
     public void callMeter(long counter) {
 
     }
+
+    @Override
+    public CounterType getCounterType() {
+        return CounterType.READ;
+    }
 }

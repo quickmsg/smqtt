@@ -2,6 +2,7 @@ package io.github.quickmsg.common.config;
 
 import ch.qos.logback.classic.Level;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.github.quickmsg.common.metric.MeterType;
 import io.github.quickmsg.common.rule.RuleChainDefinition;
 import io.github.quickmsg.common.rule.source.SourceDefinition;
 import lombok.AllArgsConstructor;
@@ -435,7 +436,7 @@ public class BootstrapConfig {
     @AllArgsConstructor
     public static class MeterConfig {
 
-        private boolean enable;
+        private MeterType meterType;
 
         private Influxdb influxdb;
     }

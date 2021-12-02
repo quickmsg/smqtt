@@ -17,6 +17,11 @@ public class WriteCounter extends WindowCounter {
         return this.metricBean;
     }
 
+    @Override
+    public CounterType getCounterType() {
+        return CounterType.WRITE;
+    }
+
     public WriteCounter(MetricBean metricBean) {
         super(metricBean,1, TimeUnit.SECONDS, Schedulers.newSingle("read"));
         this.metricBean = metricBean;
@@ -27,6 +32,5 @@ public class WriteCounter extends WindowCounter {
     public void callMeter(long counter) {
 
     }
-
 
 }
