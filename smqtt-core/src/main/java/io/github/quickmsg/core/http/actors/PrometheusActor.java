@@ -7,7 +7,6 @@ import io.github.quickmsg.common.config.Configuration;
 import io.github.quickmsg.common.enums.HttpType;
 import io.github.quickmsg.common.http.HttpActor;
 import io.github.quickmsg.common.metric.MetricManagerHolder;
-import io.github.quickmsg.common.utils.JacksonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
@@ -24,8 +23,7 @@ import reactor.netty.http.server.HttpServerResponse;
 @Slf4j
 @Header(key = "Content-Type", value = "text/plain; version=0.0.4;charset=utf-8")
 @AllowCors
-@Deprecated
-public class MeterHttpActor implements HttpActor {
+public class PrometheusActor implements HttpActor {
 
 
     @Override
