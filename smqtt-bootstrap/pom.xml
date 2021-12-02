@@ -57,19 +57,6 @@
             <groupId>io.github.quickmsg</groupId>
             <version>1.1.0</version>
         </dependency>
-
-        <dependency>
-            <groupId>io.github.quickmsg</groupId>
-            <artifactId>smqtt-metric-prometheus</artifactId>
-            <version>1.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>io.github.quickmsg</groupId>
-            <artifactId>smqtt-metric-influx1</artifactId>
-            <version>1.1.0</version>
-        </dependency>
-
-
     </dependencies>
     <profiles>
         <profile>
