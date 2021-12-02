@@ -1,22 +1,17 @@
 package io.github.quickmsg.metric.api;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author luxurong
  */
 public abstract class WholeCounter implements MetricCounter {
 
-    private AtomicInteger count =  new AtomicInteger();
+    private final AtomicLong count = new AtomicLong();
 
     @Override
-    public int getCounter() {
-        return count.get();
-    }
-
-    @Override
-    public void increment() {
-        callMeter(count.incrementAndGet());
+    public void increment(int index) {
+        callMeter(count.getAndAdd(index) + index);
     }
 
     @Override
@@ -28,5 +23,12 @@ public abstract class WholeCounter implements MetricCounter {
     public void reset() {
         count.set(0);
     }
+
+
+    @Override
+    public long getCounter() {
+        return count.get();
+    }
+
 
 }

@@ -8,34 +8,54 @@ import java.util.concurrent.atomic.LongAdder;
 /**
  * @author luxurong
  */
-public abstract class WindowCounter implements Counter, Runnable {
+public abstract class WindowCounter implements MetricCounter, Runnable {
 
+    private final LongAdder sumCountAdder = new LongAdder();
 
-    private volatile int lastCount = 0;
+    private final LongAdder windowCountAdder = new LongAdder();
 
-    private final LongAdder countAdder = new LongAdder();
+    private volatile long windowSize = 0L;
 
-
-    public WindowCounter(Integer time, TimeUnit timeUnit, String threadName, Scheduler scheduler) {
+    public WindowCounter(Integer time, TimeUnit timeUnit, Scheduler scheduler) {
         scheduler.schedulePeriodically(this, time, time, timeUnit);
         scheduler.start();
     }
 
+    @Override
+    public void reset() {
+        sumCountAdder.reset();
+        windowCountAdder.reset();
+    }
 
     public void run() {
-        int nowCount = getCounter();
-        countAdder.add(nowCount - lastCount);
-        lastCount = nowCount;
+        windowCountAdder.reset();
+    }
+
+    @Override
+    public long getCounter() {
+        return this.sumCountAdder.sum();
     }
 
 
-    public int getLastCount() {
-        return this.lastCount;
+    public long getAllCount() {
+        return this.sumCountAdder.sum();
     }
 
 
-    public int getWindowCount() {
-        return (int) countAdder.sum();
+
+    @Override
+    public void increment(int size) {
+        sumCountAdder.add(size);
+    }
+
+    @Override
+    public void decrement() {
+        throw new UnsupportedOperationException("WindowCounter not support decrement");
+    }
+
+
+    public long getWindowCount() {
+        return  windowCountAdder.sum();
     }
 
 

@@ -437,7 +437,7 @@ public class BootstrapConfig {
         /**
          * influx1.x参数
          */
-        private Influxdb1 influxdb1;
+        private Influxdb influxdb;
     }
 
     /**
@@ -447,7 +447,7 @@ public class BootstrapConfig {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Influxdb1 {
+    public static class Influxdb {
         /**
          * 数据库
          */
@@ -467,6 +467,6 @@ public class BootstrapConfig {
         /**
          * 步长
          */
-        private Integer step;
+        private int step;
     }
 }

@@ -6,7 +6,7 @@ package io.github.quickmsg.metric.api;
  */
 public interface MetricFactory {
 
-    MetricBean getMetricBean(MetricRegistry metricRegistry);
+    MetricManager getMetricManager();
 
 
 }

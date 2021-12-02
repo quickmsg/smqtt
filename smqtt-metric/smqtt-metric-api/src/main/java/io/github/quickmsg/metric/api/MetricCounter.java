@@ -5,15 +5,15 @@ package io.github.quickmsg.metric.api;
  */
 public interface MetricCounter {
 
-    int getCounter();
+    long getCounter();
 
-    void increment();
+    void increment(int size);
 
     void decrement();
 
     void reset();
 
-    void callMeter(int counter);
+    void callMeter(long counter);
 
 
 

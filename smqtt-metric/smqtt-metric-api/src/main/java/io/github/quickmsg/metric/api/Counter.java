@@ -5,11 +5,11 @@ package io.github.quickmsg.metric.api;
  */
 public interface Counter {
 
-    void increment();
+    void increment(int size);
 
-    void decrement();
+    void decrement(int size);
 
-    int  getCounter();
+    long  getCounter();
 
 
 }

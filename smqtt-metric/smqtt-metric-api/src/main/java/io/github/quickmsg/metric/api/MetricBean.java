@@ -1,16 +1,19 @@
 package io.github.quickmsg.metric.api;
 
+import io.github.quickmsg.common.metric.MetricConstant;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Tags;
+
 /**
- *  这里面写对外的聚合数据接口
- *  @author luxurong
+ * @author luxurong
  */
 public interface MetricBean {
 
-    /**
-     * @return return index
-     */
-    String getMetricBeanName();
+    MetricBean Close();
 
+    MeterRegistry getMeterRegistry();
 
-
+    default Tags getTags() {
+        return Tags.empty().and(MetricConstant.COMMON_TAG_NAME, MetricConstant.COMMON_TAG_VALUE);
+    }
 }

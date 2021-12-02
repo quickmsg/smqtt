@@ -3,7 +3,6 @@ package io.github.quickmsg.metric.counter;
 
 import io.github.quickmsg.common.metric.MetricConstant;
 import io.github.quickmsg.common.metric.MetricCounter;
-import io.github.quickmsg.metric.Influx1Metric;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
