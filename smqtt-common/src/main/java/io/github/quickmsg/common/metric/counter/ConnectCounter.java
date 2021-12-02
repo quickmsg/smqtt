@@ -1,4 +1,4 @@
-package io.github.quickmsg.metric;
+package io.github.quickmsg.common.metric.counter;
 
 import io.github.quickmsg.common.metric.CounterType;
 import io.github.quickmsg.common.metric.MetricBean;

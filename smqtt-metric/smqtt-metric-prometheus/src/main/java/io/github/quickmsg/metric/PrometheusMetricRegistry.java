@@ -8,10 +8,9 @@ import java.util.List;
 /**
  * @author luxurong
  */
-public class InfluxDbMetricRegistry extends AbstractMetricRegistry {
+public class PrometheusMetricRegistry  extends AbstractMetricRegistry {
 
-
-    public InfluxDbMetricRegistry(List<MetricCounter> counters) {
-        super(counters);
+    protected PrometheusMetricRegistry(List<MetricCounter> metricCounters) {
+        super(metricCounters);
     }
 }

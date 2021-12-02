@@ -28,6 +28,7 @@ import io.github.quickmsg.core.spi.DefaultProtocolAdaptor;
 import io.github.quickmsg.core.spi.DefaultTopicRegistry;
 import io.github.quickmsg.dsl.RuleDslParser;
 import io.github.quickmsg.metric.InfluxDbMetricFactory;
+import io.github.quickmsg.metric.PrometheusMetricFactory;
 import io.github.quickmsg.rule.source.SourceManager;
 import io.netty.handler.traffic.GlobalChannelTrafficShapingHandler;
 import io.netty.handler.traffic.GlobalTrafficShapingHandler;
@@ -97,17 +98,17 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
 
     private TrafficHandlerLoader trafficHandlerLoader() {
         if (configuration.getGlobalReadWriteSize() == null && configuration.getChannelReadWriteSize() == null) {
-            return new CacheTrafficHandlerLoader(new GlobalTrafficShapingHandler(this.loopResources.onServer(true).next(),60*1000));
+            return new CacheTrafficHandlerLoader(new GlobalTrafficShapingHandler(this.loopResources.onServer(true).next(), 60 * 1000));
         } else if (configuration.getChannelReadWriteSize() == null) {
             String[] limits = configuration.getGlobalReadWriteSize().split(",");
-            return new CacheTrafficHandlerLoader(new GlobalTrafficShapingHandler(this.loopResources.onServer(true), Long.parseLong(limits[1]), Long.parseLong(limits[0]),60*1000));
+            return new CacheTrafficHandlerLoader(new GlobalTrafficShapingHandler(this.loopResources.onServer(true), Long.parseLong(limits[1]), Long.parseLong(limits[0]), 60 * 1000));
         } else if (configuration.getGlobalReadWriteSize() == null) {
             String[] limits = configuration.getChannelReadWriteSize().split(",");
-            return new LazyTrafficHandlerLoader(() -> new GlobalTrafficShapingHandler(this.loopResources.onServer(true), Long.parseLong(limits[1]), Long.parseLong(limits[0]),60*1000));
+            return new LazyTrafficHandlerLoader(() -> new GlobalTrafficShapingHandler(this.loopResources.onServer(true), Long.parseLong(limits[1]), Long.parseLong(limits[0]), 60 * 1000));
         } else {
             String[] globalLimits = configuration.getGlobalReadWriteSize().split(",");
             String[] channelLimits = configuration.getChannelReadWriteSize().split(",");
-            return new CacheTrafficHandlerLoader(new GlobalChannelTrafficShapingHandler(this.loopResources.onServer(true), Long.parseLong(globalLimits[1]), Long.parseLong(globalLimits[0]), Long.parseLong(channelLimits[1]), Long.parseLong(channelLimits[0]),60*1000));
+            return new CacheTrafficHandlerLoader(new GlobalChannelTrafficShapingHandler(this.loopResources.onServer(true), Long.parseLong(globalLimits[1]), Long.parseLong(globalLimits[0]), Long.parseLong(channelLimits[1]), Long.parseLong(channelLimits[0]), 60 * 1000));
         }
     }
 
@@ -147,10 +148,9 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
         return MetricManagerHolder.setMetricManager(Optional.ofNullable(meterConfig).map(config -> {
             switch (config.getMeterType()) {
                 case INFLUXDB:
-                    return MetricManagerHolder.setMetricManager(new InfluxDbMetricFactory(config).getMetricManager());
-                case PROMETHEUS:
-                    //todo  return PROMETHEUS impl
                     return new InfluxDbMetricFactory(config).getMetricManager();
+                case PROMETHEUS:
+                    return new PrometheusMetricFactory(config).getMetricManager();
                 default:
                     return new LocalMetricManager();
             }

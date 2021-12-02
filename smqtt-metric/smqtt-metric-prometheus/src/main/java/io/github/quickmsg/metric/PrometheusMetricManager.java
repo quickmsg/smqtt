@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * @author luxurong
  */
-public class InfluxDbMetricManager implements MetricManager {
+public class PrometheusMetricManager  implements MetricManager {
 
     private final BootstrapConfig.MeterConfig config;
 
@@ -21,9 +21,9 @@ public class InfluxDbMetricManager implements MetricManager {
 
     private final MetricRegistry metricRegistry;
 
-    public InfluxDbMetricManager(BootstrapConfig.MeterConfig config) {
+    public PrometheusMetricManager(BootstrapConfig.MeterConfig config) {
         this.config = config;
-        this.metricBean = new InfluxDbMetricBean(this.config);
+        this.metricBean = new PrometheusMetricBean();
         this.metricRegistry = createMetricRegistry(metricBean);
     }
 
@@ -36,7 +36,7 @@ public class InfluxDbMetricManager implements MetricManager {
         metricCounters.add(new DisConnectCounter(metricBean));
         metricCounters.add(new ReadCounter(metricBean));
         metricCounters.add(new WriteCounter(metricBean));
-        return new InfluxDbMetricRegistry(metricCounters);
+        return new PrometheusMetricRegistry(metricCounters);
     }
 
     @Override
@@ -53,6 +53,4 @@ public class InfluxDbMetricManager implements MetricManager {
     public BootstrapConfig.MeterConfig getMeterConfig() {
         return this.config;
     }
-
-
 }

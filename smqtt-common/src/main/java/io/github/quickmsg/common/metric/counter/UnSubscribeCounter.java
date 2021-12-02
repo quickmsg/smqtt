@@ -1,4 +1,4 @@
-package io.github.quickmsg.metric;
+package io.github.quickmsg.common.metric.counter;
 
 import io.github.quickmsg.common.metric.CounterType;
 import io.github.quickmsg.common.metric.MetricBean;
@@ -8,9 +8,9 @@ import io.github.quickmsg.common.metric.WholeCounter;
 /**
  * @author luxurong
  */
-public class PublishCounter extends WholeCounter {
+public class UnSubscribeCounter extends WholeCounter {
 
-    public PublishCounter(MetricBean metricBean) {
+    public UnSubscribeCounter(MetricBean metricBean) {
         super(metricBean);
     }
 
@@ -21,7 +21,6 @@ public class PublishCounter extends WholeCounter {
 
     @Override
     public CounterType getCounterType() {
-        return CounterType.PUBLISH;
+        return CounterType.UN_SUBSCRIBE;
     }
-
 }
