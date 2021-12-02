@@ -4,12 +4,13 @@ import io.github.quickmsg.common.channel.MqttChannel;
 import io.github.quickmsg.common.context.ReceiveContext;
 import io.github.quickmsg.common.enums.ChannelStatus;
 import io.github.quickmsg.common.message.*;
+import io.github.quickmsg.common.metric.CounterType;
+import io.github.quickmsg.common.metric.MetricManagerHolder;
 import io.github.quickmsg.common.protocol.Protocol;
 import io.github.quickmsg.common.topic.SubscribeTopic;
 import io.github.quickmsg.common.topic.TopicRegistry;
 import io.github.quickmsg.common.utils.MessageUtils;
 import io.netty.handler.codec.mqtt.MqttMessageType;
-import io.netty.handler.codec.mqtt.MqttPubAckMessage;
 import io.netty.handler.codec.mqtt.MqttPublishMessage;
 import io.netty.handler.codec.mqtt.MqttPublishVariableHeader;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +43,7 @@ public class PublishProtocol implements Protocol<MqttPublishMessage> {
     @Override
     public Mono<Void> parseProtocol(SmqttMessage<MqttPublishMessage> smqttMessage , MqttChannel mqttChannel, ContextView contextView) {
         try {
+            MetricManagerHolder.metricManager.getMetricRegistry().getMetricCounter(CounterType.PUBLISH).increment();
             MqttPublishMessage message = smqttMessage.getMessage();
             ReceiveContext<?> receiveContext = contextView.get(ReceiveContext.class);
             TopicRegistry topicRegistry = receiveContext.getTopicRegistry();

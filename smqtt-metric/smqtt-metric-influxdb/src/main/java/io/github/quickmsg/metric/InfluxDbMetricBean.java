@@ -90,8 +90,4 @@ public class InfluxDbMetricBean implements MetricBean, InfluxConfig {
         return this.meterRegistry;
     }
 
-    @Override
-    public Tags getTags() {
-        return Tags.empty().and(MetricConstant.COMMON_TAG_NAME, MetricConstant.COMMON_TAG_VALUE);
-    }
 }
