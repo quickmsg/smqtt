@@ -134,12 +134,12 @@
             <dependency>
                 <groupId>io.micrometer</groupId>
                 <artifactId>micrometer-registry-prometheus</artifactId>
-                <version>1.7.5</version>
+                <version>1.8.0</version>
             </dependency>
             <dependency>
                 <groupId>io.micrometer</groupId>
                 <artifactId>micrometer-registry-influx</artifactId>
-                <version>1.7.5</version>
+                <version>1.8.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
