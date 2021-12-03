@@ -3,10 +3,7 @@ package io.github.quickmsg.common.metric;
 /**
  * @author luxurong
  */
-public interface
-
-
-MetricCounter {
+public interface MetricCounter {
 
     long getCounter();
 
