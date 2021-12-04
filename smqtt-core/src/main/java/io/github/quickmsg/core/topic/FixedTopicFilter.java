@@ -52,6 +52,7 @@ public class FixedTopicFilter implements TopicFilter {
             subscribeNumber.add(-1);
             subscribeTopic.unLinkSubscribe();
             MetricManagerHolder.metricManager.getMetricRegistry().getMetricCounter(CounterType.SUBSCRIBE).decrement();
+
         }
     }
 

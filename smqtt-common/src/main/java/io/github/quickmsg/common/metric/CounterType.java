@@ -8,13 +8,16 @@ import lombok.Getter;
 @Getter
 public enum CounterType {
 
-    PUBLISH("smqtt.publish.count"),
-    CONNECT("smqtt.connect.count"),
+    CONNECT("smqtt.connection.count"),
     SUBSCRIBE("smqtt.subscribe.count"),
-    UN_SUBSCRIBE("smqtt.unscribe.count"),
-    DIS_CONNECT("smqtt.disconnect.count"),
-    READ("read"),
-    WRITE("write");
+
+    PUBLISH_EVENT("smqtt.publish.event.count"),
+    CONNECT_EVENT("smqtt.connect.event.count"),
+    SUBSCRIBE_EVENT("smqtt.subscribe.event.count"),
+    UN_SUBSCRIBE_EVENT("smqtt.unscribe.event.count"),
+    DIS_CONNECT_EVENT("smqtt.disconnect.event.count"),
+    CLOSE_EVENT("smqtt.close.event.count");
+
     private final String desc;
 
     CounterType(String desc) {

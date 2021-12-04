@@ -7,11 +7,15 @@ import io.github.quickmsg.common.metric.WholeCounter;
 /**
  * @author luxurong
  */
-public class SubscribeCounter extends WholeCounter {
+public class TotalCounter extends WholeCounter {
 
-    public SubscribeCounter(MetricBean metricBean) {
+    private final CounterType counterType;
+
+    public TotalCounter(MetricBean metricBean, CounterType counterType) {
         super(metricBean);
+        this.counterType = counterType;
     }
+
 
     @Override
     public void callMeter(long counter) {
@@ -20,7 +24,6 @@ public class SubscribeCounter extends WholeCounter {
 
     @Override
     public CounterType getCounterType() {
-        return CounterType.SUBSCRIBE;
+        return this.counterType;
     }
-
 }

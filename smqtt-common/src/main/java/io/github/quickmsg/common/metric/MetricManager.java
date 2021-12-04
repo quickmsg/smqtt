@@ -2,6 +2,7 @@ package io.github.quickmsg.common.metric;
 
 import io.github.quickmsg.common.config.BootstrapConfig;
 import io.github.quickmsg.common.context.ContextHolder;
+import io.github.quickmsg.common.metric.counter.EventCounter;
 import io.github.quickmsg.common.utils.FormatUtils;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
 import io.netty.handler.traffic.TrafficCounter;
@@ -17,10 +18,7 @@ import java.lang.management.RuntimeMXBean;
 import java.lang.management.ThreadMXBean;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * @author luxurong
@@ -94,11 +92,14 @@ public interface MetricManager {
 
     default Map<String, Object> getCounterMetric() {
         Map<String, Object> metrics = new HashMap<>();
-        metrics.put("connect_size", getMetricRegistry().getMetricCounter(CounterType.CONNECT).getCounter());
-        metrics.put("subscribe_size", getMetricRegistry().getMetricCounter(CounterType.SUBSCRIBE).getCounter());
-        metrics.put("publish_size", getMetricRegistry().getMetricCounter(CounterType.PUBLISH).getCounter());
-        metrics.put("disconnect_size", getMetricRegistry().getMetricCounter(CounterType.DIS_CONNECT).getCounter());
-        metrics.put("un_subscribe_size", getMetricRegistry().getMetricCounter(CounterType.UN_SUBSCRIBE).getCounter());
+        metrics.put("all_connect_size", getMetricRegistry().getMetricCounter(CounterType.CONNECT).getCounter());
+        metrics.put("all_subscribe_size", getMetricRegistry().getMetricCounter(CounterType.SUBSCRIBE).getCounter());
+        metrics.put("connect_size", getMetricRegistry().getMetricCounter(CounterType.CONNECT_EVENT).getCounter());
+        metrics.put("subscribe_size", getMetricRegistry().getMetricCounter(CounterType.SUBSCRIBE_EVENT).getCounter());
+        metrics.put("publish_size", getMetricRegistry().getMetricCounter(CounterType.PUBLISH_EVENT).getCounter());
+        metrics.put("disconnect_size", getMetricRegistry().getMetricCounter(CounterType.DIS_CONNECT_EVENT).getCounter());
+        metrics.put("un_subscribe_size", getMetricRegistry().getMetricCounter(CounterType.UN_SUBSCRIBE_EVENT).getCounter());
+        metrics.put("un_close_size", getMetricRegistry().getMetricCounter(CounterType.CLOSE_EVENT).getCounter());
         TrafficCounter trafficCounter = ContextHolder.getReceiveContext().getTrafficHandlerLoader().get().trafficCounter();
         metrics.put("read_size", FormatUtils.formatByte(trafficCounter.cumulativeReadBytes()));
         metrics.put("read_second_size", FormatUtils.formatByte(trafficCounter.currentReadBytes()));
@@ -115,5 +116,16 @@ public interface MetricManager {
         }
     }
 
+
+    default List<MetricCounter> createMetricRegistry(MetricBean metricBean) {
+        List<MetricCounter> metricCounters = new ArrayList<>();
+        metricCounters.add(new EventCounter(metricBean,CounterType.CONNECT_EVENT));
+        metricCounters.add(new EventCounter(metricBean,CounterType.PUBLISH_EVENT));
+        metricCounters.add(new EventCounter(metricBean,CounterType.SUBSCRIBE_EVENT));
+        metricCounters.add(new EventCounter(metricBean,CounterType.UN_SUBSCRIBE_EVENT));
+        metricCounters.add(new EventCounter(metricBean,CounterType.DIS_CONNECT_EVENT));
+        metricCounters.add(new EventCounter(metricBean,CounterType.CLOSE_EVENT));
+        return metricCounters;
+    }
 
 }

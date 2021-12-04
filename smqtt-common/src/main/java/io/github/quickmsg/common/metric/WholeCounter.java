@@ -13,6 +13,11 @@ public abstract class WholeCounter implements MetricCounter {
 
     protected WholeCounter(MetricBean metricBean) {
         this.metricBean = metricBean;
+        initCount();
+    }
+
+    public void initCount() {
+        getMetricBean().getMeterRegistry().gauge(getCounterType().getDesc(), count);
     }
 
     @Override

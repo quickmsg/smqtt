@@ -12,6 +12,7 @@ import io.github.quickmsg.common.message.MqttMessageBuilder;
 import io.github.quickmsg.common.message.SmqttMessage;
 import io.github.quickmsg.common.metric.CounterType;
 import io.github.quickmsg.common.metric.MetricManager;
+import io.github.quickmsg.common.metric.MetricManagerHolder;
 import io.github.quickmsg.common.protocol.Protocol;
 import io.github.quickmsg.common.topic.SubscribeTopic;
 import io.github.quickmsg.common.topic.TopicRegistry;
@@ -52,6 +53,7 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
     public Mono<Void> parseProtocol(SmqttMessage<MqttConnectMessage> smqttMessage, MqttChannel mqttChannel, ContextView contextView) {
         try {
             MqttConnectMessage message = smqttMessage.getMessage();
+            MetricManagerHolder.metricManager.getMetricRegistry().getMetricCounter(CounterType.CONNECT_EVENT).increment();
             MqttReceiveContext mqttReceiveContext = (MqttReceiveContext) contextView.get(ReceiveContext.class);
             EventRegistry eventRegistry = mqttReceiveContext.getEventRegistry();
             MqttConnectVariableHeader mqttConnectVariableHeader = message.variableHeader();

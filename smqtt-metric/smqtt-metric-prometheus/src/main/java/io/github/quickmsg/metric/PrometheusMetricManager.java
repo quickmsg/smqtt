@@ -21,21 +21,9 @@ public class PrometheusMetricManager  implements MetricManager {
     public PrometheusMetricManager(BootstrapConfig.MeterConfig config) {
         this.config = config;
         this.metricBean = new PrometheusMetricBean();
-        this.metricRegistry = createMetricRegistry(metricBean);
+        this.metricRegistry = new PrometheusMetricRegistry(createMetricRegistry(metricBean));
     }
 
-    private MetricRegistry createMetricRegistry(MetricBean metricBean) {
-        List<MetricCounter> metricCounters = new ArrayList<>();
-        metricCounters.add(new WriteCounter(metricBean));
-        metricCounters.add(new ConnectCounter(metricBean));
-        metricCounters.add(new SubscribeCounter(metricBean));
-        metricCounters.add(new UnSubscribeCounter(metricBean));
-        metricCounters.add(new DisConnectCounter(metricBean));
-        metricCounters.add(new ReadCounter(metricBean));
-        metricCounters.add(new WriteCounter(metricBean));
-        metricCounters.add(new PublishCounter(metricBean));;
-        return new PrometheusMetricRegistry(metricCounters);
-    }
 
     @Override
     public MetricRegistry getMetricRegistry() {

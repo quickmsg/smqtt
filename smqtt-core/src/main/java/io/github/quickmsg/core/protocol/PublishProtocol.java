@@ -43,7 +43,8 @@ public class PublishProtocol implements Protocol<MqttPublishMessage> {
     @Override
     public Mono<Void> parseProtocol(SmqttMessage<MqttPublishMessage> smqttMessage , MqttChannel mqttChannel, ContextView contextView) {
         try {
-            MetricManagerHolder.metricManager.getMetricRegistry().getMetricCounter(CounterType.PUBLISH).increment();
+
+            MetricManagerHolder.metricManager.getMetricRegistry().getMetricCounter(CounterType.PUBLISH_EVENT).increment();
             MqttPublishMessage message = smqttMessage.getMessage();
             ReceiveContext<?> receiveContext = contextView.get(ReceiveContext.class);
             TopicRegistry topicRegistry = receiveContext.getTopicRegistry();

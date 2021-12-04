@@ -8,12 +8,19 @@ import io.micrometer.core.instrument.Counter;
 /**
  * @author luxurong
  */
-public class DisConnectCounter extends WholeCounter {
+public class EventCounter  extends WholeCounter {
 
-    private final Counter counter;
+    private final CounterType counterType;
 
-    public DisConnectCounter(MetricBean metricBean) {
+    private Counter counter;
+
+    public EventCounter(MetricBean metricBean, CounterType counterType) {
         super(metricBean);
+        this.counterType = counterType;
+    }
+
+    @Override
+    public void initCount() {
         this.counter =
                 getMetricBean()
                         .getMeterRegistry().counter(getCounterType().getDesc(), getMetricBean().getTags());
@@ -24,9 +31,8 @@ public class DisConnectCounter extends WholeCounter {
         counter.increment();
     }
 
-
     @Override
     public CounterType getCounterType() {
-        return CounterType.DIS_CONNECT;
+        return this.counterType;
     }
 }

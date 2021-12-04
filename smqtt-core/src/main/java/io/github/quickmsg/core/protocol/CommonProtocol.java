@@ -54,7 +54,7 @@ public class CommonProtocol implements Protocol<MqttMessage> {
                 return mqttChannel.write(MqttMessageBuilder.buildPongMessage(), false);
             case DISCONNECT:
                 return Mono.fromRunnable(() -> {
-                    MetricManagerHolder.metricManager.getMetricRegistry().getMetricCounter(CounterType.DIS_CONNECT).increment();
+                    MetricManagerHolder.metricManager.getMetricRegistry().getMetricCounter(CounterType.DIS_CONNECT_EVENT).increment();
                     mqttChannel.setWill(null);
                     Connection connection;
                     if (!(connection = mqttChannel.getConnection()).isDisposed()) {

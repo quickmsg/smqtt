@@ -35,7 +35,7 @@ public class UnSubscribeProtocol implements Protocol<MqttUnsubscribeMessage> {
     public Mono<Void> parseProtocol(SmqttMessage<MqttUnsubscribeMessage> smqttMessage , MqttChannel mqttChannel, ContextView contextView) {
         MqttUnsubscribeMessage message = smqttMessage.getMessage();
         return Mono.fromRunnable(() -> {
-            MetricManagerHolder.metricManager.getMetricRegistry().getMetricCounter(CounterType.UN_SUBSCRIBE).increment();
+            MetricManagerHolder.metricManager.getMetricRegistry().getMetricCounter(CounterType.UN_SUBSCRIBE_EVENT).increment();
             ReceiveContext<?> receiveContext = contextView.get(ReceiveContext.class);
             TopicRegistry topicRegistry = receiveContext.getTopicRegistry();
             message.payload()
