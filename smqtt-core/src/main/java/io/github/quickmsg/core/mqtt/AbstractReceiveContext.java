@@ -118,20 +118,21 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
     }
 
     private MessageRegistry messageRegistry() {
-        return Optional.ofNullable(MessageRegistry.INSTANCE).orElse(new DefaultMessageRegistry());
+        return Optional.ofNullable(MessageRegistry.INSTANCE).orElseGet(DefaultMessageRegistry::new);
     }
 
     private PasswordAuthentication basicAuthentication() {
         AbstractConfiguration abstractConfiguration = castConfiguration(configuration);
-        return Optional.ofNullable(PasswordAuthentication.INSTANCE).orElse(abstractConfiguration.getReactivePasswordAuth());
+        return Optional.ofNullable(PasswordAuthentication.INSTANCE).orElseGet(abstractConfiguration::getReactivePasswordAuth);
     }
 
     private ChannelRegistry channelRegistry() {
-        return Optional.ofNullable(ChannelRegistry.INSTANCE).orElse(new DefaultChannelRegistry());
+        return Optional.ofNullable(ChannelRegistry.INSTANCE).orElseGet(DefaultChannelRegistry::new);
     }
 
     private TopicRegistry topicRegistry() {
-        return Optional.ofNullable(TopicRegistry.INSTANCE).orElse(new DefaultTopicRegistry());
+        return Optional.ofNullable(TopicRegistry.INSTANCE)
+                .orElse(new DefaultTopicRegistry());
     }
 
     private ProtocolAdaptor protocolAdaptor() {
@@ -139,7 +140,7 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
     }
 
     private ClusterRegistry clusterRegistry() {
-        return Optional.ofNullable(ClusterRegistry.INSTANCE).orElse(new InJvmClusterRegistry());
+        return Optional.ofNullable(ClusterRegistry.INSTANCE).orElseGet(InJvmClusterRegistry::new);
     }
 
 
