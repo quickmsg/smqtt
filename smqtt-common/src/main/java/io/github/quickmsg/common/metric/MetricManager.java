@@ -3,6 +3,7 @@ package io.github.quickmsg.common.metric;
 import io.github.quickmsg.common.config.BootstrapConfig;
 import io.github.quickmsg.common.context.ContextHolder;
 import io.github.quickmsg.common.metric.counter.EventCounter;
+import io.github.quickmsg.common.metric.counter.TotalCounter;
 import io.github.quickmsg.common.utils.FormatUtils;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
 import io.netty.handler.traffic.TrafficCounter;
@@ -125,6 +126,8 @@ public interface MetricManager {
         metricCounters.add(new EventCounter(metricBean,CounterType.UN_SUBSCRIBE_EVENT));
         metricCounters.add(new EventCounter(metricBean,CounterType.DIS_CONNECT_EVENT));
         metricCounters.add(new EventCounter(metricBean,CounterType.CLOSE_EVENT));
+        metricCounters.add(new TotalCounter(metricBean,CounterType.CONNECT));
+        metricCounters.add(new TotalCounter(metricBean,CounterType.SUBSCRIBE));
         return metricCounters;
     }
 

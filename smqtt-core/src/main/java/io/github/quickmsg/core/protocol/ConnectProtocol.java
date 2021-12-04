@@ -97,7 +97,7 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
                 /*registry unread event close channel */
 
                 mqttChannel.getConnection().onReadIdle((long) mqttConnectVariableHeader.keepAliveTimeSeconds() * MILLI_SECOND_PERIOD << 1,
-                        () -> close(mqttChannel, mqttReceiveContext, eventRegistry));
+                        () -> close(metricManager, mqttChannel, mqttReceiveContext, eventRegistry));
 
                 /*registry will message send */
                 mqttChannel.registryClose(channel -> Optional.ofNullable(mqttChannel.getWill())
@@ -124,7 +124,7 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
                 channelRegistry.registry(mqttChannel.getClientIdentifier(), mqttChannel);
 
                 /* registry close mqtt channel event*/
-                mqttChannel.registryClose(channel -> this.close(mqttChannel, mqttReceiveContext, eventRegistry));
+                mqttChannel.registryClose(channel -> this.close(metricManager, mqttChannel, mqttReceiveContext, eventRegistry));
 
                 metricManager.getMetricRegistry().getMetricCounter(CounterType.CONNECT).increment();
 
@@ -158,7 +158,8 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
                 });
     }
 
-    private void close(MqttChannel mqttChannel, MqttReceiveContext mqttReceiveContext, EventRegistry eventRegistry) {
+    private void close(MetricManager metricManager, MqttChannel mqttChannel, MqttReceiveContext mqttReceiveContext, EventRegistry eventRegistry) {
+
         log.info(" 【{}】【{}】 【{}】",
                 Thread.currentThread().getName(),
                 "CLOSE",
@@ -169,6 +170,7 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
             mqttReceiveContext.getChannelRegistry().close(mqttChannel);
         }
         eventRegistry.registry(Event.CLOSE, mqttChannel, null, mqttReceiveContext);
+        metricManager.getMetricRegistry().getMetricCounter(CounterType.CLOSE_EVENT).increment();
         mqttChannel.close().subscribe();
     }
 

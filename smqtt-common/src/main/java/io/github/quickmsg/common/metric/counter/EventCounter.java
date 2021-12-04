@@ -10,13 +10,14 @@ import io.micrometer.core.instrument.Counter;
  */
 public class EventCounter  extends WholeCounter {
 
-    private final CounterType counterType;
+    private  CounterType counterType;
 
     private Counter counter;
 
     public EventCounter(MetricBean metricBean, CounterType counterType) {
         super(metricBean);
         this.counterType = counterType;
+        initCount();
     }
 
     @Override

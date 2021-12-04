@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 public enum CounterType {
 
-    CONNECT("smqtt.connection.count"),
+    CONNECT("smqtt.connect.count"),
     SUBSCRIBE("smqtt.subscribe.count"),
 
     PUBLISH_EVENT("smqtt.publish.event.count"),

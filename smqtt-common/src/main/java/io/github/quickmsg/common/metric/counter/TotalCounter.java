@@ -14,6 +14,7 @@ public class TotalCounter extends WholeCounter {
     public TotalCounter(MetricBean metricBean, CounterType counterType) {
         super(metricBean);
         this.counterType = counterType;
+        initCount();
     }
 
 

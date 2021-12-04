@@ -7,13 +7,13 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public abstract class WholeCounter implements MetricCounter {
 
+
     private final AtomicLong count = new AtomicLong();
 
     private final MetricBean metricBean;
 
     protected WholeCounter(MetricBean metricBean) {
         this.metricBean = metricBean;
-        initCount();
     }
 
     public void initCount() {
