@@ -58,7 +58,7 @@ smqtt:
     dataSourceCacheServerConfiguration: true
     dataSourceElideSetAutoCommits: true
     dataSourceMaintainTimeStats: false
-  redis: # redis 请参考 https://doc.smqtt.cc/%E5%85%B6%E4%BB%96/1.store.html 【如果没有引入相关依赖请移除此配置】
+  redis: # redis 请参考 https://wiki.smqtt.cc/%E5%85%B6%E4%BB%96/1.store.html 【如果没有引入相关依赖请移除此配置】
     mode: single
     database: 0
     password:
