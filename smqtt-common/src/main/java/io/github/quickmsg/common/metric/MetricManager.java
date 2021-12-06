@@ -109,6 +109,20 @@ public interface MetricManager {
         return metrics;
     }
 
+
+
+
+    default Map<String, Object> getEventMetric() {
+        Map<String, Object> metrics = new HashMap<>();
+        metrics.put("connect_size", getMetricRegistry().getMetricCounter(CounterType.CONNECT_EVENT).getCounter());
+        metrics.put("subscribe_size", getMetricRegistry().getMetricCounter(CounterType.SUBSCRIBE_EVENT).getCounter());
+        metrics.put("publish_size", getMetricRegistry().getMetricCounter(CounterType.PUBLISH_EVENT).getCounter());
+        metrics.put("disconnect_size", getMetricRegistry().getMetricCounter(CounterType.DIS_CONNECT_EVENT).getCounter());
+        metrics.put("un_subscribe_size", getMetricRegistry().getMetricCounter(CounterType.UN_SUBSCRIBE_EVENT).getCounter());
+        metrics.put("close_size", getMetricRegistry().getMetricCounter(CounterType.CLOSE_EVENT).getCounter());
+        return metrics;
+    }
+
     default String scrape() {
         if (getMetricBean().getMeterRegistry() instanceof PrometheusMeterRegistry) {
             return ((PrometheusMeterRegistry) getMetricBean().getMeterRegistry()).scrape(TextFormat.CONTENT_TYPE_OPENMETRICS_100);

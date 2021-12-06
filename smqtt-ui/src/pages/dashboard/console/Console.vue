@@ -123,6 +123,15 @@
             :pagination=false
         >
         </standard-table>
+
+              <div style="margin-top: 30px;font-size: medium">事件统计</div>
+                <standard-table
+                    :columns="eventColumns"
+                    :dataSource="eventInfo"
+                    :row-key="(r,i)=>{i.toString()}"
+                    :pagination=false
+                >
+                </standard-table>
     </div>
 </template>
 
@@ -156,70 +165,104 @@
 const counterColumns = [
     {
         title: '连接数',
-        dataIndex: 'all_connect_size',
+        dataIndex: 'all_connect_size'
     },
     {
         title: '订阅数',
-        dataIndex: 'all_subscribe_size',
+        dataIndex: 'all_subscribe_size'
      },
     {
         title: '写字节数',
-        dataIndex: 'write_size',
+        dataIndex: 'write_size'
     },
     {
-        title: '写字节数/秒',
-        dataIndex: 'write_second_size',
+        title: '写字节数/分',
+        dataIndex: 'write_second_size'
     },
     {
         title: '读字节数',
-        dataIndex: 'read_size',
+        dataIndex: 'read_size'
     },
     {
-        title: '读字节数/秒',
-        dataIndex: 'read_second_size',
+        title: '读字节数/分',
+        dataIndex: 'read_second_size'
     }
 
 ]
+
+const eventColumns = [
+  {
+        title: 'connect',
+        dataIndex: 'connect_size',
+        key: 'connect_size'
+   },
+    {
+        title: 'subscribe',
+        dataIndex: 'subscribe_size',
+            key: 'subscribe_size'
+     },
+    {
+        title: 'publish',
+        dataIndex: 'publish_size',
+         key: 'publish_size'
+    },
+    {
+        title: 'disconnect',
+        dataIndex: 'disconnect_size',
+               key: 'disconnect_size'
+    },
+    {
+        title: 'un_subscribe',
+        dataIndex: 'un_subscribe_size',
+          key: 'un_subscribe_size'
+    },
+    {
+        title: 'close',
+        dataIndex: 'close_size',
+                key: 'close_size'
+    }
+]
+
 const heapColumns = [
   {
     title: '最大可用堆内存',
     dataIndex: 'heap-max',
-    key: 'heap-max',
+    key: 'heap-max'
   },
   {
     title: '初始化堆内存',
     dataIndex: 'heap-init',
-    key: 'heap-init',
+    key: 'heap-init'
   },
   {
     title: '已用堆内存',
     dataIndex: 'heap-used',
-    key: 'heap-used',
+    key: 'heap-used'
   },
   {
     title: '已提交堆内存',
     dataIndex: 'heap-commit',
-    key: 'heap-commit',
+    key: 'heap-commit'
   },
   {
     title: '最大可用非堆内存',
     dataIndex: 'no_heap-max',
-    key: 'no_heap-max',
+    key: 'no_heap-max'
   },
   {
     title: '初始化非堆内存',
     dataIndex: 'no_heap-init',
-    key: 'no_heap-init',
+    key: 'no_heap-init'
   },
   {
     title: '已用非堆内存',
     dataIndex: 'no_heap-used',
-    key: 'no_heap-used',
+    key: 'no_heap-used'
   },
   {
     title: '已提交非堆内存',
     dataIndex: 'no_heap-commit',
-    key: 'no_heap-commit',
+    key: 'no_heap-commit'
   },
 ]
 export default {
@@ -229,6 +272,7 @@ export default {
         return {
             columns: columns,
             counterColumns: counterColumns,
+            eventColumns: eventColumns,
             heapColumns:heapColumns,
             isCluster:false,
             dataSource: [],
@@ -238,6 +282,7 @@ export default {
             jvmInfo:{},
             cpuInfo:{},
             counterInfo:[],
+            eventInfo:[],
             heapInfo:[],
         }
     },
@@ -305,6 +350,7 @@ export default {
             let jvm = `http://${host}:60000/smqtt/monitor/jvm`
             let cpu = `http://${host}:60000/smqtt/monitor/cpu`
             let counter = `http://${host}:60000/smqtt/monitor/counter`
+            let event = `http://${host}:60000/smqtt/monitor/event`
             let options = {
                 headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'},
             }
@@ -318,6 +364,9 @@ export default {
             axios.get(counter,options).then(res=>{
                 this.counterInfo = new Array(res.data)
             })
+            axios.get(event,options).then(res=>{
+                 this.eventInfo = new Array(res.data)
+             })
             if (this.timer) {
                 clearTimeout(this.timer)
             }

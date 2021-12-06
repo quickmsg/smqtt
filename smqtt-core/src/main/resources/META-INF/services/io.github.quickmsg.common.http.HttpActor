@@ -22,3 +22,4 @@ io.github.quickmsg.core.http.actors.source.SourceUpdateActor
 io.github.quickmsg.core.http.actors.rule.RuleTypeActor
 io.github.quickmsg.core.http.actors.source.SourceTypeActor
 io.github.quickmsg.core.http.actors.PrometheusActor
+io.github.quickmsg.core.http.actors.EventHttpActor
