@@ -160,7 +160,7 @@ SMQTT基于reactor-netty(spring-webflux底层依赖)开发，底层采用Reactor
 
 2. 准备配置文件 config.yaml
 
-   [config.yaml](config.yaml)
+   [config.yaml](config/config.yaml)
 
 3. 启动服务
 
