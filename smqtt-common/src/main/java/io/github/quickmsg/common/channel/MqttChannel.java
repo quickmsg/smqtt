@@ -81,6 +81,11 @@ public class MqttChannel {
     }
 
 
+    public boolean isActive() {
+        return !connection.isDisposed();
+    }
+
+
     public static MqttChannel init(Connection connection) {
         MqttChannel mqttChannel = new MqttChannel();
         mqttChannel.setTopics(new CopyOnWriteArraySet<>());
@@ -327,7 +332,7 @@ public class MqttChannel {
                     replyMqttMessageMap.computeIfAbsent(message.fixedHeader().messageType(), mqttMessageType -> new ConcurrentHashMap<>(8)).put(messageId,
                             mqttChannel.write(Mono.fromCallable(() -> getDupMessage(message)))
                                     .delaySubscription(Duration.ofSeconds(5))
-                                    .repeat(10)
+                                    .repeat(10,mqttChannel::isActive)
                                     .doOnError(error -> {
                                         MessageUtils.safeRelease(message);
                                         log.error("offerReply", error);
