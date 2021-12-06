@@ -37,7 +37,7 @@ SMQTT基于reactor-netty(spring-webflux底层依赖)开发，底层采用Reactor
 12. 容器化支持 
     > 默认镜像最新tag: 1ssqq1lxr/smqtt
 13. 持久化支持（session 保留消息）
-14. 规则引擎支持(文档需要赞助提供)
+14. 规则引擎支持
 15. 支持springboot starter启动
 16. 管理后台
     > 请参考smqtt文档如何启动管理后台
