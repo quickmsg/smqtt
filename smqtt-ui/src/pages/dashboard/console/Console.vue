@@ -156,8 +156,12 @@
 const counterColumns = [
     {
         title: '连接数',
-        dataIndex: 'connect_size',
+        dataIndex: 'all_connect_size',
     },
+    {
+        title: '订阅数',
+        dataIndex: 'all_subscribe_size',
+     },
     {
         title: '写字节数',
         dataIndex: 'write_size',
