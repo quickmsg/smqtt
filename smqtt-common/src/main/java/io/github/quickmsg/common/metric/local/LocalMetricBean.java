@@ -9,20 +9,17 @@ import io.micrometer.core.instrument.logging.LoggingMeterRegistry;
  */
 public class LocalMetricBean implements MetricBean {
 
-    private final MeterRegistry meterRegistry;
 
     public LocalMetricBean() {
-        this.meterRegistry = new LoggingMeterRegistry();
     }
 
     @Override
     public MetricBean Close() {
-        meterRegistry.close();
         return this;
     }
 
     @Override
     public MeterRegistry getMeterRegistry() {
-        return this.meterRegistry;
+        return null;
     }
 }
