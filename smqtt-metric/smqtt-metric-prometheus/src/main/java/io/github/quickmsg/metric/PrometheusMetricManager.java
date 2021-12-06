@@ -1,16 +1,14 @@
 package io.github.quickmsg.metric;
 
 import io.github.quickmsg.common.config.BootstrapConfig;
-import io.github.quickmsg.common.metric.*;
-import io.github.quickmsg.common.metric.counter.*;
-
-import java.util.ArrayList;
-import java.util.List;
+import io.github.quickmsg.common.metric.MetricBean;
+import io.github.quickmsg.common.metric.MetricManager;
+import io.github.quickmsg.common.metric.MetricRegistry;
 
 /**
  * @author luxurong
  */
-public class PrometheusMetricManager  implements MetricManager {
+public class PrometheusMetricManager implements MetricManager {
 
     private final BootstrapConfig.MeterConfig config;
 
