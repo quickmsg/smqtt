@@ -12,7 +12,7 @@ import io.github.quickmsg.common.context.ReceiveContext;
 import io.github.quickmsg.common.enums.Event;
 import io.github.quickmsg.common.message.EventRegistry;
 import io.github.quickmsg.common.message.MessageRegistry;
-import io.github.quickmsg.common.metric.LocalMetricManager;
+import io.github.quickmsg.common.metric.local.LocalMetricManager;
 import io.github.quickmsg.common.metric.MetricManager;
 import io.github.quickmsg.common.metric.MetricManagerHolder;
 import io.github.quickmsg.common.protocol.ProtocolAdaptor;

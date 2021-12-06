@@ -2,8 +2,6 @@ package io.github.quickmsg.common.metric;
 
 import io.github.quickmsg.common.config.BootstrapConfig;
 import io.github.quickmsg.common.context.ContextHolder;
-import io.github.quickmsg.common.metric.counter.EventCounter;
-import io.github.quickmsg.common.metric.counter.TotalCounter;
 import io.github.quickmsg.common.utils.FormatUtils;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
 import io.netty.handler.traffic.TrafficCounter;
