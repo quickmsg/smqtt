@@ -21,24 +21,10 @@ public class LocalMetricManager implements MetricManager {
         };
     }
 
-    @Override
-    public List<MetricCounter> createMetricRegistry(MetricBean metricBean) {
-        List<MetricCounter> metricCounters = new ArrayList<>();
-        metricCounters.add(new EventCounter(metricBean, CounterType.CONNECT_EVENT));
-        metricCounters.add(new EventCounter(metricBean, CounterType.PUBLISH_EVENT));
-        metricCounters.add(new EventCounter(metricBean, CounterType.SUBSCRIBE_EVENT));
-        metricCounters.add(new EventCounter(metricBean, CounterType.UN_SUBSCRIBE_EVENT));
-        metricCounters.add(new EventCounter(metricBean, CounterType.DIS_CONNECT_EVENT));
-        metricCounters.add(new EventCounter(metricBean, CounterType.CLOSE_EVENT));
-        metricCounters.add(new TotalCounter(metricBean, CounterType.CONNECT));
-        metricCounters.add(new TotalCounter(metricBean, CounterType.SUBSCRIBE));
-        return metricCounters;
-    }
-
 
     @Override
     public MetricBean getMetricBean() {
-        return null;
+        return new LocalMetricBean();
     }
 
     @Override
