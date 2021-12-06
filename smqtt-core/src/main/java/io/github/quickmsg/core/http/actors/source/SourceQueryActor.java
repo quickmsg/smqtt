@@ -25,7 +25,6 @@ import java.util.Map;
  * 数据源查询
  *
  * @author zhaopeng
- * @date 2021/10/20
  */
 @Router(value = "/smqtt/sourceQuery", type = HttpType.POST)
 @Slf4j

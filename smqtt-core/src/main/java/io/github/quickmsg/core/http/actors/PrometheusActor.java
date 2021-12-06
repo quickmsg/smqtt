@@ -17,7 +17,6 @@ import reactor.netty.http.server.HttpServerResponse;
  * 监控指标
  *
  * @author easy
- * @date 2021/10/30
  */
 @Router(value = "/smqtt/meter", type = HttpType.GET)
 @Slf4j

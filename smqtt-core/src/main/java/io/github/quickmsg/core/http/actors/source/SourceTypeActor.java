@@ -22,7 +22,6 @@ import java.util.List;
  * 数据源枚举
  *
  * @author zhaopeng
- * @date 2021/10/24
  */
 @Router(value = "/smqtt/sourceType", type = HttpType.GET)
 @Slf4j

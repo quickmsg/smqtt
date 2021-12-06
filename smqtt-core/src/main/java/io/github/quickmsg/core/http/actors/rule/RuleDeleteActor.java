@@ -20,7 +20,6 @@ import java.nio.charset.StandardCharsets;
  * 规则删除
  *
  * @author zhaopeng
- * @date 2021/10/20
  */
 @Router(value = "/smqtt/ruleDelete", type = HttpType.POST)
 @Slf4j

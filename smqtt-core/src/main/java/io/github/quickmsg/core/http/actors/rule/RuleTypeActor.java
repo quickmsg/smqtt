@@ -22,7 +22,6 @@ import java.util.List;
  * 规则枚举
  *
  * @author zhaopeng
- * @date 2021/10/24
  */
 @Router(value = "/smqtt/ruleType", type = HttpType.GET)
 @Slf4j

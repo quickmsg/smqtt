@@ -20,7 +20,6 @@ import java.nio.charset.StandardCharsets;
  * 数据源添加
  *
  * @author zhaopeng
- * @date 2021/10/20
  */
 @Router(value = "/smqtt/sourceAdd", type = HttpType.POST)
 @Slf4j
