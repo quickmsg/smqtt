@@ -79,8 +79,8 @@ public enum Event {
     /**
      * body
      *
-     * @param mqttChannel    {@link MqttChannel }
-     * @param body           {@link Object }
+     * @param mqttChannel {@link MqttChannel }
+     * @param body        {@link Object }
      * @return ByteBuf
      */
     public abstract ByteBuf writeBody(MqttChannel mqttChannel, Object body);
@@ -92,6 +92,9 @@ public enum Event {
                                 message
                                 , System.currentTimeMillis(), Boolean.FALSE),
                         receiveContext);
+        if (message instanceof MqttPublishMessage) {
+            ((MqttPublishMessage) message).release();
+        }
     }
 
 }

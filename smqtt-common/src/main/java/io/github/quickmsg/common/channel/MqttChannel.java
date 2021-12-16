@@ -188,7 +188,7 @@ public class MqttChannel {
      */
     public Mono<Void> write(MqttMessage mqttMessage, boolean retry) {
         // http本地mock
-        if (this.getIsMock()) {
+        if (this.getIsMock() && !this.active()) {
             return Mono.empty();
         } else {
             return MqttMessageSink.MQTT_SINK.sendMessage(mqttMessage, this, retry, replyMqttMessageMap);
@@ -346,7 +346,7 @@ public class MqttChannel {
     @Override
     public String toString() {
         return "MqttChannel{" +
-                " address='" + this.connection.address().toString() + '\'' +
+//                " address='" + this.connection.address().toString() + '\'' +
                 ", clientIdentifier='" + clientIdentifier + '\'' +
                 ", status=" + status +
                 ", keepalive=" + keepalive +
