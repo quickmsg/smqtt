@@ -216,7 +216,20 @@ docker run -it  -v <配置文件路径目录>:/conf -p 1883:1883  -p 1999:1999 1
 
    [config.yaml](config/config.yaml)
 
-5. 启动springboot服务服务即可
+4. 启动springboot服务服务即可
+5. 如果引入的是spring-boot-starter-parent的管理包，如果启动报错，则需要添加以下依赖
+```xml
+      <dependency>
+            <groupId>io.projectreactor</groupId>
+            <artifactId>reactor-core</artifactId>
+            <version>3.4.9</version>
+        </dependency>
+        <dependency>
+            <groupId>io.projectreactor.netty</groupId>
+            <artifactId>reactor-netty</artifactId>
+            <version>1.0.10</version>
+        </dependency>
+```
 
 ## 官网地址
 
