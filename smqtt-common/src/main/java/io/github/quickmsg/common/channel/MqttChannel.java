@@ -185,7 +185,7 @@ public class MqttChannel {
 
 
     public long generateId(MqttMessageType type, Integer messageId) {
-        return Long.parseLong(connection.channel().id().asLongText()) << 5 | (long) type.value() << 4 | messageId;
+        return (long) connection.channel().hashCode() << 5 | (long) type.value() << 4 | messageId;
     }
 
 
