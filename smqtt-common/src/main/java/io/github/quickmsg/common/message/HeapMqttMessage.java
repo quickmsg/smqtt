@@ -43,7 +43,7 @@ public class HeapMqttMessage {
 
     private Object getJsonObject(String body) {
         if (body.startsWith("{") && body.endsWith("}")) {
-            return JacksonUtil.json2Bean(body, Map.class);
+            return JacksonUtil.json2Bean(body, JsonMap.class);
         } else {
             return body;
         }
