@@ -271,18 +271,12 @@ public class MqttChannel {
                 Increase the reference count of bytebuf, and the reference count of retrybytebuf is 2
                 mqttChannel.write() method releases a reference count.
                  */
-                Runnable runnable = () -> mqttChannel.write(Mono.just(mqttMessage)).subscribe();
-                Consumer<Boolean> consumer = bool -> {
-                    if (bool) {
-                        MessageUtils.safeRelease(mqttMessage);
-                    } else {
-                        if (mqttMessage instanceof MqttPublishMessage) {
-                            ((MqttPublishMessage) mqttMessage).retain();
-                        }
-                    }
-                };
-                Ack ack = new RetryAck(mqttChannel.generateId(mqttMessage.fixedHeader().messageType(), getMessageId(mqttMessage)),
-                        5, 5, runnable, mqttChannel.getTimeAckManager(), consumer);
+                MqttMessage reply = getReplyMqttMessage(mqttMessage);
+
+                Runnable runnable = () -> mqttChannel.write(Mono.just(reply)).subscribe();
+                Runnable cleaner = () -> MessageUtils.safeRelease(reply);;
+                Ack ack = new RetryAck(mqttChannel.generateId(reply.fixedHeader().messageType(), getMessageId(reply)),
+                        5, 5, runnable, mqttChannel.getTimeAckManager(), cleaner);
                 ack.start();
                 return mqttChannel.write(Mono.just(mqttMessage)).then();
             } else {
@@ -308,7 +302,6 @@ public class MqttChannel {
             } else {
                 return mqttMessage;
             }
-
         }
 
 

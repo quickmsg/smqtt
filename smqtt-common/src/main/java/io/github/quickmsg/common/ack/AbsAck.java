@@ -25,16 +25,16 @@ public abstract class AbsAck implements Ack {
     private final int period;
 
 
-    private final Consumer<Boolean> consumer;
+    private final Runnable cleaner;
 
 
 
-    protected AbsAck(int maxRetrySize, int period, Runnable runnable, AckManager ackManager, Consumer<Boolean> consumer) {
+    protected AbsAck(int maxRetrySize, int period, Runnable runnable, AckManager ackManager, Runnable cleaner) {
         this.maxRetrySize = maxRetrySize;
         this.period = period;
         this.runnable = runnable;
         this.ackManager = ackManager;
-        this.consumer= consumer;
+        this.cleaner= cleaner;
     }
 
     @Override
@@ -42,7 +42,6 @@ public abstract class AbsAck implements Ack {
         if (++count <= maxRetrySize+1 && !died ) {
             try {
                 log.info("task retry send ...........");
-                consumer.accept(false);
                 runnable.run();
                 ackManager.addAck(this);
             } catch (Exception e) {
@@ -51,7 +50,7 @@ public abstract class AbsAck implements Ack {
 
         }
         else {
-            consumer.accept(true);
+            cleaner.run();
         }
     }
 
