@@ -9,6 +9,11 @@ import java.util.HashMap;
  */
 public class JsonMap<K,V> extends HashMap<K,V> {
 
+    public JsonMap() {
+        super();
+    }
+
+
     public JsonMap(int initialCapacity) {
         super(initialCapacity);
     }

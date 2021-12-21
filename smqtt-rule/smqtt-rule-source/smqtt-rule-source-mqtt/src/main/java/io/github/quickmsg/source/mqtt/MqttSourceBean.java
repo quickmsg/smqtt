@@ -7,6 +7,7 @@ import com.hivemq.client.mqtt.mqtt3.message.connect.Mqtt3ConnectBuilder;
 import com.hivemq.client.mqtt.mqtt3.message.connect.connack.Mqtt3ConnAck;
 import io.github.quickmsg.common.rule.source.Source;
 import io.github.quickmsg.common.rule.source.SourceBean;
+import io.github.quickmsg.common.utils.JacksonUtil;
 import io.netty.util.internal.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -91,12 +92,13 @@ public class MqttSourceBean implements SourceBean {
     @Override
     public void transmit(Map<String, Object> object) {
         String topic = (String) object.get("topic");
-        String msg = (String) object.get("msg");
+        Object msg =object.get("msg");
+        String bytes =  msg instanceof Map ? JacksonUtil.map2Json((Map<? extends Object, ? extends Object>) msg): msg.toString();
         Boolean retain = (Boolean) object.get("retain");
         Integer qos = Optional.ofNullable((Integer)object.get("qos")).orElse(0);
         client.publishWith()
                 .topic(topic)
-                .payload(msg.getBytes())
+                .payload(bytes.getBytes())
                 .qos(Objects.requireNonNull(MqttQos.fromCode(qos)))
                 .retain(retain)
                 .send()

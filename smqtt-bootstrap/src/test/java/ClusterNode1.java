@@ -9,7 +9,7 @@ public class ClusterNode1 {
 
     public static void main(String[] args) throws InterruptedException {
         Bootstrap bootstrap = Bootstrap.builder()
-                .rootLevel(Level.ERROR)
+                .rootLevel(Level.INFO)
                 .websocketConfig(
                         BootstrapConfig.WebsocketConfig
                                 .builder()
