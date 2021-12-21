@@ -44,7 +44,7 @@ public class MqttReceiver extends AbstractSslHandler implements Receiver {
                             .addHandler(MqttEncoder.INSTANCE)
                             .addHandler(new MqttDecoder(mqttConfiguration.getMessageMaxSize()))
                             .addHandler(receiveContext.getTrafficHandlerLoader().get());
-                    receiveContext.apply(MqttChannel.init(connection));
+                    receiveContext.apply(MqttChannel.init(connection,receiveContext.getTimeAckManager()));
                 });
     }
 }

@@ -1,6 +1,8 @@
 package io.github.quickmsg.core.protocol;
 
+import io.github.quickmsg.common.ack.Ack;
 import io.github.quickmsg.common.channel.MqttChannel;
+import io.github.quickmsg.common.context.ReceiveContext;
 import io.github.quickmsg.common.message.SmqttMessage;
 import io.github.quickmsg.common.protocol.Protocol;
 import io.netty.handler.codec.mqtt.MqttConnectMessage;
@@ -12,6 +14,7 @@ import reactor.util.context.ContextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author luxurong
@@ -28,10 +31,14 @@ public class PublishAckProtocol implements Protocol<MqttPubAckMessage> {
 
     @Override
     public Mono<Void> parseProtocol(SmqttMessage<MqttPubAckMessage> smqttMessage, MqttChannel mqttChannel, ContextView contextView) {
-        MqttPubAckMessage message = smqttMessage.getMessage();
-        MqttMessageIdVariableHeader idVariableHeader = message.variableHeader();
-        int messageId = idVariableHeader.messageId();
-        return mqttChannel.cancelRetry(MqttMessageType.PUBLISH,messageId);
+        return Mono.fromRunnable(()->{
+            ReceiveContext<?> receiveContext = contextView.get(ReceiveContext.class);
+            MqttPubAckMessage message = smqttMessage.getMessage();
+            MqttMessageIdVariableHeader idVariableHeader = message.variableHeader();
+            int messageId = idVariableHeader.messageId();
+            Optional.ofNullable(receiveContext.getTimeAckManager().getAck(mqttChannel.generateId(MqttMessageType.PUBLISH,messageId)))
+                    .ifPresent(Ack::stop);
+        });
     }
 
     @Override

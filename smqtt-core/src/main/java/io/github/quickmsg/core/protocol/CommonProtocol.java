@@ -1,5 +1,6 @@
 package io.github.quickmsg.core.protocol;
 
+import io.github.quickmsg.common.ack.Ack;
 import io.github.quickmsg.common.channel.MqttChannel;
 import io.github.quickmsg.common.context.ReceiveContext;
 import io.github.quickmsg.common.enums.ChannelStatus;
@@ -24,6 +25,7 @@ import reactor.util.context.ContextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -48,6 +50,7 @@ public class CommonProtocol implements Protocol<MqttMessage> {
 
     @Override
     public Mono<Void> parseProtocol(SmqttMessage<MqttMessage> smqttMessage, MqttChannel mqttChannel, ContextView contextView) {
+        ReceiveContext<?> receiveContext = contextView.get(ReceiveContext.class);
         MqttMessage message = smqttMessage.getMessage();
         switch (message.fixedHeader().messageType()) {
             case PINGREQ:
@@ -64,8 +67,10 @@ public class CommonProtocol implements Protocol<MqttMessage> {
             case PUBREC:
                 MqttMessageIdVariableHeader messageIdVariableHeader = (MqttMessageIdVariableHeader) message.variableHeader();
                 int messageId = messageIdVariableHeader.messageId();
-                return mqttChannel.cancelRetry(MqttMessageType.PUBLISH, messageId)
-                        .then(mqttChannel.write(MqttMessageBuilder.buildPublishRel(messageId), true));
+                return Mono.fromRunnable(() -> {
+                    Optional.ofNullable(receiveContext.getTimeAckManager().getAck(mqttChannel.generateId(MqttMessageType.PUBLISH, messageId)))
+                            .ifPresent(Ack::stop);
+                }).then(mqttChannel.write(MqttMessageBuilder.buildPublishRel(messageId), true));
             case PUBREL:
                 MqttMessageIdVariableHeader relMessageIdVariableHeader = (MqttMessageIdVariableHeader) message.variableHeader();
                 int id = relMessageIdVariableHeader.messageId();
@@ -76,25 +81,30 @@ public class CommonProtocol implements Protocol<MqttMessage> {
                  */
                 return mqttChannel.removeQos2Msg(id)
                         .map(msg -> {
-                            ReceiveContext<?> receiveContext = contextView.get(ReceiveContext.class);
                             TopicRegistry topicRegistry = receiveContext.getTopicRegistry();
                             MessageRegistry messageRegistry = receiveContext.getMessageRegistry();
                             Set<SubscribeTopic> subscribeTopics = topicRegistry.getSubscribesByTopic(msg.variableHeader().topicName(), msg.fixedHeader().qosLevel());
                             return Mono.when(
-                                    subscribeTopics.stream()
-                                            .filter(subscribeTopic -> filterOfflineSession(subscribeTopic.getMqttChannel(), messageRegistry, MessageUtils.wrapPublishMessage(msg, subscribeTopic.getQoS(), subscribeTopic.getMqttChannel().generateMessageId())))
-                                            .map(subscribeTopic -> subscribeTopic.getMqttChannel()
-                                                    .write(MessageUtils.wrapPublishMessage(msg, subscribeTopic.getQoS(),
-                                                            subscribeTopic.getMqttChannel().generateMessageId()), subscribeTopic.getQoS().value() > 0)
-                                            ).collect(Collectors.toList()))
-                                    .then(mqttChannel.cancelRetry(MqttMessageType.PUBREC, id))
+                                            subscribeTopics.stream()
+                                                    .filter(subscribeTopic -> filterOfflineSession(subscribeTopic.getMqttChannel(), messageRegistry, MessageUtils.wrapPublishMessage(msg, subscribeTopic.getQoS(), subscribeTopic.getMqttChannel().generateMessageId())))
+                                                    .map(subscribeTopic -> subscribeTopic.getMqttChannel()
+                                                            .write(MessageUtils.wrapPublishMessage(msg, subscribeTopic.getQoS(),
+                                                                    subscribeTopic.getMqttChannel().generateMessageId()), subscribeTopic.getQoS().value() > 0)
+                                                    ).collect(Collectors.toList()))
+                                    .then(Mono.fromRunnable(() -> {
+                                        Optional.ofNullable(receiveContext.getTimeAckManager().getAck(mqttChannel.generateId(MqttMessageType.PUBREC, id)))
+                                                .ifPresent(Ack::stop);
+                                    }))
                                     .then(mqttChannel.write(MqttMessageBuilder.buildPublishComp(id), false));
                         }).orElseGet(() -> mqttChannel.write(MqttMessageBuilder.buildPublishComp(id), false));
 
             case PUBCOMP:
                 MqttMessageIdVariableHeader messageIdVariableHeader1 = (MqttMessageIdVariableHeader) message.variableHeader();
                 int compId = messageIdVariableHeader1.messageId();
-                return mqttChannel.cancelRetry(MqttMessageType.PUBREL, compId);
+                return Mono.fromRunnable(() -> {
+                    Optional.ofNullable(receiveContext.getTimeAckManager().getAck(mqttChannel.generateId(MqttMessageType.PUBREL, compId)))
+                            .ifPresent(Ack::stop);
+                });
             case PINGRESP:
             default:
                 return Mono.empty();

@@ -1,5 +1,6 @@
 package io.github.quickmsg.common.context;
 
+import io.github.quickmsg.common.ack.TimeAckManager;
 import io.github.quickmsg.common.channel.ChannelRegistry;
 import io.github.quickmsg.common.channel.MqttChannel;
 import io.github.quickmsg.common.channel.traffic.TrafficHandlerLoader;
@@ -97,6 +98,14 @@ public interface ReceiveContext<T extends Configuration> extends BiConsumer<Mqtt
      * @return {@link TrafficHandlerLoader}
      */
     TrafficHandlerLoader getTrafficHandlerLoader();
+
+
+    /**
+     * 全局流控
+     *
+     * @return {@link TrafficHandlerLoader}
+     */
+    TimeAckManager getTimeAckManager();
 
 
 
