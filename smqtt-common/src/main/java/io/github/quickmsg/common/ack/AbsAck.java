@@ -4,6 +4,7 @@ import io.netty.util.Timeout;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 /**
  * @author luxurong
@@ -23,11 +24,17 @@ public abstract class AbsAck implements Ack {
 
     private final int period;
 
-    protected AbsAck(int maxRetrySize, int period, Runnable runnable, AckManager ackManager) {
+
+    private final Consumer<Boolean> consumer;
+
+
+
+    protected AbsAck(int maxRetrySize, int period, Runnable runnable, AckManager ackManager, Consumer<Boolean> consumer) {
         this.maxRetrySize = maxRetrySize;
         this.period = period;
         this.runnable = runnable;
         this.ackManager = ackManager;
+        this.consumer= consumer;
     }
 
     @Override
@@ -35,12 +42,16 @@ public abstract class AbsAck implements Ack {
         if (++count <= maxRetrySize+1 && !died ) {
             try {
                 log.info("task retry send ...........");
+                consumer.accept(false);
                 runnable.run();
                 ackManager.addAck(this);
             } catch (Exception e) {
                 log.error("Ack error ", e);
             }
 
+        }
+        else {
+            consumer.accept(true);
         }
     }
 

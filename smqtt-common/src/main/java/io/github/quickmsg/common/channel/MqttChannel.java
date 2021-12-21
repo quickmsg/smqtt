@@ -6,6 +6,7 @@ import io.github.quickmsg.common.ack.RetryAck;
 import io.github.quickmsg.common.ack.TimeAckManager;
 import io.github.quickmsg.common.enums.ChannelStatus;
 import io.github.quickmsg.common.topic.SubscribeTopic;
+import io.github.quickmsg.common.utils.MessageUtils;
 import io.netty.handler.codec.mqtt.*;
 import lombok.Builder;
 import lombok.Data;
@@ -271,7 +272,17 @@ public class MqttChannel {
                 mqttChannel.write() method releases a reference count.
                  */
                 Runnable runnable = () -> mqttChannel.write(Mono.just(mqttMessage)).subscribe();
-                Ack ack = new RetryAck(mqttChannel.generateId(mqttMessage.fixedHeader().messageType(), getMessageId(mqttMessage)), 5, 5, runnable, mqttChannel.getTimeAckManager());
+                Consumer<Boolean> consumer = bool -> {
+                    if (bool) {
+                        MessageUtils.safeRelease(mqttMessage);
+                    } else {
+                        if (mqttMessage instanceof MqttPublishMessage) {
+                            ((MqttPublishMessage) mqttMessage).retain();
+                        }
+                    }
+                };
+                Ack ack = new RetryAck(mqttChannel.generateId(mqttMessage.fixedHeader().messageType(), getMessageId(mqttMessage)),
+                        5, 5, runnable, mqttChannel.getTimeAckManager(), consumer);
                 ack.start();
                 return mqttChannel.write(Mono.just(mqttMessage)).then();
             } else {
