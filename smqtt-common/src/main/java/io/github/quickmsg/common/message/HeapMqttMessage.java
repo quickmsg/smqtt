@@ -1,6 +1,7 @@
 package io.github.quickmsg.common.message;
 
 import io.github.quickmsg.common.utils.JacksonUtil;
+import io.netty.util.internal.StringUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -44,8 +45,17 @@ public class HeapMqttMessage {
     private Object getJsonObject(String body) {
         if (body.startsWith("{") && body.endsWith("}")) {
             return JacksonUtil.json2Bean(body, JsonMap.class);
+        } else if (body.startsWith("[") && body.endsWith("]")) {
+            return JacksonUtil.json2List(body, JsonMap.class);
         } else {
-            return body;
+            if (StringUtil.isNullOrEmpty(body)) {
+                return body;
+            }
+
+            if (body.startsWith("\"") && body.endsWith("\"")) {
+                return body;
+            }
+            return "\"" + body + "\"";
         }
     }
 }
