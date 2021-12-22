@@ -5,7 +5,6 @@ import io.github.quickmsg.common.config.BootstrapConfig;
 import io.github.quickmsg.common.config.SslContext;
 import io.github.quickmsg.common.rule.RuleChainDefinition;
 import io.github.quickmsg.common.rule.source.SourceDefinition;
-import io.github.quickmsg.common.spi.DynamicLoader;
 import io.github.quickmsg.common.transport.Transport;
 import io.github.quickmsg.common.utils.BannerUtils;
 import io.github.quickmsg.common.utils.LoggerLevel;
@@ -68,8 +67,14 @@ public class Bootstrap {
     private MqttConfiguration initMqttConfiguration() {
 
         MqttConfiguration mqttConfiguration = defaultConfiguration();
-        if (tcpConfig.getUsername() != null || tcpConfig.getPassword() != null) {
-            mqttConfiguration.setReactivePasswordAuth((user, pwd, id) -> user.equals(tcpConfig.getUsername()) && new String(pwd).equals(tcpConfig.getPassword()));
+        if (tcpConfig.getAuthentication() != null) {
+            mqttConfiguration.setReactivePasswordAuth(tcpConfig.getAuthentication());
+        } else {
+            if (tcpConfig.getUsername() != null || tcpConfig.getPassword() != null) {
+                mqttConfiguration.setReactivePasswordAuth((user, pwd, id) -> user.equals(tcpConfig.getUsername()) && new String(pwd).equals(tcpConfig.getPassword()));
+            } else {
+                mqttConfiguration.setReactivePasswordAuth((user, pwd, id) -> true);
+            }
         }
         Optional.ofNullable(tcpConfig.getPort()).ifPresent(mqttConfiguration::setPort);
         Optional.ofNullable(tcpConfig.getLowWaterMark()).ifPresent(mqttConfiguration::setLowWaterMark);

@@ -2,6 +2,7 @@ package io.github.quickmsg.common.config;
 
 import ch.qos.logback.classic.Level;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.github.quickmsg.common.auth.PasswordAuthentication;
 import io.github.quickmsg.common.metric.MeterType;
 import io.github.quickmsg.common.rule.RuleChainDefinition;
 import io.github.quickmsg.common.rule.source.SourceDefinition;
@@ -110,6 +111,9 @@ public class BootstrapConfig {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class TcpConfig {
+
+        @Builder.Default
+        private ConnectModel connectModel = ConnectModel.UNIQUE;
         /**
          * 端口
          */
@@ -185,6 +189,11 @@ public class BootstrapConfig {
          * child client channel options
          */
         Map<String, Object> childOptions;
+
+        /**
+         * PasswordAuthentication
+         */
+        PasswordAuthentication authentication;
 
     }
 
