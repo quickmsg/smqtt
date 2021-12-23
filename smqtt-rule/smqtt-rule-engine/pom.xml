@@ -7,7 +7,7 @@
   <parent>
     <artifactId>smqtt-rule</artifactId>
     <groupId>io.github.quickmsg</groupId>
-    <version>1.1.0</version>
+    <version>1.1.1</version>
   </parent>
 
   <artifactId>smqtt-rule-engine</artifactId>
@@ -18,44 +18,44 @@
     <dependency>
       <groupId>io.github.quickmsg</groupId>
       <artifactId>smqtt-common</artifactId>
-      <version>1.1.0</version>
+      <version>1.1.1</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>io.github.quickmsg</groupId>
       <artifactId>smqtt-rule-source-kafka</artifactId>
-      <version>1.1.0</version>
+      <version>1.1.1</version>
     </dependency>
 
     <dependency>
       <groupId>io.github.quickmsg</groupId>
       <artifactId>smqtt-rule-source-http</artifactId>
-      <version>1.1.0</version>
+      <version>1.1.1</version>
     </dependency>
 
     <dependency>
       <groupId>io.github.quickmsg</groupId>
       <artifactId>smqtt-rule-source-rocketmq</artifactId>
-      <version>1.1.0</version>
+      <version>1.1.1</version>
     </dependency>
 
     <dependency>
       <groupId>io.github.quickmsg</groupId>
       <artifactId>smqtt-rule-source-rabbitmq</artifactId>
-      <version>1.1.0</version>
+      <version>1.1.1</version>
     </dependency>
 
     <dependency>
       <groupId>io.github.quickmsg</groupId>
       <artifactId>smqtt-rule-source-db</artifactId>
-      <version>1.1.0</version>
+      <version>1.1.1</version>
     </dependency>
 
     <dependency>
       <groupId>io.github.quickmsg</groupId>
       <artifactId>smqtt-rule-source-mqtt</artifactId>
-      <version>1.1.0</version>
+      <version>1.1.1</version>
     </dependency>
 
     <dependency>
