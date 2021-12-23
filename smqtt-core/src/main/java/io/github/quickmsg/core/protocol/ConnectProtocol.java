@@ -72,8 +72,8 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
                             false).then(mqttChannel.close());
                 }
             } else {
-                MqttChannel oldMqttChannel = channelRegistry.get(clientIdentifier);
-                oldMqttChannel.close().subscribe();
+                Optional.ofNullable( channelRegistry.get(clientIdentifier))
+                                .ifPresent(ch->ch.close().subscribe());
             }
             /*protocol version support*/
             if (MqttVersion.MQTT_3_1_1.protocolLevel() != (byte) mqttConnectVariableHeader.version()
