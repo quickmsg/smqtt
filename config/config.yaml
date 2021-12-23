@@ -22,7 +22,7 @@ smqtt:
       key: /user/server.key # 指定ssl文件 默认系统生成
       crt: /user/server.crt # 指定ssl文件 默认系统生成
   http: # http相关配置 端口固定60000
-    enable: false # 开关
+    enable: true # 开关
     accessLog: true # http访问日志
     ssl: # ssl配置
       enable: false
@@ -31,7 +31,7 @@ smqtt:
       username: smqtt # 访问用户名
       password: smqtt # 访问密码
   ws: # websocket配置
-    enable: false # 开关
+    enable: true # 开关
     port: 8999 # 端口
     path: /mqtt # ws 的访问path mqtt.js请设置此选项
   cluster: # 集群配置

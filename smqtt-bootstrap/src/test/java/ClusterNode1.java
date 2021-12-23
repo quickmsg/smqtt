@@ -15,14 +15,14 @@ public class ClusterNode1 {
                                 .builder()
                                 .enable(false)
                                 .path("/mqtt")
-                                .port(8880)
+                                .port(8888)
                                 .build()
                 )
                 .tcpConfig(
                         BootstrapConfig
                                 .TcpConfig
                                 .builder()
-                                .port(8888)
+                                .port(8889)
                                 .username("smqtt")
                                 .password("smqtt")
                                 .build())
@@ -30,7 +30,7 @@ public class ClusterNode1 {
                         BootstrapConfig
                                 .HttpConfig
                                 .builder()
-                                .enable(true)
+                                .enable(false)
                                 .accessLog(true)
                                 .admin(BootstrapConfig.HttpAdmin.builder().enable(true).username("smqtt").password("smqtt").build())
                                 .build())
