@@ -5,6 +5,8 @@ package io.github.quickmsg.common.config;
  */
 public interface Configuration {
 
+    ConnectModel  getConnectModel();
+
 
     /**
      * netty boss线程数

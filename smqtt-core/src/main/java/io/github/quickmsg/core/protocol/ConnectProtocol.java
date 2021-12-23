@@ -3,6 +3,7 @@ package io.github.quickmsg.core.protocol;
 import io.github.quickmsg.common.auth.PasswordAuthentication;
 import io.github.quickmsg.common.channel.ChannelRegistry;
 import io.github.quickmsg.common.channel.MqttChannel;
+import io.github.quickmsg.common.config.ConnectModel;
 import io.github.quickmsg.common.context.ReceiveContext;
 import io.github.quickmsg.common.enums.ChannelStatus;
 import io.github.quickmsg.common.enums.Event;
@@ -64,10 +65,15 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
             MetricManager metricManager = mqttReceiveContext.getMetricManager();
             PasswordAuthentication passwordAuthentication = mqttReceiveContext.getPasswordAuthentication();
             /*check clientIdentifier exist*/
-            if (channelRegistry.exists(clientIdentifier)) {
-                return mqttChannel.write(
-                        MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_IDENTIFIER_REJECTED),
-                        false).then(mqttChannel.close());
+            if (mqttReceiveContext.getConfiguration().getConnectModel() == ConnectModel.UNIQUE) {
+                if (channelRegistry.exists(clientIdentifier)) {
+                    return mqttChannel.write(
+                            MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_IDENTIFIER_REJECTED),
+                            false).then(mqttChannel.close());
+                }
+            } else {
+                MqttChannel oldMqttChannel = channelRegistry.get(clientIdentifier);
+                oldMqttChannel.close().subscribe();
             }
             /*protocol version support*/
             if (MqttVersion.MQTT_3_1_1.protocolLevel() != (byte) mqttConnectVariableHeader.version()

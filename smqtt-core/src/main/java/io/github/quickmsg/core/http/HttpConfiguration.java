@@ -2,6 +2,7 @@ package io.github.quickmsg.core.http;
 
 import io.github.quickmsg.common.config.BootstrapConfig;
 import io.github.quickmsg.common.config.Configuration;
+import io.github.quickmsg.common.config.ConnectModel;
 import io.github.quickmsg.common.config.SslContext;
 import lombok.Data;
 
@@ -36,6 +37,11 @@ public class HttpConfiguration implements Configuration {
 
     private BootstrapConfig.MeterConfig meterConfig;
 
+
+    @Override
+    public ConnectModel getConnectModel() {
+        return null;
+    }
 
     @Override
     public Integer getBusinessThreadSize() {

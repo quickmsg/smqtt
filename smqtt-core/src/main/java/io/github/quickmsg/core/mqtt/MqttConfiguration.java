@@ -3,6 +3,7 @@ package io.github.quickmsg.core.mqtt;
 import io.github.quickmsg.common.auth.PasswordAuthentication;
 import io.github.quickmsg.common.config.AbstractConfiguration;
 import io.github.quickmsg.common.config.BootstrapConfig;
+import io.github.quickmsg.common.config.ConnectModel;
 import io.github.quickmsg.common.config.SslContext;
 import io.github.quickmsg.common.rule.RuleChainDefinition;
 import io.github.quickmsg.common.rule.source.SourceDefinition;
@@ -33,6 +34,8 @@ public class MqttConfiguration extends AbstractSslHandler implements AbstractCon
     private Boolean ssl = false;
 
     private SslContext sslContext;
+
+    private ConnectModel connectModel;
 
     private PasswordAuthentication reactivePasswordAuth = (u, p, c) -> true;
 
