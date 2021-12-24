@@ -34,4 +34,9 @@ public class MockMqttChannel extends MqttChannel {
     }
 
 
+    @Override
+    public String toString() {
+        return "MockMqttChannel{" +
+                ", clientIdentifier='" + getClientIdentifier() + '\'' + '}';
+    }
 }
