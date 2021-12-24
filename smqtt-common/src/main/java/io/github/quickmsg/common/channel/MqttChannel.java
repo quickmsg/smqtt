@@ -87,7 +87,7 @@ public class MqttChannel {
 
 
     public boolean isActive() {
-        return !connection.isDisposed();
+        return connection == null && !connection.isDisposed();
     }
 
 
@@ -225,9 +225,7 @@ public class MqttChannel {
      * @param messageId messageId
      */
     private void removeReply(MqttMessageType type, Integer messageId) {
-        Optional.ofNullable(replyMqttMessageMap.get(type))
-                .map(messageIds -> messageIds.remove(messageId))
-                .ifPresent(Disposable::dispose);
+        Optional.ofNullable(replyMqttMessageMap.get(type)).map(messageIds -> messageIds.remove(messageId)).ifPresent(Disposable::dispose);
     }
 
 
@@ -313,12 +311,7 @@ public class MqttChannel {
          */
         private MqttMessage getDupMessage(MqttMessage mqttMessage) {
             MqttFixedHeader oldFixedHeader = mqttMessage.fixedHeader();
-            MqttFixedHeader fixedHeader = new MqttFixedHeader(
-                    oldFixedHeader.messageType(),
-                    true,
-                    oldFixedHeader.qosLevel(),
-                    oldFixedHeader.isRetain(),
-                    oldFixedHeader.remainingLength());
+            MqttFixedHeader fixedHeader = new MqttFixedHeader(oldFixedHeader.messageType(), true, oldFixedHeader.qosLevel(), oldFixedHeader.isRetain(), oldFixedHeader.remainingLength());
             Object payload = mqttMessage.payload();
             try {
                 Constructor<?> constructor = mqttMessage.getClass().getDeclaredConstructors()[0];
@@ -362,12 +355,7 @@ public class MqttChannel {
 
     @Override
     public String toString() {
-        return "MqttChannel{" +
-                " address='" + this.connection.address().toString() + '\'' +
-                ", clientIdentifier='" + clientIdentifier + '\'' +
-                ", status=" + status +
-                ", keepalive=" + keepalive +
-                ", username='" + username + '}';
+        return "MqttChannel{" + " address='" + this.connection.address().toString() + '\'' + ", clientIdentifier='" + clientIdentifier + '\'' + ", status=" + status + ", keepalive=" + keepalive + ", username='" + username + '}';
     }
 
 }
