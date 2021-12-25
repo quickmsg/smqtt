@@ -34,7 +34,7 @@ public class JacksonUtil {
         try {
             return mapper.writeValueAsString(data);
         } catch (JsonProcessingException e) {
-            log.error("JacksonUtil bean2Json error", e);
+            log.error("JacksonUtil bean2Json {} error",data, e);
             return "";
         }
     }

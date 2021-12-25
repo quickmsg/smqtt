@@ -38,7 +38,7 @@ public interface MetricManager {
         MemoryMXBean mxb = ManagementFactory.getMemoryMXBean();
         ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
         RuntimeMXBean runtimeBean = ManagementFactory.getRuntimeMXBean();
-        metrics.put("smqtt", "1.1.0");
+        metrics.put("smqtt", "1.1.1");
         metrics.put("start_time", sdf.format(new Date(runtimeBean.getStartTime())));
         metrics.put("jdk_home", props.getProperty("java.home"));
         metrics.put("jdk_version", props.getProperty("java.version"));
