@@ -98,7 +98,7 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
         this.messageRegistry.startUp(abstractConfiguration.getEnvironmentMap());
         this.metricManager = metricManager(abstractConfiguration.getMeterConfig());
         Optional.ofNullable(abstractConfiguration.getSourceDefinitions()).ifPresent(sourceDefinitions -> sourceDefinitions.forEach(SourceManager::loadSource));
-        this.timeAckManager = new TimeAckManager(20, TimeUnit.MILLISECONDS,512);
+        this.timeAckManager = new TimeAckManager(20, TimeUnit.MILLISECONDS,50);
     }
 
     private TrafficHandlerLoader trafficHandlerLoader() {
