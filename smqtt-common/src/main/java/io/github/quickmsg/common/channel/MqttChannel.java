@@ -77,6 +77,7 @@ public class MqttChannel {
     private Disposable closeDisposable;
 
 
+    @JsonIgnore
     private TimeAckManager timeAckManager;
 
     public void disposableClose() {
