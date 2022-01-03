@@ -37,6 +37,8 @@ public class MqttConfiguration extends AbstractSslHandler implements AbstractCon
 
     private ConnectModel connectModel;
 
+    private Integer notKickSecond;
+
     private PasswordAuthentication reactivePasswordAuth = (u, p, c) -> true;
 
     private Integer bossThreadSize = Runtime.getRuntime().availableProcessors();
@@ -57,7 +59,7 @@ public class MqttConfiguration extends AbstractSslHandler implements AbstractCon
 
     private BootstrapConfig.ClusterConfig clusterConfig;
 
-    private BootstrapConfig.MeterConfig meterConfig ;
+    private BootstrapConfig.MeterConfig meterConfig;
 
     private List<RuleChainDefinition> ruleChainDefinitions;
 

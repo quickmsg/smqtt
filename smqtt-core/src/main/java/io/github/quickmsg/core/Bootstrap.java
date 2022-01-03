@@ -77,6 +77,7 @@ public class Bootstrap {
             }
         }
         Optional.ofNullable(tcpConfig.getConnectModel()).ifPresent(mqttConfiguration::setConnectModel);
+        Optional.ofNullable(tcpConfig.getNotKickSecond()).ifPresent(mqttConfiguration::setNotKickSecond);
         Optional.ofNullable(tcpConfig.getPort()).ifPresent(mqttConfiguration::setPort);
         Optional.ofNullable(tcpConfig.getLowWaterMark()).ifPresent(mqttConfiguration::setLowWaterMark);
         Optional.ofNullable(tcpConfig.getHighWaterMark()).ifPresent(mqttConfiguration::setHighWaterMark);
