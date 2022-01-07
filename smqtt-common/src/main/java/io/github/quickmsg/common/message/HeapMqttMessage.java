@@ -43,6 +43,7 @@ public class HeapMqttMessage {
     }
 
     private Object getJsonObject(String body) {
+        body=body.replaceAll("\r|\n|\t", "");
         if (body.startsWith("{") && body.endsWith("}")) {
             return JacksonUtil.json2Bean(body, JsonMap.class);
         } else if (body.startsWith("[") && body.endsWith("]")) {
