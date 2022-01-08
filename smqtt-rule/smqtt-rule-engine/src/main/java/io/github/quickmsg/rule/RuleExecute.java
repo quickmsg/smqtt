@@ -1,5 +1,6 @@
 package io.github.quickmsg.rule;
 
+import io.github.quickmsg.common.utils.TopicRegexUtils;
 import org.apache.commons.jexl3.*;
 import reactor.util.context.ContextView;
 
@@ -19,7 +20,8 @@ public interface RuleExecute {
      * 执行
      *
      * @param context 上下文容器
-\     */
+     *                \
+     */
     void execute(ContextView context);
 
 
@@ -34,6 +36,7 @@ public interface RuleExecute {
         JexlExpression e = J_EXL_ENGINE.createExpression(script);
         MapContext context = new MapContext();
         mapContextConsumer.accept(context);
+        context.set("TopicRegexUtils", TopicRegexUtils.instance);
         return e.evaluate(context);
     }
 
