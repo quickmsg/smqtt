@@ -33,7 +33,7 @@ public class AbstractSslHandler {
                     SelfSignedCertificate ssc = new SelfSignedCertificate();
                     cert = ssc.certificate();
                     key = ssc.privateKey();
-                    log.error("SelfSignedCertificate cert {} key {}",cert.getAbsolutePath(),key.getAbsolutePath());
+                    log.info("SelfSignedCertificate cert {} key {}",cert.getAbsolutePath(),key.getAbsolutePath());
                 }
                 TcpSslContextSpec tcpSslContextSpec = TcpSslContextSpec.forServer(cert, key);
                 sslContextSpec.sslContext(tcpSslContextSpec);
