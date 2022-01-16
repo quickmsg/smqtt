@@ -23,9 +23,19 @@
             </pattern>
         </encoder>
     </appender>
-    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="system" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>logs/smqtt.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="ack" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/ack.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
         <encoder>
@@ -47,8 +57,14 @@
 
     <root level="INFO">
         <appender-ref ref="stdout"/>
-        <appender-ref ref="file"/>
+        <appender-ref ref="system"/>
+
     </root>
+
+    <logger name="ack" level="INFO" additivity="false">
+        <!-- <appender-ref ref="console" /> -->
+        <appender-ref ref="ack"/>
+    </logger>
 
 
 </configuration>

@@ -72,8 +72,16 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
                             false).then(mqttChannel.close());
                 }
             } else {
-                Optional.ofNullable( channelRegistry.get(clientIdentifier))
-                                .ifPresent(ch->ch.close().subscribe());
+                MqttChannel existMqttChannel = channelRegistry.get(clientIdentifier);
+                if (existMqttChannel != null) {
+                    if (System.currentTimeMillis() - existMqttChannel.getConnectTime() > (mqttReceiveContext.getConfiguration().getNotKickSecond() * 1000)) {
+                        existMqttChannel.close().subscribe();
+                    } else {
+                        return mqttChannel.write(
+                                MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_IDENTIFIER_REJECTED),
+                                false).then(mqttChannel.close());
+                    }
+                }
             }
             /*protocol version support*/
             if (MqttVersion.MQTT_3_1_1.protocolLevel() != (byte) mqttConnectVariableHeader.version()
@@ -96,6 +104,7 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
                             .build());
                 }
                 mqttChannel.setAuthTime(System.currentTimeMillis());
+                mqttChannel.setConnectTime(System.currentTimeMillis());
                 mqttChannel.setKeepalive(mqttConnectVariableHeader.keepAliveTimeSeconds());
                 mqttChannel.setSessionPersistent(!mqttConnectVariableHeader.isCleanSession());
                 mqttChannel.setStatus(ChannelStatus.ONLINE);

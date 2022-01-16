@@ -30,7 +30,10 @@ public class MqttReceiveContext extends AbstractReceiveContext<MqttConfiguration
                 .inbound()
                 .receiveObject()
                 .cast(MqttMessage.class)
-                .doOnError(throwable -> log.error("on connect error",throwable))
+                .onErrorContinue((throwable, o) -> {
+                    log.error("on message error {}",o,throwable);
+                })
+                .filter(mqttMessage -> mqttMessage.decoderResult().isSuccess())
                 .subscribe(mqttMessage -> this.accept(mqttChannel, new SmqttMessage<>(mqttMessage,System.currentTimeMillis(),Boolean.FALSE)));
 
     }

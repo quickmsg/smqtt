@@ -45,24 +45,23 @@ public class DefaultProtocolAdaptor implements ProtocolAdaptor {
     @Override
     public <C extends Configuration> void chooseProtocol(MqttChannel mqttChannel, SmqttMessage<MqttMessage> smqttMessage, ReceiveContext<C> receiveContext) {
         MqttMessage mqttMessage = smqttMessage.getMessage();
-        if (mqttMessage.decoderResult() != null && (mqttMessage.decoderResult().isSuccess())) {
-            log.info(" 【{}】【{}】 【{}】",
-                    Thread.currentThread().getName(),
-                    mqttMessage.fixedHeader().messageType(),
-                    mqttChannel);
-            Optional.ofNullable(types.get(mqttMessage.fixedHeader().messageType()))
-                    .ifPresent(protocol -> protocol
-                            .doParseProtocol(smqttMessage, mqttChannel)
-                            .contextWrite(context -> context.putNonNull(ReceiveContext.class, receiveContext))
-                            .subscribeOn(scheduler)
-                            .subscribe(aVoid -> {
-                            }, error -> {
-                                log.error("channel {} chooseProtocol: {} error {}", mqttChannel, mqttMessage, error.getMessage());
-                                ReactorNetty.safeRelease(mqttMessage.payload());
-                            }, () -> ReactorNetty.safeRelease(mqttMessage.payload())));
-        } else {
-            log.error("chooseProtocol {} error mqttMessage {} ", mqttChannel, mqttMessage);
-        }
+        log.info(" 【{}】【{}】 【{}】",
+                Thread.currentThread().getName(),
+                mqttMessage.fixedHeader().messageType(),
+                mqttChannel);
+        Optional.ofNullable(types.get(mqttMessage.fixedHeader().messageType()))
+                .ifPresent(protocol -> protocol
+                        .doParseProtocol(smqttMessage, mqttChannel)
+                        .contextWrite(context -> context.putNonNull(ReceiveContext.class, receiveContext))
+                        .subscribeOn(scheduler)
+                        .onErrorContinue(((throwable, o) -> {
+
+                        }))
+                        .subscribe(aVoid -> {
+                        }, error -> {
+                            log.error("channel {} chooseProtocol: {} error {}", mqttChannel, mqttMessage, error.getMessage());
+                            ReactorNetty.safeRelease(mqttMessage.payload());
+                        }, () -> ReactorNetty.safeRelease(mqttMessage.payload())));
 
     }
 

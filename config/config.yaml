@@ -1,7 +1,8 @@
 smqtt:
   logLevel: INFO # 系统日志
   tcp: # tcp配置
-    connectModel: UNIQUE # UNIQUE 唯一 KICK 互踢
+    connectModel: KICK # UNIQUE 唯一 KICK 互踢
+    notKickSecond: 30 # KICK互踢模式生效, 单位秒, 指定时间内客户端不互踢, 避免客户端自动连接持续互踢
     port: 1883 # mqtt端口号
     username: smqtt # mqtt连接默认用户名  生产环境建议spi去注入PasswordAuthentication接口
     password: smqtt  # mqtt连接默认密码 生产环境建议spi去注入PasswordAuthentication接口
