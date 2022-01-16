@@ -5,7 +5,7 @@
     <parent>
         <artifactId>smqtt-metric</artifactId>
         <groupId>io.github.quickmsg</groupId>
-        <version>1.1.1</version>
+        <version>1.1.2</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -15,7 +15,7 @@
         <dependency>
             <groupId>io.github.quickmsg</groupId>
             <artifactId>smqtt-common</artifactId>
-            <version>1.1.1</version>
+            <version>1.1.2</version>
         </dependency>
     </dependencies>
 
