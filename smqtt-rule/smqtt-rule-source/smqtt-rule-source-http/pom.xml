@@ -6,7 +6,7 @@
 
   <groupId>io.github.quickmsg</groupId>
   <artifactId>smqtt-rule-source-http</artifactId>
-  <version>1.1.1</version>
+  <version>1.1.2</version>
 
   <name>smqtt-rule-source-http</name>
 
@@ -15,14 +15,14 @@
   <parent>
     <artifactId>smqtt-rule-source</artifactId>
     <groupId>io.github.quickmsg</groupId>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
   </parent>
 
   <dependencies>
     <dependency>
       <groupId>io.github.quickmsg</groupId>
       <artifactId>smqtt-common</artifactId>
-      <version>1.1.1</version>
+      <version>1.1.2</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
