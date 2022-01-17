@@ -45,6 +45,8 @@ public class MqttChannel {
 
     private long authTime;
 
+    private long connectTime;
+
     private boolean sessionPersistent;
 
     private Will will;
@@ -273,7 +275,8 @@ public class MqttChannel {
                 MqttMessage reply = getReplyMqttMessage(mqttMessage);
 
                 Runnable runnable = () -> mqttChannel.write(Mono.just(reply)).subscribe();
-                Runnable cleaner = () -> MessageUtils.safeRelease(reply);;
+                Runnable cleaner = () -> MessageUtils.safeRelease(reply);
+                ;
                 Ack ack = new RetryAck(mqttChannel.generateId(reply.fixedHeader().messageType(), getMessageId(reply)),
                         5, 5, runnable, mqttChannel.getTimeAckManager(), cleaner);
                 ack.start();

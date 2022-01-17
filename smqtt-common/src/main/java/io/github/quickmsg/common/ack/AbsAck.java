@@ -9,7 +9,7 @@ import java.util.function.Consumer;
 /**
  * @author luxurong
  */
-@Slf4j
+@Slf4j(topic = "ack")
 public abstract class AbsAck implements Ack {
 
     private final int maxRetrySize;

@@ -33,6 +33,7 @@ public class MqttReceiveContext extends AbstractReceiveContext<MqttConfiguration
                 .onErrorContinue((throwable, o) -> {
                     log.error("on message error {}",o,throwable);
                 })
+                .filter(mqttMessage -> mqttMessage.decoderResult().isSuccess())
                 .subscribe(mqttMessage -> this.accept(mqttChannel, new SmqttMessage<>(mqttMessage,System.currentTimeMillis(),Boolean.FALSE)));
 
     }
