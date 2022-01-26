@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.mqtt.*;
 
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -11,6 +12,32 @@ import java.util.List;
  */
 public class MqttMessageBuilder {
 
+    private static MqttProperties genMqttProperties(Map<String, String> userPropertiesMap) {
+        MqttProperties mqttProperties = null;
+        if (userPropertiesMap != null) {
+            mqttProperties = new MqttProperties();
+            MqttProperties.UserProperties userProperties = new MqttProperties.UserProperties();
+            for (Map.Entry<String, String> entry : userPropertiesMap.entrySet()) {
+                userProperties.add(entry.getKey(), entry.getValue());
+            }
+            mqttProperties.add(userProperties);
+        }
+        return mqttProperties;
+    }
+
+    public static MqttPublishMessage buildPub(boolean isDup, MqttQoS qoS, int messageId, String topic, ByteBuf message, MqttProperties properties) {
+        MqttFixedHeader mqttFixedHeader = new MqttFixedHeader(MqttMessageType.PUBLISH, isDup, qoS, false, 0);
+        MqttPublishVariableHeader mqttPublishVariableHeader = new MqttPublishVariableHeader(topic, messageId, properties);
+        MqttPublishMessage mqttPublishMessage = new MqttPublishMessage(mqttFixedHeader, mqttPublishVariableHeader, message);
+        return mqttPublishMessage;
+    }
+
+    public static MqttPublishMessage buildPub(boolean isDup, MqttQoS qoS, int messageId, String topic, ByteBuf message, Map<String, String> userPropertiesMap) {
+        MqttFixedHeader mqttFixedHeader = new MqttFixedHeader(MqttMessageType.PUBLISH, isDup, qoS, false, 0);
+        MqttPublishVariableHeader mqttPublishVariableHeader = new MqttPublishVariableHeader(topic, messageId, genMqttProperties(userPropertiesMap));
+        MqttPublishMessage mqttPublishMessage = new MqttPublishMessage(mqttFixedHeader, mqttPublishVariableHeader, message);
+        return mqttPublishMessage;
+    }
 
     public static MqttPublishMessage buildPub(boolean isDup, MqttQoS qoS, int messageId, String topic, ByteBuf message) {
         MqttFixedHeader mqttFixedHeader = new MqttFixedHeader(MqttMessageType.PUBLISH, isDup, qoS, false, 0);

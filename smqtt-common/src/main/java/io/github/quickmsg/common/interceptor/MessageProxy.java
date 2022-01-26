@@ -78,6 +78,7 @@ public class MessageProxy {
                     .topic(header.topicName())
                     .retain(fixedHeader.isRetain())
                     .qos(fixedHeader.qosLevel().value())
+                    .properties(header.properties())
                     .build();
         }
 

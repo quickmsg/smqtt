@@ -85,7 +85,7 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
             }
             /*protocol version support*/
             if (MqttVersion.MQTT_3_1_1.protocolLevel() != (byte) mqttConnectVariableHeader.version()
-                    && MqttVersion.MQTT_3_1.protocolLevel() != (byte) mqttConnectVariableHeader.version()) {
+                    && MqttVersion.MQTT_5.protocolLevel() != (byte) mqttConnectVariableHeader.version()) {
                 return mqttChannel.write(
                         MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_UNACCEPTABLE_PROTOCOL_VERSION),
                         false).then(mqttChannel.close());
