@@ -63,12 +63,13 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
             ChannelRegistry channelRegistry = mqttReceiveContext.getChannelRegistry();
             TopicRegistry topicRegistry = mqttReceiveContext.getTopicRegistry();
             MetricManager metricManager = mqttReceiveContext.getMetricManager();
+            byte mqttVersion = (byte) mqttConnectVariableHeader.version();
             PasswordAuthentication passwordAuthentication = mqttReceiveContext.getPasswordAuthentication();
             /*check clientIdentifier exist*/
             if (mqttReceiveContext.getConfiguration().getConnectModel() == ConnectModel.UNIQUE) {
                 if (channelRegistry.exists(clientIdentifier)) {
                     return mqttChannel.write(
-                            MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_IDENTIFIER_REJECTED),
+                            MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_IDENTIFIER_REJECTED, mqttVersion),
                             false).then(mqttChannel.close());
                 }
             } else {
@@ -78,16 +79,16 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
                         existMqttChannel.close().subscribe();
                     } else {
                         return mqttChannel.write(
-                                MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_IDENTIFIER_REJECTED),
+                                MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_IDENTIFIER_REJECTED, mqttVersion),
                                 false).then(mqttChannel.close());
                     }
                 }
             }
             /*protocol version support*/
-            if (MqttVersion.MQTT_3_1_1.protocolLevel() != (byte) mqttConnectVariableHeader.version()
-                    && MqttVersion.MQTT_3_1.protocolLevel() != (byte) mqttConnectVariableHeader.version()) {
+            if (MqttVersion.MQTT_3_1_1.protocolLevel() != mqttVersion
+                    && MqttVersion.MQTT_5.protocolLevel() != mqttVersion) {
                 return mqttChannel.write(
-                        MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_UNACCEPTABLE_PROTOCOL_VERSION),
+                        MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_UNACCEPTABLE_PROTOCOL_VERSION, mqttVersion),
                         false).then(mqttChannel.close());
             }
             /*password check*/
@@ -147,11 +148,11 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
 
                 eventRegistry.registry(Event.CONNECT, mqttChannel, message, mqttReceiveContext);
 
-                return mqttChannel.write(MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_ACCEPTED), false)
+                return mqttChannel.write(MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_ACCEPTED, mqttVersion), false)
                         .then(Mono.fromRunnable(() -> sendOfflineMessage(mqttReceiveContext.getMessageRegistry(), mqttChannel)));
             } else {
                 return mqttChannel.write(
-                        MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_BAD_USER_NAME_OR_PASSWORD),
+                        MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_BAD_USER_NAME_OR_PASSWORD, mqttVersion),
                         false).then(mqttChannel.close());
             }
         } catch (Exception e) {

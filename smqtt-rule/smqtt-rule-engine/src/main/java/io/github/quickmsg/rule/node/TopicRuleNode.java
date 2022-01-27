@@ -58,7 +58,8 @@ public class TopicRuleNode implements RuleNode {
                         MqttQoS.valueOf(heapMqttMessage.getQos()),
                         0,
                         this.topic,
-                        PooledByteBufAllocator.DEFAULT.buffer().writeBytes(heapMqttMessage.getMessage()));
+                        PooledByteBufAllocator.DEFAULT.buffer().writeBytes(heapMqttMessage.getMessage()),
+                        heapMqttMessage.getProperties());
     }
 
 

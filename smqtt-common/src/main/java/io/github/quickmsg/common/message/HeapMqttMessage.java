@@ -1,6 +1,7 @@
 package io.github.quickmsg.common.message;
 
 import io.github.quickmsg.common.utils.JacksonUtil;
+import io.netty.handler.codec.mqtt.MqttProperties;
 import io.netty.util.internal.StringUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,6 +31,8 @@ public class HeapMqttMessage {
     private boolean retain;
 
     private byte[] message;
+
+    private MqttProperties properties;
 
 
     public Map<String, Object> getKeyMap() {
