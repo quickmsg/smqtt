@@ -11,7 +11,7 @@ SMQTT基于reactor-netty(spring-webflux底层依赖)
 2. topicFilter支持
     - topic分级（test/test）
     - +支持（单层匹配）
-    -  支持（多层匹配）
+    - *支持（多层匹配）
 3. 会话消息
     - 默认内存存储
     - 支持持久化（redis/db）
