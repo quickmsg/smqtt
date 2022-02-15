@@ -151,7 +151,8 @@
 
     <profiles>
         <profile>
-xx            <activation>
+            <id>release</id>
+            <activation>
                 <activeByDefault>false</activeByDefault>
             </activation>
             <build>
