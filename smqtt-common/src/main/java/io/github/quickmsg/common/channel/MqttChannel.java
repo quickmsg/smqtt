@@ -41,8 +41,6 @@ public class MqttChannel {
 
     private ChannelStatus status;
 
-    private long activeTime;
-
     private long authTime;
 
     private long connectTime;
@@ -101,7 +99,6 @@ public class MqttChannel {
         mqttChannel.setReplyMqttMessageMap(new ConcurrentHashMap<>());
         mqttChannel.setMqttMessageSink(new MqttMessageSink());
         mqttChannel.setQos2MsgCache(new ConcurrentHashMap<>());
-        mqttChannel.setActiveTime(System.currentTimeMillis());
         mqttChannel.setConnection(connection);
         mqttChannel.setStatus(ChannelStatus.INIT);
         mqttChannel.setAddress(connection.address().toString());
