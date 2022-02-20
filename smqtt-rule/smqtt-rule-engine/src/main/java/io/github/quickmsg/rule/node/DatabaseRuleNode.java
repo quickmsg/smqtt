@@ -8,6 +8,7 @@ import reactor.util.context.ContextView;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author luxurong
@@ -40,7 +41,8 @@ public class DatabaseRuleNode implements RuleNode {
         if (script != null) {
             Object obj = triggerTemplate(script, context -> heapMqttMessage.getKeyMap().forEach(context::set));
             param.put("sql", String.valueOf(obj));
-            SourceManager.getSourceBean(Source.DATA_BASE).transmit(param);
+            Optional.ofNullable(SourceManager.getSourceBean(Source.DATA_BASE))
+                    .ifPresent(sourceBean -> sourceBean.transmit(param));
         }
         executeNext(contextView);
     }

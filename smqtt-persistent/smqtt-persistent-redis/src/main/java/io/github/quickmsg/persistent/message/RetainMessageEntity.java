@@ -24,6 +24,8 @@ public class RetainMessageEntity implements Serializable {
 
     private byte[] body;
 
+    private String userProperties;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 

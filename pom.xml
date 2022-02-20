@@ -141,13 +141,17 @@
                 <artifactId>micrometer-registry-influx</artifactId>
                 <version>1.8.0</version>
             </dependency>
+            <dependency>
+                <groupId>org.casbin</groupId>
+                <artifactId>jcasbin</artifactId>
+                <version>1.22.1</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <profiles>
         <profile>
-            <id>release</id>
-            <activation>
+xx            <activation>
                 <activeByDefault>false</activeByDefault>
             </activation>
             <build>

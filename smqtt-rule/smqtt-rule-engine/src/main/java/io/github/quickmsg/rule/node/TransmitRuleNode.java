@@ -2,9 +2,11 @@ package io.github.quickmsg.rule.node;
 
 import io.github.quickmsg.common.message.HeapMqttMessage;
 import io.github.quickmsg.common.rule.source.Source;
+import io.github.quickmsg.common.rule.source.SourceBean;
 import io.github.quickmsg.common.utils.JacksonUtil;
 import io.github.quickmsg.rule.RuleNode;
 import io.github.quickmsg.rule.source.SourceManager;
+import lombok.extern.slf4j.Slf4j;
 import reactor.util.context.ContextView;
 
 import java.util.Map;
@@ -14,6 +16,7 @@ import java.util.Map;
  *
  * @author luxurong
  */
+@Slf4j
 public class TransmitRuleNode implements RuleNode {
 
     private final Source source;
@@ -39,7 +42,13 @@ public class TransmitRuleNode implements RuleNode {
         } else {
             param = heapMqttMessage.getKeyMap();
         }
-        SourceManager.getSourceBean(source).transmit(param);
+        SourceBean sourceBean = SourceManager.getSourceBean(source);
+        if(sourceBean == null){
+            log.warn("[ please set source {}]",source);
+        }
+        else{
+            sourceBean.transmit(param);
+        }
         executeNext(contextView);
     }
 

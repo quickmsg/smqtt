@@ -67,7 +67,7 @@ public class MessageUtils {
         MqttPublishVariableHeader mqttPublishVariableHeader = message.variableHeader();
         MqttFixedHeader mqttFixedHeader = message.fixedHeader();
         MqttFixedHeader newFixedHeader = new MqttFixedHeader(mqttFixedHeader.messageType(), false, mqttQoS, false, mqttFixedHeader.remainingLength());
-        MqttPublishVariableHeader newHeader = new MqttPublishVariableHeader(mqttPublishVariableHeader.topicName(), messageId);
+        MqttPublishVariableHeader newHeader = new MqttPublishVariableHeader(mqttPublishVariableHeader.topicName(), messageId, mqttPublishVariableHeader.properties());
         return new MqttPublishMessage(newFixedHeader, newHeader, message.payload().copy());
 
     }

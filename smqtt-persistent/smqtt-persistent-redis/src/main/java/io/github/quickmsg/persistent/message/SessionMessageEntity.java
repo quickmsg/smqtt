@@ -25,6 +25,8 @@ public class SessionMessageEntity implements Serializable {
 
     private Boolean retain;
 
+    private String userProperties;
+    
     private byte[] body;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
