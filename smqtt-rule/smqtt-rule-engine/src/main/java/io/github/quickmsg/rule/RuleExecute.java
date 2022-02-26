@@ -36,7 +36,7 @@ public interface RuleExecute {
         JexlExpression e = J_EXL_ENGINE.createExpression(script);
         MapContext context = new MapContext();
         mapContextConsumer.accept(context);
-        context.set("TopicRegexUtils", TopicRegexUtils.instance);
+        context.set("TopicUtils", TopicRegexUtils.instance);
         return e.evaluate(context);
     }
 

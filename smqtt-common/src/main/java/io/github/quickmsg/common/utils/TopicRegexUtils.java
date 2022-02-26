@@ -17,8 +17,11 @@ public class TopicRegexUtils {
                 .replaceAll("#", "(.+)") + "$";
     }
 
-    public String regularTopic(String topic) {
-        return TopicRegexUtils.regexTopic(topic);
+    public boolean match(String sourcesTopic, String targetTopic) {
+        if (sourcesTopic == null || "".equals(sourcesTopic) || targetTopic == null || "".equals(targetTopic)) {
+            return false;
+        }
+        return sourcesTopic.matches(TopicRegexUtils.regexTopic(targetTopic));
     }
 
 }
