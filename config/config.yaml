@@ -21,7 +21,7 @@ smqtt:
       key: /user/server.key # 指定ssl文件 默认系统生成
       crt: /user/server.crt # 指定ssl文件 默认系统生成
   acl:
-    aclPolicy: JDBC # NONE or FILE or JDBC
+    aclPolicy: NONE # NONE or FILE or JDBC
     filePath:  # FILE时配置filePath
     jdbcAclConfig:
       driver: com.mysql.jdbc.Driver
