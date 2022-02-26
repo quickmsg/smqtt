@@ -1,6 +1,7 @@
 package io.github.quickmsg.core.mqtt;
 
 import io.github.quickmsg.common.ack.TimeAckManager;
+import io.github.quickmsg.common.acl.AclManager;
 import io.github.quickmsg.common.auth.PasswordAuthentication;
 import io.github.quickmsg.common.channel.ChannelRegistry;
 import io.github.quickmsg.common.channel.traffic.TrafficHandlerLoader;
@@ -20,6 +21,7 @@ import io.github.quickmsg.common.protocol.ProtocolAdaptor;
 import io.github.quickmsg.common.rule.DslExecutor;
 import io.github.quickmsg.common.topic.TopicRegistry;
 import io.github.quickmsg.common.transport.Transport;
+import io.github.quickmsg.core.acl.JCasBinAclManager;
 import io.github.quickmsg.core.cluster.InJvmClusterRegistry;
 import io.github.quickmsg.core.mqtt.traffic.CacheTrafficHandlerLoader;
 import io.github.quickmsg.core.mqtt.traffic.LazyTrafficHandlerLoader;
@@ -64,8 +66,6 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
 
     private final MessageRegistry messageRegistry;
 
-    private final PasswordAuthentication passwordAuthentication;
-
     private final ClusterRegistry clusterRegistry;
 
     private final EventRegistry eventRegistry;
@@ -78,6 +78,7 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
 
     private final TimeAckManager timeAckManager;
 
+    private final AclManager aclManager;
 
     public AbstractReceiveContext(T configuration, Transport<T> transport) {
         AbstractConfiguration abstractConfiguration = castConfiguration(configuration);
@@ -93,12 +94,12 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
         this.trafficHandlerLoader = trafficHandlerLoader();
         this.messageRegistry = messageRegistry();
         this.clusterRegistry = clusterRegistry();
-        this.passwordAuthentication = basicAuthentication();
         this.channelRegistry.startUp(abstractConfiguration.getEnvironmentMap());
         this.messageRegistry.startUp(abstractConfiguration.getEnvironmentMap());
         this.metricManager = metricManager(abstractConfiguration.getMeterConfig());
+        this.aclManager = new JCasBinAclManager(abstractConfiguration.getAclConfig());
         Optional.ofNullable(abstractConfiguration.getSourceDefinitions()).ifPresent(sourceDefinitions -> sourceDefinitions.forEach(SourceManager::loadSource));
-        this.timeAckManager = new TimeAckManager(20, TimeUnit.MILLISECONDS,50);
+        this.timeAckManager = new TimeAckManager(20, TimeUnit.MILLISECONDS, 50);
     }
 
     private TrafficHandlerLoader trafficHandlerLoader() {
@@ -124,11 +125,6 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
 
     private MessageRegistry messageRegistry() {
         return Optional.ofNullable(MessageRegistry.INSTANCE).orElseGet(DefaultMessageRegistry::new);
-    }
-
-    private PasswordAuthentication basicAuthentication() {
-        AbstractConfiguration abstractConfiguration = castConfiguration(configuration);
-        return Optional.ofNullable(PasswordAuthentication.INSTANCE).orElseGet(abstractConfiguration::getReactivePasswordAuth);
     }
 
     private ChannelRegistry channelRegistry() {

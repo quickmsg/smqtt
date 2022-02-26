@@ -104,6 +104,11 @@ public class BootstrapConfig {
         @JsonProperty("meter")
         private MeterConfig meterConfig;
 
+        /**
+         * acl配置
+         */
+        @JsonProperty("acl")
+        private AclConfig acl;
     }
 
     @Data
@@ -124,15 +129,6 @@ public class BootstrapConfig {
          * 端口
          */
         private Integer port;
-
-        /**
-         * 用户名
-         */
-        private String username;
-        /**
-         * 密码
-         */
-        private String password;
         /**
          * 二进制日志（需要开启root 为debug）
          */

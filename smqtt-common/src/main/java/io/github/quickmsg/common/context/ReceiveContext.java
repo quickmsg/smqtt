@@ -1,6 +1,7 @@
 package io.github.quickmsg.common.context;
 
 import io.github.quickmsg.common.ack.TimeAckManager;
+import io.github.quickmsg.common.acl.AclManager;
 import io.github.quickmsg.common.channel.ChannelRegistry;
 import io.github.quickmsg.common.channel.MqttChannel;
 import io.github.quickmsg.common.channel.traffic.TrafficHandlerLoader;
@@ -63,7 +64,6 @@ public interface ReceiveContext<T extends Configuration> extends BiConsumer<Mqtt
     ClusterRegistry getClusterRegistry();
 
 
-
     /**
      * 消息感知/设备感知
      *
@@ -72,13 +72,12 @@ public interface ReceiveContext<T extends Configuration> extends BiConsumer<Mqtt
     EventRegistry getEventRegistry();
 
 
-
     /**
      * 规则引擎注册器
      *
      * @return {@link DslExecutor}
      */
-     DslExecutor getDslExecutor();
+    DslExecutor getDslExecutor();
 
 
     /**
@@ -91,6 +90,13 @@ public interface ReceiveContext<T extends Configuration> extends BiConsumer<Mqtt
 
     MetricManager getMetricManager();
 
+
+    /**
+     * get acl
+     *
+     * @return {@link  AclManager}
+     */
+    AclManager getAclManager();
 
     /**
      * 全局流控
@@ -106,7 +112,6 @@ public interface ReceiveContext<T extends Configuration> extends BiConsumer<Mqtt
      * @return {@link TrafficHandlerLoader}
      */
     TimeAckManager getTimeAckManager();
-
 
 
 }

@@ -1,5 +1,7 @@
 package io.github.quickmsg.core.protocol;
 
+import io.github.quickmsg.common.acl.AclAction;
+import io.github.quickmsg.common.acl.AclManager;
 import io.github.quickmsg.common.channel.MqttChannel;
 import io.github.quickmsg.common.context.ReceiveContext;
 import io.github.quickmsg.common.message.MessageRegistry;
@@ -37,12 +39,13 @@ public class SubscribeProtocol implements Protocol<MqttSubscribeMessage> {
             ReceiveContext<?> receiveContext = contextView.get(ReceiveContext.class);
             TopicRegistry topicRegistry = receiveContext.getTopicRegistry();
             MessageRegistry messageRegistry = receiveContext.getMessageRegistry();
+            AclManager aclManager = receiveContext.getAclManager();
             Set<SubscribeTopic> mqttTopicSubscriptions =
                     message.payload().topicSubscriptions()
                             .stream()
                             .peek(mqttTopicSubscription -> this.loadRetainMessage(messageRegistry, mqttChannel, mqttTopicSubscription.topicName()))
-                            .map(mqttTopicSubscription ->
-                                    new SubscribeTopic(mqttTopicSubscription.topicName(), mqttTopicSubscription.qualityOfService(), mqttChannel))
+                            .map(mqttTopicSubscription -> new SubscribeTopic(mqttTopicSubscription.topicName(), mqttTopicSubscription.qualityOfService(), mqttChannel))
+                            .filter(subscribeTopic -> aclManager.auth(mqttChannel.getClientIdentifier(), subscribeTopic.getTopicFilter(), AclAction.SUBSCRIBE))
                             .collect(Collectors.toSet());
             topicRegistry.registrySubscribesTopic(mqttTopicSubscriptions);
         }).then(mqttChannel.write(

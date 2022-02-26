@@ -1,5 +1,7 @@
 package io.github.quickmsg.core.protocol;
 
+import io.github.quickmsg.common.acl.AclAction;
+import io.github.quickmsg.common.acl.AclManager;
 import io.github.quickmsg.common.channel.MqttChannel;
 import io.github.quickmsg.common.context.ReceiveContext;
 import io.github.quickmsg.common.enums.ChannelStatus;
@@ -41,12 +43,17 @@ public class PublishProtocol implements Protocol<MqttPublishMessage> {
 
 
     @Override
-    public Mono<Void> parseProtocol(SmqttMessage<MqttPublishMessage> smqttMessage , MqttChannel mqttChannel, ContextView contextView) {
+    public Mono<Void> parseProtocol(SmqttMessage<MqttPublishMessage> smqttMessage, MqttChannel mqttChannel, ContextView contextView) {
+        ReceiveContext<?> receiveContext = contextView.get(ReceiveContext.class);
         try {
-
             MetricManagerHolder.metricManager.getMetricRegistry().getMetricCounter(CounterType.PUBLISH_EVENT).increment();
             MqttPublishMessage message = smqttMessage.getMessage();
-            ReceiveContext<?> receiveContext = contextView.get(ReceiveContext.class);
+            AclManager aclManager = receiveContext.getAclManager();
+            if (!aclManager.auth(mqttChannel.getClientIdentifier(), message.variableHeader().topicName(), AclAction.PUBLISH)) {
+                log.warn("mqtt【{}】publish topic 【{}】 acl not authorized ", mqttChannel.getConnection(), message.variableHeader().topicName());
+                return Mono.empty();
+            }
+
             TopicRegistry topicRegistry = receiveContext.getTopicRegistry();
             MqttPublishVariableHeader variableHeader = message.variableHeader();
             MessageRegistry messageRegistry = receiveContext.getMessageRegistry();
@@ -95,8 +102,8 @@ public class PublishProtocol implements Protocol<MqttPublishMessage> {
                         .filter(subscribeTopic -> filterOfflineSession(subscribeTopic.getMqttChannel(), messageRegistry, message))
                         .map(subscribeTopic ->
                                 subscribeTopic.getMqttChannel().write(MessageUtils.wrapPublishMessage(message,
-                                        subscribeTopic.getQoS(),
-                                        subscribeTopic.getMqttChannel().generateMessageId()),
+                                                subscribeTopic.getQoS(),
+                                                subscribeTopic.getMqttChannel().generateMessageId()),
                                         subscribeTopic.getQoS().value() > 0)
                         )
                         .collect(Collectors.toList())).then(other);

@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Configuration;
 @Slf4j
 @Configuration
 @EnableConfigurationProperties(SpringBootstrapConfig.class)
-public class AutoMqttConfiguration  {
+public class AutoMqttConfiguration {
 
 
     /**
@@ -28,7 +28,7 @@ public class AutoMqttConfiguration  {
      */
     @Bean
     public Bootstrap startServer(@Autowired SpringBootstrapConfig springBootstrapConfig, @Autowired(required = false) PasswordAuthentication authentication) {
-        check(springBootstrapConfig,authentication);
+        check(springBootstrapConfig, authentication);
         return Bootstrap.builder()
                 .rootLevel(Level.toLevel(springBootstrapConfig.getLogLevel()))
                 .tcpConfig(springBootstrapConfig.getTcp())
@@ -40,16 +40,18 @@ public class AutoMqttConfiguration  {
                 .ruleChainDefinitions(springBootstrapConfig.getRules())
                 .sourceDefinitions(springBootstrapConfig.getSources())
                 .meterConfig(springBootstrapConfig.getMeter())
+                .aclConfig(springBootstrapConfig.getAcl())
+                .meterConfig(springBootstrapConfig.getMeter())
                 .build()
                 .start()
                 .doOnSuccess(this::printUiUrl).block();
     }
 
     private void check(SpringBootstrapConfig springBootstrapConfig, PasswordAuthentication authentication) {
-        if(springBootstrapConfig.getTcp().getConnectModel() == null){
+        if (springBootstrapConfig.getTcp().getConnectModel() == null) {
             springBootstrapConfig.getTcp().setConnectModel(ConnectModel.UNIQUE);
         }
-        if(authentication !=null){
+        if (authentication != null) {
             springBootstrapConfig.getTcp().setAuthentication(authentication);
         }
     }

@@ -1,5 +1,7 @@
 package io.github.quickmsg.core.protocol;
 
+import io.github.quickmsg.common.acl.AclAction;
+import io.github.quickmsg.common.acl.AclManager;
 import io.github.quickmsg.common.auth.PasswordAuthentication;
 import io.github.quickmsg.common.channel.ChannelRegistry;
 import io.github.quickmsg.common.channel.MqttChannel;
@@ -64,7 +66,7 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
             TopicRegistry topicRegistry = mqttReceiveContext.getTopicRegistry();
             MetricManager metricManager = mqttReceiveContext.getMetricManager();
             byte mqttVersion = (byte) mqttConnectVariableHeader.version();
-            PasswordAuthentication passwordAuthentication = mqttReceiveContext.getPasswordAuthentication();
+            AclManager aclManager = mqttReceiveContext.getAclManager();
             /*check clientIdentifier exist*/
             if (mqttReceiveContext.getConfiguration().getConnectModel() == ConnectModel.UNIQUE) {
                 if (channelRegistry.exists(clientIdentifier)) {
@@ -93,7 +95,7 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
                         false).then(mqttChannel.close());
             }
             /*password check*/
-            if (passwordAuthentication.auth(mqttConnectPayload.userName(), mqttConnectPayload.passwordInBytes(), clientIdentifier)) {
+            if (aclManager.auth(clientIdentifier, clientIdentifier, AclAction.CONNECT)) {
                 /*cancel  defer close not authenticate channel */
                 mqttChannel.disposableClose();
                 mqttChannel.setClientIdentifier(mqttConnectPayload.clientIdentifier());

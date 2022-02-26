@@ -1,6 +1,7 @@
 package io.github.quickmsg.core;
 
 import ch.qos.logback.classic.Level;
+import io.github.quickmsg.common.config.AclConfig;
 import io.github.quickmsg.common.config.BootstrapConfig;
 import io.github.quickmsg.common.config.SslContext;
 import io.github.quickmsg.common.rule.RuleChainDefinition;
@@ -53,6 +54,8 @@ public class Bootstrap {
 
     private List<SourceDefinition> sourceDefinitions;
 
+    private AclConfig aclConfig;
+
     private final List<Transport<?>> transports = new ArrayList<>();
 
     @Builder.Default
@@ -67,15 +70,6 @@ public class Bootstrap {
     private MqttConfiguration initMqttConfiguration() {
 
         MqttConfiguration mqttConfiguration = defaultConfiguration();
-        if (tcpConfig.getAuthentication() != null) {
-            mqttConfiguration.setReactivePasswordAuth(tcpConfig.getAuthentication());
-        } else {
-            if (tcpConfig.getUsername() != null || tcpConfig.getPassword() != null) {
-                mqttConfiguration.setReactivePasswordAuth((user, pwd, id) -> user.equals(tcpConfig.getUsername()) && new String(pwd).equals(tcpConfig.getPassword()));
-            } else {
-                mqttConfiguration.setReactivePasswordAuth((user, pwd, id) -> true);
-            }
-        }
         Optional.ofNullable(tcpConfig.getConnectModel()).ifPresent(mqttConfiguration::setConnectModel);
         Optional.ofNullable(tcpConfig.getNotKickSecond()).ifPresent(mqttConfiguration::setNotKickSecond);
         Optional.ofNullable(tcpConfig.getPort()).ifPresent(mqttConfiguration::setPort);
@@ -94,6 +88,7 @@ public class Bootstrap {
         Optional.ofNullable(tcpConfig.getMessageMaxSize()).ifPresent(mqttConfiguration::setMessageMaxSize);
         Optional.ofNullable(clusterConfig).ifPresent(mqttConfiguration::setClusterConfig);
         Optional.ofNullable(meterConfig).ifPresent(mqttConfiguration::setMeterConfig);
+        Optional.ofNullable(aclConfig).ifPresent(mqttConfiguration::setAclConfig);
 
         if (websocketConfig != null && websocketConfig.isEnable()) {
             mqttConfiguration.setWebSocketPort(websocketConfig.getPort());

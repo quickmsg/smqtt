@@ -20,8 +20,6 @@ import java.io.File;
 public abstract class AbstractStarter {
 
 
-
-
     public static void start(String path) {
         BootstrapConfig config = null;
         if (path != null) {
@@ -58,6 +56,7 @@ public abstract class AbstractStarter {
                 .meterConfig(config.getSmqttConfig().getMeterConfig())
                 .ruleChainDefinitions(config.getSmqttConfig().getRuleChainDefinitions())
                 .sourceDefinitions(config.getSmqttConfig().getRuleSources())
+                .aclConfig(config.getSmqttConfig().getAcl())
                 .build()
                 .doOnStarted(AbstractStarter::printUiUrl).startAwait();
 

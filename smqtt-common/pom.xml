@@ -87,5 +87,13 @@
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-influx</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.casbin</groupId>
+            <artifactId>jcasbin</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.casbin</groupId>
+            <artifactId>jdbc-adapter</artifactId>
+        </dependency>
     </dependencies>
 </project>

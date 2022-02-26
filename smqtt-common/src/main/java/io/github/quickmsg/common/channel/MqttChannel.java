@@ -276,7 +276,7 @@ public class MqttChannel {
 
                 Runnable runnable = () -> mqttChannel.write(Mono.just(reply)).subscribe();
                 Runnable cleaner = () -> MessageUtils.safeRelease(reply);
-                ;
+
                 Ack ack = new RetryAck(mqttChannel.generateId(reply.fixedHeader().messageType(), getMessageId(reply)),
                         5, 5, runnable, mqttChannel.getTimeAckManager(), cleaner);
                 ack.start();
