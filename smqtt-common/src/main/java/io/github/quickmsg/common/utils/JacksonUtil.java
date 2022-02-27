@@ -23,7 +23,7 @@ public class JacksonUtil {
     private static ObjectMapper mapper = new ObjectMapper();
 
     static {
-        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true) ;
+        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         mapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
 
@@ -34,7 +34,7 @@ public class JacksonUtil {
         try {
             return mapper.writeValueAsString(data);
         } catch (JsonProcessingException e) {
-            log.error("JacksonUtil bean2Json {} error",data, e);
+            log.error("JacksonUtil bean2Json {} error", data, e);
             return "";
         }
     }
@@ -43,7 +43,7 @@ public class JacksonUtil {
         try {
             return mapper.readValue(jsonData, beanType);
         } catch (Exception e) {
-            log.error("JacksonUtil json {}  error",jsonData, e);
+            log.error("JacksonUtil json {}  error", jsonData, e);
             return null;
         }
     }
@@ -60,13 +60,16 @@ public class JacksonUtil {
     }
 
     public static <K, V> Map<K, V> json2Map(String jsonData, Class<K> keyType, Class<V> valueType) {
-        try {
-            JavaType javaType = mapper.getTypeFactory().constructMapType(Map.class, keyType, valueType);
-
-            return mapper.readValue(jsonData, javaType);
-        } catch (Exception e) {
-            log.error("JacksonUtil json2Map error", e);
+        if (jsonData == null || "".equals(jsonData)) {
             return Collections.emptyMap();
+        } else {
+            try {
+                JavaType javaType = mapper.getTypeFactory().constructMapType(Map.class, keyType, valueType);
+                return mapper.readValue(jsonData, javaType);
+            } catch (Exception e) {
+                log.error("JacksonUtil json2Map error", e);
+                return Collections.emptyMap();
+            }
         }
     }
 

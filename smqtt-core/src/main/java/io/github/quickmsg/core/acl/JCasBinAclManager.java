@@ -8,8 +8,12 @@ import io.github.quickmsg.common.utils.ClassPathLoader;
 import lombok.extern.slf4j.Slf4j;
 import org.casbin.adapter.JDBCAdapter;
 import org.casbin.jcasbin.main.Enforcer;
+import org.casbin.jcasbin.model.Model;
+import org.casbin.jcasbin.persist.file_adapter.FileAdapter;
 
 import java.net.URL;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -19,42 +23,54 @@ import java.util.Optional;
 @Slf4j
 public class JCasBinAclManager implements AclManager {
 
-    private final AclConfig aclConfig;
-
     private Enforcer enforcer;
 
     public JCasBinAclManager(AclConfig aclConfig) {
-        this.aclConfig = aclConfig;
-        String rootPath = Optional.ofNullable(Thread.currentThread().getContextClassLoader().getResource("")).map(URL::getPath).orElse(null);
+        Model model = new Model();
+        model.addDef("r", "r", "sub, obj, act");
+        model.addDef("p", "p", "sub, obj, act");
+        model.addDef("e", "e", "some(where (p.eft == allow))");
+        model.addDef("m", "m", "r.sub == p.sub && r.obj == p.obj && r.act == p.act");
+
         if (aclConfig.getAclPolicy() == AclPolicy.JDBC) {
             AclConfig.JdbcAclConfig jdbcAclConfig = aclConfig.getJdbcAclConfig();
             Objects.requireNonNull(jdbcAclConfig);
             try {
-                enforcer = new Enforcer(rootPath + "mqtt_model.conf", new JDBCAdapter(jdbcAclConfig.getDriver(), jdbcAclConfig.getUrl(), jdbcAclConfig.getUsername(), jdbcAclConfig.getPassword()));
+                enforcer = new Enforcer(model, new JDBCAdapter(jdbcAclConfig.getDriver(), jdbcAclConfig.getUrl(), jdbcAclConfig.getUsername(), jdbcAclConfig.getPassword()));
             } catch (Exception e) {
                 log.error("init acl jdbc error {}", aclConfig, e);
             }
-        } else {
-            enforcer = new Enforcer(rootPath + "mqtt_model.conf", aclConfig.getFilePath());
+        } else if (aclConfig.getAclPolicy() == AclPolicy.FILE) {
+            enforcer = new Enforcer(model, new FileAdapter(aclConfig.getFilePath()));
         }
     }
 
     @Override
     public boolean auth(String sub, String source, AclAction action) {
-        if (aclConfig.getAclPolicy() == AclPolicy.NONE) {
-            return true;
-        } else {
-            return enforcer.enforce(sub, source, action.name());
-        }
+        return Optional.ofNullable(enforcer)
+                .map(ef -> enforcer.enforce(sub, source, action.name()))
+                .orElse(true);
     }
 
     @Override
     public boolean add(String sub, String source, AclAction action) {
-        return enforcer.addNamedPolicy("p", sub, source, action.name());
+        return Optional.ofNullable(enforcer)
+                .map(ef -> enforcer.addNamedPolicy("p", sub, source, action.name()))
+                .orElse(true);
+
     }
 
     @Override
     public boolean delete(String sub, String source, AclAction action) {
-        return enforcer.removeNamedPolicy("p", sub, source, action.name());
+        return Optional.ofNullable(enforcer)
+                .map(ef -> enforcer.addNamedPolicy("p", sub, source, action.name()))
+                .orElse(true);
+    }
+
+    @Override
+    public List<List<String>> get() {
+        return Optional.ofNullable(enforcer)
+                .map(ef -> enforcer.getNamedPolicy("p"))
+                .orElse(Collections.emptyList());
     }
 }
