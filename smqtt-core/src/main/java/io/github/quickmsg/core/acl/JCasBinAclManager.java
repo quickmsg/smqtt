@@ -73,4 +73,5 @@ public class JCasBinAclManager implements AclManager {
                 .map(ef -> enforcer.getNamedPolicy("p"))
                 .orElse(Collections.emptyList());
     }
+    
 }
