@@ -68,15 +68,15 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
             byte mqttVersion = (byte) mqttConnectVariableHeader.version();
             AclManager aclManager = mqttReceiveContext.getAclManager();
             /*check clientIdentifier exist*/
+            MqttChannel existMqttChannel = channelRegistry.get(clientIdentifier);
             if (mqttReceiveContext.getConfiguration().getConnectModel() == ConnectModel.UNIQUE) {
-                if (channelRegistry.exists(clientIdentifier)) {
+                if (existMqttChannel != null && existMqttChannel.getStatus() == ChannelStatus.ONLINE) {
                     return mqttChannel.write(
                             MqttMessageBuilder.buildConnectAck(MqttConnectReturnCode.CONNECTION_REFUSED_IDENTIFIER_REJECTED, mqttVersion),
                             false).then(mqttChannel.close());
                 }
             } else {
-                MqttChannel existMqttChannel = channelRegistry.get(clientIdentifier);
-                if (existMqttChannel != null) {
+                if (existMqttChannel != null && existMqttChannel.getStatus() == ChannelStatus.ONLINE) {
                     if (System.currentTimeMillis() - existMqttChannel.getConnectTime() > (mqttReceiveContext.getConfiguration().getNotKickSecond() * 1000)) {
                         existMqttChannel.close().subscribe();
                     } else {

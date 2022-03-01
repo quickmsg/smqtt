@@ -141,7 +141,7 @@
                 <artifactId>micrometer-registry-influx</artifactId>
                 <version>1.8.0</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.casbin</groupId>
                 <artifactId>jcasbin</artifactId>
@@ -159,6 +159,7 @@
 
     <profiles>
         <profile>
+            <id>release</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
             </activation>
