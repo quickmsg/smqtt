@@ -27,24 +27,23 @@ public class JCasBinAclManager implements AclManager {
 
     public JCasBinAclManager(AclConfig aclConfig) {
 
-        if(aclConfig ==null){
-            return;
-        }
-        Model model = new Model();
-        model.addDef("r", "r", "sub, obj, act");
-        model.addDef("p", "p", "sub, obj, act");
-        model.addDef("e", "e", "some(where (p.eft == allow))");
-        model.addDef("m", "m", "r.sub == p.sub && r.obj == p.obj && r.act == p.act");
-        if (aclConfig.getAclPolicy() == AclPolicy.JDBC) {
-            AclConfig.JdbcAclConfig jdbcAclConfig = aclConfig.getJdbcAclConfig();
-            Objects.requireNonNull(jdbcAclConfig);
-            try {
-                enforcer = new Enforcer(model, new JDBCAdapter(jdbcAclConfig.getDriver(), jdbcAclConfig.getUrl(), jdbcAclConfig.getUsername(), jdbcAclConfig.getPassword()));
-            } catch (Exception e) {
-                log.error("init acl jdbc error {}", aclConfig, e);
+        if (aclConfig != null) {
+            Model model = new Model();
+            model.addDef("r", "r", "sub, obj, act");
+            model.addDef("p", "p", "sub, obj, act");
+            model.addDef("e", "e", "some(where (p.eft == allow))");
+            model.addDef("m", "m", "r.sub == p.sub && r.obj == p.obj && r.act == p.act");
+            if (aclConfig.getAclPolicy() == AclPolicy.JDBC) {
+                AclConfig.JdbcAclConfig jdbcAclConfig = aclConfig.getJdbcAclConfig();
+                Objects.requireNonNull(jdbcAclConfig);
+                try {
+                    enforcer = new Enforcer(model, new JDBCAdapter(jdbcAclConfig.getDriver(), jdbcAclConfig.getUrl(), jdbcAclConfig.getUsername(), jdbcAclConfig.getPassword()));
+                } catch (Exception e) {
+                    log.error("init acl jdbc error {}", aclConfig, e);
+                }
+            } else if (aclConfig.getAclPolicy() == AclPolicy.FILE) {
+                enforcer = new Enforcer(model, new FileAdapter(aclConfig.getFilePath()));
             }
-        } else if (  aclConfig.getAclPolicy() == AclPolicy.FILE) {
-            enforcer = new Enforcer(model, new FileAdapter(aclConfig.getFilePath()));
         }
     }
 
@@ -76,5 +75,5 @@ public class JCasBinAclManager implements AclManager {
                 .map(ef -> enforcer.getNamedPolicy("p"))
                 .orElse(Collections.emptyList());
     }
-    
+
 }
