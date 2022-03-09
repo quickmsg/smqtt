@@ -26,12 +26,15 @@ public class JCasBinAclManager implements AclManager {
     private Enforcer enforcer;
 
     public JCasBinAclManager(AclConfig aclConfig) {
+
+        if(aclConfig ==null){
+            return;
+        }
         Model model = new Model();
         model.addDef("r", "r", "sub, obj, act");
         model.addDef("p", "p", "sub, obj, act");
         model.addDef("e", "e", "some(where (p.eft == allow))");
         model.addDef("m", "m", "r.sub == p.sub && r.obj == p.obj && r.act == p.act");
-
         if (aclConfig.getAclPolicy() == AclPolicy.JDBC) {
             AclConfig.JdbcAclConfig jdbcAclConfig = aclConfig.getJdbcAclConfig();
             Objects.requireNonNull(jdbcAclConfig);
@@ -40,7 +43,7 @@ public class JCasBinAclManager implements AclManager {
             } catch (Exception e) {
                 log.error("init acl jdbc error {}", aclConfig, e);
             }
-        } else if (aclConfig.getAclPolicy() == AclPolicy.FILE) {
+        } else if (  aclConfig.getAclPolicy() == AclPolicy.FILE) {
             enforcer = new Enforcer(model, new FileAdapter(aclConfig.getFilePath()));
         }
     }
