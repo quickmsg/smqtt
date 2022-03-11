@@ -26,7 +26,6 @@ public class JCasBinAclManager implements AclManager {
     private Enforcer enforcer;
 
     public JCasBinAclManager(AclConfig aclConfig) {
-
         if (aclConfig != null) {
             Model model = new Model();
             model.addDef("r", "r", "sub, obj, act");
@@ -75,5 +74,5 @@ public class JCasBinAclManager implements AclManager {
                 .map(ef -> enforcer.getNamedPolicy("p"))
                 .orElse(Collections.emptyList());
     }
-
+    
 }
