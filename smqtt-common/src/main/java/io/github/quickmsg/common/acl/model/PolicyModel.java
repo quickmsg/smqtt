@@ -1,4 +1,4 @@
-package io.github.quickmsg.core.http.acl.model;
+package io.github.quickmsg.common.acl.model;
 
 import io.github.quickmsg.common.acl.AclAction;
 import lombok.Data;

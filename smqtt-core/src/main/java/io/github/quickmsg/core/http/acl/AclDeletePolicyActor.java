@@ -7,7 +7,7 @@ import io.github.quickmsg.common.config.Configuration;
 import io.github.quickmsg.common.context.ContextHolder;
 import io.github.quickmsg.common.enums.HttpType;
 import io.github.quickmsg.core.http.AbstractHttpActor;
-import io.github.quickmsg.core.http.acl.model.PolicyModel;
+import io.github.quickmsg.common.acl.model.PolicyModel;
 import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;

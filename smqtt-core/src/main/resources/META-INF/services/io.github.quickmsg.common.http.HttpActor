@@ -23,3 +23,6 @@ io.github.quickmsg.core.http.actors.rule.RuleTypeActor
 io.github.quickmsg.core.http.actors.source.SourceTypeActor
 io.github.quickmsg.core.http.actors.PrometheusActor
 io.github.quickmsg.core.http.actors.EventHttpActor
+io.github.quickmsg.core.http.acl.AclAddPolicyActor
+io.github.quickmsg.core.http.acl.AclDeletePolicyActor
+io.github.quickmsg.core.http.acl.AclQueryPolicyActor

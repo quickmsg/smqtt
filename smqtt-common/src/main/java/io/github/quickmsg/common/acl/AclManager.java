@@ -1,5 +1,7 @@
 package io.github.quickmsg.common.acl;
 
+import io.github.quickmsg.common.acl.model.PolicyModel;
+
 import java.util.List;
 
 /**
@@ -13,5 +15,5 @@ public interface AclManager {
 
     boolean delete(String sub, String source, AclAction action);
 
-    List<List<String>> get();
+    List<List<String>> get(PolicyModel policyModel);
 }

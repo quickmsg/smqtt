@@ -1,13 +1,14 @@
 package io.github.quickmsg.core.http.acl;
 
+import io.github.quickmsg.common.acl.model.PolicyModel;
 import io.github.quickmsg.common.annotation.AllowCors;
 import io.github.quickmsg.common.annotation.Header;
 import io.github.quickmsg.common.annotation.Router;
 import io.github.quickmsg.common.config.Configuration;
 import io.github.quickmsg.common.context.ContextHolder;
 import io.github.quickmsg.common.enums.HttpType;
+import io.github.quickmsg.common.utils.JacksonUtil;
 import io.github.quickmsg.core.http.AbstractHttpActor;
-import io.github.quickmsg.core.http.acl.model.PolicyModel;
 import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
@@ -33,7 +34,9 @@ public class AclQueryPolicyActor extends AbstractHttpActor {
                 .asString(StandardCharsets.UTF_8)
                 .map(this.toJson(PolicyModel.class))
                 .doOnNext(policyModel ->
-                        ContextHolder.getReceiveContext().getAclManager().delete(policyModel.getSubject(), policyModel.getSource(), policyModel.getAction())
-                ).then(response.sendString(Mono.just("success")).then());
+                        response.sendString(Mono.just(JacksonUtil.bean2Json(ContextHolder.getReceiveContext().getAclManager().get(policyModel)))).then().subscribe()
+                )
+                .then();
     }
+
 }

@@ -4,14 +4,13 @@ import io.github.quickmsg.common.acl.AclAction;
 import io.github.quickmsg.common.acl.AclManager;
 import io.github.quickmsg.common.acl.AclPolicy;
 import io.github.quickmsg.common.config.AclConfig;
-import io.github.quickmsg.common.utils.ClassPathLoader;
+import io.github.quickmsg.common.acl.model.PolicyModel;
 import lombok.extern.slf4j.Slf4j;
 import org.casbin.adapter.JDBCAdapter;
 import org.casbin.jcasbin.main.Enforcer;
 import org.casbin.jcasbin.model.Model;
 import org.casbin.jcasbin.persist.file_adapter.FileAdapter;
 
-import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -69,10 +68,10 @@ public class JCasBinAclManager implements AclManager {
     }
 
     @Override
-    public List<List<String>> get() {
+    public List<List<String>> get(PolicyModel policyModel) {
         return Optional.ofNullable(enforcer)
-                .map(ef -> enforcer.getNamedPolicy("p"))
+                .map(ef -> enforcer.getFilteredNamedPolicy("p", 0, policyModel.getSubject(), policyModel.getSource(), policyModel.getAction() == null ? "" : policyModel.getAction().name()))
                 .orElse(Collections.emptyList());
     }
-    
+
 }
