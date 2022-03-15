@@ -53,7 +53,13 @@ const options = {
               path: 'publish',
               name: '推送信息',
               component: () => import('@/pages/dashboard/publish'),
+            },
+            {
+              path: 'acl',
+              name: '权限校验',
+              component: () => import('@/pages/dashboard/acl'),
             }
+
           ]
         }
       ]

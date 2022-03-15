@@ -1,0 +1,200 @@
+<template>
+  <div style="margin-top: 20px">
+    <a-select v-model="params.action" default-value="CONNECT" style="width: 120px" @change="queryActionData">
+      <a-select-option value="CONNECT">
+        CONNECT
+      </a-select-option>
+      <a-select-option value="SUBSCRIBE">
+        SUBSCRIBE
+      </a-select-option>
+      <a-select-option value="PUBLISH">
+        PUBLISH
+      </a-select-option>
+    </a-select>
+    <a-button style="width: 120px;margin-left:10px;" @click="showModal">
+      新增
+    </a-button>
+    <a-modal
+        title="Title"
+        :visible="visible"
+        :confirm-loading="confirmLoading"
+        @ok="handleOk"
+        @cancel="handleCancel"
+    >
+      <a-form :model="form" :labelCol="{ span: 4 }" :wrapperCol="{ span: 20 }">
+        <a-form-item label="Subject">
+          <a-input
+              placeholder="请输入Subject"
+              v-model="form.subject"
+              v-decorator="['subject', {
+            rules: [
+              { required: true, message: '请输入Subject' },
+              { max: 64, message: '设备ID不超过64个字符' },
+              { pattern: new RegExp(/^[0-9a-zA-Z_\-]+$/, 'g'), message: '产品ID只能由数字、字母、下划线、中划线组成' }
+            ]
+          }]"
+          />
+        </a-form-item>
+        <a-form-item label="Source">
+          <a-input
+              placeholder="请输入Source名称"
+              v-model="form.source"
+              v-decorator="['source', {
+            rules: [
+              { required: true, message: '请输入Source名称' },
+              { max: 200, message: 'Source名称不超过200个字符' }
+            ]
+          }]"
+          />
+        </a-form-item>
+        <a-form-item
+            label="Action"
+            v-decorator="['action', {
+          rules: [
+            { required: true }
+          ]
+        }]"
+        >
+          <a-select v-model="form.action" style="width: 100%" placeholder="请选择Action">
+            <a-select-opt-group>
+              <a-select-option value="CONNECT">
+                CONNECT
+              </a-select-option>
+              <a-select-option value="SUBSCRIBE">
+                SUBSCRIBE
+              </a-select-option>
+              <a-select-option value="PUBLISH">
+                PUBLISH
+              </a-select-option>
+            </a-select-opt-group>
+          </a-select>
+        </a-form-item>
+      </a-form>
+    </a-modal>
+    <a-button  style="width: 120px;margin-left:500px;" @click="deleteActionData">删除</a-button>
+<!--    <a-button type="primary" style="width: 120px;" @click="queryActionData">查询</a-button>-->
+    <div>
+    </div>
+    <a-table
+        :pagination="pagination"
+        :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
+        :columns="columns"
+        :data-source="dataSource"
+        @change="handleTableChange"
+    />
+  </div>
+
+</template>
+
+<script>
+import {queryPolicyAction, deletePolicyAction, addPolicyAction} from '@/services/smqtt'
+
+
+const columns = [
+  {
+    title: 'ID',
+    width:'100px',
+    customRender: (text, record, index) => index + 1
+  },
+  {
+    title: 'Subject',
+    dataIndex: "subject",
+  },
+  {
+    title: 'Source',
+    dataIndex: "source",
+  },
+  {
+    title: 'Action',
+    dataIndex: "action",
+  }
+]
+export default {
+  name: "Acl",
+  data() {
+    return {
+      params: {
+        action: "CONNECT",
+        current: 1,
+        pageSize: 10,
+      },
+
+      pagination: {
+        pageSize: 20, // 默认每页显示数量
+        showSizeChanger: true, // 显示可改变每页数量
+        pageSizeOptions: ['10', '20', '30', '40'], // 每页数量选项
+        showTotal: total => `Total ${total} items`, // 显示总数
+        onShowSizeChange:(page,pageSize)=> {
+          this.pagination.pageSize = pageSize
+          console.log(page)
+        }
+      },
+      selectedRowKeys: [],
+      columns: columns,
+      dataSource: null,
+      visible: false,
+      confirmLoading: false,
+      form: {}
+    }
+  },
+  mounted() {
+    this.queryActionData()
+  },
+  methods: {
+    change() {
+      //  current 改变后的页码，pageSize 每页显示条数
+      console.log("log:",this.pagination.pageSize, this.pagination.current);
+    },
+    async queryActionData() {
+      await queryPolicyAction(this.params).then(res => {
+        this.dataSource = res.data
+      })
+
+    },
+    async deleteActionData() {
+      for (const key in this.selectedRowKeys) {
+        let loc=Number((this.params.current-1)*this.params.pageSize)+Number(this.selectedRowKeys[key])
+        let data = this.dataSource[loc]
+       await  deletePolicyAction(data).then(res => {
+         this.$message.info("deleted:"+res.data);
+        })
+      }
+      await this.queryActionData()
+      this.selectedRowKeys=[]
+
+    },
+    onSelectChange(selectedRowKeys) {
+      console.log('selectedRowKeys changed: ', selectedRowKeys);
+      this.selectedRowKeys = selectedRowKeys;
+
+    },
+    showModal() {
+      this.visible = true;
+    },
+    async handleOk() {
+      this.confirmLoading = true;
+      await addPolicyAction(this.form).then(res => {
+        this.$message.info("add:"+res.data);
+      })
+      this.visible = false;
+      this.confirmLoading = false
+      this.params.action=this.form.action
+      this.form = {}
+      await this.queryActionData()
+
+    },
+    handleCancel() {
+      console.log('Clicked cancel button');
+      this.visible = false;
+    },
+    handleTableChange(val) {
+      console.log(val)
+      const pager = { ...this.pagination  };
+      this.params.current = val.current;  // 查看文档可知current 是改变页码数必要字段
+      this.params.pageSize = val.pageSize;  // 查看文档可知pageSize是改变动态条数必要字段
+      this.selectedRowKeys=[];
+      this.pagination = pager;
+    },
+  }
+}
+</script>

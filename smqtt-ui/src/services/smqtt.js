@@ -1,5 +1,19 @@
-import {CLUSTERS, CONNECTIONS, SUBSCRIBES, ISCLUESTER, PUBLISH} from '@/services/api'
+import {CLUSTERS, CONNECTIONS, SUBSCRIBES, ISCLUESTER, PUBLISH,ACLACTION} from '@/services/api'
 import {request, METHOD} from '@/utils/request'
+
+export function addPolicyAction(params) {
+    return request(ACLACTION+'policy/add', METHOD.POST, params)
+}
+
+
+export function deletePolicyAction(params) {
+    return request(ACLACTION+'policy/delete', METHOD.POST, params)
+}
+
+
+export async function  queryPolicyAction(params) {
+    return request(ACLACTION+'policy/query', METHOD.POST, params)
+}
 
 /**
  * 获取当前连接信息

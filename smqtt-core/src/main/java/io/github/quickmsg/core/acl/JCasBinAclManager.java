@@ -63,7 +63,7 @@ public class JCasBinAclManager implements AclManager {
     @Override
     public boolean delete(String sub, String source, AclAction action) {
         return Optional.ofNullable(enforcer)
-                .map(ef -> enforcer.addNamedPolicy("p", sub, source, action.name()))
+                .map(ef -> enforcer.removeNamedPolicy("p", sub, source, action.name()))
                 .orElse(true);
     }
 
