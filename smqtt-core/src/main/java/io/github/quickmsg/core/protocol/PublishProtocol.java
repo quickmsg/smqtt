@@ -49,7 +49,7 @@ public class PublishProtocol implements Protocol<MqttPublishMessage> {
             MetricManagerHolder.metricManager.getMetricRegistry().getMetricCounter(CounterType.PUBLISH_EVENT).increment();
             MqttPublishMessage message = smqttMessage.getMessage();
             AclManager aclManager = receiveContext.getAclManager();
-            if (!aclManager.auth(mqttChannel.getClientIdentifier(), message.variableHeader().topicName(), AclAction.PUBLISH)) {
+            if (!mqttChannel.getIsMock() && !aclManager.auth(mqttChannel.getClientIdentifier(), message.variableHeader().topicName(), AclAction.PUBLISH)) {
                 log.warn("mqtt【{}】publish topic 【{}】 acl not authorized ", mqttChannel.getConnection(), message.variableHeader().topicName());
                 return Mono.empty();
             }

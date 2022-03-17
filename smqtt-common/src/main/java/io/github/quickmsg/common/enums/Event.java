@@ -90,7 +90,7 @@ public enum Event {
         receiveContext.getProtocolAdaptor()
                 .chooseProtocol(mqttChannel, new SmqttMessage<>(
                                 message
-                                , System.currentTimeMillis(), Boolean.FALSE),
+                                , System.currentTimeMillis(), Boolean.TRUE),
                         receiveContext);
         if (message instanceof MqttPublishMessage) {
             ((MqttPublishMessage) message).release();
