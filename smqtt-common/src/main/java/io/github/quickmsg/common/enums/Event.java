@@ -1,5 +1,6 @@
 package io.github.quickmsg.common.enums;
 
+import io.github.quickmsg.common.channel.MockMqttChannel;
 import io.github.quickmsg.common.channel.MqttChannel;
 import io.github.quickmsg.common.context.ReceiveContext;
 import io.github.quickmsg.common.message.MqttMessageBuilder;
@@ -88,9 +89,9 @@ public enum Event {
 
     public void write(ReceiveContext<?> receiveContext, MqttChannel mqttChannel, MqttMessage message) {
         receiveContext.getProtocolAdaptor()
-                .chooseProtocol(mqttChannel, new SmqttMessage<>(
+                .chooseProtocol(MockMqttChannel.wrapClientIdentifier(mqttChannel.getClientIdentifier()), new SmqttMessage<>(
                                 message
-                                , System.currentTimeMillis(), Boolean.TRUE),
+                                , System.currentTimeMillis(), Boolean.FALSE),
                         receiveContext);
         if (message instanceof MqttPublishMessage) {
             ((MqttPublishMessage) message).release();
