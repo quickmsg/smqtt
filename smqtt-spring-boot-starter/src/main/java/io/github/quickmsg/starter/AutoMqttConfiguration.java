@@ -27,8 +27,8 @@ public class AutoMqttConfiguration {
      * @return {@link Bootstrap}
      */
     @Bean
-    public Bootstrap startServer(@Autowired SpringBootstrapConfig springBootstrapConfig, @Autowired(required = false) PasswordAuthentication authentication) {
-        check(springBootstrapConfig, authentication);
+    public Bootstrap startServer(@Autowired SpringBootstrapConfig springBootstrapConfig) {
+        check(springBootstrapConfig);
         return Bootstrap.builder()
                 .rootLevel(Level.toLevel(springBootstrapConfig.getLogLevel()))
                 .tcpConfig(springBootstrapConfig.getTcp())
@@ -47,12 +47,9 @@ public class AutoMqttConfiguration {
                 .doOnSuccess(this::printUiUrl).block();
     }
 
-    private void check(SpringBootstrapConfig springBootstrapConfig, PasswordAuthentication authentication) {
+    private void check(SpringBootstrapConfig springBootstrapConfig) {
         if (springBootstrapConfig.getTcp().getConnectModel() == null) {
             springBootstrapConfig.getTcp().setConnectModel(ConnectModel.UNIQUE);
-        }
-        if (authentication != null) {
-            springBootstrapConfig.getTcp().setAuthentication(authentication);
         }
     }
 
