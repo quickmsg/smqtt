@@ -12,7 +12,7 @@
         <a-input v-model="params.source" style="width: 120px" placeholder='请输入资源'/>
       </a-form-item>
       <a-form-item label="类型" style="size: 20px">
-        <a-select v-model="params.action" default-value="CONNECT" style="width: 120px" @change="queryActionData">
+        <a-select v-model="params.action" default-value="ALL" style="width: 120px" @change="queryActionData">
           <a-select-option value="">
             ALL
           </a-select-option>
@@ -81,7 +81,7 @@
         >
           <a-select v-model="form.action" style="width: 100%" placeholder="请选择Action">
             <a-select-opt-group>
-              <a-select-option value="">
+              <a-select-option value="ALL">
                 ALL
               </a-select-option>
               <a-select-option value="CONNECT">
