@@ -5,8 +5,8 @@
         class="antAdvancedSearchForm"
     >
 
-      <a-form-item label="设备" style="size: 20px">
-        <a-input v-model="params.subject" style="width: 120px" placeholder='请输入设备'/>
+      <a-form-item label="设备ID" style="size: 20px">
+        <a-input v-model="params.subject" style="width: 120px" placeholder='请输入设备ID'/>
       </a-form-item>
       <a-form-item label="资源" style="size: 20px">
         <a-input v-model="params.source" style="width: 120px" placeholder='请输入资源'/>
@@ -46,9 +46,9 @@
         @cancel="handleCancel"
     >
       <a-form :model="form" :labelCol="{ span: 4 }" :wrapperCol="{ span: 20 }">
-        <a-form-item label="Subject">
+        <a-form-item label="设备ID">
           <a-input
-              placeholder="请输入Subject"
+              placeholder="请输入设备ID"
               v-model="form.subject"
               v-decorator="['subject', {
             rules: [
@@ -59,9 +59,9 @@
           }]"
           />
         </a-form-item>
-        <a-form-item label="Source">
+        <a-form-item label="资源">
           <a-input
-              placeholder="请输入Source名称"
+              placeholder="请输入资源名称"
               v-model="form.source"
               v-decorator="['source', {
             rules: [
@@ -72,14 +72,14 @@
           />
         </a-form-item>
         <a-form-item
-            label="Action"
+            label="类型"
             v-decorator="['action', {
           rules: [
             { required: true }
           ]
         }]"
         >
-          <a-select v-model="form.action" style="width: 100%" placeholder="请选择Action">
+          <a-select v-model="form.action" style="width: 100%" placeholder="请选择类型">
             <a-select-opt-group>
               <a-select-option value="ALL">
                 ALL
@@ -122,7 +122,7 @@ const columns = [
     customRender: (text, record, index) => index + 1
   },
   {
-    title: '设备',
+    title: '设备ID',
     dataIndex: "subject",
   },
   {
