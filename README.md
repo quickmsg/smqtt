@@ -34,7 +34,7 @@ SMQTT基于reactor-netty(spring-webflux底层依赖)
 10. SPI接口扩展支持
     - 消息管理接口（会话消息/保留消息管理）
     - 通道管理接口 (管理系统的客户端连接)
-    - 认证接口 （用于自定义外部认证）
+    - ~~认证接口 （用于自定义外部认证）~~
     - 拦截器 （用户自定义拦截消息）
 11. 集群支持（gossip协议实现）
 12. 容器化支持
@@ -49,6 +49,7 @@ SMQTT基于reactor-netty(spring-webflux底层依赖)
 17. grafana监控集成
     - 支持influxdb
     - 支持prometheus
+18. ACL权限管理
 
 ## 尝试一下
 
