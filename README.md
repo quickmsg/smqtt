@@ -90,56 +90,85 @@ SMQTT基于reactor-netty(spring-webflux底层依赖)
 - 阻塞式启动服务：
 
 ```markdown
-  Bootstrap bootstrap = Bootstrap.builder()
-.rootLevel(Level.DEBUG)
-.tcpConfig(
-BootstrapConfig .TcpConfig .builder()
-.port(8888)
-.username("smqtt")
-.password("smqtt")
-.build())
-.httpConfig(
-BootstrapConfig .HttpConfig .builder()
-.enable(true)
-.accessLog(true)
-.build())
-.clusterConfig(
-BootstrapConfig. ClusterConfig .builder()
-.enable(true)
-.namespace("smqtt")
-.node("node-1")
-.port(7773)
-.url("127.0.0.1:7771,127.0.0.1:7772"). build())
-.build()
-.startAwait();
+        Bootstrap.builder()
+                .rootLevel(Level.INFO)
+                .websocketConfig(
+                        BootstrapConfig.WebsocketConfig
+                                .builder()
+                                .enable(false)
+                                .path("/mqtt")
+                                .port(8888)
+                                .build()
+                )
+                .tcpConfig(
+                        BootstrapConfig
+                                .TcpConfig
+                                .builder()
+                                .port(1883)
+                                .ssl(SslContext.builder().enable(false).build())
+                                .build())
+                .httpConfig(
+                        BootstrapConfig
+                                .HttpConfig
+                                .builder()
+                                .enable(false)
+                                .accessLog(true)
+                                .admin(BootstrapConfig.HttpAdmin.builder().enable(true).username("smqtt").password("smqtt").build())
+                                .build())
+                .clusterConfig(
+                        BootstrapConfig.
+                                ClusterConfig
+                                .builder()
+                                .enable(false)
+                                .namespace("smqtt")
+                                .node("node-1")
+                                .port(7773)
+                                .url("127.0.0.1:7771,127.0.0.1:7772").
+                                build())
+                .build()
+                .startAwait();
 ```
 
 - 非阻塞式启动服务：
 
 ```markdown
-
-Bootstrap bootstrap = Bootstrap.builder()
-.rootLevel(Level.DEBUG)
-.tcpConfig(
-BootstrapConfig .TcpConfig .builder()
-.port(8888)
-.username("smqtt")
-.password("smqtt")
-.build())
-.httpConfig(
-BootstrapConfig .HttpConfig .builder()
-.enable(true)
-.accessLog(true)
-.build())
-.clusterConfig(
-BootstrapConfig. ClusterConfig .builder()
-.enable(true)
-.namespace("smqtt")
-.node("node-1")
-.port(7773)
-.url("127.0.0.1:7771,127.0.0.1:7772"). build())
-.build()
-.start().block();
+    Bootstrap bootstrap = Bootstrap.builder()
+                .rootLevel(Level.INFO)
+                .websocketConfig(
+                        BootstrapConfig.WebsocketConfig
+                                .builder()
+                                .enable(false)
+                                .path("/mqtt")
+                                .port(8888)
+                                .build()
+                )
+                .tcpConfig(
+                        BootstrapConfig
+                                .TcpConfig
+                                .builder()
+                                .port(1883)
+                                .ssl(SslContext.builder().enable(false).build())
+                                .build())
+                .httpConfig(
+                        BootstrapConfig
+                                .HttpConfig
+                                .builder()
+                                .enable(false)
+                                .accessLog(true)
+                                .admin(BootstrapConfig.HttpAdmin.builder().enable(true).username("smqtt").password("smqtt").build())
+                                .build())
+                .clusterConfig(
+                        BootstrapConfig.
+                                ClusterConfig
+                                .builder()
+                                .enable(false)
+                                .namespace("smqtt")
+                                .node("node-1")
+                                .port(7773)
+                                .url("127.0.0.1:7771,127.0.0.1:7772").
+                                build())
+                .build()
+                .start().block();
 ```
 
 ### jar方式
