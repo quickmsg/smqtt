@@ -50,6 +50,7 @@ SMQTT基于reactor-netty(spring-webflux底层依赖)
     - 支持influxdb
     - 支持prometheus
 18. ACL权限管理
+    - 对设备、资源、类型进行鉴权
 
 ## 尝试一下
 
