@@ -70,7 +70,7 @@ public class JCasBinAclManager implements AclManager {
     @Override
     public List<List<String>> get(PolicyModel policyModel) {
         return Optional.ofNullable(enforcer)
-                .map(ef -> enforcer.getFilteredNamedPolicy("p", 0, policyModel.getSubject(), policyModel.getSource(), policyModel.getAction() == null ? "" : policyModel.getAction().name()))
+                .map(ef -> enforcer.getFilteredNamedPolicy("p", 0, policyModel.getSubject(), policyModel.getSource(), policyModel.getAction() == null || AclAction.ALL == policyModel.getAction() ? "" : policyModel.getAction().name()))
                 .orElse(Collections.emptyList());
     }
 

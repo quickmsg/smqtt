@@ -13,7 +13,7 @@
       </a-form-item>
       <a-form-item label="类型" style="size: 20px">
         <a-select v-model="params.action" default-value="ALL" style="width: 120px" @change="queryActionData">
-          <a-select-option value="">
+          <a-select-option value="ALL">
             ALL
           </a-select-option>
           <a-select-option value="CONNECT">
@@ -139,7 +139,7 @@ export default {
   data() {
     return {
       params: {
-        action: "CONNECT",
+        action: "ALL",
         current: 1,
         pageSize: 10,
         subject: null,
@@ -169,7 +169,7 @@ export default {
   },
   methods: {
     reset() {
-      this.params.action = "CONNECT"
+      this.params.action = "ALL"
       this.params.current = 1
       this.params.pageSize = 10
       this.params.subject = null
