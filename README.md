@@ -60,6 +60,11 @@ SMQTT基于reactor-netty(spring-webflux底层依赖)
 | 113.90.145.99:18888                    | mqtt over websocket |用户名：smqtt 密码：smqtt  |
 | http://113.90.145.99:18887/smqtt/admin | 管理后台 |用户名：smqtt 密码：smqtt  |
 
+## 商业化
+
+商业化版本出售，请添加微信17512575402！
+
+
 ## 启动方式
 
 ### main方式启动
