@@ -274,6 +274,10 @@ docker run -it  -v <配置文件路径目录>:/conf -p 1883:1883  -p 1999:1999 1
 
 ![image](icon/netty.png)
 
+### 商业化
+
+商业化版本出售，请添加微信17512575402！
+
 ## License
 
 [Apache License, Version 2.0](LICENSE)
