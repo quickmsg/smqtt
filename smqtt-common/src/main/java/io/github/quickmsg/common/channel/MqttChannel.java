@@ -186,7 +186,7 @@ public class MqttChannel {
 
 
     public long generateId(MqttMessageType type, Integer messageId) {
-        return (long) connection.channel().hashCode() << 5 | (long) type.value() << 4 | messageId;
+        return (long) connection.channel().hashCode() << 32 | (long) type.value() << 28 | messageId<<4>>>4;
     }
 
 
