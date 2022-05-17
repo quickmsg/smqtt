@@ -1,7 +1,6 @@
 package io.github.quickmsg.starter;
 
 import ch.qos.logback.classic.Level;
-import io.github.quickmsg.common.auth.PasswordAuthentication;
 import io.github.quickmsg.common.config.ConnectModel;
 import io.github.quickmsg.common.utils.IPUtils;
 import io.github.quickmsg.core.Bootstrap;

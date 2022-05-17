@@ -1,6 +1,5 @@
 package io.github.quickmsg.common.config;
 
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,12 +8,13 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-@Builder
 public class SslContext {
 
     private String crt;
 
     private String key;
+
+    private String ca;
 
     private Boolean enable;
 

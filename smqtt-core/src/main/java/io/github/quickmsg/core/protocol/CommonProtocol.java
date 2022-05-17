@@ -1,6 +1,6 @@
 package io.github.quickmsg.core.protocol;
 
-import io.github.quickmsg.common.ack.Ack;
+import io.github.quickmsg.common.retry.Ack;
 import io.github.quickmsg.common.channel.MqttChannel;
 import io.github.quickmsg.common.context.ReceiveContext;
 import io.github.quickmsg.common.enums.ChannelStatus;
