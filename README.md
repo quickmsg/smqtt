@@ -61,6 +61,8 @@ SMQTT基于reactor-netty(spring-webflux底层依赖)
 | 113.90.145.99:18886                    | mqtt端口 |用户名：smqtt 密码：smqtt |
 | 113.90.145.99:18888                    | mqtt over websocket |用户名：smqtt 密码：smqtt  |
 | http://113.90.145.99:18887/smqtt/admin | 管理后台 |用户名：smqtt 密码：smqtt  |
+## 商业化版本
+如果遇到接入性能问题，或者需要定制化开发的，我们提供商业化版本出售，请添加微信17512575402！
 
 ## 启动方式
 
@@ -275,6 +277,7 @@ docker run -it  -v <配置文件路径目录>:/conf -p 1883:1883  -p 1999:1999 1
 ### Netty监控
 
 ![image](icon/netty.png)
+
 
 ## License
 
