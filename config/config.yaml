@@ -37,6 +37,10 @@ smqtt:
       enable: true  # 开关
       username: smqtt # 访问用户名
       password: smqtt # 访问密码
+  auth:
+    fixed:
+      username: smqtt
+      password: smqtt
   ws: # websocket配置
     enable: true # 开关
     port: 8999 # 端口

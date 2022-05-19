@@ -1,4 +1,4 @@
 p, client01, topicA, PUBLISH,allow
 p, client02, topicB, PUBLISH,deny
 p, ip{192.168.0.172/24}, topicB, PUBLISH,deny
-p, all, topicB, PUBLISH,allow
+p, all, topicB, SUBSCRIBE,allow
