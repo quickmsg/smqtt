@@ -4,20 +4,16 @@
         layout="inline"
         class="antAdvancedSearchForm"
     >
-
-      <a-form-item label="设备ID" style="size: 20px">
-        <a-input v-model="params.subject" style="width: 120px" placeholder='请输入设备ID'/>
+      <a-form-item label="过滤规则" style="size: 20px">
+        <a-input v-model="params.subject" style="width: 100px" placeholder='请输入过滤规则'/>
       </a-form-item>
-      <a-form-item label="资源" style="size: 20px">
-        <a-input v-model="params.source" style="width: 120px" placeholder='请输入资源'/>
+      <a-form-item label="topic名称" style="size: 20px">
+        <a-input v-model="params.source" style="width: 100px" placeholder='请输入topic名称'/>
       </a-form-item>
       <a-form-item label="类型" style="size: 20px">
-        <a-select v-model="params.action" default-value="ALL" style="width: 120px" @change="queryActionData">
+        <a-select v-model="params.action" default-value="ALL" style="width: 100px" @change="queryActionData">
           <a-select-option value="ALL">
             ALL
-          </a-select-option>
-          <a-select-option value="CONNECT">
-            CONNECT
           </a-select-option>
           <a-select-option value="SUBSCRIBE">
             SUBSCRIBE
@@ -26,29 +22,41 @@
             PUBLISH
           </a-select-option>
         </a-select>
-        <a-button style="width: 100px;margin-left: 40px" @click="showModal">
+      </a-form-item>
+      <a-form-item label="限制策略" style="size: 20px">
+        <a-select v-model="params.aclType" default-value="allow" style="width: 100px" @change="queryActionData">
+          <a-select-option value="deny">
+            DENY
+          </a-select-option>
+          <a-select-option value="allow">
+            ALLOW
+          </a-select-option>
+        </a-select>
+        <a-button style="width: 80px;margin-left: 20px" @click="showModal">
           新增
         </a-button>
-        <a-button style="width: 100px;margin-left: 20px" @click="queryActionData">查询</a-button>
-        <a-button style="width: 100px;margin-left: 20px" @click="reset">重置</a-button>
-        <a-button style="width: 100px;margin-left: 20px" @click="deleteActionData">删除</a-button>
+        <a-button style="width: 80px;margin-left: 20px" @click="queryActionData">查询</a-button>
+        <a-button style="width: 80px;margin-left: 20px" @click="reset">重置</a-button>
+        <a-button style="width: 80px;margin-left: 20px" @click="deleteActionData">删除</a-button>
 
       </a-form-item>
+
 
     </a-form>
 
 
+
     <a-modal
-        title="Title"
+        title="新增访问控制"
         :visible="visible"
         :confirm-loading="confirmLoading"
         @ok="handleOk"
         @cancel="handleCancel"
     >
       <a-form :model="form" :labelCol="{ span: 4 }" :wrapperCol="{ span: 20 }">
-        <a-form-item label="设备ID">
+        <a-form-item label="过滤规则">
           <a-input
-              placeholder="请输入设备ID"
+              placeholder="请输入过滤规则"
               v-model="form.subject"
               v-decorator="['subject', {
             rules: [
@@ -59,9 +67,9 @@
           }]"
           />
         </a-form-item>
-        <a-form-item label="资源">
+        <a-form-item label="topic名称">
           <a-input
-              placeholder="请输入资源名称"
+              placeholder="请输入topic名称"
               v-model="form.source"
               v-decorator="['source', {
             rules: [
@@ -84,9 +92,6 @@
               <a-select-option value="ALL">
                 ALL
               </a-select-option>
-              <a-select-option value="CONNECT">
-                CONNECT
-              </a-select-option>
               <a-select-option value="SUBSCRIBE">
                 SUBSCRIBE
               </a-select-option>
@@ -96,6 +101,25 @@
             </a-select-opt-group>
           </a-select>
         </a-form-item>
+        <a-form-item
+            label="限制策略"
+            v-decorator="['aclType', {
+          rules: [
+            { required: true }
+          ]
+        }]"
+        >
+          <a-select v-model="form.aclType" style="width: 100%" placeholder="请选择类型">
+            <a-select-opt-group>
+              <a-select-option value="deny">
+                DENY
+              </a-select-option>
+              <a-select-option value="allow">
+                ALLOW
+              </a-select-option>
+            </a-select-opt-group>
+          </a-select>
+          </a-form-item>
       </a-form>
     </a-modal>
     <div>
@@ -122,16 +146,20 @@ const columns = [
     customRender: (text, record, index) => index + 1
   },
   {
-    title: '设备ID',
+    title: '过滤规则',
     dataIndex: "subject",
   },
   {
-    title: '资源',
+    title: 'topic名称',
     dataIndex: "source",
   },
   {
     title: '类型',
     dataIndex: "action",
+  },
+  {
+    title: '访问策略',
+    dataIndex: "aclType",
   }
 ]
 export default {
@@ -143,7 +171,8 @@ export default {
         current: 1,
         pageSize: 10,
         subject: null,
-        source: null
+        source: null,
+        aclType: "allow"
       },
 
       pagination: {
@@ -153,7 +182,6 @@ export default {
         showTotal: total => `Total ${total} items`, // 显示总数
         onShowSizeChange: (page, pageSize) => {
           this.pagination.pageSize = pageSize
-          console.log(page)
         }
       },
       selectedRowKeys: [],
@@ -174,6 +202,7 @@ export default {
       this.params.pageSize = 10
       this.params.subject = null
       this.params.source = null
+      this.params.aclType = null
       this.queryActionData()
 
     },
