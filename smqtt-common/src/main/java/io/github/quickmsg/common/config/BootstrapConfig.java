@@ -108,6 +108,13 @@ public class BootstrapConfig {
          */
         @JsonProperty("acl")
         private AclConfig acl;
+
+
+        /**
+         * auth配置
+         */
+        @JsonProperty("auth")
+        private AuthConfig authConfig;
     }
 
     @Data
@@ -190,11 +197,6 @@ public class BootstrapConfig {
          * child client channel options
          */
         Map<String, Object> childOptions;
-
-        /**
-         * PasswordAuthentication
-         */
-        PasswordAuthentication authentication;
 
     }
 

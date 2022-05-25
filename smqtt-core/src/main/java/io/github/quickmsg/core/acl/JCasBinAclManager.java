@@ -93,7 +93,7 @@ public class JCasBinAclManager implements AclManager {
     @Override
     public boolean add(String sub, String source, AclAction action, AclType type) {
         return Optional.ofNullable(enforcer)
-                .map(ef -> enforcer.addNamedPolicy("p", sub, source, action.name(),type.getDesc()))
+                .map(ef -> enforcer.addNamedPolicy("p", sub, source, action.name(),type.name()))
                 .orElse(true);
 
     }
@@ -101,14 +101,19 @@ public class JCasBinAclManager implements AclManager {
     @Override
     public boolean delete(String sub, String source, AclAction action,AclType type) {
         return Optional.ofNullable(enforcer)
-                .map(ef -> enforcer.removeNamedPolicy("p", sub, source, action.name(),type.getDesc()))
+                .map(ef -> enforcer.removeNamedPolicy("p", sub, source, action.name(),type.name()))
                 .orElse(true);
     }
 
     @Override
     public List<List<String>> get(PolicyModel policyModel) {
         return Optional.ofNullable(enforcer)
-                .map(ef -> enforcer.getFilteredNamedPolicy("p", 0, policyModel.getSubject(), policyModel.getSource(), policyModel.getAction() == null || AclAction.ALL == policyModel.getAction() ? "" : policyModel.getAction().name()))
+                .map(ef -> enforcer
+                        .getFilteredNamedPolicy("p", 0,
+                                policyModel.getSubject(), policyModel.getSource(),
+                                policyModel.getAction() == null || AclAction.ALL == policyModel.getAction() ? "" : policyModel.getAction().name(),
+                                policyModel.getAclType()==null || AclType.ALL == policyModel.getAclType()  ?"":policyModel.getAclType().name())
+                        )
                 .orElse(Collections.emptyList());
     }
 

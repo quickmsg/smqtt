@@ -24,11 +24,14 @@
         </a-select>
       </a-form-item>
       <a-form-item label="限制策略" style="size: 20px">
-        <a-select v-model="params.aclType" default-value="allow" style="width: 100px" @change="queryActionData">
-          <a-select-option value="deny">
+        <a-select v-model="params.aclType" default-value="ALLOW" style="width: 100px" @change="queryActionData">
+          <a-select-option value="ALL">
+            ALL
+          </a-select-option>
+          <a-select-option value="DENY">
             DENY
           </a-select-option>
-          <a-select-option value="allow">
+          <a-select-option value="ALLOW">
             ALLOW
           </a-select-option>
         </a-select>
@@ -89,9 +92,6 @@
         >
           <a-select v-model="form.action" style="width: 100%" placeholder="请选择类型">
             <a-select-opt-group>
-              <a-select-option value="ALL">
-                ALL
-              </a-select-option>
               <a-select-option value="SUBSCRIBE">
                 SUBSCRIBE
               </a-select-option>
@@ -111,10 +111,13 @@
         >
           <a-select v-model="form.aclType" style="width: 100%" placeholder="请选择类型">
             <a-select-opt-group>
-              <a-select-option value="deny">
+              <a-select-option value="ALL">
+                ALL
+              </a-select-option>
+              <a-select-option value="DENY">
                 DENY
               </a-select-option>
-              <a-select-option value="allow">
+              <a-select-option value="ALLOW">
                 ALLOW
               </a-select-option>
             </a-select-opt-group>
@@ -172,7 +175,7 @@ export default {
         pageSize: 10,
         subject: null,
         source: null,
-        aclType: "allow"
+        aclType: "ALL"
       },
 
       pagination: {
