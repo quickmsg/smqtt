@@ -4,10 +4,10 @@
         layout="inline"
         class="antAdvancedSearchForm"
     >
-      <a-form-item label="过滤规则" style="size: 20px">
+      <a-form-item label="规则" style="size: 20px">
         <a-input v-model="params.subject" style="width: 100px" placeholder='请输入过滤规则'/>
       </a-form-item>
-      <a-form-item label="topic名称" style="size: 20px">
+      <a-form-item label="topic" style="size: 20px">
         <a-input v-model="params.source" style="width: 100px" placeholder='请输入topic名称'/>
       </a-form-item>
       <a-form-item label="类型" style="size: 20px">
@@ -23,7 +23,7 @@
           </a-select-option>
         </a-select>
       </a-form-item>
-      <a-form-item label="限制策略" style="size: 20px">
+      <a-form-item label="策略" style="size: 20px">
         <a-select v-model="params.aclType" default-value="ALLOW" style="width: 100px" @change="queryActionData">
           <a-select-option value="ALL">
             ALL
@@ -57,9 +57,9 @@
         @cancel="handleCancel"
     >
       <a-form :model="form" :labelCol="{ span: 4 }" :wrapperCol="{ span: 20 }">
-        <a-form-item label="过滤规则">
+        <a-form-item label="规则">
           <a-input
-              placeholder="请输入过滤规则"
+              placeholder="请输入规则"
               v-model="form.subject"
               v-decorator="['subject', {
             rules: [
@@ -70,7 +70,7 @@
           }]"
           />
         </a-form-item>
-        <a-form-item label="topic名称">
+        <a-form-item label="topic">
           <a-input
               placeholder="请输入topic名称"
               v-model="form.source"
@@ -149,11 +149,11 @@ const columns = [
     customRender: (text, record, index) => index + 1
   },
   {
-    title: '过滤规则',
+    title: '规则',
     dataIndex: "subject",
   },
   {
-    title: 'topic名称',
+    title: 'topic',
     dataIndex: "source",
   },
   {
@@ -161,7 +161,7 @@ const columns = [
     dataIndex: "action",
   },
   {
-    title: '访问策略',
+    title: '策略',
     dataIndex: "aclType",
   }
 ]
