@@ -21,11 +21,11 @@ smqtt:
       key: /user/server.key # 指定ssl文件 默认系统生成
       crt: /user/server.crt # 指定ssl文件 默认系统生成
   acl:
-    aclPolicy: NONE # NONE or FILE or JDBC
-    filePath: /app/smqtt/basic_policy.csv # FILE时配置filePath
+    aclPolicy: JDBC # NONE or FILE or JDBC
+    filePath: D:\smqtt\config\acl\basic_policy.csv # FILE时配置filePath
     jdbcAclConfig:
       driver: com.mysql.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/smqtt
+      url: jdbc:mysql://113.90.145.99:18889/smqtt
       username: root
       password: 123
   http: # http相关配置 端口固定60000
