@@ -1,6 +1,5 @@
 package io.github.quickmsg.core.mqtt;
 
-import io.github.quickmsg.common.auth.PasswordAuthentication;
 import io.github.quickmsg.common.config.*;
 import io.github.quickmsg.common.rule.RuleChainDefinition;
 import io.github.quickmsg.common.rule.source.SourceDefinition;
@@ -40,7 +39,7 @@ public class MqttConfiguration extends AbstractSslHandler implements AbstractCon
 
     private Integer workThreadSize = Runtime.getRuntime().availableProcessors() * 2;
 
-    private Integer businessThreadSize = Runtime.getRuntime().availableProcessors() * 4;
+    private Integer businessThreadSize = Runtime.getRuntime().availableProcessors() ;
 
     private Integer businessQueueSize = 100000;
 
@@ -61,6 +60,8 @@ public class MqttConfiguration extends AbstractSslHandler implements AbstractCon
     private List<SourceDefinition> sourceDefinitions;
 
     private AclConfig aclConfig;
+
+    private AuthConfig authConfig;
 
     private Map<Object, Object> environmentMap;
 

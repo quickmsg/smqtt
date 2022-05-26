@@ -1,5 +1,6 @@
 package io.github.quickmsg.core.http.acl;
 
+import io.github.quickmsg.common.acl.AclType;
 import io.github.quickmsg.common.acl.model.PolicyModel;
 import io.github.quickmsg.common.annotation.AllowCors;
 import io.github.quickmsg.common.annotation.Header;
@@ -39,6 +40,7 @@ public class AclQueryPolicyActor extends AbstractHttpActor {
                 map.put("subject", item.size() >= 3 ? item.get(0) : null);
                 map.put("source", item.size() >= 3 ? item.get(1) : null);
                 map.put("action", item.size() >= 3 ? item.get(2) : null);
+                map.put("aclType", item.size() >= 4 ? AclType.fromDesc(item.get(3)).name() : null);
                 return map;
             }).collect(Collectors.toList());
             response.sendString(Mono.just(JacksonUtil.bean2Json(collect))).then().subscribe();

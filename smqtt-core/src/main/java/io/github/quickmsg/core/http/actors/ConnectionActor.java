@@ -35,7 +35,7 @@ public class ConnectionActor extends AbstractHttpActor {
                                 ContextHolder.getReceiveContext().getChannelRegistry().getChannels()
                                         .stream()
                                         .map(record -> {
-                                            record.setAddress(record.getAddress().replaceAll("/", ""));
+                                            record.setAddress(record.getAddress());
                                             return record;
                                         }).collect(Collectors.toList())
                         )))

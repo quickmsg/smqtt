@@ -54,15 +54,11 @@ public class DefaultProtocolAdaptor implements ProtocolAdaptor {
                         .doParseProtocol(smqttMessage, mqttChannel)
                         .contextWrite(context -> context.putNonNull(ReceiveContext.class, receiveContext))
                         .subscribeOn(scheduler)
-                        .onErrorContinue(((throwable, o) -> {
-
-                        }))
                         .subscribe(aVoid -> {
                         }, error -> {
                             log.error("channel {} chooseProtocol: {} error {}", mqttChannel, mqttMessage, error.getMessage());
                             ReactorNetty.safeRelease(mqttMessage.payload());
                         }, () -> ReactorNetty.safeRelease(mqttMessage.payload())));
-
     }
 
 

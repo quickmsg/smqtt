@@ -1,6 +1,5 @@
 package io.github.quickmsg.common.config;
 
-import io.github.quickmsg.common.auth.PasswordAuthentication;
 import io.github.quickmsg.common.rule.RuleChainDefinition;
 import io.github.quickmsg.common.rule.RuleDefinition;
 import io.github.quickmsg.common.rule.source.SourceDefinition;
@@ -51,5 +50,6 @@ public interface AbstractConfiguration extends Configuration {
     Map<Object, Object> getEnvironmentMap();
 
 
+    AuthConfig getAuthConfig();
 }
 

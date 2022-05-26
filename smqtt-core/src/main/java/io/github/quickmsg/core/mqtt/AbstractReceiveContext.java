@@ -1,15 +1,12 @@
 package io.github.quickmsg.core.mqtt;
 
-import io.github.quickmsg.common.ack.TimeAckManager;
+import io.github.quickmsg.common.retry.TimeAckManager;
 import io.github.quickmsg.common.acl.AclManager;
-import io.github.quickmsg.common.auth.PasswordAuthentication;
+import io.github.quickmsg.common.auth.AuthManager;
 import io.github.quickmsg.common.channel.ChannelRegistry;
 import io.github.quickmsg.common.channel.traffic.TrafficHandlerLoader;
 import io.github.quickmsg.common.cluster.ClusterRegistry;
-import io.github.quickmsg.common.config.AbstractConfiguration;
-import io.github.quickmsg.common.config.BootstrapConfig;
-import io.github.quickmsg.common.config.ConfigCheck;
-import io.github.quickmsg.common.config.Configuration;
+import io.github.quickmsg.common.config.*;
 import io.github.quickmsg.common.context.ReceiveContext;
 import io.github.quickmsg.common.enums.Event;
 import io.github.quickmsg.common.message.EventRegistry;
@@ -22,6 +19,7 @@ import io.github.quickmsg.common.rule.DslExecutor;
 import io.github.quickmsg.common.topic.TopicRegistry;
 import io.github.quickmsg.common.transport.Transport;
 import io.github.quickmsg.core.acl.JCasBinAclManager;
+import io.github.quickmsg.core.auth.AuthManagerFactory;
 import io.github.quickmsg.core.cluster.InJvmClusterRegistry;
 import io.github.quickmsg.core.mqtt.traffic.CacheTrafficHandlerLoader;
 import io.github.quickmsg.core.mqtt.traffic.LazyTrafficHandlerLoader;
@@ -80,6 +78,8 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
 
     private final AclManager aclManager;
 
+    private final AuthManager authManager;
+
     public AbstractReceiveContext(T configuration, Transport<T> transport) {
         AbstractConfiguration abstractConfiguration = castConfiguration(configuration);
         RuleDslParser ruleDslParser = new RuleDslParser(abstractConfiguration.getRuleChainDefinitions());
@@ -98,6 +98,7 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
         this.messageRegistry.startUp(abstractConfiguration.getEnvironmentMap());
         this.metricManager = metricManager(abstractConfiguration.getMeterConfig());
         this.aclManager = new JCasBinAclManager(abstractConfiguration.getAclConfig());
+        this.authManager = authManagerFactory().provider(abstractConfiguration.getAuthConfig()).getAuthManager();
         Optional.ofNullable(abstractConfiguration.getSourceDefinitions()).ifPresent(sourceDefinitions -> sourceDefinitions.forEach(SourceManager::loadSource));
         this.timeAckManager = new TimeAckManager(20, TimeUnit.MILLISECONDS, 50);
     }
@@ -118,6 +119,14 @@ public abstract class AbstractReceiveContext<T extends Configuration> implements
         }
     }
 
+    public AuthManagerProvider authManagerFactory() {
+        return AuthManagerFactory::new;
+    }
+
+    public interface AuthManagerProvider {
+        AuthManagerFactory provider(AuthConfig authConfig);
+
+    }
 
     private EventRegistry eventRegistry() {
         return Event::sender;

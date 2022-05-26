@@ -56,7 +56,7 @@ const options = {
             },
             {
               path: 'acl',
-              name: '权限校验',
+              name: '访问控制',
               component: () => import('@/pages/dashboard/acl'),
             }
 

@@ -2,9 +2,10 @@ package io.github.quickmsg.core.protocol;
 
 import io.github.quickmsg.common.acl.AclAction;
 import io.github.quickmsg.common.acl.AclManager;
-import io.github.quickmsg.common.auth.PasswordAuthentication;
+import io.github.quickmsg.common.auth.AuthManager;
 import io.github.quickmsg.common.channel.ChannelRegistry;
 import io.github.quickmsg.common.channel.MqttChannel;
+import io.github.quickmsg.common.config.AuthConfig;
 import io.github.quickmsg.common.config.ConnectModel;
 import io.github.quickmsg.common.context.ReceiveContext;
 import io.github.quickmsg.common.enums.ChannelStatus;
@@ -66,7 +67,7 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
             TopicRegistry topicRegistry = mqttReceiveContext.getTopicRegistry();
             MetricManager metricManager = mqttReceiveContext.getMetricManager();
             byte mqttVersion = (byte) mqttConnectVariableHeader.version();
-            AclManager aclManager = mqttReceiveContext.getAclManager();
+            AuthManager authManager = mqttReceiveContext.getAuthManager();
             /*check clientIdentifier exist*/
             MqttChannel existMqttChannel = channelRegistry.get(clientIdentifier);
             if (mqttReceiveContext.getConfiguration().getConnectModel() == ConnectModel.UNIQUE) {
@@ -95,7 +96,7 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
                         false).then(mqttChannel.close());
             }
             /*password check*/
-            if (aclManager.auth(clientIdentifier, clientIdentifier, AclAction.CONNECT)) {
+            if (authManager.auth(mqttConnectPayload.userName(),mqttConnectPayload.passwordInBytes(), clientIdentifier)) {
                 /*cancel  defer close not authenticate channel */
                 mqttChannel.disposableClose();
                 mqttChannel.setClientIdentifier(mqttConnectPayload.clientIdentifier());

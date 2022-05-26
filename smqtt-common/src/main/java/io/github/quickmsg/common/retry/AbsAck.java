@@ -1,10 +1,9 @@
-package io.github.quickmsg.common.ack;
+package io.github.quickmsg.common.retry;
 
 import io.netty.util.Timeout;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 
 /**
  * @author luxurong

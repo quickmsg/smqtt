@@ -15,6 +15,7 @@ import io.github.quickmsg.common.topic.TopicRegistry;
 import io.netty.handler.codec.mqtt.MqttMessageType;
 import io.netty.handler.codec.mqtt.MqttSubAckMessage;
 import io.netty.handler.codec.mqtt.MqttSubscribeMessage;
+import org.apache.commons.collections.CollectionUtils;
 import reactor.core.publisher.Mono;
 import reactor.util.context.ContextView;
 
@@ -45,9 +46,11 @@ public class SubscribeProtocol implements Protocol<MqttSubscribeMessage> {
                             .stream()
                             .peek(mqttTopicSubscription -> this.loadRetainMessage(messageRegistry, mqttChannel, mqttTopicSubscription.topicName()))
                             .map(mqttTopicSubscription -> new SubscribeTopic(mqttTopicSubscription.topicName(), mqttTopicSubscription.qualityOfService(), mqttChannel))
-                            .filter(subscribeTopic -> aclManager.auth(mqttChannel.getClientIdentifier(), subscribeTopic.getTopicFilter(), AclAction.SUBSCRIBE))
+                            .filter(subscribeTopic -> aclManager.check(mqttChannel, subscribeTopic.getTopicFilter(), AclAction.SUBSCRIBE))
                             .collect(Collectors.toSet());
-            topicRegistry.registrySubscribesTopic(mqttTopicSubscriptions);
+            if(CollectionUtils.isNotEmpty(mqttTopicSubscriptions)){
+                topicRegistry.registrySubscribesTopic(mqttTopicSubscriptions);
+            }
         }).then(mqttChannel.write(
                 MqttMessageBuilder.buildSubAck(
                         message.variableHeader().messageId(),

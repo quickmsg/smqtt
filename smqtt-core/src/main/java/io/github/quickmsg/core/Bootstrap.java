@@ -2,6 +2,7 @@ package io.github.quickmsg.core;
 
 import ch.qos.logback.classic.Level;
 import io.github.quickmsg.common.config.AclConfig;
+import io.github.quickmsg.common.config.AuthConfig;
 import io.github.quickmsg.common.config.BootstrapConfig;
 import io.github.quickmsg.common.config.SslContext;
 import io.github.quickmsg.common.rule.RuleChainDefinition;
@@ -56,6 +57,8 @@ public class Bootstrap {
 
     private AclConfig aclConfig;
 
+    private AuthConfig authConfig;
+
     private final List<Transport<?>> transports = new ArrayList<>();
 
     @Builder.Default
@@ -89,6 +92,7 @@ public class Bootstrap {
         Optional.ofNullable(clusterConfig).ifPresent(mqttConfiguration::setClusterConfig);
         Optional.ofNullable(meterConfig).ifPresent(mqttConfiguration::setMeterConfig);
         Optional.ofNullable(aclConfig).ifPresent(mqttConfiguration::setAclConfig);
+        Optional.ofNullable(authConfig).ifPresent(mqttConfiguration::setAuthConfig);
 
         if (websocketConfig != null && websocketConfig.isEnable()) {
             mqttConfiguration.setWebSocketPort(websocketConfig.getPort());
