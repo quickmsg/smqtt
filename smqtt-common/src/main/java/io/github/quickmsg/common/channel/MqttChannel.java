@@ -101,7 +101,8 @@ public class MqttChannel {
         mqttChannel.setQos2MsgCache(new ConcurrentHashMap<>());
         mqttChannel.setConnection(connection);
         mqttChannel.setStatus(ChannelStatus.INIT);
-        mqttChannel.setAddress(connection.address().toString());
+        mqttChannel.setAddress(connection.address().toString()
+                .replaceAll("/", ""));
         mqttChannel.setTimeAckManager(timeAckManager);
         return mqttChannel;
     }

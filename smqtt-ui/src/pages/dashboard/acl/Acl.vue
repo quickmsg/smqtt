@@ -90,7 +90,8 @@
           ]
         }]"
         >
-          <a-select v-model="form.action" style="width: 100%" placeholder="请选择类型">
+          <a-select  v-model="form.action"
+                                  style="width: 100%" default-value="PUBLISH" placeholder="请选择类型">
             <a-select-opt-group>
               <a-select-option value="SUBSCRIBE">
                 SUBSCRIBE
@@ -109,11 +110,8 @@
           ]
         }]"
         >
-          <a-select v-model="form.aclType" style="width: 100%" placeholder="请选择类型">
+          <a-select style="width: 100%"  v-model="form.aclType"  placeholder="请选择类型">
             <a-select-opt-group>
-              <a-select-option value="ALL">
-                ALL
-              </a-select-option>
               <a-select-option value="DENY">
                 DENY
               </a-select-option>
@@ -192,7 +190,12 @@ export default {
       dataSource: null,
       visible: false,
       confirmLoading: false,
-      form: {}
+      form: {
+        action: "PUBLISH",
+        subject: null,
+        source: null,
+        aclType: "ALLOW"
+      }
     }
   },
   mounted() {
@@ -242,8 +245,12 @@ export default {
       })
       this.visible = false;
       this.confirmLoading = false
-      this.params.action = this.form.action
-      this.form = {}
+      this.form = {
+        action: "PUBLISH",
+        subject: null,
+        source: null,
+        aclType: "ALLOW"
+      }
       await this.queryActionData()
 
     },

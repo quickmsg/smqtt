@@ -71,7 +71,7 @@ public class JCasBinAclManager implements AclManager {
                     .orElse(false);
             if (isCheckAcl) {
                 String subject = String.format(REQUEST_SUBJECT_TEMPLATE, mqttChannel.getClientIdentifier()
-                        , mqttChannel.getAddress());
+                        , mqttChannel.getAddress().split(":")[0]);
                 return Optional.ofNullable(enforcer)
                         .map(ef -> ef.enforce(subject, source, action.name()))
                         .orElse(true);
@@ -84,16 +84,9 @@ public class JCasBinAclManager implements AclManager {
     }
 
     @Override
-    public boolean auth(String sub, String source, AclAction action) {
-        return Optional.ofNullable(enforcer)
-                .map(ef -> enforcer.enforce(sub, source, action.name()))
-                .orElse(true);
-    }
-
-    @Override
     public boolean add(String sub, String source, AclAction action, AclType type) {
         return Optional.ofNullable(enforcer)
-                .map(ef -> enforcer.addNamedPolicy("p", sub, source, action.name(),type.name()))
+                .map(ef -> enforcer.addNamedPolicy("p", sub, source, action.name(),type.getDesc()))
                 .orElse(true);
 
     }
@@ -101,7 +94,7 @@ public class JCasBinAclManager implements AclManager {
     @Override
     public boolean delete(String sub, String source, AclAction action,AclType type) {
         return Optional.ofNullable(enforcer)
-                .map(ef -> enforcer.removeNamedPolicy("p", sub, source, action.name(),type.name()))
+                .map(ef -> enforcer.removeNamedPolicy("p", sub, source, action.name(),type.getDesc()))
                 .orElse(true);
     }
 
@@ -112,7 +105,7 @@ public class JCasBinAclManager implements AclManager {
                         .getFilteredNamedPolicy("p", 0,
                                 policyModel.getSubject(), policyModel.getSource(),
                                 policyModel.getAction() == null || AclAction.ALL == policyModel.getAction() ? "" : policyModel.getAction().name(),
-                                policyModel.getAclType()==null || AclType.ALL == policyModel.getAclType()  ?"":policyModel.getAclType().name())
+                                policyModel.getAclType()==null || AclType.ALL == policyModel.getAclType()  ?"":policyModel.getAclType().getDesc())
                         )
                 .orElse(Collections.emptyList());
     }
