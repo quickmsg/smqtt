@@ -5,9 +5,9 @@ smqtt:
     notKickSecond: 30 # KICK互踢模式生效, 单位秒, 指定时间内客户端不互踢, 避免客户端自动连接持续互踢
     port: 1883 # mqtt端口号
     wiretap: false  # 二进制日志 前提是 smqtt.logLevel = DEBUG
-    bossThreadSize: 8  # boss线程 默认=cpu核心数
-    workThreadSize: 16 # work线程 默认=cpu核心数*2
-    businessThreadSize: 32 # 业务线程数 默认=cpu核心数*10
+    bossThreadSize: 1  # boss线程 默认=1
+    workThreadSize: 9 # work线程 默认=cpu核心数+1
+    businessThreadSize: 8 # 业务线程数 默认=cpu核心数
     businessQueueSize: 100000 #业务队列 默认=100000
     messageMaxSize: 4194304 # 接收消息的最大限制 默认4194304(4M)
     lowWaterMark: 4000000 # 不建议配置 默认 32768

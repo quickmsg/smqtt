@@ -39,7 +39,7 @@ public class MqttConfiguration extends AbstractSslHandler implements AbstractCon
 
     private Integer workThreadSize = Runtime.getRuntime().availableProcessors() * 2;
 
-    private Integer businessThreadSize = Runtime.getRuntime().availableProcessors() * 4;
+    private Integer businessThreadSize = Runtime.getRuntime().availableProcessors() ;
 
     private Integer businessQueueSize = 100000;
 
