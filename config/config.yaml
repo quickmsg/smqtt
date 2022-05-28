@@ -25,7 +25,7 @@ smqtt:
     filePath: D:\smqtt\config\acl\basic_policy.csv # FILE时配置filePath
     jdbcAclConfig:
       driver: com.mysql.jdbc.Driver
-      url: jdbc:mysql://113.90.145.99:18889/smqtt
+      url: jdbc:mysql://127.0.0.1:3306/smqtt
       username: root
       password: 123
   http: # http相关配置 端口固定60000
