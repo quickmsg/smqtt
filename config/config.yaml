@@ -20,12 +20,13 @@ smqtt:
       enable: false # 开关
       key: /user/server.key # 指定ssl文件 默认系统生成
       crt: /user/server.crt # 指定ssl文件 默认系统生成
+      ca: /user/server.ca # ca证书 双向加密配置
   acl:
     aclPolicy: JDBC # NONE or FILE or JDBC
     filePath: D:\smqtt\config\acl\basic_policy.csv # FILE时配置filePath
     jdbcAclConfig:
       driver: com.mysql.jdbc.Driver
-      url: jdbc:mysql://113.90.145.99:18889/smqtt
+      url: jdbc:mysql://127.0.0.1:3306/smqtt
       username: root
       password: 123
   http: # http相关配置 端口固定60000
