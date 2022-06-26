@@ -45,7 +45,7 @@ public class HttpAuthManager implements AuthManager {
         return client.post().uri(httpAuthConfig.getPath())
                 .send(ByteBufFlux.fromString(Mono.just(JacksonUtil.map2Json(params))))
                 .response()
-                .map(response -> HttpResponseStatus.OK == response.status())
+                .map(response -> HttpResponseStatus.OK.code() == response.status().code())
                 .block(Duration.ofSeconds(3));
     }
 
