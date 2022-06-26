@@ -26,3 +26,4 @@ io.github.quickmsg.core.http.actors.EventHttpActor
 io.github.quickmsg.core.http.acl.AclAddPolicyActor
 io.github.quickmsg.core.http.acl.AclDeletePolicyActor
 io.github.quickmsg.core.http.acl.AclQueryPolicyActor
+io.github.quickmsg.core.http.actors.CloseConnectionActor
