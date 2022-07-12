@@ -120,7 +120,12 @@
                                     <tag>latest</tag>
                                     <tag>${project.version}</tag>
                                 </tags>
+                                <auth>
+                                    <username>${REGISTRY_USERNAME}</username>
+                                    <password>${REGISTRY_PASSWORD}</password>
+                                </auth>
                             </to>
+
                             <container>
                                 <!--容器相关的属性-->
                                 <mainClass>io.github.quickmsg.docker.DockerStarter</mainClass>
