@@ -39,8 +39,8 @@ public class HttpAuthManager implements AuthManager {
         AuthConfig.HttpAuthConfig httpAuthConfig = authConfig.getHttp();
         Map<String, String> params = new HashMap<>();
         params.put("clientIdentifier", clientIdentifier);
-        params.put("username", userName);
-        params.put("password", new String(passwordInBytes, StandardCharsets.UTF_8));
+        params.put("username", userName != null ? userName : "");
+        params.put("password", passwordInBytes != null ? new String(passwordInBytes, StandardCharsets.UTF_8):"");
         params.putAll(httpAuthConfig.getParams());
         return client.post().uri(httpAuthConfig.getPath())
                 .send(ByteBufFlux.fromString(Mono.just(JacksonUtil.map2Json(params))))
