@@ -34,6 +34,7 @@ public class JCasBinAclManager implements AclManager {
     private boolean isOpen;
 
     public JCasBinAclManager(AclConfig aclConfig) {
+
         if (aclConfig != null) {
             Model model = new Model();
             model.addDef("r", "r", "sub, obj, act");
