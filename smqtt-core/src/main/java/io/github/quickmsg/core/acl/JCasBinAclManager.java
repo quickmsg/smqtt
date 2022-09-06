@@ -48,23 +48,29 @@ public class JCasBinAclManager implements AclManager {
                 try {
                     enforcer = new Enforcer(model, new JDBCAdapter(jdbcAclConfig.getDriver(), jdbcAclConfig.getUrl(),
                             jdbcAclConfig.getUsername(), jdbcAclConfig.getPassword()));
+                    this.loadAclCache();
                 } catch (Exception e) {
                     log.error("init acl jdbc error {}", aclConfig, e);
                 }
             } else if (aclConfig.getAclPolicy() == AclPolicy.FILE) {
                 enforcer = new Enforcer(model, new FileAdapter(aclConfig.getFilePath()));
+                this.loadAclCache();
             } else {
+                isOpen = false;
                 enforcer = new Enforcer();
             }
-            enforcer.addFunction("filter", new AclFunction());
-            List<String> objects = enforcer.getAllObjects();
-            List<String> actions = enforcer.getAllActions();
-            for (int i = 0; i < objects.size(); i++) {
-                Set<String> allObjects = filterAclTopicActions.computeIfAbsent(actions.get(i), a -> new HashSet<>());
-                allObjects.add(objects.get(i));
-            }
-            isOpen = true;
         }
+    }
+
+    private void loadAclCache() {
+        enforcer.addFunction("filter", new AclFunction());
+        List<String> objects = enforcer.getAllObjects();
+        List<String> actions = enforcer.getAllActions();
+        for (int i = 0; i < objects.size(); i++) {
+            Set<String> allObjects = filterAclTopicActions.computeIfAbsent(actions.get(i), a -> new HashSet<>());
+            allObjects.add(objects.get(i));
+        }
+        isOpen = true;
     }
 
     @Override
