@@ -156,10 +156,10 @@ public class MqttChannel {
     public int generateMessageId() {
         int value;
         while (qos2MsgCache.containsKey(value = atomicInteger.incrementAndGet())) {
-            if (value >= Integer.MAX_VALUE) {
+            if (value >= 65535) {
                 synchronized (this) {
                     value = atomicInteger.incrementAndGet();
-                    if (value >= Integer.MAX_VALUE) {
+                    if (value >= 65535) {
                         atomicInteger.set(0);
                     } else {
                         break;

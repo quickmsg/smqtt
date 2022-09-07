@@ -13,6 +13,7 @@ import io.netty.handler.codec.mqtt.MqttMessage;
 import io.netty.handler.codec.mqtt.MqttQoS;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 
@@ -42,6 +43,8 @@ public class ClusterReceiver {
                 clusterRegistry.registry(clusterConfig);
                 //begin listen cluster message
                 clusterRegistry.handlerClusterMessage()
+                        .doOnError(throwable -> log.error("cluster accept",throwable))
+                        .onErrorResume(e-> Mono.empty())
                         .subscribe(clusterMessage -> protocolAdaptor
                                 .chooseProtocol(MockMqttChannel.wrapClientIdentifier(clusterMessage.getClientIdentifier()),
                                         getMqttMessage(clusterMessage),

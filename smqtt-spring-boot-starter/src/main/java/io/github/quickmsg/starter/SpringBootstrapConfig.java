@@ -3,6 +3,7 @@ package io.github.quickmsg.starter;
 import ch.qos.logback.classic.Level;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.quickmsg.common.config.AclConfig;
+import io.github.quickmsg.common.config.AuthConfig;
 import io.github.quickmsg.common.config.BootstrapConfig;
 import io.github.quickmsg.common.rule.RuleChainDefinition;
 import io.github.quickmsg.common.rule.source.SourceDefinition;
@@ -86,5 +87,11 @@ public class SpringBootstrapConfig {
      * acl
      */
     private AclConfig acl;
+
+    /**
+     * auth
+     */
+    private AuthConfig auth;
+
 
 }

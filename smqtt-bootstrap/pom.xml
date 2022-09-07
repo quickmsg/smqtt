@@ -7,10 +7,10 @@
     <parent>
         <artifactId>smqtt</artifactId>
         <groupId>io.github.quickmsg</groupId>
-        <version>1.1.4</version>
+        <version>1.1.5</version>
     </parent>
     <artifactId>smqtt-bootstrap</artifactId>
-    <version>1.1.4</version>
+    <version>1.1.5</version>
 
     <name>smqtt-bootstrap</name>
     <url>http://www.example.com</url>
@@ -45,17 +45,17 @@
         <dependency>
             <groupId>io.github.quickmsg</groupId>
             <artifactId>smqtt-core</artifactId>
-            <version>1.1.4</version>
+            <version>1.1.5</version>
         </dependency>
         <dependency>
             <artifactId>smqtt-registry-scube</artifactId>
             <groupId>io.github.quickmsg</groupId>
-            <version>1.1.4</version>
+            <version>1.1.5</version>
         </dependency>
         <dependency>
             <artifactId>smqtt-ui</artifactId>
             <groupId>io.github.quickmsg</groupId>
-            <version>1.1.4</version>
+            <version>1.1.5</version>
         </dependency>
 
         <dependency>
@@ -120,7 +120,12 @@
                                     <tag>latest</tag>
                                     <tag>${project.version}</tag>
                                 </tags>
+                                <auth>
+                                    <username>${REGISTRY_USERNAME}</username>
+                                    <password>${REGISTRY_PASSWORD}</password>
+                                </auth>
                             </to>
+
                             <container>
                                 <!--容器相关的属性-->
                                 <mainClass>io.github.quickmsg.docker.DockerStarter</mainClass>
