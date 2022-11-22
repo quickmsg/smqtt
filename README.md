@@ -1,3 +1,8 @@
+## SMQTT重磅升级
+感谢大家帮忙给新项目点Star,感谢!
+- [Gitee](https://gitee.com/quickmsg/smqttx)
+- [Github](https://github.com/quickmsg/smqttx)
+
 ## ![image](icon/logo.png) SMQTT开源的MQTT消息代理Broker
 
 SMQTT基于reactor-netty(spring-webflux底层依赖)
