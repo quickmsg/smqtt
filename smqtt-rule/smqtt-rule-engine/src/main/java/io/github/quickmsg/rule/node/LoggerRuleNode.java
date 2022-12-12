@@ -35,7 +35,7 @@ public class LoggerRuleNode implements RuleNode {
         HeapMqttMessage heapMqttMessage = contextView.get(HeapMqttMessage.class);
         String logInfo = Optional.ofNullable(script)
                 .map(sc ->
-                        String.valueOf(triggerTemplate(script, context -> heapMqttMessage.getKeyMap().forEach(context::set)))
+                        String.valueOf(triggerScript(script, context -> heapMqttMessage.getKeyMap().forEach(context::set)))
                 ).orElseGet(() -> String.format(DEFAULT_LOG_TEMPLATE, JacksonUtil.map2Json(heapMqttMessage.getKeyMap())));
         log.info(logInfo);
         executeNext(contextView);

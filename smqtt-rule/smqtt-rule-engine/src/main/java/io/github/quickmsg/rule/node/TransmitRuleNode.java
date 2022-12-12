@@ -36,7 +36,7 @@ public class TransmitRuleNode implements RuleNode {
         HeapMqttMessage heapMqttMessage = contextView.get(HeapMqttMessage.class);
         Map<String, Object> param;
         if (script != null) {
-            Object obj = triggerTemplate(script, context -> heapMqttMessage.getKeyMap().forEach(context::set));
+            Object obj = triggerScript(script, context -> heapMqttMessage.getKeyMap().forEach(context::set));
             param = JacksonUtil.json2Map(obj.toString(), String.class, Object.class);
 
         } else {
