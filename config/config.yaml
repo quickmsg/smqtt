@@ -16,13 +16,13 @@ smqtt:
     # channelReadWriteSize: 10000000,100000000 单个channel读写大小限制
     options:
       SO_BACKLOG: 2000
-    ssl: # ssl配置
-      enable: false # 开关
-      key: /user/server.key # 指定ssl文件 默认系统生成
-      crt: /user/server.crt # 指定ssl文件 默认系统生成
-      ca: /user/server.ca # ca证书 双向加密配置
+#    ssl: # ssl配置
+#      enable: false # 开关
+#      key: /user/server.key # 指定ssl文件 默认系统生成
+#      crt: /user/server.crt # 指定ssl文件 默认系统生成
+#      ca: /user/server.ca # ca证书 双向加密配置
   acl:
-    aclPolicy: JDBC # NONE or FILE or JDBC
+    aclPolicy: NONE # NONE or FILE or JDBC
     filePath: D:\smqtt\config\acl\basic_policy.csv # FILE时配置filePath
     jdbcAclConfig:
       driver: com.mysql.jdbc.Driver
