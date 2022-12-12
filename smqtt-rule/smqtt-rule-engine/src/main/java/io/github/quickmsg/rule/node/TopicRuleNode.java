@@ -6,6 +6,7 @@ import io.github.quickmsg.common.message.HeapMqttMessage;
 import io.github.quickmsg.common.message.MqttMessageBuilder;
 import io.github.quickmsg.common.message.SmqttMessage;
 import io.github.quickmsg.common.protocol.ProtocolAdaptor;
+import io.github.quickmsg.common.utils.JacksonUtil;
 import io.github.quickmsg.rule.RuleNode;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.handler.codec.mqtt.MqttPublishMessage;
@@ -13,6 +14,7 @@ import io.netty.handler.codec.mqtt.MqttQoS;
 import lombok.extern.slf4j.Slf4j;
 import reactor.util.context.ContextView;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 /**
@@ -58,7 +60,7 @@ public class TopicRuleNode implements RuleNode {
                         MqttQoS.valueOf(heapMqttMessage.getQos()),
                         0,
                         this.topic,
-                        PooledByteBufAllocator.DEFAULT.buffer().writeBytes(heapMqttMessage.getMessage()),
+                        PooledByteBufAllocator.DEFAULT.buffer().writeBytes(JacksonUtil.dynamicJson(heapMqttMessage.getMessage()).getBytes(StandardCharsets.UTF_8)),
                         heapMqttMessage.getProperties());
     }
 

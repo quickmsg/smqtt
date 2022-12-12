@@ -30,7 +30,7 @@ public class HeapMqttMessage {
 
     private boolean retain;
 
-    private byte[] message;
+    private Object message;
 
     private MqttProperties properties;
 
@@ -41,25 +41,9 @@ public class HeapMqttMessage {
         keys.put("topic", this.topic);
         keys.put("qos", this.qos);
         keys.put("retain", this.retain);
-        keys.put("msg", getJsonObject(new String(message)));
+        keys.put("msg", message);
         return keys;
     }
 
-    private Object getJsonObject(String body) {
-        body=body.replaceAll("\r|\n|\t", "");
-        if (body.startsWith("{") && body.endsWith("}")) {
-            return JacksonUtil.json2Bean(body, JsonMap.class);
-        } else if (body.startsWith("[") && body.endsWith("]")) {
-            return JacksonUtil.json2List(body, JsonMap.class);
-        } else {
-            if (StringUtil.isNullOrEmpty(body)) {
-                return body;
-            }
 
-            if (body.startsWith("\"") && body.endsWith("\"")) {
-                return body;
-            }
-            return "\"" + body + "\"";
-        }
-    }
 }

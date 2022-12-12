@@ -82,5 +82,23 @@ public class JacksonUtil {
         }
     }
 
+    public static Object dynamic(String s) {
+        if (s.startsWith("{") && s.endsWith("}")) {
+            return JacksonUtil.json2Map(s, String.class, Object.class);
+        } else if (s.startsWith("[") && s.endsWith("]")) {
+            return json2List(s, Map.class);
+        } else {
+            return s;
+        }
+    }
+
+    public static String dynamicJson(Object object) {
+        if (object instanceof String) {
+            return String.valueOf(object);
+        } else {
+            return JacksonUtil.bean2Json(object);
+        }
+    }
+
 
 }

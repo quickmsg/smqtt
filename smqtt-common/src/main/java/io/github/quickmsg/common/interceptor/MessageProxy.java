@@ -8,6 +8,7 @@ import io.github.quickmsg.common.message.SmqttMessage;
 import io.github.quickmsg.common.protocol.ProtocolAdaptor;
 import io.github.quickmsg.common.rule.DslExecutor;
 import io.github.quickmsg.common.spi.DynamicLoader;
+import io.github.quickmsg.common.utils.JacksonUtil;
 import io.github.quickmsg.common.utils.MessageUtils;
 import io.netty.handler.codec.mqtt.MqttFixedHeader;
 import io.netty.handler.codec.mqtt.MqttMessage;
@@ -16,6 +17,7 @@ import io.netty.handler.codec.mqtt.MqttPublishVariableHeader;
 import reactor.core.scheduler.Schedulers;
 import reactor.netty.ReactorNetty;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -74,7 +76,7 @@ public class MessageProxy {
             return HeapMqttMessage.builder()
                     .timestamp(timestamp)
                     .clientIdentifier(channel.getClientIdentifier())
-                    .message(MessageUtils.copyReleaseByteBuf(message.payload()))
+                    .message(JacksonUtil.dynamic(new String(MessageUtils.copyReleaseByteBuf(message.payload()), StandardCharsets.UTF_8)))
                     .topic(header.topicName())
                     .retain(fixedHeader.isRetain())
                     .qos(fixedHeader.qosLevel().value())

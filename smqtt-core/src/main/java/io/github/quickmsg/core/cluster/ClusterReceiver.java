@@ -7,6 +7,7 @@ import io.github.quickmsg.common.cluster.ClusterRegistry;
 import io.github.quickmsg.common.message.MqttMessageBuilder;
 import io.github.quickmsg.common.message.SmqttMessage;
 import io.github.quickmsg.common.protocol.ProtocolAdaptor;
+import io.github.quickmsg.common.utils.JacksonUtil;
 import io.github.quickmsg.core.mqtt.MqttReceiveContext;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.handler.codec.mqtt.MqttMessage;
@@ -15,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
 /**
@@ -59,7 +61,7 @@ public class ClusterReceiver {
                         MqttQoS.valueOf(heapMqttMessage.getQos()),
                         0,
                         heapMqttMessage.getTopic(),
-                        PooledByteBufAllocator.DEFAULT.buffer().writeBytes(heapMqttMessage.getMessage()),
+                        PooledByteBufAllocator.DEFAULT.buffer().writeBytes(JacksonUtil.dynamicJson(heapMqttMessage.getMessage()).getBytes(StandardCharsets.UTF_8)),
                         heapMqttMessage.getProperties()), System.currentTimeMillis(), Boolean.TRUE);
     }
 
