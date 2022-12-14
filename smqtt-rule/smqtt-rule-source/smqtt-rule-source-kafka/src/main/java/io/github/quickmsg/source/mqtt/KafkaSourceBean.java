@@ -59,11 +59,9 @@ public class KafkaSourceBean implements SourceBean {
      * @param object 对象
      */
     @Override
-    public void transmit(Map<String, Object> object) {
-        String json = JacksonUtil.bean2Json(object);
-        log.info("kafka send msg {}", json);
+    public void transmit(Object object) {
         if (producer != null) {
-            ProducerRecord<String, Object> record = new ProducerRecord<>(topic, json);
+            ProducerRecord<String, Object> record = new ProducerRecord<>(topic, JacksonUtil.dynamicJson(object));
             producer.send(record);
         }
     }

@@ -72,13 +72,8 @@ public class RabbitmqSourceBean implements SourceBean {
      * @param object 对象
      */
     @Override
-    public void transmit(Map<String, Object> object) {
-        String json = JacksonUtil.bean2Json(object);
-        log.info("transmit={}", json);
-        // String clientId = (String) object.get("clientIdentifier");
-        // String topic = (String) object.get("topic");
-        // String msg = (String) object.get("msg");
-        corePublish(queueName, json);
+    public void transmit(Object object) {
+        corePublish(queueName, JacksonUtil.dynamicJson(object));
     }
 
     /**

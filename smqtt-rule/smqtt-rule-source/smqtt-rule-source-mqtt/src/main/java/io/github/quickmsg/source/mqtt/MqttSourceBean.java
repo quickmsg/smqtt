@@ -110,10 +110,11 @@ public class MqttSourceBean implements SourceBean {
     /**
      * 转发数据
      *
-     * @param object 对象
+     * @param param 对象
      */
     @Override
-    public void transmit(Map<String, Object> object) {
+    public void transmit(Object param) {
+        Map<String,Object> object = (Map<String,Object>)param;
         String topic = (String) object.get("topic");
         Object msg = object.get("msg");
         String bytes = msg instanceof Map ? JacksonUtil.map2Json((Map<? extends Object, ? extends Object>) msg) : msg.toString();

@@ -39,7 +39,7 @@ public interface SourceBean {
      *
      * @param object {@link Map}
      */
-    void transmit(Map<String, Object> object);
+    void transmit(Object object);
 
     /**
      * 关闭资源

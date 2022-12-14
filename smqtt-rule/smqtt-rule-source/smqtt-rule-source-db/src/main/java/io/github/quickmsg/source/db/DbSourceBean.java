@@ -57,10 +57,10 @@ public class DbSourceBean implements SourceBean {
      * @param object 对象
      */
     @Override
-    public void transmit(Map<String, Object> object) {
+    public void transmit(Object object) {
         try (Connection connection = HikariCPConnectionProvider.singleTon().getConnection()) {
             DSLContext dslContext = DSL.using(connection);
-            dslContext.execute(object.get("sql").toString());
+            dslContext.execute(object.toString());
         } catch (Exception e) {
             log.error("execute sql error", e);
         }
