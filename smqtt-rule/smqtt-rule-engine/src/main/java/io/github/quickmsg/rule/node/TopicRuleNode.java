@@ -37,6 +37,7 @@ public class TopicRuleNode implements RuleNode {
         return this.ruleNode;
     }
 
+
     @Override
     public void setNextRuleNode(RuleNode ruleNode) {
         this.ruleNode = ruleNode;
