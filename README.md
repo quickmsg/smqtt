@@ -2,6 +2,8 @@
 感谢大家帮忙给新项目点Star,感谢!
 - [Gitee](https://gitee.com/quickmsg/smqttx)
 - [Github](https://github.com/quickmsg/smqttx)
+- 
+
 
 ## ![image](icon/logo.png) SMQTT开源的MQTT消息代理Broker
 
@@ -71,13 +73,7 @@ SMQTT基于reactor-netty(spring-webflux底层依赖)
 | 121.40.92.152:1883                     | mqtt端口 |用户名：smqtt 密码：smqtt |
 | 121.40.92.152:18888                    | mqtt over websocket |用户名：smqtt 密码：smqtt  |
 | http://121.40.92.152:60000/smqtt/admin | 管理后台 |用户名：smqtt 密码：smqtt  |
-## 商业化版本
-如果遇到接入性能问题，或者需要定制化开发的，我们提供商业化版本出售，请添加微信17512575402！
 
-## 商业版本
-
-商业版演示地址 `http://114.116.98.217:50000/`
-> 有需要商业版接入的请添加微信`17512575402`联系我!
 
 ## 启动方式
 
@@ -297,6 +293,9 @@ docker run -it  -v <配置文件路径目录>:/conf -p 1883:1883  -p 1999:1999 1
 ## License
 
 [Apache License, Version 2.0](LICENSE)
+
+## 商业版本
+[商业版演示地址](http://114.116.14.30)
 
 ## 友情链接
 
