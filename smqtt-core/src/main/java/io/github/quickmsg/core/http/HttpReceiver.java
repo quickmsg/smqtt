@@ -4,6 +4,7 @@ import io.github.quickmsg.common.Receiver;
 import io.github.quickmsg.core.ssl.AbstractSslHandler;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.ChannelOption;
+import io.netty.handler.codec.json.JsonObjectDecoder;
 import reactor.core.publisher.Mono;
 import reactor.netty.DisposableServer;
 import reactor.netty.http.server.HttpServer;
@@ -23,6 +24,7 @@ public class HttpReceiver extends AbstractSslHandler implements Receiver {
                 httpServer.secure(sslContextSpec -> this.secure(sslContextSpec, configuration));
             }
             return httpServer.port(configuration.getPort())
+                    .doOnConnection(connection -> connection.addHandler(new JsonObjectDecoder()))
                     .route( new HttpRouterAcceptor(configuration))
                     .accessLog(configuration.getAccessLog())
                     .childOption(ChannelOption.TCP_NODELAY, true)
