@@ -3,6 +3,7 @@ package io.github.quickmsg.common.interceptor;
 import io.github.quickmsg.common.channel.MqttChannel;
 import io.github.quickmsg.common.config.Configuration;
 import io.github.quickmsg.common.context.ReceiveContext;
+import io.github.quickmsg.common.message.ClusterMessage;
 import io.github.quickmsg.common.message.HeapMqttMessage;
 import io.github.quickmsg.common.message.SmqttMessage;
 import io.github.quickmsg.common.protocol.ProtocolAdaptor;
@@ -53,7 +54,7 @@ public class MessageProxy {
                 MqttPublishMessage publishMessage = (MqttPublishMessage) message;
                 HeapMqttMessage heapMqttMessage = this.clusterMessage(publishMessage, mqttChannel, smqttMessage.getTimestamp());
                 if (mqttReceiveContext.getConfiguration().getClusterConfig().isEnable()) {
-                    mqttReceiveContext.getClusterRegistry().spreadPublishMessage(heapMqttMessage).subscribeOn(Schedulers.boundedElastic()).subscribe();
+                    mqttReceiveContext.getClusterRegistry().spreadPublishMessage(new ClusterMessage(heapMqttMessage)).subscribeOn(Schedulers.boundedElastic()).subscribe();
                 }
                 if (dslExecutor.isExecute()) {
                     dslExecutor.executeRule(mqttChannel, heapMqttMessage, mqttReceiveContext);

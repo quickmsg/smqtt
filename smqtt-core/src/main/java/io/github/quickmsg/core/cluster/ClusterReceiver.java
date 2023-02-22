@@ -1,11 +1,10 @@
 package io.github.quickmsg.core.cluster;
 
 import io.github.quickmsg.common.channel.MockMqttChannel;
+import io.github.quickmsg.common.channel.MqttChannel;
 import io.github.quickmsg.common.config.BootstrapConfig;
-import io.github.quickmsg.common.message.HeapMqttMessage;
+import io.github.quickmsg.common.message.*;
 import io.github.quickmsg.common.cluster.ClusterRegistry;
-import io.github.quickmsg.common.message.MqttMessageBuilder;
-import io.github.quickmsg.common.message.SmqttMessage;
 import io.github.quickmsg.common.protocol.ProtocolAdaptor;
 import io.github.quickmsg.common.utils.JacksonUtil;
 import io.github.quickmsg.core.mqtt.MqttReceiveContext;
@@ -18,6 +17,7 @@ import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.Optional;
 
 /**
  * @author luxurong
@@ -47,10 +47,22 @@ public class ClusterReceiver {
                 clusterRegistry.handlerClusterMessage()
                         .doOnError(throwable -> log.error("cluster accept",throwable))
                         .onErrorResume(e-> Mono.empty())
-                        .subscribe(clusterMessage -> protocolAdaptor
-                                .chooseProtocol(MockMqttChannel.wrapClientIdentifier(clusterMessage.getClientIdentifier()),
-                                        getMqttMessage(clusterMessage),
-                                        mqttReceiveContext));
+                        .subscribe(clusterMessage -> {
+                            if(clusterMessage.getClusterEvent() == ClusterMessage.ClusterEvent.PUBLISH){
+                                HeapMqttMessage heapMqttMessage = (HeapMqttMessage)clusterMessage.getMessage();
+                                protocolAdaptor
+                                        .chooseProtocol(MockMqttChannel.wrapClientIdentifier(heapMqttMessage.getClientIdentifier()),
+                                                getMqttMessage(heapMqttMessage),
+                                                mqttReceiveContext);
+                            }
+                            else {
+                                CloseMqttMessage closeMqttMessage =(CloseMqttMessage) clusterMessage.getMessage();
+                                Optional.ofNullable(mqttReceiveContext.getChannelRegistry().get(closeMqttMessage.getClientIdentifier()))
+                                        .ifPresent(MqttChannel::disposableClose);
+
+                            }
+
+                        });
             }
         }
     }

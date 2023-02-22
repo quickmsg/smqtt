@@ -2,6 +2,7 @@ package io.github.quickmsg.common.cluster;
 
 import io.github.quickmsg.common.config.BootstrapConfig;
 import io.github.quickmsg.common.enums.ClusterStatus;
+import io.github.quickmsg.common.message.ClusterMessage;
 import io.github.quickmsg.common.message.HeapMqttMessage;
 import io.github.quickmsg.common.spi.DynamicLoader;
 import reactor.core.publisher.Flux;
@@ -31,7 +32,7 @@ public interface ClusterRegistry {
      *
      * @return {@link HeapMqttMessage}
      */
-    Flux<HeapMqttMessage> handlerClusterMessage();
+    Flux<ClusterMessage> handlerClusterMessage();
 
 
     /**
@@ -53,10 +54,10 @@ public interface ClusterRegistry {
     /**
      * 扩散消息
      *
-     * @param heapMqttMessage 集群消息
+     * @param clusterMessage 集群消息
      * @return {@link Mono}
      */
-    Mono<Void> spreadMessage(HeapMqttMessage heapMqttMessage);
+    Mono<Void> spreadMessage(ClusterMessage clusterMessage);
 
 
     /**
@@ -73,7 +74,7 @@ public interface ClusterRegistry {
      * @param message mqtt Publish消息
      * @return {@link Mono}
      */
-    default Mono<Void> spreadPublishMessage(HeapMqttMessage message) {
+    default Mono<Void> spreadPublishMessage(ClusterMessage message) {
         return spreadMessage(message);
     }
 

@@ -4,6 +4,7 @@ import io.github.quickmsg.common.cluster.ClusterNode;
 import io.github.quickmsg.common.cluster.ClusterRegistry;
 import io.github.quickmsg.common.config.BootstrapConfig;
 import io.github.quickmsg.common.enums.ClusterStatus;
+import io.github.quickmsg.common.message.ClusterMessage;
 import io.github.quickmsg.common.message.HeapMqttMessage;
 import io.scalecube.cluster.Cluster;
 import io.scalecube.cluster.ClusterImpl;
@@ -31,7 +32,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ScubeClusterRegistry implements ClusterRegistry {
 
-    private Sinks.Many<HeapMqttMessage> messageMany = Sinks.many().multicast().onBackpressureBuffer();
+    private Sinks.Many<ClusterMessage> messageMany = Sinks.many().multicast().onBackpressureBuffer();
 
     private Sinks.Many<ClusterStatus> eventMany = Sinks.many().multicast().onBackpressureBuffer();
 
@@ -62,7 +63,7 @@ public class ScubeClusterRegistry implements ClusterRegistry {
     }
 
     @Override
-    public Flux<HeapMqttMessage> handlerClusterMessage() {
+    public Flux<ClusterMessage> handlerClusterMessage() {
         return messageMany.asFlux();
     }
 
@@ -83,15 +84,15 @@ public class ScubeClusterRegistry implements ClusterRegistry {
     }
 
     @Override
-    public Mono<Void> spreadMessage(HeapMqttMessage heapMqttMessage) {
-        log.info("cluster send message {} ", heapMqttMessage);
+    public Mono<Void> spreadMessage(ClusterMessage clusterMessage) {
+        log.info("cluster send message {} ", clusterMessage);
         return Mono.when(
                 cluster.otherMembers()
                         .stream()
                         .map(member ->
                                 Optional.ofNullable(cluster)
                                         .map(cs ->
-                                                cs.send(member, Message.withData(heapMqttMessage).build()).then()
+                                                cs.send(member, Message.withData(clusterMessage).build()).then()
                                         ).orElse(Mono.empty()))
                         .collect(Collectors.toList()));
     }

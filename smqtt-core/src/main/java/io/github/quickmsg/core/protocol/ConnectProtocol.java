@@ -10,10 +10,7 @@ import io.github.quickmsg.common.config.ConnectModel;
 import io.github.quickmsg.common.context.ReceiveContext;
 import io.github.quickmsg.common.enums.ChannelStatus;
 import io.github.quickmsg.common.enums.Event;
-import io.github.quickmsg.common.message.EventRegistry;
-import io.github.quickmsg.common.message.MessageRegistry;
-import io.github.quickmsg.common.message.MqttMessageBuilder;
-import io.github.quickmsg.common.message.SmqttMessage;
+import io.github.quickmsg.common.message.*;
 import io.github.quickmsg.common.metric.CounterType;
 import io.github.quickmsg.common.metric.MetricManager;
 import io.github.quickmsg.common.metric.MetricManagerHolder;
@@ -118,6 +115,11 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
 
                 mqttChannel.getConnection().onReadIdle((long) mqttConnectVariableHeader.keepAliveTimeSeconds() * MILLI_SECOND_PERIOD << 1,
                         () -> close(metricManager, mqttChannel, mqttReceiveContext, eventRegistry));
+
+                CloseMqttMessage closeMqttMessage = new CloseMqttMessage();
+                closeMqttMessage.setClientIdentifier(clientIdentifier);
+                ClusterMessage clusterMessage = new ClusterMessage(closeMqttMessage);
+                mqttReceiveContext.getClusterRegistry().spreadPublishMessage(clusterMessage);
 
                 /*registry will message send */
                 mqttChannel.registryClose(channel -> Optional.ofNullable(mqttChannel.getWill())
