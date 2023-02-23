@@ -75,29 +75,32 @@ public class JCasBinAclManager implements AclManager {
 
     @Override
     public boolean check(MqttChannel mqttChannel, String source, AclAction action) {
-        try {
-            boolean isCheckAcl = Optional.ofNullable(filterAclTopicActions.get(action.name()))
-                    .map(objects -> objects.stream().anyMatch(topic -> BuiltInFunctions.keyMatch2(source, topic)))
-                    .orElse(false);
-            if (isCheckAcl) {
-                String subject = String.format(REQUEST_SUBJECT_TEMPLATE, mqttChannel.getClientIdentifier()
-                        , mqttChannel.getAddress().split(":")[0]);
-                return Optional.ofNullable(enforcer)
-                        .map(ef -> ef.enforce(subject, source, action.name()))
-                        .orElse(true);
-            }
+        if (isOpen) {
+            try {
 
-        } catch (Exception e) {
-            log.error("acl check error", e);
+                boolean isCheckAcl = Optional.ofNullable(filterAclTopicActions.get(action.name()))
+                        .map(objects -> objects.stream().anyMatch(topic -> BuiltInFunctions.keyMatch2(source, topic)))
+                        .orElse(false);
+                if (isCheckAcl) {
+                    String subject = String.format(REQUEST_SUBJECT_TEMPLATE, mqttChannel.getClientIdentifier()
+                            , mqttChannel.getAddress().split(":")[0]);
+                    return Optional.ofNullable(enforcer)
+                            .map(ef -> ef.enforce(subject, source, action.name()))
+                            .orElse(true);
+                }
+
+            } catch (Exception e) {
+                log.error("acl check error", e);
+            }
         }
-        return isOpen;
+        return true;
     }
 
     @Override
     public boolean add(String sub, String source, AclAction action, AclType type) {
-        return isOpen?Optional.ofNullable(enforcer)
+        return isOpen ? Optional.ofNullable(enforcer)
                 .map(ef -> enforcer.addNamedPolicy("p", sub, source, action.name(), type.getDesc()))
-                .orElse(true):false;
+                .orElse(true) : false;
     }
 
     @Override
@@ -109,7 +112,7 @@ public class JCasBinAclManager implements AclManager {
 
     @Override
     public List<List<String>> get(PolicyModel policyModel) {
-        if(!isOpen){
+        if (!isOpen) {
             return Collections.emptyList();
         }
         return Optional.ofNullable(enforcer)

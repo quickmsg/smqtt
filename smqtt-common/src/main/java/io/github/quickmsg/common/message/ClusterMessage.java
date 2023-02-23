@@ -8,6 +8,8 @@ import lombok.Data;
 @Data
 public class ClusterMessage {
 
+    public ClusterMessage(){}
+
     private ClusterEvent clusterEvent;
 
     private Object message;

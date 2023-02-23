@@ -39,7 +39,7 @@ public class ClusterNode1 {
                         BootstrapConfig.
                                 ClusterConfig
                                 .builder()
-                                .enable(false)
+                                .enable(true)
                                 .namespace("smqtt")
                                 .node("node-1")
                                 .port(7773)

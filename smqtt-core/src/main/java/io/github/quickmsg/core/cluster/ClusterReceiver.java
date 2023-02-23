@@ -58,7 +58,7 @@ public class ClusterReceiver {
                             else {
                                 CloseMqttMessage closeMqttMessage =(CloseMqttMessage) clusterMessage.getMessage();
                                 Optional.ofNullable(mqttReceiveContext.getChannelRegistry().get(closeMqttMessage.getClientIdentifier()))
-                                        .ifPresent(MqttChannel::disposableClose);
+                                        .ifPresent(mqttChannel -> mqttChannel.close().subscribe());
 
                             }
 

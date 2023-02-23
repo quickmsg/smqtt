@@ -119,7 +119,8 @@ public class ConnectProtocol implements Protocol<MqttConnectMessage> {
                 CloseMqttMessage closeMqttMessage = new CloseMqttMessage();
                 closeMqttMessage.setClientIdentifier(clientIdentifier);
                 ClusterMessage clusterMessage = new ClusterMessage(closeMqttMessage);
-                mqttReceiveContext.getClusterRegistry().spreadPublishMessage(clusterMessage);
+                mqttReceiveContext.getClusterRegistry().spreadPublishMessage(clusterMessage)
+                        .subscribe();
 
                 /*registry will message send */
                 mqttChannel.registryClose(channel -> Optional.ofNullable(mqttChannel.getWill())
