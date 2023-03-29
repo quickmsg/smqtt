@@ -54,8 +54,8 @@ public class ScubeClusterRegistry implements ClusterRegistry {
                 .transportFactory(TcpTransportFactory::new)
                 .transport(transportConfig -> transportConfig.port(clusterConfig.getPort()))
                 .membership(opts -> opts.seedMembers(Arrays.stream(clusterConfig
-                        .getUrl()
-                        .split(","))
+                                .getUrl()
+                                .split(","))
                         .map(Address::from)
                         .collect(Collectors.toList())).namespace(clusterConfig.getNamespace()))
                 .handler(cluster -> new ClusterHandler())
@@ -86,6 +86,9 @@ public class ScubeClusterRegistry implements ClusterRegistry {
     @Override
     public Mono<Void> spreadMessage(ClusterMessage clusterMessage) {
         log.info("cluster send message {} ", clusterMessage);
+        if (cluster == null || cluster.isShutdown()) {
+            return Mono.empty();
+        }
         return Mono.when(
                 cluster.otherMembers()
                         .stream()
@@ -114,13 +117,13 @@ public class ScubeClusterRegistry implements ClusterRegistry {
         @Override
         public void onMessage(Message message) {
             log.info("cluster accept message {} ", message);
-            messageMany.emitNext(message.data(),new RetryNonSerializedEmitFailureHandler());
+            messageMany.emitNext(message.data(), new RetryNonSerializedEmitFailureHandler());
         }
 
         @Override
         public void onGossip(Message message) {
             log.info("cluster accept message {} ", message);
-            messageMany.emitNext(message.data(),new RetryNonSerializedEmitFailureHandler());
+            messageMany.emitNext(message.data(), new RetryNonSerializedEmitFailureHandler());
         }
 
         @Override

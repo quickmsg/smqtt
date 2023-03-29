@@ -13,7 +13,7 @@ import lombok.Data;
 public class HttpConfiguration implements Configuration {
 
 
-    private Integer port = 60000;
+    private Integer port = 60001;
 
     private Boolean wiretap = false;
 
